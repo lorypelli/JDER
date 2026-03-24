@@ -6,10 +6,9 @@
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE.md)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
-[![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform/)
+[![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
 
 [🌐 Website](https://jder.lorypelli.dev/) • [⬇️ Download](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) • [🐛 Issues](https://github.com/LoryPelli/JDER/issues)
-
 
 ---
 
@@ -206,6 +205,3 @@ This project is licensed under the **MIT License** — see [LICENSE.md](LICENSE.
 ---
 
 Made with ❤️ by [LoryPelli](https://github.com/LoryPelli) • [jder.lorypelli.dev](https://jder.lorypelli.dev/)
-
-
-
