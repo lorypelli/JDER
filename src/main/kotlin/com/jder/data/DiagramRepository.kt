@@ -1,24 +1,16 @@
 package com.jder.data
 import com.jder.domain.model.ERDiagram
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.io.File
 class DiagramRepository {
-    private val json = Json {
-        prettyPrint = true
-        ignoreUnknownKeys = true
-    }
     fun saveDiagram(diagram: ERDiagram, file: File): Result<Unit> = try {
-        val jsonString = json.encodeToString(diagram)
-        file.writeText(jsonString)
+        file.writeText(diagramJson.encodeToString(diagram))
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
     }
     fun loadDiagram(file: File): Result<ERDiagram> = try {
-        val jsonString = file.readText()
-        val diagram = json.decodeFromString<ERDiagram>(jsonString)
-        Result.success(diagram)
+        Result.success(diagramJson.decodeFromString<ERDiagram>(file.readText()))
     } catch (e: Exception) {
         Result.failure(e)
     }

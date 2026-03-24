@@ -213,11 +213,10 @@ private fun drawRelation(g: Graphics2D, rel: UseCaseRelation, diagram: UseCaseDi
 private fun drawFilledArrow(g: Graphics2D, tipX: Float, tipY: Float, nx: Float, ny: Float, color: Color) {
     val size = 13f
     val px = -ny
-    val py = nx
     val bx1 = tipX - nx * size + px * size * 0.45f
-    val by1 = tipY - ny * size + py * size * 0.45f
+    val by1 = tipY - ny * size + nx * size * 0.45f
     val bx2 = tipX - nx * size - px * size * 0.45f
-    val by2 = tipY - ny * size - py * size * 0.45f
+    val by2 = tipY - ny * size - nx * size * 0.45f
     val xs = intArrayOf(tipX.toInt(), bx1.toInt(), bx2.toInt())
     val ys = intArrayOf(tipY.toInt(), by1.toInt(), by2.toInt())
     g.color = color
@@ -226,11 +225,10 @@ private fun drawFilledArrow(g: Graphics2D, tipX: Float, tipY: Float, nx: Float, 
 private fun drawHollowArrow(g: Graphics2D, tipX: Float, tipY: Float, nx: Float, ny: Float, color: Color) {
     val size = 13f
     val px = -ny
-    val py = nx
     val bx1 = tipX - nx * size + px * size * 0.45f
-    val by1 = tipY - ny * size + py * size * 0.45f
+    val by1 = tipY - ny * size + nx * size * 0.45f
     val bx2 = tipX - nx * size - px * size * 0.45f
-    val by2 = tipY - ny * size - py * size * 0.45f
+    val by2 = tipY - ny * size - nx * size * 0.45f
     val xs = intArrayOf(tipX.toInt(), bx1.toInt(), bx2.toInt())
     val ys = intArrayOf(tipY.toInt(), by1.toInt(), by2.toInt())
     g.color = Color.WHITE

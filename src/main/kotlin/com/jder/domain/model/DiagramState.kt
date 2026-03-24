@@ -181,8 +181,8 @@ class DiagramState {
         saveState()
         diagram = diagram.copy(
             entities = diagram.entities.filter { it.id != entityId },
-            relationships = diagram.relationships.map {
-                it.copy(connections = it.connections.filter { it.entityId != entityId })
+            relationships = diagram.relationships.map { relationship ->
+                relationship.copy(connections = relationship.connections.filter { it.entityId != entityId })
             }
         )
         if (selectedEntityId == entityId) {
@@ -384,10 +384,4 @@ class DiagramState {
         selectedRelationshipId = null
         isModified = true
     }
-}
-enum class ToolMode {
-    SELECT,
-    ENTITY,
-    RELATIONSHIP,
-    NOTE
 }

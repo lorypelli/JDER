@@ -77,14 +77,33 @@ fun UseCaseScreen(
     var snackbarMessage by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
     LaunchedEffect(snackbarMessage) {
         snackbarMessage?.let {
             snackbarHostState.showSnackbar(it)
             snackbarMessage = null
         }
+    }
+    fun saveToCurrentFile() {
+        state.currentFile?.let { path ->
+            val file = File(path)
+            repository.saveDiagram(state.diagram.copy(name = file.nameWithoutExtension), file).fold(
+                onSuccess = {
+                    state.updateDiagramName(file.nameWithoutExtension)
+                    state.markAsSaved(file.absolutePath)
+                    snackbarMessage = "Diagramma salvato: ${file.name}"
+                },
+                onFailure = { snackbarMessage = "Errore nel salvataggio: ${it.message}" }
+            )
+        } ?: run { showSaveAsDialog = true }
+    }
+    fun openDiagram() {
+        if (state.isModified) showOpenDiagramConfirmDialog = true
+        else showOpenDialog = true
+    }
+    fun newDiagram() {
+        if (state.isModified) showNewDiagramConfirmDialog = true
+        else { state.newDiagram(); snackbarMessage = "Nuovo diagramma creato" }
     }
     Scaffold(
         snackbarHost = {
@@ -104,72 +123,22 @@ fun UseCaseScreen(
                 if (event.type == KeyEventType.KeyDown) {
                     when {
                         event.isCtrlPressed && event.key == Key.Z -> {
-                            if (state.canUndo()) {
-                                state.undo()
-                                snackbarMessage = "Azione annullata"
-                            }
+                            if (state.canUndo()) { state.undo(); snackbarMessage = "Azione annullata" }
                             true
                         }
                         event.isCtrlPressed && event.key == Key.Y -> {
-                            if (state.canRedo()) {
-                                state.redo()
-                                snackbarMessage = "Azione ripristinata"
-                            }
+                            if (state.canRedo()) { state.redo(); snackbarMessage = "Azione ripristinata" }
                             true
                         }
-                        event.isCtrlPressed && event.key == Key.N -> {
-                            if (state.isModified) {
-                                showNewDiagramConfirmDialog = true
-                            } else {
-                                state.newDiagram()
-                                snackbarMessage = "Nuovo diagramma creato"
-                            }
-                            true
-                        }
-                        event.isCtrlPressed && event.key == Key.O -> {
-                            if (state.isModified) {
-                                showOpenDiagramConfirmDialog = true
-                            } else {
-                                showOpenDialog = true
-                            }
-                            true
-                        }
-                        event.isCtrlPressed && event.key == Key.S -> {
-                            state.currentFile?.let { text ->
-                                val file = File(text)
-                                val updated = state.diagram.copy(name = file.nameWithoutExtension)
-                                repository.saveDiagram(updated, file).fold(
-                                    onSuccess = {
-                                        state.updateDiagramName(file.nameWithoutExtension)
-                                        state.markAsSaved(file.absolutePath)
-                                        snackbarMessage = "Diagramma salvato: ${file.name}"
-                                    },
-                                    onFailure = { snackbarMessage = "Errore nel salvataggio: ${it.message}" }
-                                )
-                            } ?: run { showSaveAsDialog = true }
-                            true
-                        }
+                        event.isCtrlPressed && event.key == Key.N -> { newDiagram(); true }
+                        event.isCtrlPressed && event.key == Key.O -> { openDiagram(); true }
+                        event.isCtrlPressed && event.key == Key.S -> { saveToCurrentFile(); true }
                         event.key == Key.Delete || event.key == Key.Backspace -> {
-                            state.selectedActorId?.let {
-                                state.deleteActor(it)
-                                snackbarMessage = "Attore eliminato"
-                            }
-                            state.selectedUseCaseId?.let {
-                                state.deleteUseCase(it)
-                                snackbarMessage = "Caso d'uso eliminato"
-                            }
-                            state.selectedRelationId?.let {
-                                state.deleteRelation(it)
-                                snackbarMessage = "Relazione eliminata"
-                            }
-                            state.selectedNoteId?.let {
-                                state.deleteNote(it)
-                                snackbarMessage = "Nota eliminata"
-                            }
-                            state.selectedSystemBoundaryId?.let {
-                                state.deleteSystemBoundary(it)
-                                snackbarMessage = "Sistema eliminato"
-                            }
+                            state.selectedActorId?.let { state.deleteActor(it); snackbarMessage = "Attore eliminato" }
+                            state.selectedUseCaseId?.let { state.deleteUseCase(it); snackbarMessage = "Caso d'uso eliminato" }
+                            state.selectedRelationId?.let { state.deleteRelation(it); snackbarMessage = "Relazione eliminata" }
+                            state.selectedNoteId?.let { state.deleteNote(it); snackbarMessage = "Nota eliminata" }
+                            state.selectedSystemBoundaryId?.let { state.deleteSystemBoundary(it); snackbarMessage = "Sistema eliminato" }
                             true
                         }
                         event.isCtrlPressed && event.key == Key.Plus -> {
@@ -180,10 +149,7 @@ fun UseCaseScreen(
                             state.zoom = (state.zoom / 1.2f).coerceAtLeast(0.25f)
                             true
                         }
-                        event.isCtrlPressed && event.key == Key.Zero -> {
-                            state.resetView()
-                            true
-                        }
+                        event.isCtrlPressed && event.key == Key.Zero -> { state.resetView(); true }
                         event.key == Key.Escape -> {
                             state.clearSelection()
                             state.toolMode = UseCaseToolMode.SELECT
@@ -192,71 +158,29 @@ fun UseCaseScreen(
                         }
                         else -> false
                     }
-                } else {
-                    false
-                }
+                } else false
             },
         topBar = {
             UseCaseToolbar(
                 state = state,
                 themeState = themeState,
-                onNewDiagram = {
-                    if (state.isModified) showNewDiagramConfirmDialog = true
-                    else {
-                        state.newDiagram()
-                        snackbarMessage = "Nuovo diagramma creato"
-                    }
-                },
-                onOpenDiagram = {
-                    if (state.isModified) showOpenDiagramConfirmDialog = true
-                    else showOpenDialog = true
-                },
-                onSaveDiagram = {
-                    state.currentFile?.let { text ->
-                        val file = File(text)
-                        val updated = state.diagram.copy(name = file.nameWithoutExtension)
-                        repository.saveDiagram(updated, file).fold(
-                            onSuccess = {
-                                state.updateDiagramName(file.nameWithoutExtension)
-                                state.markAsSaved(file.absolutePath)
-                                snackbarMessage = "Diagramma salvato: ${file.name}"
-                            },
-                            onFailure = { snackbarMessage = "Errore nel salvataggio: ${it.message}" }
-                        )
-                    } ?: run { showSaveAsDialog = true }
-                },
+                onNewDiagram = ::newDiagram,
+                onOpenDiagram = ::openDiagram,
+                onSaveDiagram = ::saveToCurrentFile,
                 onSaveAsDiagram = { showSaveAsDialog = true },
                 onExportPNG = { showExportDialog = true },
                 onZoomIn = { state.zoom = (state.zoom * 1.2f).coerceAtMost(3f) },
                 onZoomOut = { state.zoom = (state.zoom / 1.2f).coerceAtLeast(0.25f) },
                 onResetZoom = { state.resetView() },
-                onUndo = {
-                    if (state.canUndo()) {
-                        state.undo()
-                        snackbarMessage = "Azione annullata"
-                    }
-                },
-                onRedo = {
-                    if (state.canRedo()) {
-                        state.redo()
-                        snackbarMessage = "Azione ripristinata"
-                    }
-                },
+                onUndo = { if (state.canUndo()) { state.undo(); snackbarMessage = "Azione annullata" } },
+                onRedo = { if (state.canRedo()) { state.redo(); snackbarMessage = "Azione ripristinata" } },
                 onShowSnackbar = { snackbarMessage = it },
                 modifier = Modifier
             )
         }
     ) { values ->
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(values)
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
+        Row(modifier = Modifier.fillMaxSize().padding(values)) {
+            Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
                 UseCaseDiagramCanvas(
                     state = state,
                     onContextMenuRequest = { position, type ->
@@ -289,48 +213,18 @@ fun UseCaseScreen(
                         onDelete = {
                             showContextMenu = false
                             when (contextMenuType) {
-                                UseCaseContextMenuType.ACTOR -> {
-                                    state.selectedActorId?.let {
-                                        state.deleteActor(it)
-                                        snackbarMessage = "Attore eliminato"
-                                    }
-                                }
-                                UseCaseContextMenuType.USE_CASE -> {
-                                    state.selectedUseCaseId?.let {
-                                        state.deleteUseCase(it)
-                                        snackbarMessage = "Caso d'uso eliminato"
-                                    }
-                                }
-                                UseCaseContextMenuType.RELATION -> {
-                                    state.selectedRelationId?.let {
-                                        state.deleteRelation(it)
-                                        snackbarMessage = "Relazione eliminata"
-                                    }
-                                }
-                                UseCaseContextMenuType.NOTE -> {
-                                    state.selectedNoteId?.let {
-                                        state.deleteNote(it)
-                                        snackbarMessage = "Nota eliminata"
-                                    }
-                                }
-                                UseCaseContextMenuType.SYSTEM -> {
-                                    state.selectedSystemBoundaryId?.let {
-                                        state.deleteSystemBoundary(it)
-                                        snackbarMessage = "Sistema eliminato"
-                                    }
-                                }
+                                UseCaseContextMenuType.ACTOR -> state.selectedActorId?.let { state.deleteActor(it); snackbarMessage = "Attore eliminato" }
+                                UseCaseContextMenuType.USE_CASE -> state.selectedUseCaseId?.let { state.deleteUseCase(it); snackbarMessage = "Caso d'uso eliminato" }
+                                UseCaseContextMenuType.RELATION -> state.selectedRelationId?.let { state.deleteRelation(it); snackbarMessage = "Relazione eliminata" }
+                                UseCaseContextMenuType.NOTE -> state.selectedNoteId?.let { state.deleteNote(it); snackbarMessage = "Nota eliminata" }
+                                UseCaseContextMenuType.SYSTEM -> state.selectedSystemBoundaryId?.let { state.deleteSystemBoundary(it); snackbarMessage = "Sistema eliminato" }
                             }
                         }
                     )
                 }
             }
             if (state.selectedActorId != null || state.selectedUseCaseId != null || state.selectedRelationId != null || state.selectedNoteId != null || state.selectedSystemBoundaryId != null) {
-                Surface(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .fillMaxHeight(),
-                    tonalElevation = 2.dp
-                ) {
+                Surface(modifier = Modifier.width(300.dp).fillMaxHeight(), tonalElevation = 2.dp) {
                     UseCasePropertiesPanel(
                         state = state,
                         onEditActor = { showActorDialog = true },
@@ -345,13 +239,12 @@ fun UseCaseScreen(
         }
     }
     if (showActorDialog) {
-        val actor = state.diagram.actors.find { it.id == state.selectedActorId }
-        actor?.let {
+        state.diagram.actors.find { it.id == state.selectedActorId }?.let { actor ->
             ActorPropertiesDialog(
-                actorName = it.name,
+                actorName = actor.name,
                 onDismiss = { showActorDialog = false },
                 onConfirm = { newName ->
-                    state.updateActor(it.id) { a -> a.copy(name = newName) }
+                    state.updateActor(actor.id) { it.copy(name = newName) }
                     showActorDialog = false
                     snackbarMessage = "Attore modificato"
                 }
@@ -359,14 +252,13 @@ fun UseCaseScreen(
         }
     }
     if (showUseCaseDialog) {
-        val useCase = state.diagram.useCases.find { it.id == state.selectedUseCaseId }
-        useCase?.let {
+        state.diagram.useCases.find { it.id == state.selectedUseCaseId }?.let { useCase ->
             UseCasePropertiesDialog(
-                useCaseName = it.name,
-                useCaseDocumentation = it.documentation,
+                useCaseName = useCase.name,
+                useCaseDocumentation = useCase.documentation,
                 onDismiss = { showUseCaseDialog = false },
                 onConfirm = { newName, newDoc ->
-                    state.updateUseCase(it.id) { uc -> uc.copy(name = newName, documentation = newDoc) }
+                    state.updateUseCase(useCase.id) { it.copy(name = newName, documentation = newDoc) }
                     showUseCaseDialog = false
                     snackbarMessage = "Caso d'uso modificato"
                 }
@@ -374,13 +266,12 @@ fun UseCaseScreen(
         }
     }
     if (showRelationDialog) {
-        val relation = state.diagram.relations.find { it.id == state.selectedRelationId }
-        relation?.let {
+        state.diagram.relations.find { it.id == state.selectedRelationId }?.let { relation ->
             RelationEditDialog(
-                relation = it,
+                relation = relation,
                 onDismiss = { showRelationDialog = false },
                 onConfirm = { newType ->
-                    state.updateRelation(it.id) { r -> r.copy(type = newType) }
+                    state.updateRelation(relation.id) { it.copy(type = newType) }
                     showRelationDialog = false
                     snackbarMessage = "Relazione modificata"
                 }
@@ -388,13 +279,12 @@ fun UseCaseScreen(
         }
     }
     if (showNoteDialog) {
-        val note = state.diagram.notes.find { it.id == state.selectedNoteId }
-        note?.let {
+        state.diagram.notes.find { it.id == state.selectedNoteId }?.let { note ->
             NotePropertiesDialog(
-                noteText = it.text,
+                noteText = note.text,
                 onDismiss = { showNoteDialog = false },
                 onConfirm = { newText ->
-                    state.updateNote(it.id) { n -> n.copy(text = newText) }
+                    state.updateNote(note.id) { it.copy(text = newText) }
                     showNoteDialog = false
                     snackbarMessage = "Nota modificata"
                 }
@@ -402,15 +292,14 @@ fun UseCaseScreen(
         }
     }
     if (showSystemBoundaryDialog) {
-        val boundary = state.diagram.systemBoundaries.find { it.id == state.selectedSystemBoundaryId }
-        boundary?.let {
+        state.diagram.systemBoundaries.find { it.id == state.selectedSystemBoundaryId }?.let { boundary ->
             SystemBoundaryDialog(
-                boundaryName = it.name,
-                boundaryWidth = it.width,
-                boundaryHeight = it.height,
+                boundaryName = boundary.name,
+                boundaryWidth = boundary.width,
+                boundaryHeight = boundary.height,
                 onDismiss = { showSystemBoundaryDialog = false },
                 onConfirm = { newName, newWidth, newHeight ->
-                    state.updateSystemBoundary(it.id) { b -> b.copy(name = newName, width = newWidth, height = newHeight) }
+                    state.updateSystemBoundary(boundary.id) { it.copy(name = newName, width = newWidth, height = newHeight) }
                     showSystemBoundaryDialog = false
                     snackbarMessage = "Sistema modificato"
                 }
@@ -443,17 +332,13 @@ fun UseCaseScreen(
             title = { Text("Conferma nuovo diagramma") },
             text = { Text("Ci sono modifiche non salvate. Vuoi creare un nuovo diagramma comunque?") },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        showNewDiagramConfirmDialog = false
-                        state.newDiagram()
-                        snackbarMessage = "Nuovo diagramma creato"
-                    }
-                ) { Text("Sì") }
+                TextButton(onClick = {
+                    showNewDiagramConfirmDialog = false
+                    state.newDiagram()
+                    snackbarMessage = "Nuovo diagramma creato"
+                }) { Text("Sì") }
             },
-            dismissButton = {
-                TextButton(onClick = { showNewDiagramConfirmDialog = false }) { Text("No") }
-            }
+            dismissButton = { TextButton(onClick = { showNewDiagramConfirmDialog = false }) { Text("No") } }
         )
     }
     if (showOpenDiagramConfirmDialog) {
@@ -462,16 +347,9 @@ fun UseCaseScreen(
             title = { Text("Conferma apertura diagramma") },
             text = { Text("Ci sono modifiche non salvate. Vuoi aprire un altro diagramma comunque?") },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        showOpenDiagramConfirmDialog = false
-                        showOpenDialog = true
-                    }
-                ) { Text("Sì") }
+                TextButton(onClick = { showOpenDiagramConfirmDialog = false; showOpenDialog = true }) { Text("Sì") }
             },
-            dismissButton = {
-                TextButton(onClick = { showOpenDiagramConfirmDialog = false }) { Text("No") }
-            }
+            dismissButton = { TextButton(onClick = { showOpenDiagramConfirmDialog = false }) { Text("No") } }
         )
     }
     if (showOpenDialog) {
@@ -484,10 +362,7 @@ fun UseCaseScreen(
             onFileSelected = { file ->
                 showOpenDialog = false
                 repository.loadDiagram(file).fold(
-                    onSuccess = {
-                        state.loadDiagram(it, file.absolutePath)
-                        snackbarMessage = "Diagramma caricato: ${file.name}"
-                    },
+                    onSuccess = { state.loadDiagram(it, file.absolutePath); snackbarMessage = "Diagramma caricato: ${file.name}" },
                     onFailure = { snackbarMessage = "Errore nel caricamento: ${it.message}" }
                 )
             }
@@ -503,11 +378,8 @@ fun UseCaseScreen(
             onDismiss = { showSaveAsDialog = false },
             onFileSelected = { file ->
                 showSaveAsDialog = false
-                val finalFile = if (file.extension != "json") {
-                    File(file.parentFile, "${file.nameWithoutExtension}.json")
-                } else file
-                val updated = state.diagram.copy(name = finalFile.nameWithoutExtension)
-                repository.saveDiagram(updated, finalFile).fold(
+                val finalFile = if (file.extension != "json") File(file.parentFile, "${file.nameWithoutExtension}.json") else file
+                repository.saveDiagram(state.diagram.copy(name = finalFile.nameWithoutExtension), finalFile).fold(
                     onSuccess = {
                         state.updateDiagramName(finalFile.nameWithoutExtension)
                         state.markAsSaved(finalFile.absolutePath)
