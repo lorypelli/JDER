@@ -8,6 +8,33 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 object CustomIcons {
+    val Ellipse: ImageVector
+        get() = ImageVector.Builder(
+                name = "Ellipse",
+                defaultWidth = 24.dp,
+                defaultHeight = 24.dp,
+                viewportWidth = 24f,
+                viewportHeight = 24f
+            ).apply {
+                path(
+                    fill = null,
+                    fillAlpha = 1.0f,
+                    stroke = SolidColor(Color.Black),
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 2f,
+                    strokeLineCap = StrokeCap.Round,
+                    strokeLineJoin = StrokeJoin.Round,
+                    strokeLineMiter = 1.0f,
+                    pathFillType = PathFillType.NonZero
+                ) {
+                    moveTo(22f, 12f)
+                    curveTo(22f, 15.31f, 17.52f, 18f, 12f, 18f)
+                    curveTo(6.48f, 18f, 2f, 15.31f, 2f, 12f)
+                    curveTo(2f, 8.69f, 6.48f, 6f, 12f, 6f)
+                    curveTo(17.52f, 6f, 22f, 8.69f, 22f, 12f)
+                    close()
+                }
+            }.build()
     val Rectangle: ImageVector
         get() = ImageVector.Builder(
                 name = "Rectangle",

@@ -32,6 +32,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.Constraints
 import com.jder.domain.model.Attribute
 import com.jder.domain.model.AttributeType
 import com.jder.domain.model.DiagramState
@@ -553,7 +554,7 @@ private fun DrawScope.drawNote(
             color = Color.Black,
             fontSize = 12.sp
         ),
-        constraints = androidx.compose.ui.unit.Constraints(
+        constraints = Constraints(
             maxWidth = availableWidth.toInt(),
             maxHeight = availableHeight.toInt()
         )

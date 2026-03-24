@@ -12,16 +12,20 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.jder.data.DiagramRepository
+import com.jder.data.UseCaseRepository
 import com.jder.domain.model.DiagramState
-import com.jder.ui.screens.MainScreen
+import com.jder.domain.model.UseCaseState
+import com.jder.ui.screens.AppScreen
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import java.awt.Dimension
 fun main() = application {
     val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
     val diagramState = remember { DiagramState() }
+    val useCaseState = remember { UseCaseState() }
     val themeState = remember { ThemeState() }
     val repository = remember { DiagramRepository() }
+    val useCaseRepository = remember { UseCaseRepository() }
     var showExitDialog by remember { mutableStateOf(false) }
     var shouldExit by remember { mutableStateOf(false) }
     if (shouldExit) {
@@ -29,7 +33,7 @@ fun main() = application {
     }
     Window(
         onCloseRequest = {
-            if (diagramState.isModified) {
+            if (diagramState.isModified || useCaseState.isModified) {
                 showExitDialog = true
             } else {
                 exitApplication()
@@ -41,10 +45,12 @@ fun main() = application {
     ) {
         window.minimumSize = Dimension(800, 600)
         JDERTheme(darkTheme = themeState.isDarkTheme, colorPalette = themeState.selectedPalette) {
-            MainScreen(
-                state = diagramState,
-                themeState = themeState,
-                repository = repository
+            AppScreen(
+                erState = diagramState,
+                useCaseState = useCaseState,
+                repository = repository,
+                useCaseRepository = useCaseRepository,
+                themeState = themeState
             )
             if (showExitDialog) {
                 AlertDialog(

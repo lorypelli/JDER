@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material.icons.filled.CropSquare
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Undo
@@ -39,15 +42,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jder.domain.model.DiagramState
-import com.jder.domain.model.ToolMode
+import com.jder.domain.model.UseCaseState
+import com.jder.domain.model.UseCaseToolMode
 import com.jder.ui.theme.ThemeState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiagramToolbar(
-    state: DiagramState,
+fun UseCaseToolbar(
+    state: UseCaseState,
     themeState: ThemeState,
     onNewDiagram: () -> Unit,
     onOpenDiagram: () -> Unit,
@@ -72,7 +75,8 @@ fun DiagramToolbar(
         }
     }
     val zoomPercentage by remember { derivedStateOf { "${(state.zoom * 100).toInt()}%" } }
-    val hasSelection = state.selectedEntityId != null || state.selectedRelationshipId != null || state.selectedNoteId != null
+    val hasSelection = state.selectedActorId != null || state.selectedUseCaseId != null ||
+        state.selectedRelationId != null || state.selectedNoteId != null || state.selectedSystemBoundaryId != null
     Column(modifier = modifier) {
         TopAppBar(
             title = { Text(text = title) },
@@ -111,9 +115,11 @@ fun DiagramToolbar(
                                 coroutineScope.launch {
                                     delay(150)
                                     showFileMenu = false
-                                    state.selectedEntityId?.let { state.deleteEntity(it); onShowSnackbar("Entità eliminata") }
-                                    state.selectedRelationshipId?.let { state.deleteRelationship(it); onShowSnackbar("Relazione eliminata") }
+                                    state.selectedActorId?.let { state.deleteActor(it); onShowSnackbar("Attore eliminato") }
+                                    state.selectedUseCaseId?.let { state.deleteUseCase(it); onShowSnackbar("Caso d'uso eliminato") }
+                                    state.selectedRelationId?.let { state.deleteRelation(it); onShowSnackbar("Relazione eliminata") }
                                     state.selectedNoteId?.let { state.deleteNote(it); onShowSnackbar("Nota eliminata") }
+                                    state.selectedSystemBoundaryId?.let { state.deleteSystemBoundary(it); onShowSnackbar("Sistema eliminato") }
                                 }
                             },
                             leadingIcon = { Icon(Icons.Default.Delete, null) },
@@ -142,34 +148,47 @@ fun DiagramToolbar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconToggleButton(
-                    checked = state.toolMode == ToolMode.SELECT,
-                    onCheckedChange = { state.toolMode = ToolMode.SELECT }
+                    checked = state.toolMode == UseCaseToolMode.SELECT,
+                    onCheckedChange = { state.toolMode = UseCaseToolMode.SELECT }
                 ) { Icon(Icons.Default.NearMe, "Seleziona e Sposta") }
                 Divider(modifier = Modifier.width(1.dp).height(40.dp))
                 IconButton(onClick = onUndo, enabled = state.canUndo()) { Icon(Icons.Default.Undo, "Annulla (Ctrl+Z)") }
                 IconButton(onClick = onRedo, enabled = state.canRedo()) { Icon(Icons.Default.Redo, "Ripristina (Ctrl+Y)") }
                 Divider(modifier = Modifier.width(1.dp).height(40.dp))
                 IconToggleButton(
-                    checked = state.toolMode == ToolMode.ENTITY,
-                    onCheckedChange = { state.toolMode = ToolMode.ENTITY }
-                ) { Icon(CustomIcons.Rectangle, "Crea Entità") }
+                    checked = state.toolMode == UseCaseToolMode.ACTOR,
+                    onCheckedChange = { state.toolMode = UseCaseToolMode.ACTOR }
+                ) { Icon(Icons.Default.Person, "Crea Attore") }
                 IconToggleButton(
-                    checked = state.toolMode == ToolMode.RELATIONSHIP,
-                    onCheckedChange = { state.toolMode = ToolMode.RELATIONSHIP }
-                ) { Icon(CustomIcons.Diamond, "Crea Relazione") }
+                    checked = state.toolMode == UseCaseToolMode.USE_CASE,
+                    onCheckedChange = { state.toolMode = UseCaseToolMode.USE_CASE }
+                ) { Icon(CustomIcons.Ellipse, "Crea Caso d'Uso") }
                 IconToggleButton(
-                    checked = state.toolMode == ToolMode.NOTE,
-                    onCheckedChange = { state.toolMode = ToolMode.NOTE }
+                    checked = state.toolMode == UseCaseToolMode.RELATION,
+                    onCheckedChange = {
+                        state.toolMode = UseCaseToolMode.RELATION
+                        state.pendingRelationSourceId = null
+                    }
+                ) { Icon(Icons.Default.ArrowRightAlt, "Crea Relazione") }
+                IconToggleButton(
+                    checked = state.toolMode == UseCaseToolMode.NOTE,
+                    onCheckedChange = { state.toolMode = UseCaseToolMode.NOTE }
                 ) { Icon(CustomIcons.StickyNote, "Crea Nota") }
+                IconToggleButton(
+                    checked = state.toolMode == UseCaseToolMode.SYSTEM,
+                    onCheckedChange = { state.toolMode = UseCaseToolMode.SYSTEM }
+                ) { Icon(Icons.Default.CropSquare, "Crea Sistema") }
                 Divider(modifier = Modifier.width(1.dp).height(40.dp))
                 IconButton(onClick = onSaveDiagram, modifier = Modifier.padding(horizontal = 4.dp)) {
                     Icon(Icons.Default.Save, "Salva")
                 }
                 IconButton(
                     onClick = {
-                        state.selectedEntityId?.let { state.deleteEntity(it); onShowSnackbar("Entità eliminata") }
-                        state.selectedRelationshipId?.let { state.deleteRelationship(it); onShowSnackbar("Relazione eliminata") }
+                        state.selectedActorId?.let { state.deleteActor(it); onShowSnackbar("Attore eliminato") }
+                        state.selectedUseCaseId?.let { state.deleteUseCase(it); onShowSnackbar("Caso d'uso eliminato") }
+                        state.selectedRelationId?.let { state.deleteRelation(it); onShowSnackbar("Relazione eliminata") }
                         state.selectedNoteId?.let { state.deleteNote(it); onShowSnackbar("Nota eliminata") }
+                        state.selectedSystemBoundaryId?.let { state.deleteSystemBoundary(it); onShowSnackbar("Sistema eliminato") }
                     },
                     enabled = hasSelection,
                     modifier = Modifier.padding(horizontal = 4.dp)

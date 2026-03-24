@@ -196,3 +196,93 @@ fun ContextMenu(
         }
     }
 }
+enum class UseCaseContextMenuType {
+    ACTOR,
+    USE_CASE,
+    RELATION,
+    NOTE,
+    SYSTEM
+}
+@Composable
+fun UseCaseContextMenu(
+    position: Offset,
+    type: UseCaseContextMenuType,
+    onDismiss: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    Popup(
+        alignment = Alignment.TopStart,
+        offset = IntOffset(position.x.toInt(), position.y.toInt()),
+        onDismissRequest = onDismiss,
+        properties = PopupProperties(focusable = true)
+    ) {
+        Surface(
+            modifier = Modifier.width(210.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp,
+            shadowElevation = 8.dp
+        ) {
+            Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                Text(
+                    text = when (type) {
+                        UseCaseContextMenuType.ACTOR -> "Azioni Attore"
+                        UseCaseContextMenuType.USE_CASE -> "Azioni Caso d'Uso"
+                        UseCaseContextMenuType.RELATION -> "Azioni Relazione"
+                        UseCaseContextMenuType.NOTE -> "Azioni Nota"
+                        UseCaseContextMenuType.SYSTEM -> "Azioni Sistema"
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                Divider()
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Edit, null, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                when (type) {
+                                    UseCaseContextMenuType.ACTOR -> "Modifica Nome"
+                                    UseCaseContextMenuType.USE_CASE -> "Modifica Proprietà"
+                                    UseCaseContextMenuType.RELATION -> "Modifica Tipo"
+                                    UseCaseContextMenuType.NOTE -> "Modifica Testo"
+                                    UseCaseContextMenuType.SYSTEM -> "Modifica Proprietà"
+                                }
+                            )
+                        }
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            delay(150)
+                            onDismiss()
+                            onEdit()
+                        }
+                    },
+                    leadingIcon = null
+                )
+                Divider()
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Delete, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.error)
+                            Spacer(Modifier.width(12.dp))
+                            Text("Elimina", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            delay(150)
+                            onDismiss()
+                            onDelete()
+                        }
+                    },
+                    leadingIcon = null
+                )
+            }
+        }
+    }
+}

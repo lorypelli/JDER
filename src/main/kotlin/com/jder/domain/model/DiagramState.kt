@@ -5,7 +5,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import java.util.UUID
 class DiagramState {
-    var diagram by mutableStateOf(ERDiagram(name = "Nuovo Diagramma"))
+    var diagram by mutableStateOf(ERDiagram(name = "Nuovo Diagramma E-R"))
         private set
     var selectedEntityId by mutableStateOf<String?>(null)
         private set
@@ -307,7 +307,7 @@ class DiagramState {
         clearSelection()
     }
     fun newDiagram() {
-        diagram = ERDiagram(name = "Nuovo Diagramma")
+        diagram = ERDiagram(name = "Nuovo Diagramma E-R")
         currentFile = null
         isModified = false
         clearSelection()

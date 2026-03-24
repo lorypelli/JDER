@@ -643,6 +643,7 @@ fun MainScreen(
             initialDirectory = File(System.getProperty("user.home")),
             fileExtension = ".png",
             title = "Esporta come PNG",
+            defaultFileName = state.diagram.name,
             onDismiss = { showExportDialog = false },
             onFileSelected = { file ->
                 showExportDialog = false
