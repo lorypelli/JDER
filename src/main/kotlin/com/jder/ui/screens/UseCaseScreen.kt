@@ -357,7 +357,7 @@ fun UseCaseScreen(
             mode = FileManagerMode.OPEN,
             initialDirectory = File(System.getProperty("user.home")),
             fileExtension = ".json",
-            title = "Apri Diagramma Casi d'Uso",
+            title = "Apri Diagramma",
             onDismiss = { showOpenDialog = false },
             onFileSelected = { file ->
                 showOpenDialog = false
@@ -373,7 +373,7 @@ fun UseCaseScreen(
             mode = FileManagerMode.SAVE,
             initialDirectory = File(System.getProperty("user.home")),
             fileExtension = ".json",
-            title = "Salva Diagramma Casi d'Uso",
+            title = "Salva Diagramma",
             defaultFileName = state.diagram.name,
             onDismiss = { showSaveAsDialog = false },
             onFileSelected = { file ->
