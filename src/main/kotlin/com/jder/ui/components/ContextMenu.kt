@@ -286,3 +286,87 @@ fun UseCaseContextMenu(
         }
     }
 }
+enum class ClassDiagramContextMenuType {
+    CLASS,
+    RELATION,
+    NOTE
+}
+@Composable
+fun ClassDiagramContextMenu(
+    position: Offset,
+    type: ClassDiagramContextMenuType,
+    onDismiss: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    Popup(
+        alignment = Alignment.TopStart,
+        offset = IntOffset(position.x.toInt(), position.y.toInt()),
+        onDismissRequest = onDismiss,
+        properties = PopupProperties(focusable = true)
+    ) {
+        Surface(
+            modifier = Modifier.width(210.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp,
+            shadowElevation = 8.dp
+        ) {
+            Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                Text(
+                    text = when (type) {
+                        ClassDiagramContextMenuType.CLASS -> "Azioni Classe"
+                        ClassDiagramContextMenuType.RELATION -> "Azioni Relazione"
+                        ClassDiagramContextMenuType.NOTE -> "Azioni Nota"
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                Divider()
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Edit, null, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                when (type) {
+                                    ClassDiagramContextMenuType.CLASS -> "Modifica Proprietà"
+                                    ClassDiagramContextMenuType.RELATION -> "Modifica Relazione"
+                                    ClassDiagramContextMenuType.NOTE -> "Modifica Testo"
+                                }
+                            )
+                        }
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            delay(150)
+                            onDismiss()
+                            onEdit()
+                        }
+                    },
+                    leadingIcon = null
+                )
+                Divider()
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Delete, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.error)
+                            Spacer(Modifier.width(12.dp))
+                            Text("Elimina", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            delay(150)
+                            onDismiss()
+                            onDelete()
+                        }
+                    },
+                    leadingIcon = null
+                )
+            }
+        }
+    }
+}

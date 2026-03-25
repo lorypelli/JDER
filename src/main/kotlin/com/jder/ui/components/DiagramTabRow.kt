@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 enum class DiagramMode {
     ER,
+    CLASS_DIAGRAM,
     USE_CASE
 }
 @Composable
@@ -22,6 +23,11 @@ fun DiagramTabRow(
             selected = currentMode == DiagramMode.ER,
             onClick = { onModeChange(DiagramMode.ER) },
             text = { Text("Diagramma E/R") }
+        )
+        Tab(
+            selected = currentMode == DiagramMode.CLASS_DIAGRAM,
+            onClick = { onModeChange(DiagramMode.CLASS_DIAGRAM) },
+            text = { Text("Diagramma Classi") }
         )
         Tab(
             selected = currentMode == DiagramMode.USE_CASE,

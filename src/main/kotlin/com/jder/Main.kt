@@ -11,8 +11,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import com.jder.data.ClassDiagramRepository
 import com.jder.data.DiagramRepository
 import com.jder.data.UseCaseRepository
+import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramState
 import com.jder.domain.model.UseCaseState
 import com.jder.ui.screens.AppScreen
@@ -23,9 +25,11 @@ fun main() = application {
     val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
     val diagramState = remember { DiagramState() }
     val useCaseState = remember { UseCaseState() }
+    val classState = remember { ClassDiagramState() }
     val themeState = remember { ThemeState() }
     val repository = remember { DiagramRepository() }
     val useCaseRepository = remember { UseCaseRepository() }
+    val classRepository = remember { ClassDiagramRepository() }
     var showExitDialog by remember { mutableStateOf(false) }
     var shouldExit by remember { mutableStateOf(false) }
     if (shouldExit) {
@@ -33,7 +37,7 @@ fun main() = application {
     }
     Window(
         onCloseRequest = {
-            if (diagramState.isModified || useCaseState.isModified) {
+            if (diagramState.isModified || useCaseState.isModified || classState.isModified) {
                 showExitDialog = true
             } else {
                 exitApplication()
@@ -48,8 +52,10 @@ fun main() = application {
             AppScreen(
                 erState = diagramState,
                 useCaseState = useCaseState,
+                classState = classState,
                 repository = repository,
                 useCaseRepository = useCaseRepository,
+                classRepository = classRepository,
                 themeState = themeState
             )
             if (showExitDialog) {

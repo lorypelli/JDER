@@ -9,9 +9,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.jder.data.ClassDiagramRepository
 import com.jder.data.DiagramRepository
 import com.jder.data.UseCaseRepository
 import com.jder.ui.components.DiagramMode
+import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramState
 import com.jder.domain.model.UseCaseState
 import com.jder.ui.components.DiagramTabRow
@@ -20,8 +22,10 @@ import com.jder.ui.theme.ThemeState
 fun AppScreen(
     erState: DiagramState,
     useCaseState: UseCaseState,
+    classState: ClassDiagramState,
     repository: DiagramRepository,
     useCaseRepository: UseCaseRepository,
+    classRepository: ClassDiagramRepository,
     themeState: ThemeState
 ) {
     var currentMode by remember { mutableStateOf(DiagramMode.ER) }
@@ -36,6 +40,11 @@ fun AppScreen(
                 DiagramMode.ER -> MainScreen(
                     state = erState,
                     repository = repository,
+                    themeState = themeState
+                )
+                DiagramMode.CLASS_DIAGRAM -> ClassDiagramScreen(
+                    state = classState,
+                    repository = classRepository,
                     themeState = themeState
                 )
                 DiagramMode.USE_CASE -> UseCaseScreen(
