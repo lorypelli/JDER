@@ -48,7 +48,7 @@ fun UseCaseToolbar(
     onUndo: () -> Unit,
     onRedo: () -> Unit,
     onShowSnackbar: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val title by remember {
         derivedStateOf {

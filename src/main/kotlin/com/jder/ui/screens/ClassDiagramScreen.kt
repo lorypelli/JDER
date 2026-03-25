@@ -5,15 +5,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,6 +35,9 @@ import com.jder.ui.components.ClassDiagramContextMenu
 import com.jder.ui.components.ClassDiagramContextMenuType
 import com.jder.ui.components.ClassDiagramPropertiesPanel
 import com.jder.ui.components.ClassDiagramToolbar
+import com.jder.ui.components.ConfirmNewDiagramDialog
+import com.jder.ui.components.ConfirmOpenDiagramDialog
+import com.jder.ui.components.DiagramSnackbarHost
 import com.jder.ui.components.FileManagerDialog
 import com.jder.ui.components.FileManagerMode
 import com.jder.ui.dialogs.ClassEntityDialog
@@ -105,16 +102,7 @@ fun ClassDiagramScreen(
         else { state.newDiagram(); snackbarMessage = "Nuovo diagramma creato" }
     }
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) {
-                Snackbar(
-                    snackbarData = it,
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    actionColor = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
+        snackbarHost = { DiagramSnackbarHost(snackbarHostState) },
         modifier = Modifier
             .focusRequester(focusRequester)
             .focusTarget()
@@ -171,8 +159,7 @@ fun ClassDiagramScreen(
                 onResetZoom = { state.resetView() },
                 onUndo = { if (state.canUndo()) { state.undo(); snackbarMessage = "Azione annullata" } },
                 onRedo = { if (state.canRedo()) { state.redo(); snackbarMessage = "Azione ripristinata" } },
-                onShowSnackbar = { snackbarMessage = it },
-                modifier = Modifier
+                onShowSnackbar = { snackbarMessage = it }
             )
         }
     ) { values ->
@@ -323,29 +310,19 @@ fun ClassDiagramScreen(
         )
     }
     if (showNewDiagramConfirmDialog) {
-        AlertDialog(
-            onDismissRequest = { showNewDiagramConfirmDialog = false },
-            title = { Text("Conferma nuovo diagramma") },
-            text = { Text("Ci sono modifiche non salvate. Vuoi creare un nuovo diagramma comunque?") },
-            confirmButton = {
-                TextButton(onClick = {
-                    showNewDiagramConfirmDialog = false
-                    state.newDiagram()
-                    snackbarMessage = "Nuovo diagramma creato"
-                }) { Text("Sì") }
-            },
-            dismissButton = { TextButton(onClick = { showNewDiagramConfirmDialog = false }) { Text("No") } }
+        ConfirmNewDiagramDialog(
+            onDismiss = { showNewDiagramConfirmDialog = false },
+            onConfirm = {
+                showNewDiagramConfirmDialog = false
+                state.newDiagram()
+                snackbarMessage = "Nuovo diagramma creato"
+            }
         )
     }
     if (showOpenDiagramConfirmDialog) {
-        AlertDialog(
-            onDismissRequest = { showOpenDiagramConfirmDialog = false },
-            title = { Text("Conferma apertura diagramma") },
-            text = { Text("Ci sono modifiche non salvate. Vuoi aprire un altro diagramma comunque?") },
-            confirmButton = {
-                TextButton(onClick = { showOpenDiagramConfirmDialog = false; showOpenDialog = true }) { Text("Sì") }
-            },
-            dismissButton = { TextButton(onClick = { showOpenDiagramConfirmDialog = false }) { Text("No") } }
+        ConfirmOpenDiagramDialog(
+            onDismiss = { showOpenDiagramConfirmDialog = false },
+            onConfirm = { showOpenDiagramConfirmDialog = false; showOpenDialog = true }
         )
     }
     if (showOpenDialog) {
