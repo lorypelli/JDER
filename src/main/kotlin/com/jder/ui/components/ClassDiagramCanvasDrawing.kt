@@ -53,6 +53,28 @@ internal fun DrawScope.drawClassEntity(
             cornerRadius = CornerRadius(4f),
             style = Fill
         )
+        drawRoundRect(
+            color = selectedColor,
+            topLeft = Offset(entity.x - 4f, entity.y - 4f),
+            size = Size(entity.width + 8f, height + 8f),
+            cornerRadius = CornerRadius(4f),
+            style = Stroke(width = 2.5f)
+        )
+    } else if (isPendingSource) {
+        drawRoundRect(
+            color = selectedColor.copy(alpha = 0.1f),
+            topLeft = Offset(entity.x - 4f, entity.y - 4f),
+            size = Size(entity.width + 8f, height + 8f),
+            cornerRadius = CornerRadius(4f),
+            style = Fill
+        )
+        drawRoundRect(
+            color = selectedColor,
+            topLeft = Offset(entity.x - 4f, entity.y - 4f),
+            size = Size(entity.width + 8f, height + 8f),
+            cornerRadius = CornerRadius(4f),
+            style = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 4f)))
+        )
     }
     drawRect(color = fillColor, topLeft = Offset(entity.x, entity.y), size = Size(entity.width, height), style = Fill)
     drawRect(color = borderColor, topLeft = Offset(entity.x, entity.y), size = Size(entity.width, height), style = Stroke(width = strokeWidth))

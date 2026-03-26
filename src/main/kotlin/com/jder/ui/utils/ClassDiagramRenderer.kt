@@ -222,13 +222,13 @@ private fun drawClassRelationR(g: Graphics2D, rel: ClassRelation, diagram: Class
         }
         ClassRelationType.AGGREGATION -> {
             g.stroke = BasicStroke(1.5f)
-            val diamondBase = Pair(src.first + nx * arrowSize * 2, src.second + ny * arrowSize * 2)
+            val diamondBase = Pair(src.first + nx * arrowSize, src.second + ny * arrowSize)
             g.drawLine((diamondBase.first + offX).toInt(), (diamondBase.second + offY).toInt(), tx, ty)
             drawDiamondR(g, src.first + offX, src.second + offY, nx, ny, filled = false)
         }
         ClassRelationType.COMPOSITION -> {
             g.stroke = BasicStroke(1.5f)
-            val diamondBase = Pair(src.first + nx * arrowSize * 2, src.second + ny * arrowSize * 2)
+            val diamondBase = Pair(src.first + nx * arrowSize, src.second + ny * arrowSize)
             g.drawLine((diamondBase.first + offX).toInt(), (diamondBase.second + offY).toInt(), tx, ty)
             drawDiamondR(g, src.first + offX, src.second + offY, nx, ny, filled = true)
         }
