@@ -1,6 +1,6 @@
 {
   "name": "jder",
-  "compatibility_date": "2025-12-20",
+  "compatibility_date": "2026-03-20",
   "route": {
     "pattern": "jder.it",
     "custom_domain": true

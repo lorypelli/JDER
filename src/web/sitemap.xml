@@ -1,7 +1,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://jder.it/</loc>
-        <changefreq>yearly</changefreq>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>
     </url>
 </urlset>
