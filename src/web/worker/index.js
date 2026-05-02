@@ -22,6 +22,9 @@ export default {
             }
         }
         const response = await env.ASSETS.fetch(request);
+        if (!response.ok) {
+            return Response.redirect(new URL("/", url.toString()).toString(), 302);
+        }
         if (url.pathname == "/" || url.pathname == "/index.html") {
             const newResponse = new Response(response.body, response);
             newResponse.headers.set(
