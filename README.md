@@ -2,13 +2,13 @@
 
 **Java Diagrammi E/R** — A modern, cross-platform editor for Entity-Relationship and Use Case diagrams
 
-[![Website](https://img.shields.io/badge/Website-jder.lorypelli.dev-blue?style=for-the-badge)](https://jder.lorypelli.dev/)
+[![Website](https://img.shields.io/badge/Website-jder.it-blue?style=for-the-badge)](https://jder.it/)
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE.md)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
 
-[🌐 Website](https://jder.lorypelli.dev/) • [⬇️ Download](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) • [🐛 Issues](https://github.com/LoryPelli/JDER/issues)
+[🌐 Website](https://jder.it/) • [⬇️ Download](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) • [🐛 Issues](https://github.com/LoryPelli/JDER/issues)
 
 ---
 
@@ -23,6 +23,7 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
 ### 🗂️ Diagram Types
 
 #### Entity-Relationship (E/R) Diagram
+
 - Create and manage **Entities** with full attribute support
   - Normal, Key (primary key), Multivalued, Derived, and Composite attributes
   - Weak entity support
@@ -34,6 +35,7 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
 - Context menu for quick actions on any element
 
 #### Use Case Diagram
+
 - Create **Actors** (with stick figure representation)
 - Create **Use Cases** (with ellipse representation)
 - Draw **Relations** between elements:
@@ -58,30 +60,30 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
 
 ### 🖱️ Canvas Controls
 
-| Action | Control |
-|--------|---------|
-| Zoom In | `Ctrl` + `+` or mouse scroll up |
-| Zoom Out | `Ctrl` + `-` or mouse scroll down |
-| Pan | Middle mouse button drag |
-| Select & Move | Left click + drag |
-| Open context menu | Right click on element |
-| Reset Zoom | Vista menu → Reimposta Zoom |
+| Action            | Control                           |
+| ----------------- | --------------------------------- |
+| Zoom In           | `Ctrl` + `+` or mouse scroll up   |
+| Zoom Out          | `Ctrl` + `-` or mouse scroll down |
+| Pan               | Middle mouse button drag          |
+| Select & Move     | Left click + drag                 |
+| Open context menu | Right click on element            |
+| Reset Zoom        | Vista menu → Reimposta Zoom       |
 
 ---
 
 ### ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl + Z` | Undo |
-| `Ctrl + Y` | Redo |
-| `Ctrl + S` | Save |
-| `Ctrl + Shift + S` | Save As |
-| `Ctrl + O` | Open |
-| `Ctrl + N` | New Diagram |
-| `Ctrl + +` | Zoom In |
-| `Ctrl + -` | Zoom Out |
-| `Delete` | Delete selected element |
+| Shortcut           | Action                  |
+| ------------------ | ----------------------- |
+| `Ctrl + Z`         | Undo                    |
+| `Ctrl + Y`         | Redo                    |
+| `Ctrl + S`         | Save                    |
+| `Ctrl + Shift + S` | Save As                 |
+| `Ctrl + O`         | Open                    |
+| `Ctrl + N`         | New Diagram             |
+| `Ctrl + +`         | Zoom In                 |
+| `Ctrl + -`         | Zoom Out                |
+| `Delete`           | Delete selected element |
 
 ---
 
@@ -105,16 +107,16 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
 
 ## Stack
 
-| Technology | Purpose |
-|------------|---------|
-| [Kotlin](https://kotlinlang.org/) | Primary language |
-| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | UI framework |
-| [Material 3](https://m3.material.io/) | Design system |
-| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) | JSON save/load |
-| [Gradle](https://gradle.org/) | Build system |
-| [Cloudflare Workers](https://workers.cloudflare.com/) | Website hosting |
-| [Skia](https://skia.org/) | PNG rendering/export |
-| Java 8 | JVM target |
+| Technology                                                                   | Purpose              |
+| ---------------------------------------------------------------------------- | -------------------- |
+| [Kotlin](https://kotlinlang.org/)                                            | Primary language     |
+| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | UI framework         |
+| [Material 3](https://m3.material.io/)                                        | Design system        |
+| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)     | JSON save/load       |
+| [Gradle](https://gradle.org/)                                                | Build system         |
+| [Cloudflare Workers](https://workers.cloudflare.com/)                        | Website hosting      |
+| [Skia](https://skia.org/)                                                    | PNG rendering/export |
+| Java 8                                                                       | JVM target           |
 
 ---
 
@@ -193,6 +195,7 @@ src/
 ## Credits
 
 JDER is a complete rewrite inspired by the work of:
+
 - **Alessandro Ballini** — [Original JDER](https://ballini.it/Software/ProgER)
 - **Gianvito Pio** — [Maintained version](https://gianvitopio.wordpress.com/jder)
 
@@ -204,4 +207,4 @@ This project is licensed under the **MIT License** — see [LICENSE.md](LICENSE.
 
 ---
 
-Made with ❤️ by [LoryPelli](https://github.com/LoryPelli) • [jder.lorypelli.dev](https://jder.lorypelli.dev/)
+Made with ❤️ by [LoryPelli](https://github.com/LoryPelli) • [jder.it](https://jder.it/)
