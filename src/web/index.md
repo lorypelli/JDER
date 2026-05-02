@@ -21,13 +21,13 @@ Nuova versione del software di [Alessandro Ballini](https://ballini.it/Software/
 
 Crea entità, relazioni e attributi (normali, chiave, multivalore, derivati, composti) con supporto per entità deboli e relazioni N a N con entità associative.
 
-### Diagramma Use Case
-
-Crea attori, casi d'uso, confini di sistema e relazioni (associazione, include, extend, generalizzazione).
-
 ### Diagramma delle Classi
 
 Crea classi, interfacce, enumerazioni e classi astratte con attributi, metodi, visibilità e relazioni UML (associazione, aggregazione, composizione, ereditarietà, realizzazione, dipendenza).
+
+### Diagramma Use Case
+
+Crea attori, casi d'uso, confini di sistema e relazioni (associazione, include, extend, generalizzazione).
 
 ## Caratteristiche Principali
 

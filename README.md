@@ -34,16 +34,6 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
 - Properties Panel for editing elements and connections
 - Context menu for quick actions on any element
 
-#### Use Case Diagram
-
-- Create **Actors** (with stick figure representation)
-- Create **Use Cases** (with ellipse representation)
-- Draw **Relations** between elements:
-  - Association, Include (`<<include>>`), Extend (`<<extend>>`), Generalization
-  - Fully rendered arrow heads with correct directionality
-- Define **System Boundaries** to group use cases
-- Add **textual Notes** shared with the E/R note component
-
 #### Class Diagram
 
 - Create **Classes**, **Interfaces**, **Enums**, and **Abstract Classes** (with UML stereotype labels)
@@ -57,6 +47,16 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
   - Optional relation label
 - Add inline **documentation** to any class
 - Add **textual Notes** shared with the other diagram note component
+
+#### Use Case Diagram
+
+- Create **Actors** (with stick figure representation)
+- Create **Use Cases** (with ellipse representation)
+- Draw **Relations** between elements:
+  - Association, Include (`<<include>>`), Extend (`<<extend>>`), Generalization
+  - Fully rendered arrow heads with correct directionality
+- Define **System Boundaries** to group use cases
+- Add **textual Notes** shared with the E/R note component
 
 ---
 
