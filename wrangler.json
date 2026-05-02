@@ -1,13 +1,13 @@
 {
   "name": "jder",
-  "main": "./src/web/worker/index.js",
   "compatibility_date": "2026-03-20",
+  "main": "src/web/worker/index.js",
   "route": {
     "pattern": "jder.it",
     "custom_domain": true
   },
   "assets": {
-    "directory": "./src/web",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "directory": "./src/web"
   }
 }

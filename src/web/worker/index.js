@@ -1,12 +1,12 @@
 export default {
     async fetch(request, env) {
-        const accept = request.headers.get("Accept") ?? "";
+        const accept = request.headers.get('Accept') || '';
         const url = new URL(request.url);
         if (
-            accept.includes("text/markdown") &&
-            (url.pathname == "/" || url.pathname == "/index.html")
+            accept.includes('text/markdown') &&
+            (url.pathname == '/' || url.pathname == '/index.html')
         ) {
-            const mdUrl = new URL("/index.md", request.url);
+            const mdUrl = new URL('/index.md', request.url);
             const mdResponse = await env.ASSETS.fetch(new Request(mdUrl.toString()));
             if (mdResponse.ok) {
                 const text = await mdResponse.text();
@@ -14,24 +14,24 @@ export default {
                 return new Response(text, {
                     status: 200,
                     headers: {
-                        "Content-Type": "text/markdown; charset=utf-8",
-                        "x-markdown-tokens": tokenCount.toString(),
-                        Vary: "Accept",
+                        'Content-Type': 'text/markdown; charset=utf-8',
+                        'x-markdown-tokens': tokenCount.toString(),
+                        'Vary': 'Accept',
                     },
                 });
             }
         }
         const response = await env.ASSETS.fetch(request);
         if (!response.ok) {
-            return Response.redirect(new URL("/", url.toString()).toString(), 302);
+            return Response.redirect(new URL('/', request.url).toString(), 302);
         }
-        if (url.pathname == "/" || url.pathname == "/index.html") {
+        if (url.pathname == '/' || url.pathname == '/index.html') {
             const newResponse = new Response(response.body, response);
             newResponse.headers.set(
-                "Link",
+                'Link',
                 '<https://github.com/LoryPelli/JDER>; rel="service-doc", </sitemap.xml>; rel="sitemap"',
             );
-            newResponse.headers.set("Vary", "Accept");
+            newResponse.headers.set('Vary', 'Accept');
             return newResponse;
         }
         return response;
