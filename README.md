@@ -1,6 +1,6 @@
 # JDER
 
-**Java Diagrammi E/R** — A modern, cross-platform editor for Entity-Relationship, Use Case, and Class diagrams
+**Java Diagrammi E/R** — Un editor moderno e multipiattaforma per diagrammi Entità-Relazione, Use Case e delle Classi
 
 [![Website](https://img.shields.io/badge/Website-jder.it-blue?style=for-the-badge)](https://jder.it/)
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
@@ -8,148 +8,148 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
 
-[🌐 Website](https://jder.it/) • [⬇️ Download](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) • [🐛 Issues](https://github.com/LoryPelli/JDER/issues)
+[🌐 Sito Web](https://jder.it/) • [⬇️ Download](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
 
 ---
 
-## Overview
+## Panoramica
 
-JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original software created by [Alessandro Ballini](https://ballini.it/Software/ProgER) and later maintained by [Gianvito Pio](https://gianvitopio.wordpress.com/jder). It brings a modern, clean Material 3 UI, new diagram types, and a significantly improved user experience.
-
----
-
-## Features
-
-### 🗂️ Diagram Types
-
-#### Entity-Relationship (E/R) Diagram
-
-- Create and manage **Entities** with full attribute support
-  - Normal, Key (primary key), Multivalued, Derived, and Composite attributes
-  - Weak entity support
-- Create **Relationships** between entities with full cardinality notation
-  - Supported cardinalities: `1`, `(0,1)`, `(1,1)`, `N`, `(0,N)`, `(1,N)`
-  - Associative entity conversion (N-to-N relationships)
-- Add **textual Notes** anywhere on the canvas
-- Properties Panel for editing elements and connections
-- Context menu for quick actions on any element
-
-#### Class Diagram
-
-- Create **Classes**, **Interfaces**, **Enums**, and **Abstract Classes** (with UML stereotype labels)
-- Add **Attributes** and **Methods** to each class with:
-  - Visibility modifiers: Public (`+`), Private (`-`), Protected (`#`), Package (`~`)
-  - Static and abstract member flags
-  - Type annotation for each member
-- Draw **Relations** between classes:
-  - Association, Aggregation, Composition, Inheritance, Realization, Dependency
-  - Source and target multiplicity labels on each relation
-  - Optional relation label
-- Add inline **documentation** to any class
-- Add **textual Notes** shared with the other diagram note component
-
-#### Use Case Diagram
-
-- Create **Actors** (with stick figure representation)
-- Create **Use Cases** (with ellipse representation)
-- Draw **Relations** between elements:
-  - Association, Include (`<<include>>`), Extend (`<<extend>>`), Generalization
-  - Fully rendered arrow heads with correct directionality
-- Define **System Boundaries** to group use cases
-- Add **textual Notes** shared with the E/R note component
+JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del software originale creato da [Alessandro Ballini](https://ballini.it/Software/ProgER) e successivamente mantenuto da [Gianvito Pio](https://gianvitopio.wordpress.com/jder). Porta con sé un'interfaccia Material 3 moderna e pulita, nuovi tipi di diagramma e un'esperienza utente notevolmente migliorata.
 
 ---
 
-### 🎨 Interface & UX
+## Funzionalità
 
-- **Material 3** design system throughout the entire app
-- **Light & Dark mode** with smooth animated transition
-- **20 official Material color palettes** selectable at runtime:
-  - Red, Pink, Purple, Deep Purple, Indigo, Blue, Light Blue, Cyan, Teal, Green, Light Green, Lime, Yellow, Amber, Orange, Deep Orange, Brown, Gray, Blue Gray, Black & White
-- **Tab-based navigation** between E/R and Use Case diagrams
-- **Properties Panel** — context-aware sidebar for editing selected elements
-- **Context Menu** — right-click on any canvas element for quick actions
+### 🗂️ Tipi di Diagramma
 
----
+#### Diagramma Entità-Relazione (E/R)
 
-### 🖱️ Canvas Controls
+- Crea e gestisci **Entità** con pieno supporto agli attributi
+  - Attributi normali, chiave (chiave primaria), multivalore, derivati e composti
+  - Supporto alle entità deboli
+- Crea **Relazioni** tra entità con notazione di cardinalità completa
+  - Cardinalità supportate: `1`, `(0,1)`, `(1,1)`, `N`, `(0,N)`, `(1,N)`
+  - Conversione in entità associativa (relazioni N-a-N)
+- Aggiungi **Note testuali** in qualsiasi punto della lavagna
+- Pannello Proprietà per modificare elementi e connessioni
+- Menu contestuale per azioni rapide su qualsiasi elemento
 
-| Action            | Control                           |
-| ----------------- | --------------------------------- |
-| Zoom In           | `Ctrl` + `+` or mouse scroll up   |
-| Zoom Out          | `Ctrl` + `-` or mouse scroll down |
-| Pan               | Middle mouse button drag          |
-| Select & Move     | Left click + drag                 |
-| Open context menu | Right click on element            |
-| Reset Zoom        | Vista menu → Reimposta Zoom       |
+#### Diagramma delle Classi
 
----
+- Crea **Classi**, **Interfacce**, **Enum** e **Classi Astratte** (con etichette stereotipo UML)
+- Aggiungi **Attributi** e **Metodi** a ogni classe con:
+  - Modificatori di visibilità: Pubblico (`+`), Privato (`-`), Protetto (`#`), Package (`~`)
+  - Flag per membri statici e astratti
+  - Annotazione del tipo per ogni membro
+- Disegna **Relazioni** tra classi:
+  - Associazione, Aggregazione, Composizione, Ereditarietà, Realizzazione, Dipendenza
+  - Etichette di molteplicità sorgente e destinazione su ogni relazione
+  - Etichetta della relazione opzionale
+- Aggiungi **documentazione** inline a qualsiasi classe
+- Aggiungi **Note testuali** condivise con il componente note degli altri diagrammi
 
-### ⌨️ Keyboard Shortcuts
+#### Diagramma dei Casi d'Uso
 
-| Shortcut           | Action                  |
-| ------------------ | ----------------------- |
-| `Ctrl + Z`         | Undo                    |
-| `Ctrl + Y`         | Redo                    |
-| `Ctrl + S`         | Save                    |
-| `Ctrl + Shift + S` | Save As                 |
-| `Ctrl + O`         | Open                    |
-| `Ctrl + N`         | New Diagram             |
-| `Ctrl + +`         | Zoom In                 |
-| `Ctrl + -`         | Zoom Out                |
-| `Delete`           | Delete selected element |
-
----
-
-### 💾 Save & Export
-
-- Save diagrams in **JSON** format (`.json`)
-- Open and reload previously saved diagrams
-- Export any diagram as a **PNG image**
-- Unsaved changes dialog on close or when opening a new diagram
-- Global undo/redo history (up to 50 states)
+- Crea **Attori** (con rappresentazione a omino stilizzato)
+- Crea **Casi d'Uso** (con rappresentazione a ellisse)
+- Disegna **Relazioni** tra elementi:
+  - Associazione, Include (`<<include>>`), Extend (`<<extend>>`), Generalizzazione
+  - Frecce correttamente renderizzate con direzionalità appropriata
+- Definisci **Confini di Sistema** per raggruppare i casi d'uso
+- Aggiungi **Note testuali** condivise con il componente note E/R
 
 ---
 
-## Stack
+### 🎨 Interfaccia & UX
 
-| Technology                                                                   | Purpose              |
-| ---------------------------------------------------------------------------- | -------------------- |
-| [Kotlin](https://kotlinlang.org/)                                            | Primary language     |
-| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | UI framework         |
-| [Material 3](https://m3.material.io/)                                        | Design system        |
-| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)     | JSON save/load       |
-| [Gradle](https://gradle.org/)                                                | Build system         |
-| [Cloudflare Workers](https://workers.cloudflare.com/)                        | Website hosting      |
-| [Skia](https://skia.org/)                                                    | PNG rendering/export |
-| Java 8                                                                       | JVM target           |
+- Sistema di design **Material 3** in tutta l'applicazione
+- **Modalità Chiara & Scura** con transizione animata fluida
+- **20 palette di colori Material ufficiali** selezionabili a runtime:
+  - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero
+- **Navigazione a schede** tra i diagrammi E/R e Use Case
+- **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
+- **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
 
 ---
 
-## Requirements
+### 🖱️ Controlli della Lavagna
 
-- **Java 8** or higher
-- Windows, macOS (Intel or Apple Silicon), or Linux (x64 or ARM)
+| Azione                  | Controllo                              |
+| ----------------------- | -------------------------------------- |
+| Zoom Avanti             | `Ctrl` + `+` o scroll mouse su        |
+| Zoom Indietro           | `Ctrl` + `-` o scroll mouse giù       |
+| Scorrimento             | Trascinamento con tasto centrale mouse |
+| Seleziona e Sposta      | Clic sinistro + trascinamento          |
+| Apri menu contestuale   | Clic destro sull'elemento              |
+| Reimposta Zoom          | Menu Vista → Reimposta Zoom            |
 
 ---
 
-## Getting Started
+### ⌨️ Scorciatoie da Tastiera
+
+| Scorciatoia        | Azione                          |
+| ------------------ | ------------------------------- |
+| `Ctrl + Z`         | Annulla                         |
+| `Ctrl + Y`         | Ripeti                          |
+| `Ctrl + S`         | Salva                           |
+| `Ctrl + Shift + S` | Salva con nome                  |
+| `Ctrl + O`         | Apri                            |
+| `Ctrl + N`         | Nuovo Diagramma                 |
+| `Ctrl + +`         | Zoom Avanti                     |
+| `Ctrl + -`         | Zoom Indietro                   |
+| `Delete`           | Elimina elemento selezionato    |
+
+---
+
+### 💾 Salvataggio & Esportazione
+
+- Salva i diagrammi in formato **JSON** (`.json`)
+- Apri e ricarica diagrammi salvati in precedenza
+- Esporta qualsiasi diagramma come **immagine PNG**
+- Finestra di dialogo per modifiche non salvate alla chiusura o all'apertura di un nuovo diagramma
+- Cronologia globale annulla/ripeti (fino a 50 stati)
+
+---
+
+## Stack Tecnologico
+
+| Tecnologia                                                                   | Utilizzo                   |
+| ---------------------------------------------------------------------------- | -------------------------- |
+| [Kotlin](https://kotlinlang.org/)                                            | Linguaggio principale      |
+| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | Framework UI               |
+| [Material 3](https://m3.material.io/)                                        | Sistema di design          |
+| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)     | Salvataggio/caricamento JSON |
+| [Gradle](https://gradle.org/)                                                | Sistema di build           |
+| [Cloudflare Workers](https://workers.cloudflare.com/)                        | Hosting del sito web       |
+| [Skia](https://skia.org/)                                                    | Rendering/esportazione PNG |
+| Java 8                                                                       | Target JVM                 |
+
+---
+
+## Requisiti
+
+- **Java 8** o versione superiore
+- Windows, macOS (Intel o Apple Silicon), o Linux (x64 o ARM)
+
+---
+
+## Per Iniziare
 
 ### Download
 
-Download the latest `JDER.jar` from the [Releases page](https://github.com/LoryPelli/JDER/releases/latest) or directly:
+Scarica l'ultimo `JDER.jar` dalla [pagina delle Release](https://github.com/LoryPelli/JDER/releases/latest) oppure direttamente:
 
 ```
 https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar
 ```
 
-Then run it with:
+Poi eseguilo con:
 
 ```bash
 java -jar JDER.jar
 ```
 
-### Build from source
+### Compilare dal sorgente
 
 ```bash
 git clone https://github.com/LoryPelli/JDER.git
@@ -157,45 +157,45 @@ cd JDER
 ./gradlew run
 ```
 
-To build a standalone JAR:
+Per creare un JAR standalone:
 
 ```bash
 ./gradlew jar
 ```
 
-The output will be in `build/libs/JDER.jar`.
+Il file di output si troverà in `build/libs/JDER.jar`.
 
 ---
 
-## Project Structure
+## Struttura del Progetto
 
 ```
 src/
 └── main/
     ├── kotlin/com/jder/
-    │   ├── Main.kt                    # App entry point
+    │   ├── Main.kt                    # Punto di ingresso dell'app
     │   ├── data/
-    │   │   ├── DiagramRepository.kt        # E/R JSON persistence
-    │   │   ├── UseCaseRepository.kt        # Use Case JSON persistence
-    │   │   ├── ClassDiagramRepository.kt   # Class Diagram JSON persistence
-    │   │   ├── ImageExporter.kt            # PNG export via Skia
-    │   │   └── JsonConfig.kt               # kotlinx.serialization config
+    │   │   ├── DiagramRepository.kt        # Persistenza JSON E/R
+    │   │   ├── UseCaseRepository.kt        # Persistenza JSON Use Case
+    │   │   ├── ClassDiagramRepository.kt   # Persistenza JSON Diagramma Classi
+    │   │   ├── ImageExporter.kt            # Esportazione PNG via Skia
+    │   │   └── JsonConfig.kt               # Configurazione kotlinx.serialization
     │   ├── domain/model/
-    │   │   ├── ERModels.kt                 # Entity, Relationship, Attribute, Note data classes
-    │   │   ├── UseCaseModels.kt            # Actor, UseCase, SystemBoundary data classes
-    │   │   ├── ClassDiagramModels.kt       # ClassEntity, ClassMember, ClassRelation data classes
-    │   │   ├── DiagramState.kt             # E/R state + undo/redo
-    │   │   ├── UseCaseState.kt             # Use Case state + undo/redo
-    │   │   ├── ClassDiagramState.kt        # Class Diagram state + undo/redo
-    │   │   ├── ToolMode.kt                 # E/R tool modes
-    │   │   ├── UseCaseToolMode.kt          # Use Case tool modes
-    │   │   └── ClassDiagramToolMode.kt     # Class Diagram tool modes
+    │   │   ├── ERModels.kt                 # Data class Entità, Relazione, Attributo, Nota
+    │   │   ├── UseCaseModels.kt            # Data class Attore, CasoDUso, ConfineDelSistema
+    │   │   ├── ClassDiagramModels.kt       # Data class ClassEntity, ClassMember, ClassRelation
+    │   │   ├── DiagramState.kt             # Stato E/R + annulla/ripeti
+    │   │   ├── UseCaseState.kt             # Stato Use Case + annulla/ripeti
+    │   │   ├── ClassDiagramState.kt        # Stato Diagramma Classi + annulla/ripeti
+    │   │   ├── ToolMode.kt                 # Modalità strumento E/R
+    │   │   ├── UseCaseToolMode.kt          # Modalità strumento Use Case
+    │   │   └── ClassDiagramToolMode.kt     # Modalità strumento Diagramma Classi
     │   └── ui/
-    │       ├── components/            # Reusable UI components
-    │       ├── dialogs/               # Property & creation dialogs
+    │       ├── components/            # Componenti UI riutilizzabili
+    │       ├── dialogs/               # Finestre di dialogo per proprietà e creazione
     │       ├── screens/               # AppScreen, MainScreen, UseCaseScreen, ClassDiagramScreen
-    │       ├── theme/                 # Theme, ColorPalettes, ThemeState
-    │       └── utils/                 # Diagram & PNG renderers
+    │       ├── theme/                 # Tema, Palette Colori, StatoTema
+    │       └── utils/                 # Renderer diagrammi e PNG
     └── resources/
         └── jder_icon.png
 ```
