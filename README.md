@@ -1,6 +1,6 @@
 # JDER
 
-**Java Diagrammi E/R** — A modern, cross-platform editor for Entity-Relationship and Use Case diagrams
+**Java Diagrammi E/R** — A modern, cross-platform editor for Entity-Relationship, Use Case, and Class diagrams
 
 [![Website](https://img.shields.io/badge/Website-jder.it-blue?style=for-the-badge)](https://jder.it/)
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
@@ -43,6 +43,20 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
   - Fully rendered arrow heads with correct directionality
 - Define **System Boundaries** to group use cases
 - Add **textual Notes** shared with the E/R note component
+
+#### Class Diagram
+
+- Create **Classes**, **Interfaces**, **Enums**, and **Abstract Classes** (with UML stereotype labels)
+- Add **Attributes** and **Methods** to each class with:
+  - Visibility modifiers: Public (`+`), Private (`-`), Protected (`#`), Package (`~`)
+  - Static and abstract member flags
+  - Type annotation for each member
+- Draw **Relations** between classes:
+  - Association, Aggregation, Composition, Inheritance, Realization, Dependency
+  - Source and target multiplicity labels on each relation
+  - Optional relation label
+- Add inline **documentation** to any class
+- Add **textual Notes** shared with the other diagram note component
 
 ---
 
@@ -94,14 +108,6 @@ JDER is a complete rewrite in **Kotlin** and **Jetpack Compose** of the original
 - Export any diagram as a **PNG image**
 - Unsaved changes dialog on close or when opening a new diagram
 - Global undo/redo history (up to 50 states)
-
----
-
-### 🔄 Auto-Update
-
-- Automatic update check on application startup
-- Manual update check via the **Aiuto** menu
-- Uses **build-date versioning** — always shows the current build date
 
 ---
 
@@ -169,21 +175,25 @@ src/
     ├── kotlin/com/jder/
     │   ├── Main.kt                    # App entry point
     │   ├── data/
-    │   │   ├── DiagramRepository.kt   # E/R JSON persistence
-    │   │   ├── UseCaseRepository.kt   # Use Case JSON persistence
-    │   │   ├── ImageExporter.kt       # PNG export via Skia
-    │   │   └── JsonConfig.kt          # kotlinx.serialization config
+    │   │   ├── DiagramRepository.kt        # E/R JSON persistence
+    │   │   ├── UseCaseRepository.kt        # Use Case JSON persistence
+    │   │   ├── ClassDiagramRepository.kt   # Class Diagram JSON persistence
+    │   │   ├── ImageExporter.kt            # PNG export via Skia
+    │   │   └── JsonConfig.kt               # kotlinx.serialization config
     │   ├── domain/model/
-    │   │   ├── ERModels.kt            # Entity, Relationship, Attribute, Note data classes
-    │   │   ├── UseCaseModels.kt       # Actor, UseCase, SystemBoundary data classes
-    │   │   ├── DiagramState.kt        # E/R state + undo/redo
-    │   │   ├── UseCaseState.kt        # Use Case state + undo/redo
-    │   │   ├── ToolMode.kt            # E/R tool modes
-    │   │   └── UseCaseToolMode.kt     # Use Case tool modes
+    │   │   ├── ERModels.kt                 # Entity, Relationship, Attribute, Note data classes
+    │   │   ├── UseCaseModels.kt            # Actor, UseCase, SystemBoundary data classes
+    │   │   ├── ClassDiagramModels.kt       # ClassEntity, ClassMember, ClassRelation data classes
+    │   │   ├── DiagramState.kt             # E/R state + undo/redo
+    │   │   ├── UseCaseState.kt             # Use Case state + undo/redo
+    │   │   ├── ClassDiagramState.kt        # Class Diagram state + undo/redo
+    │   │   ├── ToolMode.kt                 # E/R tool modes
+    │   │   ├── UseCaseToolMode.kt          # Use Case tool modes
+    │   │   └── ClassDiagramToolMode.kt     # Class Diagram tool modes
     │   └── ui/
     │       ├── components/            # Reusable UI components
     │       ├── dialogs/               # Property & creation dialogs
-    │       ├── screens/               # AppScreen, MainScreen, UseCaseScreen
+    │       ├── screens/               # AppScreen, MainScreen, UseCaseScreen, ClassDiagramScreen
     │       ├── theme/                 # Theme, ColorPalettes, ThemeState
     │       └── utils/                 # Diagram & PNG renderers
     └── resources/
