@@ -1,0 +1,1014 @@
+% ============================================================
+%  Guida Utente — JDER (Java Diagrammi E/R)
+%  Compilare con: pdflatex GuidaJDER.tex  (due passaggi)
+%  Dipendenze: geometry, hyperref, graphicx, booktabs,
+%              tcolorbox, fontenc, inputenc, babel,
+%              enumitem, xcolor, titlesec, parskip,
+%              microtype, fancyhdr, lastpage
+% ============================================================
+\documentclass[a4paper,11pt]{article}
+
+% --- Encoding & lingua ----------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+% --- Layout ---------------------------------------------------
+\usepackage[
+  top=2.5cm, bottom=2.8cm,
+  left=2.8cm, right=2.8cm,
+  headheight=14pt
+]{geometry}
+\usepackage{parskip}         % spazio tra paragrafi al posto del rientro
+\usepackage{microtype}       % micro-tipografia
+\usepackage{emptypage}       % pagine vuote realmente vuote
+
+% --- Colori ---------------------------------------------------
+\usepackage{xcolor}
+% Palette brand JDER (dal sito jder.it)
+\definecolor{jderorange}{RGB}{240,120,24}   % primario sito
+\definecolor{jderred}{RGB}{233,75,60}        % accento sito
+\definecolor{jderdarkblue}{RGB}{30,60,114}   % heading h2/h3 sito
+\definecolor{jderblue}{RGB}{42,82,152}       % link/badge sito
+\definecolor{jderdark}{RGB}{44,62,80}        % testo body sito
+\definecolor{jdergray}{RGB}{80,90,100}       % testo secondario
+\definecolor{coverbgA}{RGB}{15,32,39}        % inizio gradiente sfondo sito
+\definecolor{coverbgB}{RGB}{32,58,67}        % metà gradiente sito
+\definecolor{notebg}{RGB}{255,248,235}       % caldo-arancio chiaro
+\definecolor{warnbg}{RGB}{255,235,230}       % rosso chiaro
+\definecolor{tipbg}{RGB}{235,245,255}        % blu chiaro
+
+% --- Tipografia -----------------------------------------------
+\usepackage{lmodern}
+\usepackage{textcomp}
+
+% --- Grafica --------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+
+% --- Tabelle --------------------------------------------------
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+
+% --- Box colorati ---------------------------------------------
+\usepackage[most]{tcolorbox}
+
+\tcbset{
+  notebox/.style={
+    colback=notebg, colframe=jderorange,
+    coltitle=jderdarkblue,
+    fonttitle=\bfseries, left=6pt, right=6pt,
+    top=4pt, bottom=4pt, arc=4pt
+  },
+  warnbox/.style={
+    colback=warnbg, colframe=jderred
+    
+    ,
+    coltitle=jderred,
+    fonttitle=\bfseries, left=6pt, right=6pt,
+    top=4pt, bottom=4pt, arc=4pt
+  },
+  tipbox/.style={
+    colback=tipbg, colframe=jderblue,
+    coltitle=jderdarkblue,
+    fonttitle=\bfseries, left=6pt, right=6pt,
+    top=4pt, bottom=4pt, arc=4pt
+  },
+  shortcutbox/.style={
+    colback=gray!8, colframe=jderorange!40,
+    left=6pt, right=6pt, top=4pt, bottom=4pt, arc=4pt
+  }
+}
+
+% --- Elenchi puntati ------------------------------------------
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.6em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.6em, itemsep=2pt, topsep=4pt}
+
+% --- Titoli di sezione ----------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}
+  {\Large\bfseries\color{jderorange}}
+  {\thesection}{1em}{}[\vspace{-4pt}\textcolor{jderorange}{\rule{\linewidth}{1.5pt}}]
+\titleformat{\subsection}
+  {\large\bfseries\color{jderdarkblue}}
+  {\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{jderblue}}
+  {\thesubsubsection}{0.7em}{}
+
+% --- Intestazioni e piè di pagina -----------------------------
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{jderdarkblue}\textbf{JDER} --- Guida Utente}
+\fancyhead[R]{\small\color{jdergray}\leftmark}
+\fancyfoot[C]{\small\color{jdergray}Pagina \thepage\ di \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% --- Hyperlink ------------------------------------------------
+\usepackage[
+  colorlinks=true,
+  linkcolor=jderdarkblue,
+  urlcolor=jderorange,
+  pdfauthor={JDER Project},
+  pdftitle={Guida Utente JDER},
+  pdfsubject={Editor di Diagrammi UML e E/R}
+]{hyperref}
+
+% --- Comandi personalizzati -----------------------------------
+\newcommand{\key}[1]{\texttt{\textbf{#1}}}
+\newcommand{\menu}[1]{\textit{#1}}
+\newcommand{\uielement}[1]{\textbf{#1}}
+\newcommand{\jder}{\textbf{JDER}}
+\newcommand{\theauthor}{LoryPelli}
+
+% =============================================================
+\begin{document}
+
+
+    
+    % ===================== COPERTINA =============================
+\begin{titlepage}
+  \pagecolor{coverbgA}
+  \color{white}
+  \centering
+  \vspace*{2.5cm}
+
+  % Decorazione superiore
+  {\color{jderorange}\rule{4cm}{2pt}}\quad
+  {\color{white!50!coverbgA}\rule{2cm}{0.5pt}}\quad
+  {\color{jderred}\rule{4cm}{2pt}}
+
+  \vspace{1.2cm}
+
+  % Titolo principale in arancione brand
+  {\fontsize{60}{68}\selectfont\bfseries\color{jderorange} JDER}
+
+  \vspace{0.3cm}
+  {\large\color{white!80!coverbgA} Java Diagrammi E/R}
+
+  \vspace{0.8cm}
+  {\color{jderorange}\rule{9cm}{1pt}}
+
+  \vspace{0.8cm}
+  {\LARGE\bfseries Guida Utente Completa}
+
+  \vspace{0.5cm}
+  {\normalsize\color{white!70!coverbgA} a cura di \textbf{\color{jderorange}\theauthor}}
+
+  \vspace{2cm}
+  {\normalsize\color{white!85!coverbgA}
+    Editor moderno e multipiattaforma per\\
+    \textbf{Diagrammi Entità-Relazione},
+    \textbf{Diagrammi delle Classi}\\
+    e \textbf{Diagrammi dei Casi d'Uso}
+  }
+
+  \vspace{1.5cm}
+
+  % Badge tecnologie
+  \tcbox[on line, colback=coverbgB, colframe=jderorange,
+    arc=4pt, boxrule=0.8pt, left=4pt, right=4pt, top=3pt, bottom=3pt,
+    fontupper=\bfseries\color{white}]{Kotlin}\quad
+  \tcbox[on line, colback=coverbgB, colframe=jderorange,
+    arc=4pt, boxrule=0.8pt, left=4pt, right=4pt, top=3pt, bottom=3pt,
+    fontupper=\bfseries\color{white}]{Compose Multiplatform}\quad
+  \tcbox[on line, colback=coverbgB, colframe=jderorange,
+    arc=4pt, boxrule=0.8pt, left=4pt, right=4pt, top=3pt, bottom=3pt,
+    fontupper=\bfseries\color{white}]{Material 3}
+
+  \vfill
+  {\color{jderorange}\rule{9cm}{0.8pt}}\\[0.4cm]
+  {\small\color{white!70!coverbgA} Basato su Kotlin \& Jetpack Compose Multiplatform \quad\textbullet\quad Licenza MIT}\\[0.3cm]
+  {\small\color{jderorange} \url{https://jder.it}}
+\end{titlepage}
+\nopagecolor
+
+% ===================== INDICE ================================
+\tableofcontents
+\newpage
+
+% =============================================================
+\section{Introduzione}
+\label{sec:intro}
+
+\jder{} (\textit{Java Diagrammi E/R}) è un editor grafico open-source per la creazione di diagrammi
+di modellazione software e dati. L'applicazione è una riscrittura completa in \textbf{Kotlin}
+con \textbf{Jetpack Compose Multiplatform}, che sostituisce e migliora le versioni precedenti
+sviluppate da Alessandro Ballini e successivamente mantenute da Gianvito Pio.
+
+\subsection{Cosa si può fare con JDER}
+
+\jder{} supporta tre tipologie di diagramma distinte, ognuna accessibile tramite una scheda
+dedicata nell'interfaccia principale:
+
+\begin{itemize}
+  \item \textbf{Diagramma Entità-Relazione (E/R)} --- per modellare la struttura logica di una
+        base di dati secondo la notazione classica con entità, relazioni e attributi.
+  \item \textbf{Diagramma delle Classi UML} --- per descrivere la struttura statica di un sistema
+        orientato agli oggetti con classi, interfacce, enumerazioni e le loro relazioni.
+  \item \textbf{Diagramma dei Casi d'Uso UML} --- per rappresentare le interazioni tra attori
+        esterni e i casi d'uso di un sistema software.
+\end{itemize}
+
+\subsection{Requisiti di sistema}
+
+\begin{itemize}
+  \item Sistema operativo: Windows, macOS o Linux con Java 17 o superiore installato.
+  \item RAM consigliata: almeno 512\,MB liberi.
+  \item Risoluzione schermo: minima 800$\times$600 pixel (si consiglia Full HD o superiore).
+\end{itemize}
+
+\subsection{Avvio dell'applicazione}
+
+Scaricare il file \texttt{JDER.jar} dalla pagina delle release su GitHub
+(\url{https://github.com/LoryPelli/JDER/releases/latest}) oppure dal sito ufficiale
+(\url{https://jder.it}).
+
+Per avviare l'applicazione:
+\begin{enumerate}
+  \item Doppio clic sul file \texttt{JDER.jar} (se Java è associato all'estensione \texttt{.jar}).
+  \item Oppure, da terminale: \texttt{java -jar JDER.jar}
+\end{enumerate}
+
+\begin{tcolorbox}[warnbox, title={Attenzione}]
+  Se il doppio clic non avvia l'applicazione, verificare che Java 17 o superiore sia installato
+  e che la variabile di ambiente \texttt{JAVA\_HOME} sia configurata correttamente.
+\end{tcolorbox}
+
+% =============================================================
+\section{Interfaccia Principale}
+\label{sec:interfaccia}
+
+All'avvio, \jder{} mostra una finestra massimizzata con i seguenti componenti principali:
+
+\begin{enumerate}
+  \item \textbf{Barra delle schede} (in alto) --- permette di passare tra i tre tipi di diagramma.
+  \item \textbf{Barra degli strumenti} --- contiene i menu e i pulsanti di azione.
+  \item \textbf{Barra degli strumenti di disegno} --- sotto la barra principale, contiene gli
+        strumenti di creazione degli elementi.
+  \item \textbf{Lavagna (Canvas)} --- area centrale dove vengono disegnati i diagrammi.
+  \item \textbf{Pannello Proprietà} --- barra laterale destra che appare quando si seleziona un
+        elemento, mostrando e permettendo di modificare le sue proprietà.
+\end{enumerate}
+
+\subsection{Barra delle schede}
+
+La barra delle schede in cima all'interfaccia presenta tre schede:
+
+\begin{itemize}
+  \item \uielement{Diagramma E/R} --- Diagramma Entità-Relazione
+  \item \uielement{Diagramma Classi} --- Diagramma delle Classi
+  \item \uielement{Casi d'Uso} --- Diagramma dei Casi d'Uso
+\end{itemize}
+
+Ogni scheda mantiene il proprio stato indipendente: è possibile lavorare su un diagramma E/R e
+contemporaneamente tenere aperto un diagramma delle classi in un'altra scheda, passando da una
+all'altra senza perdere le modifiche non salvate.
+
+\begin{tcolorbox}[notebox, title={Nota}]
+  Alla chiusura dell'applicazione, se ci sono modifiche non salvate in \emph{qualsiasi} scheda,
+  \jder{} mostrerà una finestra di conferma prima di uscire.
+\end{tcolorbox}
+
+\subsection{Barra degli strumenti principale}
+
+La barra degli strumenti principale (TopAppBar) contiene, da sinistra a destra:
+
+\begin{itemize}
+  \item \textbf{Titolo} --- mostra il nome del file aperto e un asterisco (\texttt{*}) se ci sono
+        modifiche non salvate.
+  \item Menu \uielement{File} --- gestione di file (nuovo, apri, salva, salva con nome, elimina).
+  \item Menu \uielement{Vista} --- controlli di zoom (Zoom In, Zoom Out, Reimposta Zoom).
+  \item Menu \uielement{Esporta} --- esportazione del diagramma come immagine PNG.
+  \item \textbf{Selettore palette} --- un cerchio colorato che apre un selettore per scegliere
+        tra le 20 palette di colori Material disponibili.
+  \item \textbf{Interruttore tema} --- alterna tra modalità chiara e modalità scura.
+\end{itemize}
+
+\subsection{Barra degli strumenti di disegno}
+
+Sotto la barra principale si trova la barra degli strumenti di disegno, che varia in base alla
+scheda attiva (vedi sezioni successive). Contiene sempre:
+
+\begin{itemize}
+  \item Pulsante \uielement{Seleziona e Sposta} (freccia): modalità di selezione e spostamento.
+  \item Pulsanti \uielement{Annulla} e \uielement{Ripristina}.
+  \item Strumenti di creazione specifici per il tipo di diagramma.
+  \item Pulsante \uielement{Salva} rapido.
+  \item Pulsante \uielement{Elimina} (attivo solo con un elemento selezionato).
+  \item Indicatore e controlli di zoom (a destra).
+\end{itemize}
+
+\subsection{La lavagna}
+
+La lavagna è l'area principale di disegno. Supporta le seguenti interazioni:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+  \toprule
+  \textbf{Azione} & \textbf{Controllo} \\
+  \midrule
+  Zoom avanti & \key{Ctrl} + \key{+} oppure scroll del mouse verso l'alto \\
+  Zoom indietro & \key{Ctrl} + \key{-} oppure scroll del mouse verso il basso \\
+  Scorrimento (pan) & Trascinamento con il tasto centrale del mouse \\
+  Selezionare un elemento & Clic sinistro sull'elemento \\
+  Spostare un elemento & Clic sinistro + trascinamento (in modalità Seleziona) \\
+  Menu contestuale & Clic destro sull'elemento \\
+  Creare un elemento & Clic sinistro sull'area vuota (con strumento attivo) \\
+  Deselezionare / Annullare & \key{Esc} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[tipbox, title={Suggerimento}]
+  Lo zoom massimo è al \textbf{300\%} e il minimo al \textbf{25\%}. Per tornare allo zoom
+  predefinito (100\%) usare \menu{Vista} $\to$ \menu{Reimposta Zoom} oppure \key{Ctrl} + \key{0}.
+\end{tcolorbox}
+
+\subsection{Pannello Proprietà}
+
+Il Pannello Proprietà si apre automaticamente sul lato destro della lavagna quando si seleziona
+un elemento. Mostra le informazioni dell'elemento selezionato e permette di:
+
+\begin{itemize}
+  \item Modificare le proprietà principali (nome, tipo, documentazione, ecc.).
+  \item Aggiungere, modificare o eliminare attributi/membri dell'elemento.
+  \item Aggiungere o modificare connessioni (nel diagramma E/R).
+  \item Eseguire operazioni speciali (es.\@ conversione in entità associativa).
+\end{itemize}
+
+Il pannello si chiude tramite il pulsante \textbf{X} in alto a destra o deselezionando
+l'elemento.
+
+% =============================================================
+\section{Diagramma Entità-Relazione (E/R)}
+\label{sec:er}
+
+Il modulo E/R implementa la notazione classica dei diagrammi Entità-Relazione, ampiamente
+utilizzata nella progettazione concettuale di basi di dati.
+
+\subsection{Strumenti disponibili}
+
+La barra degli strumenti del diagramma E/R offre i seguenti strumenti di creazione:
+
+\begin{itemize}
+  \item \uielement{Seleziona e Sposta} (icona freccia) --- seleziona e sposta elementi.
+  \item \uielement{Crea Entità} (icona rettangolo) --- crea una nuova entità sulla lavagna.
+  \item \uielement{Crea Relazione} (icona rombo) --- crea una nuova relazione sulla lavagna.
+  \item \uielement{Crea Nota} (icona foglietto) --- crea una nota testuale.
+\end{itemize}
+
+\subsection{Entità}
+
+Un'entità rappresenta una categoria di oggetti del dominio applicativo. In \jder{} si distinguono
+due tipi di entità:
+
+\subsubsection{Entità forte}
+
+È il tipo predefinito. Viene rappresentata graficamente con un rettangolo con bordi arrotondati
+e il nome dell'entità al centro.
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Entità}.
+  \item Fare clic nell'area vuota della lavagna nel punto desiderato.
+\end{enumerate}
+
+\textbf{Proprietà modificabili} (tramite menu contestuale o pannello proprietà):
+\begin{itemize}
+  \item \textbf{Nome} --- il nome dell'entità.
+  \item \textbf{Tipo} --- Forte (predefinito) o Debole.
+  \item \textbf{Documentazione} --- testo libero di descrizione.
+\end{itemize}
+
+\subsubsection{Entità debole}
+
+Un'entità debole è un'entità la cui identificazione dipende da un'altra entità. Viene
+rappresentata con un doppio rettangolo (bordo interno ed esterno).
+
+Per creare un'entità debole, editare le proprietà di un'entità esistente e attivare l'opzione
+\uielement{Tipo: Debole} nella finestra di dialogo.
+
+\subsection{Relazioni}
+
+Una relazione rappresenta un legame semantico tra due o più entità. Viene rappresentata
+graficamente con un rombo con il nome al centro.
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Relazione}.
+  \item Fare clic nell'area vuota della lavagna.
+\end{enumerate}
+
+\textbf{Proprietà modificabili:}
+\begin{itemize}
+  \item \textbf{Nome} --- il nome della relazione.
+  \item \textbf{Documentazione} --- descrizione testuale.
+\end{itemize}
+
+\subsubsection{Aggiungere connessioni a una relazione}
+
+Dopo aver creato una relazione, occorre collegarla alle entità che partecipano. Per aggiungere
+una connessione:
+
+\begin{enumerate}
+  \item Selezionare la relazione sulla lavagna.
+  \item Nel pannello Proprietà, fare clic su \uielement{Aggiungi Connessione}, oppure usare il
+        menu contestuale (clic destro) $\to$ \uielement{Aggiungi Connessione}.
+  \item Nella finestra di dialogo, selezionare l'entità da collegare e la cardinalità.
+\end{enumerate}
+
+\subsubsection{Cardinalità supportate}
+
+\jder{} supporta le seguenti notazioni di cardinalità:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Valore} & \textbf{Simbolo} & \textbf{Significato} \\
+  \midrule
+  \texttt{1}      & \texttt{1}       & Esattamente uno \\
+  \texttt{(0,1)}  & \texttt{(0,1)}   & Zero o uno \\
+  \texttt{(1,1)}  & \texttt{(1,1)}   & Esattamente uno (con vincolo) \\
+  \texttt{N}      & \texttt{N}       & Molti (senza limite) \\
+  \texttt{(0,N)}  & \texttt{(0,N)}   & Zero o molti \\
+  \texttt{(1,N)}  & \texttt{(1,N)}   & Uno o molti \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Conversione in entità associativa}
+
+Quando una relazione coinvolge due entità con cardinalità N-a-N (entrambe N, (0,N) o (1,N)),
+è possibile convertirla automaticamente in un'\textbf{entità associativa}:
+
+\begin{enumerate}
+  \item Selezionare la relazione N-a-N.
+  \item Fare clic destro $\to$ \uielement{Converti in Entità Associativa}, oppure usare il
+        pannello proprietà.
+\end{enumerate}
+
+Il risultato è un'entità con lo stesso nome della relazione, collegata alle due entità originali
+con le cardinalità appropriate. Questa operazione è disponibile solo per relazioni con esattamente
+due connessioni entrambe di tipo ``molti''.
+
+\subsection{Attributi}
+
+Gli attributi descrivono le proprietà di un'entità o di una relazione. \jder{} supporta cinque
+tipi di attributo:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Tipo} & \textbf{Rappresentazione grafica} & \textbf{Descrizione} \\
+  \midrule
+  Normale    & Ellisse con bordo semplice & Attributo semplice \\
+  Chiave     & Ellisse con testo sottolineato & Identificatore primario \\
+  Multivalore & Ellisse con doppio bordo & Può avere più valori \\
+  Derivato   & Ellisse con bordo tratteggiato & Calcolato da altri attributi \\
+  Composto   & Ellisse + sotto-attributi collegati & Composto da più parti \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Aggiungere un attributo:}
+\begin{enumerate}
+  \item Selezionare un'entità o una relazione.
+  \item Nel pannello Proprietà, fare clic su \uielement{Aggiungi Attributo}, oppure usare il
+        menu contestuale $\to$ \uielement{Aggiungi Attributo}.
+  \item Compilare il dialogo:
+        \begin{itemize}
+          \item \textbf{Nome} --- obbligatorio.
+          \item \textbf{Chiave Primaria} --- attivare se l'attributo identifica l'entità.
+          \item \textbf{Tipo} --- scegliere tra Normale, Chiave, Multivalore, Derivato, Composto.
+          \item \textbf{Molteplicità} --- visibile solo per gli attributi Multivalore
+                (es.\@ \texttt{1..N}, \texttt{0..N}).
+          \item \textbf{Componenti} --- visibile solo per gli attributi Composti; è possibile
+                aggiungere sotto-attributi con il pulsante \uielement{+ Aggiungi Componente}.
+        \end{itemize}
+\end{enumerate}
+
+\begin{tcolorbox}[notebox, title={Nota}]
+  Selezionando il tipo \textbf{Chiave}, l'opzione ``Chiave Primaria'' viene attivata
+  automaticamente e non è modificabile manualmente.
+\end{tcolorbox}
+
+\subsection{Note testuali}
+
+Le note consentono di aggiungere annotazioni libere alla lavagna.
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Nota}.
+  \item Fare clic nella posizione desiderata.
+\end{enumerate}
+
+Il testo della nota si modifica tramite il menu contestuale (clic destro) oppure
+selezionando la nota e usando il pannello Proprietà.
+
+\subsection{Menu contestuale nel diagramma E/R}
+
+Il clic destro su un elemento della lavagna apre un menu contestuale con azioni rapide:
+
+\begin{itemize}
+  \item \textbf{Su un'entità:} Modifica Proprietà, Aggiungi Attributo, Elimina.
+  \item \textbf{Su una relazione:} Modifica Proprietà, Aggiungi Attributo, Aggiungi Connessione,
+        Converti in Entità Associativa (abilitato solo per relazioni N-a-N), Elimina.
+  \item \textbf{Su una nota:} Modifica Testo, Elimina.
+\end{itemize}
+
+% =============================================================
+\section{Diagramma delle Classi}
+\label{sec:class}
+
+Il modulo Diagramma delle Classi implementa la notazione UML per rappresentare la struttura
+statica di un sistema a oggetti.
+
+\subsection{Strumenti disponibili}
+
+\begin{itemize}
+  \item \uielement{Seleziona e Sposta} --- seleziona e sposta elementi.
+  \item \uielement{Crea Classe} (icona rettangolo) --- crea una nuova classe.
+  \item \uielement{Crea Interfaccia} (icona ellisse) --- crea una nuova interfaccia.
+  \item \uielement{Crea Enum} (icona rombo) --- crea una nuova enumerazione.
+  \item \uielement{Crea Relazione} (icona freccia) --- disegna una relazione tra due elementi.
+  \item \uielement{Crea Nota} (icona foglietto) --- crea una nota testuale.
+\end{itemize}
+
+\subsection{Elementi del diagramma delle classi}
+
+\subsubsection{Classe}
+
+La classe è il blocco fondamentale. Viene rappresentata con un rettangolo diviso in tre sezioni:
+nome (in alto), attributi (al centro) e metodi (in basso).
+
+\textbf{Tipi di classe supportati:}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Tipo} & \textbf{Stereotipo UML} & \textbf{Note} \\
+  \midrule
+  Classe          & (nessuno)         & Tipo predefinito \\
+  Interfaccia     & \texttt{<<interface>>}   & \\
+  Enumerazione    & \texttt{<<enum>>}        & \\
+  Classe Astratta & \texttt{<<abstract>>}    & Il nome è in corsivo \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento desiderato (\uielement{Crea Classe}, \uielement{Crea Interfaccia}
+        o \uielement{Crea Enum}).
+  \item Fare clic sull'area vuota della lavagna.
+\end{enumerate}
+
+\textbf{Proprietà della classe} (dialogo di modifica):
+\begin{itemize}
+  \item \textbf{Nome} --- obbligatorio.
+  \item \textbf{Tipo} --- Classe, Interfaccia, Enum, Classe Astratta (con selezione a radio).
+  \item \textbf{Astratta} --- disponibile solo per le classi; rende il nome in corsivo.
+  \item \textbf{Documentazione} --- campo di testo libero.
+\end{itemize}
+
+\subsubsection{Attributi e metodi di una classe}
+
+Ogni classe può avere un numero arbitrario di attributi e di metodi.
+
+\textbf{Aggiungere un attributo:}
+\begin{enumerate}
+  \item Selezionare la classe.
+  \item Nel pannello Proprietà, fare clic su \uielement{Aggiungi Attributo}.
+\end{enumerate}
+
+\textbf{Aggiungere un metodo:}
+\begin{enumerate}
+  \item Selezionare la classe.
+  \item Nel pannello Proprietà, fare clic su \uielement{Aggiungi Metodo}.
+\end{enumerate}
+
+\textbf{Campi del dialogo per attributi e metodi:}
+\begin{itemize}
+  \item \textbf{Nome} --- obbligatorio.
+  \item \textbf{Tipo} --- tipo dell'attributo o tipo di ritorno del metodo.
+  \item \textbf{Visibilità} --- Pubblico (\texttt{+}), Privato (\texttt{-}),
+        Protetto (\texttt{\#}), Package (\texttt{\textasciitilde}).
+  \item \textbf{Statico} --- se attivato, il nome viene sottolineato nella rappresentazione.
+  \item \textbf{Astratto} --- disponibile solo per i metodi; il nome viene reso in corsivo.
+\end{itemize}
+
+\subsection{Relazioni tra classi}
+
+\jder{} supporta i sei tipi di relazione UML standard:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Tipo} & \textbf{Notazione} & \textbf{Descrizione} \\
+  \midrule
+  Associazione  & Linea con freccia aperta & Dipendenza semantica generica \\
+  Aggregazione  & Linea con rombo vuoto    & Parte di (``ha un'') \\
+  Composizione  & Linea con rombo pieno    & Parte di (con dipendenza di vita) \\
+  Ereditarietà  & Linea con triangolo vuoto & Generalizzazione (``è un'') \\
+  Realizzazione & Linea tratteggiata con triangolo & Implementazione interfaccia \\
+  Dipendenza    & Linea tratteggiata con freccia & Dipendenza d'uso \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Creazione di una relazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Relazione}.
+  \item Fare clic sulla classe \textbf{sorgente}.
+  \item Fare clic sulla classe \textbf{destinazione}.
+  \item Nella finestra di dialogo, selezionare il tipo di relazione e compilare
+        i campi opzionali: etichetta, molteplicità sorgente e molteplicità destinazione.
+\end{enumerate}
+
+\textbf{Campi della relazione:}
+\begin{itemize}
+  \item \textbf{Tipo} --- uno dei sei tipi elencati.
+  \item \textbf{Etichetta} (opzionale) --- testo visibile sulla linea della relazione.
+  \item \textbf{Molteplicità sorgente} (opzionale) --- es.\@ \texttt{1}, \texttt{0..*}.
+  \item \textbf{Molteplicità destinazione} (opzionale) --- es.\@ \texttt{1..*}.
+\end{itemize}
+
+% =============================================================
+\section{Diagramma dei Casi d'Uso}
+\label{sec:usecase}
+
+Il modulo Casi d'Uso implementa la notazione UML per i diagrammi dei casi d'uso, utili per
+descrivere i requisiti funzionali di un sistema dal punto di vista degli attori esterni.
+
+\subsection{Strumenti disponibili}
+
+\begin{itemize}
+  \item \uielement{Seleziona e Sposta} --- seleziona e sposta elementi.
+  \item \uielement{Crea Attore} (icona omino) --- crea un attore.
+  \item \uielement{Crea Caso d'Uso} (icona ellisse) --- crea un caso d'uso.
+  \item \uielement{Crea Relazione} (icona freccia) --- disegna una relazione.
+  \item \uielement{Crea Nota} (icona foglietto) --- crea una nota testuale.
+  \item \uielement{Crea Sistema} (icona rettangolo vuoto) --- crea un confine di sistema.
+\end{itemize}
+
+\subsection{Attori}
+
+Un attore rappresenta un'entità esterna al sistema (utente, sistema esterno, timer, ecc.)
+che interagisce con esso. Viene rappresentato come un omino stilizzato (``stick figure'') con il
+nome sotto.
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Attore}.
+  \item Fare clic sull'area vuota.
+\end{enumerate}
+
+\textbf{Modifica:} clic sull'attore per selezionarlo, poi usare il menu contestuale
+o il pannello proprietà per cambiare il nome.
+
+\subsection{Casi d'Uso}
+
+Un caso d'uso rappresenta una funzionalità o un servizio offerto dal sistema. Viene rappresentato
+con un'ellisse contenente il nome.
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Caso d'Uso}.
+  \item Fare clic sull'area vuota.
+\end{enumerate}
+
+\textbf{Proprietà:}
+\begin{itemize}
+  \item \textbf{Nome} --- obbligatorio.
+  \item \textbf{Documentazione} --- descrizione testuale del caso d'uso.
+\end{itemize}
+
+\subsection{Relazioni tra elementi}
+
+\jder{} supporta quattro tipi di relazione per i diagrammi dei casi d'uso:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Tipo} & \textbf{Notazione} & \textbf{Utilizzo tipico} \\
+  \midrule
+  Associazione     & Linea semplice                  & Attore $\leftrightarrow$ Caso d'uso \\
+  Include          & Freccia tratteggiata \texttt{<<include>>} & Inclusione obbligatoria \\
+  Extend           & Freccia tratteggiata \texttt{<<extend>>}  & Estensione condizionale \\
+  Generalizzazione & Linea con triangolo vuoto        & Specializzazione \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Creazione di una relazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Relazione}.
+  \item Fare clic sull'elemento \textbf{sorgente}.
+  \item Fare clic sull'elemento \textbf{destinazione}.
+  \item Selezionare il tipo di relazione nella finestra di dialogo.
+\end{enumerate}
+
+\subsection{Confini di sistema}
+
+Il confine di sistema (\textit{System Boundary}) è un rettangolo che raggruppa visivamente i
+casi d'uso appartenenti allo stesso sistema, separandoli dagli attori esterni.
+
+\textbf{Creazione:}
+\begin{enumerate}
+  \item Selezionare lo strumento \uielement{Crea Sistema}.
+  \item Fare clic sull'area vuota.
+  \item Il rettangolo creato può essere ridimensionato trascinandone i bordi.
+\end{enumerate}
+
+\textbf{Proprietà:} nome del sistema (visualizzato in cima al rettangolo).
+
+% =============================================================
+\section{Operazioni Comuni}
+\label{sec:comuni}
+
+Questa sezione descrive le funzionalità condivise tra tutti e tre i tipi di diagramma.
+
+\subsection{Gestione dei file}
+
+\subsubsection{Nuovo diagramma}
+
+Per creare un nuovo diagramma vuoto:
+\begin{itemize}
+  \item Menu \menu{File} $\to$ \menu{Nuovo Diagramma}
+  \item Scorciatoia: \key{Ctrl} + \key{N}
+\end{itemize}
+
+Se esistono modifiche non salvate, \jder{} chiede conferma prima di procedere.
+
+\subsubsection{Aprire un diagramma}
+
+Per aprire un file di diagramma esistente:
+\begin{itemize}
+  \item Menu \menu{File} $\to$ \menu{Apri Diagramma\ldots}
+  \item Scorciatoia: \key{Ctrl} + \key{O}
+\end{itemize}
+
+Si aprirà il \textbf{Gestore File} integrato (vedi sezione~\ref{sec:filemanager}).
+
+\subsubsection{Salvare un diagramma}
+
+\textbf{Salva} (sovrascrive il file corrente):
+\begin{itemize}
+  \item Menu \menu{File} $\to$ \menu{Salva}
+  \item Pulsante \uielement{Salva} nella barra di disegno
+  \item Scorciatoia: \key{Ctrl} + \key{S}
+\end{itemize}
+
+\textbf{Salva con nome} (sceglie una nuova posizione o nome):
+\begin{itemize}
+  \item Menu \menu{File} $\to$ \menu{Salva con nome\ldots}
+\end{itemize}
+
+I diagrammi vengono salvati in formato \textbf{JSON}. Tutti i file utilizzano l'estensione \texttt{.json},
+indipendentemente dal tipo di diagramma.
+
+\begin{tcolorbox}[notebox, title={Nota}]
+  Il titolo nella barra degli strumenti mostra un asterisco (\texttt{*}) dopo il nome del file
+  per indicare la presenza di modifiche non salvate.
+\end{tcolorbox}
+
+\subsection{Il Gestore File}
+\label{sec:filemanager}
+
+\jder{} include un gestore file integrato che funziona sia in modalità \textbf{Apri} che in
+modalità \textbf{Salva con nome}. Le sue funzionalità sono:
+
+\begin{itemize}
+  \item \textbf{Navigazione delle directory:} fare clic sulle cartelle per entrarvi; usare il
+        pulsante Indietro per tornare alla directory superiore.
+  \item \textbf{Barra del percorso:} mostra e permette di modificare il percorso corrente.
+        Premere \key{Invio} per navigare a un percorso digitato manualmente.
+  \item \textbf{Filtro file:} attivare lo switch \uielement{Mostra solo file supportati} per
+        visualizzare solo i file con l'estensione corretta.
+  \item \textbf{Aggiornamento:} pulsante di aggiornamento per ricaricare il contenuto della
+        directory.
+  \item \textbf{Conferma sovrascrittura:} se si salva con il nome di un file esistente,
+        \jder{} chiede conferma prima di sovrascriverlo.
+\end{itemize}
+
+\subsection{Esportazione come PNG}
+
+È possibile esportare qualsiasi diagramma come immagine PNG ad alta qualità:
+
+\begin{enumerate}
+  \item Menu \menu{Esporta} $\to$ \menu{Esporta come PNG\ldots}
+  \item Scegliere la cartella di destinazione e il nome del file nel Gestore File.
+\end{enumerate}
+
+L'immagine esportata cattura l'intero contenuto della lavagna, inclusi tutti gli elementi
+(anche quelli non visibili nell'area di viewport corrente).
+
+\begin{tcolorbox}[tipbox, title={Suggerimento}]
+  Per ottenere un'immagine di dimensioni adeguate, assicurarsi che tutti gli elementi del
+  diagramma siano posizionati in modo ordinato prima di esportare.
+\end{tcolorbox}
+
+\subsection{Annulla e Ripristina}
+
+\jder{} mantiene una cronologia completa delle azioni per ogni diagramma, permettendo di
+annullare e ripristinare qualsiasi operazione:
+
+\begin{itemize}
+  \item \textbf{Annulla:} \key{Ctrl} + \key{Z} oppure pulsante \uielement{Annulla} (icona freccia sinistra) nella barra.
+  \item \textbf{Ripristina:} \key{Ctrl} + \key{Y} oppure pulsante \uielement{Ripristina} (icona freccia destra) nella barra.
+\end{itemize}
+
+I pulsanti sono disabilitati quando non ci sono azioni da annullare o ripristinare.
+
+\subsection{Eliminazione di elementi}
+
+Per eliminare un elemento selezionato:
+\begin{itemize}
+  \item Tasto \key{Delete} o \key{Backspace}.
+  \item Pulsante \uielement{Elimina} (icona cestino) nella barra degli strumenti.
+  \item Menu \menu{File} $\to$ \menu{Elimina Elemento Selezionato}.
+  \item Menu contestuale $\to$ \uielement{Elimina}.
+\end{itemize}
+
+\begin{tcolorbox}[warnbox, title={Attenzione}]
+  L'eliminazione è un'operazione reversibile tramite \textbf{Annulla} (\key{Ctrl} + \key{Z}).
+  Tuttavia, l'eliminazione di un'entità nel diagramma E/R elimina anche tutte le connessioni
+  che la coinvolgono nelle relazioni associate.
+\end{tcolorbox}
+
+\subsection{Zoom e navigazione}
+
+I controlli di zoom sono disponibili tramite diversi metodi:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Azione} & \textbf{Scorciatoia} & \textbf{Menu} \\
+  \midrule
+  Zoom In         & \key{Ctrl} + \key{+} & Vista $\to$ Zoom In \\
+  Zoom Out        & \key{Ctrl} + \key{-} & Vista $\to$ Zoom Out \\
+  Reimposta Zoom  & \key{Ctrl} + \key{0} & Vista $\to$ Reimposta Zoom \\
+  Scroll su/giù  & Rotella del mouse    & --- \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Lo zoom è visualizzato come percentuale nella barra degli strumenti (es.\@ \texttt{100\%}).
+I limiti sono: minimo \textbf{25\%}, massimo \textbf{300\%}.
+
+\subsection{Personalizzazione visiva}
+
+\subsubsection{Modalità chiara e scura}
+
+\jder{} supporta due modalità di visualizzazione:
+\begin{itemize}
+  \item \textbf{Modalità chiara} (Light Mode) --- sfondo bianco, testo scuro.
+  \item \textbf{Modalità scura} (Dark Mode) --- sfondo scuro, testo chiaro.
+\end{itemize}
+
+Per cambiare modalità, fare clic sul pulsante con l'icona sole/luna nella barra degli strumenti.
+La transizione è animata in modo fluido.
+
+\subsubsection{Palette di colori}
+
+\jder{} offre 20 palette di colori Material Design ufficiali selezionabili a runtime.
+Per cambiarla, fare clic sul \textbf{cerchio colorato} nella barra degli strumenti e selezionare
+la palette desiderata dal selettore a griglia.
+
+Le palette disponibili sono:
+\begin{itemize}
+  \item Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano,
+        Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione,
+        Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco \& Nero.
+\end{itemize}
+
+La palette selezionata determina il colore principale (primary) dell'intera interfaccia,
+inclusi pulsanti, indicatori e accenti.
+
+% =============================================================
+\section{Scorciatoie da Tastiera}
+\label{sec:shortcuts}
+
+La tabella seguente riassume tutte le scorciatoie da tastiera disponibili in \jder{}:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+  \toprule
+  \textbf{Scorciatoia} & \textbf{Azione} \\
+  \midrule
+  \key{Ctrl} + \key{N}           & Nuovo Diagramma \\
+  \key{Ctrl} + \key{O}           & Apri Diagramma \\
+  \key{Ctrl} + \key{S}           & Salva (sovrascrive il file corrente) \\
+  \key{Ctrl} + \key{Z}           & Annulla \\
+  \key{Ctrl} + \key{Y}           & Ripristina \\
+  \key{Ctrl} + \key{+}           & Zoom In \\
+  \key{Ctrl} + \key{-}           & Zoom Out \\
+  \key{Ctrl} + \key{0}           & Reimposta Zoom (100\%) \\
+  \key{Delete} / \key{Backspace} & Elimina elemento selezionato \\
+  \key{Esc}                      & Deseleziona / Passa alla modalità Seleziona \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[notebox, title={Nota}]
+  La scorciatoia \key{Ctrl} + \key{S} apre automaticamente la finestra ``Salva con nome''
+  se il diagramma non è ancora stato salvato su file.
+\end{tcolorbox}
+
+% =============================================================
+\section{Formato dei File}
+\label{sec:files}
+
+\jder{} salva i diagrammi in formato \textbf{JSON} (JavaScript Object Notation). I file sono
+leggibili e modificabili con qualsiasi editor di testo, sebbene la modifica manuale non sia
+consigliata.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Tipo di diagramma} & \textbf{Estensione} & \textbf{Contenuto principale} \\
+  \midrule
+  Entità-Relazione    & \texttt{.json} & entità, relazioni, attributi, note \\
+  Diagramma Classi    & \texttt{.json} & classi, relazioni, note \\
+  Casi d'Uso          & \texttt{.json} & attori, casi d'uso, relazioni, sistemi, note \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Tutti e tre i formati condividono la stessa estensione \texttt{.json} ma hanno strutture interne
+differenti (non sono intercambiabili). La serializzazione è gestita da \texttt{kotlinx.serialization};
+ogni oggetto è identificato da un UUID univoco generato automaticamente.
+
+% =============================================================
+\section{Risoluzione dei Problemi}
+\label{sec:troubleshooting}
+
+\begin{tcolorbox}[warnbox, title={L'applicazione non si avvia}]
+  \begin{itemize}
+    \item Verificare che Java 17 (o superiore) sia installato: \texttt{java -{}-version}.
+    \item Su Windows, provare ad avviare da terminale per leggere il messaggio di errore.
+    \item Assicurarsi che il file \texttt{JDER.jar} non sia bloccato (clic destro
+          $\to$ Proprietà $\to$ Sblocca su Windows).
+  \end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[warnbox, title={Il file salvato non si apre}]
+  \begin{itemize}
+    \item Assicurarsi di aprire il file nella scheda corretta (es.\@ un file di diagramma classi
+          deve essere aperto nella scheda \uielement{Classi}).
+    \item Il file potrebbe essere corrotto. Tentare di aprirlo in un editor di testo
+          per verificarne la struttura JSON.
+  \end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[warnbox, title={L'esportazione PNG è vuota o incompleta}]
+  \begin{itemize}
+    \item Verificare che il diagramma contenga elementi visibili sulla lavagna.
+    \item Provare a reimpostare lo zoom prima di esportare.
+  \end{itemize}
+\end{tcolorbox}
+
+% =============================================================
+\section{Crediti e Licenza}
+\label{sec:crediti}
+
+\jder{} è un progetto open-source rilasciato sotto licenza \textbf{MIT}.
+
+\subsection*{Autori e ringraziamenti}
+\begin{itemize}
+  \item \textbf{Versione attuale (Kotlin / Compose):} LoryPelli
+        (\url{https://github.com/LoryPelli/JDER})
+  \item \textbf{Versione precedente Java:} Gianvito Pio
+        (\url{https://gianvitopio.wordpress.com/jder})
+  \item \textbf{Versione originale:} Alessandro Ballini
+        (\url{https://ballini.it/Software/ProgER})
+\end{itemize}
+
+\subsection*{Tecnologie utilizzate}
+\begin{itemize}
+  \item \textbf{Kotlin} --- linguaggio di programmazione principale
+  \item \textbf{Jetpack Compose Multiplatform} --- framework UI dichiarativo
+  \item \textbf{Material 3} --- sistema di design dell'interfaccia
+  \item \textbf{kotlinx.serialization} --- serializzazione JSON
+\end{itemize}
+
+\subsection*{Risorse}
+\begin{itemize}
+  \item Sito web ufficiale: \url{https://jder.it}
+  \item Repository GitHub: \url{https://github.com/LoryPelli/JDER}
+  \item Segnalazione problemi: \url{https://github.com/LoryPelli/JDER/issues}
+  \item Download ultima versione: \url{https://github.com/LoryPelli/JDER/releases/latest}
+\end{itemize}
+
+\vfill
+\begin{center}
+  \textcolor{jderorange}{\rule{8cm}{1pt}}\\[4pt]
+  {\small \textit{Guida Utente \jder{} --- \theauthor}}
+\end{center}
+
+\end{document}

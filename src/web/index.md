@@ -13,7 +13,7 @@ url: https://jder.it/
 
 Nuova versione del software di [Alessandro Ballini](https://ballini.it/Software/ProgER), poi successivamente ripresa da [Gianvito Pio](https://gianvitopio.wordpress.com/jder), con una veste grafica più moderna e correzione di vari errori, riscritta completamente in Kotlin e Compose.
 
-[Scarica JDER](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar)
+[Scarica JDER](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) | [Guida Utente PDF](/guida.pdf)
 
 ## Tipi di Diagramma
 

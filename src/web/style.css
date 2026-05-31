@@ -302,6 +302,14 @@ a {
 a:hover {
   color: #e94b3c;
 }
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
 .download-button {
   display: inline-flex;
   align-items: center;
@@ -315,9 +323,50 @@ a:hover {
   text-decoration: none;
   transition: all 0.4s ease;
   box-shadow: 0 8px 25px rgba(240, 120, 24, 0.4);
-  margin-top: 1.5rem;
   position: relative;
   overflow: hidden;
+}
+.guide-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 1.5rem 3rem;
+  border-radius: 50px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 25px rgba(30, 60, 114, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+.guide-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+.guide-button:hover::before {
+  left: 100%;
+}
+.guide-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(30, 60, 114, 0.6);
+  color: white;
+}
+.guide-icon {
+  font-size: 1.6rem;
 }
 .download-button::before {
   content: "";
@@ -489,6 +538,10 @@ footer a:hover {
     padding: 1.2rem 2rem;
     font-size: 1.2rem;
   }
+  .guide-button {
+    padding: 1.2rem 2rem;
+    font-size: 1.2rem;
+  }
   .features {
     padding: 1.5rem;
   }
@@ -545,6 +598,10 @@ footer a:hover {
     font-size: 0.95rem;
   }
   .download-button {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+  }
+  .guide-button {
     padding: 1rem 1.5rem;
     font-size: 1.1rem;
   }

@@ -25,6 +25,11 @@ export default {
         if (!response.ok) {
             return Response.redirect(new URL('/', request.url).toString(), 302);
         }
+        if (url.pathname == '/guida.pdf') {
+            const newResponse = new Response(response.body, response);
+            newResponse.headers.set('Content-Disposition', 'inline; filename="guida.pdf"');
+            return newResponse;
+        }
         if (url.pathname == '/' || url.pathname == '/index.html') {
             const newResponse = new Response(response.body, response);
             newResponse.headers.set(
