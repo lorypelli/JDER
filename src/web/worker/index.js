@@ -30,6 +30,21 @@ export default {
             newResponse.headers.set('Content-Disposition', 'inline; filename="guida.pdf"');
             return newResponse;
         }
+        if (url.pathname == '/class.png') {
+            const newResponse = new Response(response.body, response);
+            newResponse.headers.set('Content-Disposition', 'inline; filename="class.png"');
+            return newResponse;
+        }
+        if (url.pathname == '/er.png') {
+            const newResponse = new Response(response.body, response);
+            newResponse.headers.set('Content-Disposition', 'inline; filename="er.png"');
+            return newResponse;
+        }
+        if (url.pathname == '/usecase.png') {
+            const newResponse = new Response(response.body, response);
+            newResponse.headers.set('Content-Disposition', 'inline; filename="usecase.png"');
+            return newResponse;
+        }
         if (url.pathname == '/' || url.pathname == '/index.html') {
             const newResponse = new Response(response.body, response);
             newResponse.headers.set(

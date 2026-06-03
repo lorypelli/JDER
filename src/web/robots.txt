@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+Allow: /guida.pdf
+Allow: /class.png
+Allow: /er.png
+Allow: /usecase.png
 Sitemap: https://jder.it/sitemap.xml
