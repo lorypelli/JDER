@@ -45,6 +45,16 @@ export default {
             newResponse.headers.set('Content-Disposition', 'inline; filename="usecase.png"');
             return newResponse;
         }
+        if (url.pathname == '/download') {
+            const url = 'https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar';
+            const res = await fetch(url);
+            if (!res.ok) {
+                return Response.redirect('https://github.com/LoryPelli/JDER/releases/latest', 302);
+            }
+            const newResponse = new Response(res.body, res);
+            newResponse.headers.set('Content-Disposition', 'attachment; filename="JDER.jar"');
+            return newResponse;
+        }
         if (url.pathname == '/' || url.pathname == '/index.html') {
             const newResponse = new Response(response.body, response);
             newResponse.headers.set(

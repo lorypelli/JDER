@@ -8,7 +8,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
 
-[🌐 Sito Web](https://jder.it/) • [⬇️ Download](https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
+[🌐 Sito Web](https://jder.it/) • [⬇️ Download](https://jder.it/download) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
 
 ---
 
@@ -140,7 +140,7 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 Scarica l'ultimo `JDER.jar` dalla [pagina delle Release](https://github.com/LoryPelli/JDER/releases/latest) oppure direttamente:
 
 ```
-https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar
+https://jder.it/download
 ```
 
 Poi eseguilo con:
