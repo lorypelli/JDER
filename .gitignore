@@ -32,3 +32,6 @@ compose-desktop.properties
 
 # Local files
 local.properties
+
+# Wrangler
+.wrangler/
