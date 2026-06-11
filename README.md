@@ -122,13 +122,13 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 | [Gradle](https://gradle.org/)                                                | Sistema di build           |
 | [Cloudflare Workers](https://workers.cloudflare.com/)                        | Hosting del sito web       |
 | [Skia](https://skia.org/)                                                    | Rendering/esportazione PNG |
-| Java 8                                                                       | Target JVM                 |
+| Java 11                                                                      | Target JVM                 |
 
 ---
 
 ## Requisiti
 
-- **Java 8** o versione superiore
+- **Java 11** o versione superiore
 - Windows, macOS (Intel o Apple Silicon), o Linux (x64 o ARM)
 
 ---
