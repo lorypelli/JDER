@@ -22,7 +22,7 @@ export default {
             }
         }
         const response = await env.ASSETS.fetch(request);
-        if (url.pathname == '/download') {
+        if (url.pathname == '/download/JDER.jar') {
             const ghUrl = 'https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar';
             const ghResponse = await fetch(ghUrl);
             if (!ghResponse.ok) {
