@@ -267,7 +267,11 @@ fun MainScreen(
             EntityPropertiesDialog(
                 entity = entity,
                 onDismiss = { showEntityDialog = false },
-                onSave = { state.updateEntity(entity.id) { it }; showEntityDialog = false }
+                onSave = { updated ->
+                    state.updateEntity(entity.id) { updated }
+                    showEntityDialog = false
+                    snackbarMessage = "Entità modificata"
+                }
             )
         }
     }
@@ -276,7 +280,11 @@ fun MainScreen(
             RelationshipPropertiesDialog(
                 relationship = rel,
                 onDismiss = { showRelationshipDialog = false },
-                onSave = { updated -> state.updateRelationship(rel.id) { updated }; showRelationshipDialog = false }
+                onSave = { updated ->
+                    state.updateRelationship(rel.id) { updated }
+                    showRelationshipDialog = false
+                    snackbarMessage = "Relazione modificata"
+                }
             )
         }
     }
