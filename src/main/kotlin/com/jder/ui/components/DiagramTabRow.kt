@@ -1,38 +1,38 @@
 package com.jder.ui.components
+
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+
 enum class DiagramMode {
-    ER,
-    CLASS_DIAGRAM,
-    USE_CASE
+  ER,
+  CLASS_DIAGRAM,
+  USE_CASE,
 }
+
 @Composable
 fun DiagramTabRow(
     currentMode: DiagramMode,
     onModeChange: (DiagramMode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    TabRow(
-        selectedTabIndex = currentMode.ordinal,
-        modifier = modifier
-    ) {
-        Tab(
-            selected = currentMode == DiagramMode.ER,
-            onClick = { onModeChange(DiagramMode.ER) },
-            text = { Text("Diagramma E/R") }
-        )
-        Tab(
-            selected = currentMode == DiagramMode.CLASS_DIAGRAM,
-            onClick = { onModeChange(DiagramMode.CLASS_DIAGRAM) },
-            text = { Text("Diagramma Classi") }
-        )
-        Tab(
-            selected = currentMode == DiagramMode.USE_CASE,
-            onClick = { onModeChange(DiagramMode.USE_CASE) },
-            text = { Text("Casi d'Uso") }
-        )
-    }
+  TabRow(selectedTabIndex = currentMode.ordinal, modifier = modifier) {
+    Tab(
+        selected = currentMode == DiagramMode.ER,
+        onClick = { onModeChange(DiagramMode.ER) },
+        text = { Text("Diagramma E/R") },
+    )
+    Tab(
+        selected = currentMode == DiagramMode.CLASS_DIAGRAM,
+        onClick = { onModeChange(DiagramMode.CLASS_DIAGRAM) },
+        text = { Text("Diagramma Classi") },
+    )
+    Tab(
+        selected = currentMode == DiagramMode.USE_CASE,
+        onClick = { onModeChange(DiagramMode.USE_CASE) },
+        text = { Text("Casi d'Uso") },
+    )
+  }
 }
