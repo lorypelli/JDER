@@ -1,4 +1,5 @@
 package com.jder.ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,60 +22,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jder.ui.theme.ColorPalette
 import com.jder.ui.theme.ColorPalettes
+
 @Composable
 fun PaletteSelector(
     selectedPalette: ColorPalette,
     onPaletteSelected: (ColorPalette) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(modifier = modifier) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
+  var expanded by remember { mutableStateOf(false) }
+  Box(modifier = modifier) {
+    Box(
+        modifier =
+            Modifier.size(32.dp)
                 .clip(CircleShape)
                 .background(selectedPalette.primaryColor)
                 .border(2.dp, MaterialTheme.colorScheme.outline, CircleShape)
                 .clickable { expanded = true }
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            val palettesPerRow = 5
-            val rows = ColorPalettes.allPalettes.chunked(palettesPerRow)
-            rows.forEach { rowPalettes ->
-                Row(
-                    modifier = Modifier.padding(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    rowPalettes.forEach { palette ->
-                        val isSelected = palette == selectedPalette
-                        Box(
-                            modifier = Modifier
-                                .size(if (isSelected) 36.dp else 32.dp)
-                                .then(
-                                    if (isSelected) {
-                                        Modifier
-                                            .border(3.dp, palette.primaryColor, CircleShape)
-                                            .padding(2.dp)
-                                    } else Modifier
-                                )
-                                .clip(CircleShape)
-                                .background(palette.primaryColor)
-                                .border(
-                                    width = if (isSelected) 2.dp else 1.dp,
-                                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.outline,
-                                    shape = CircleShape
-                                )
-                                .clickable {
-                                    onPaletteSelected(palette)
-                                    expanded = false
-                                }
+    )
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+      val palettesPerRow = 5
+      val rows = ColorPalettes.allPalettes.chunked(palettesPerRow)
+      rows.forEach { rowPalettes ->
+        Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+          rowPalettes.forEach { palette ->
+            val isSelected = palette == selectedPalette
+            Box(
+                modifier =
+                    Modifier.size(if (isSelected) 36.dp else 32.dp)
+                        .then(
+                            if (isSelected) {
+                              Modifier.border(3.dp, palette.primaryColor, CircleShape).padding(2.dp)
+                            } else Modifier
                         )
-                    }
-                }
-            }
+                        .clip(CircleShape)
+                        .background(palette.primaryColor)
+                        .border(
+                            width = if (isSelected) 2.dp else 1.dp,
+                            color =
+                                if (isSelected) Color.White else MaterialTheme.colorScheme.outline,
+                            shape = CircleShape,
+                        )
+                        .clickable {
+                          onPaletteSelected(palette)
+                          expanded = false
+                        }
+            )
+          }
         }
+      }
     }
+  }
 }
