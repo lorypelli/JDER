@@ -1,5 +1,7 @@
 package com.jder.domain.model
+
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class Entity(
     val id: String,
@@ -10,8 +12,9 @@ data class Entity(
     val height: Float = 70f,
     val attributes: List<Attribute> = emptyList(),
     val documentation: String = "",
-    val isWeak: Boolean = false
+    val isWeak: Boolean = false,
 )
+
 @Serializable
 data class Relationship(
     val id: String,
@@ -22,22 +25,21 @@ data class Relationship(
     val height: Float = 120f,
     val attributes: List<Attribute> = emptyList(),
     val connections: List<Connection> = emptyList(),
-    val documentation: String = ""
+    val documentation: String = "",
 )
-@Serializable
-data class Connection(
-    val entityId: String,
-    val cardinality: Cardinality
-)
+
+@Serializable data class Connection(val entityId: String, val cardinality: Cardinality)
+
 @Serializable
 enum class Cardinality(val display: String) {
-    ONE("1"),
-    ZERO_ONE("(0,1)"),
-    ONE_ONE("(1,1)"),
-    MANY("N"),
-    ZERO_MANY("(0,N)"),
-    ONE_MANY("(1,N)"),
+  ONE("1"),
+  ZERO_ONE("(0,1)"),
+  ONE_ONE("(1,1)"),
+  MANY("N"),
+  ZERO_MANY("(0,N)"),
+  ONE_MANY("(1,N)"),
 }
+
 @Serializable
 data class Attribute(
     val id: String,
@@ -47,16 +49,18 @@ data class Attribute(
     val y: Float = 0f,
     val isPrimaryKey: Boolean = false,
     val components: List<Attribute> = emptyList(),
-    val multiplicity: String = ""
+    val multiplicity: String = "",
 )
+
 @Serializable
 enum class AttributeType {
-    NORMAL,
-    KEY,
-    MULTIVALUED,
-    DERIVED,
-    COMPOSITE
+  NORMAL,
+  KEY,
+  MULTIVALUED,
+  DERIVED,
+  COMPOSITE,
 }
+
 @Serializable
 data class Note(
     val id: String,
@@ -64,13 +68,14 @@ data class Note(
     val x: Float,
     val y: Float,
     val width: Float = 240f,
-    val height: Float = 180f
+    val height: Float = 180f,
 )
+
 @Serializable
 data class ERDiagram(
     val name: String,
     val entities: List<Entity> = emptyList(),
     val relationships: List<Relationship> = emptyList(),
     val notes: List<Note> = emptyList(),
-    val documentation: String = ""
+    val documentation: String = "",
 )

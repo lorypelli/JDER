@@ -3,6 +3,7 @@ plugins {
     kotlin("jvm") version "1.9.20"
     id("org.jetbrains.compose") version "1.5.10"
     kotlin("plugin.serialization") version "1.9.20"
+    id("com.diffplug.spotless") version "8.6.0"
 }
 group = "com.jder"
 repositories {
@@ -41,7 +42,13 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+spotless {
+    kotlin {
+        ktfmt()
+    }
+}
 tasks.withType<KotlinCompile>().configureEach {
+    dependsOn("clean", "spotlessApply")
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += listOf("-Xjvm-default=all")

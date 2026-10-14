@@ -1,5 +1,7 @@
 package com.jder.domain.model
+
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class Actor(
     val id: String,
@@ -7,8 +9,9 @@ data class Actor(
     val x: Float,
     val y: Float,
     val width: Float = 50f,
-    val height: Float = 90f
+    val height: Float = 90f,
 )
+
 @Serializable
 data class UseCase(
     val id: String,
@@ -17,22 +20,25 @@ data class UseCase(
     val y: Float,
     val width: Float = 160f,
     val height: Float = 60f,
-    val documentation: String = ""
+    val documentation: String = "",
 )
+
 @Serializable
 enum class UseCaseRelationType(val display: String) {
-    ASSOCIATION("Associazione"),
-    INCLUDE("<<include>>"),
-    EXTEND("<<extend>>"),
-    GENERALIZATION("Generalizzazione")
+  ASSOCIATION("Associazione"),
+  INCLUDE("<<include>>"),
+  EXTEND("<<extend>>"),
+  GENERALIZATION("Generalizzazione"),
 }
+
 @Serializable
 data class UseCaseRelation(
     val id: String,
     val sourceId: String,
     val targetId: String,
-    val type: UseCaseRelationType
+    val type: UseCaseRelationType,
 )
+
 @Serializable
 data class SystemBoundary(
     val id: String,
@@ -40,8 +46,9 @@ data class SystemBoundary(
     val x: Float,
     val y: Float,
     val width: Float = 400f,
-    val height: Float = 300f
+    val height: Float = 300f,
 )
+
 @Serializable
 data class UseCaseDiagram(
     val name: String,
@@ -49,5 +56,5 @@ data class UseCaseDiagram(
     val useCases: List<UseCase> = emptyList(),
     val relations: List<UseCaseRelation> = emptyList(),
     val notes: List<Note> = emptyList(),
-    val systemBoundaries: List<SystemBoundary> = emptyList()
+    val systemBoundaries: List<SystemBoundary> = emptyList(),
 )
