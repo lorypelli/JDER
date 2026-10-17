@@ -182,12 +182,6 @@ cd JDER
 ./gradlew run
 ```
 
-Per eseguire i test:
-
-```bash
-./gradlew test
-```
-
 Per creare un JAR standalone:
 
 ```bash
@@ -202,7 +196,6 @@ Il file di output si troverà in `build/libs/JDER.jar`.
 
 ```
 src/
-├── test/kotlin/com/jder/            # Test (simulazione logica, file, gesti sulla lavagna)
 └── main/
     ├── kotlin/com/jder/
     │   ├── Main.kt                    # Punto di ingresso dell'app
