@@ -39,8 +39,8 @@ compose.desktop {
     }
 }
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 spotless {
     kotlin {
@@ -50,7 +50,7 @@ spotless {
 tasks.withType<KotlinCompile>().configureEach {
     dependsOn("clean", "spotlessApply")
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
         freeCompilerArgs += listOf("-Xjvm-default=all")
     }
 }
