@@ -170,6 +170,8 @@ Poi eseguilo con:
 java -jar JDER.jar
 ```
 
+All'avvio JDER controlla l'ultima release su GitHub: se il `JDER.jar` pubblicato è un file diverso da quello in uso (anche se ha lo stesso nome), propone di scaricare l'aggiornamento.
+
 ### Diagrammi di esempio
 
 La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, classi, casi d'uso e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito sono generati da questi file.
@@ -206,7 +208,8 @@ src/
     │   │   ├── ClassDiagramRepository.kt   # Persistenza JSON Diagramma Classi
     │   │   ├── LogicDiagramRepository.kt   # Persistenza JSON Diagramma Logico
     │   │   ├── ImageExporter.kt            # Esportazione PNG via Skia
-    │   │   └── JsonConfig.kt               # Configurazione kotlinx.serialization
+    │   │   ├── JsonConfig.kt               # Configurazione kotlinx.serialization
+    │   │   └── UpdateChecker.kt            # Controllo aggiornamenti dalla release GitHub
     │   ├── domain/model/
     │   │   ├── DiagramEditorState.kt       # Stato comune: file, modifiche, annulla/ripeti, zoom
     │   │   ├── UndoHistory.kt              # Cronologia annulla/ripeti

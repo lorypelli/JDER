@@ -215,13 +215,10 @@ class LogicDiagramState :
   }
 
   private fun hasSameLogic(previous: List<LogicComponent>, current: List<LogicComponent>) =
-      previous.size == current.size &&
-          previous.zip(current).all { (a, b) ->
-            a.id == b.id &&
-                a.type == b.type &&
-                a.inputPinCount == b.inputPinCount &&
-                a.value == b.value
-          }
+      previous.size == current.size && previous.zip(current, ::sameLogic).all { it }
+
+  private fun sameLogic(a: LogicComponent, b: LogicComponent) =
+      a.id == b.id && a.type == b.type && a.inputPinCount == b.inputPinCount && a.value == b.value
 
   private fun LogicDiagram.withValidWires(): LogicDiagram {
     val byId = components.associateBy { it.id }

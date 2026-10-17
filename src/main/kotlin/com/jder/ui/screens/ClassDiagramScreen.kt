@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.geometry.Offset
 import com.jder.data.ClassDiagramRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassDiagramToolMode
@@ -18,8 +17,10 @@ import com.jder.ui.components.ClassDiagramCanvas
 import com.jder.ui.components.ClassDiagramContextMenuType
 import com.jder.ui.components.ClassDiagramPropertiesPanel
 import com.jder.ui.components.ContextMenuItem
+import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.components.DiagramContextMenu
+import com.jder.ui.components.PendingRelation
 import com.jder.ui.components.ToolbarToggleButton
 import com.jder.ui.components.contextMenuType
 import com.jder.ui.components.rememberSnackbarMessenger
@@ -43,8 +44,10 @@ fun ClassDiagramScreen(
   var showNoteDialog by remember { mutableStateOf(false) }
   var showAddAttributeDialog by remember { mutableStateOf(false) }
   var showAddMethodDialog by remember { mutableStateOf(false) }
-  var pendingRelation by remember { mutableStateOf<Pair<String, String>?>(null) }
-  var contextMenu by remember { mutableStateOf<Pair<Offset, ClassDiagramContextMenuType>?>(null) }
+  var pendingRelation by remember { mutableStateOf<PendingRelation?>(null) }
+  var contextMenu by remember {
+    mutableStateOf<ContextMenuRequest<ClassDiagramContextMenuType>?>(null)
+  }
   fun openEditor(type: ClassDiagramContextMenuType) {
     when (type) {
       ClassDiagramContextMenuType.CLASS -> showClassDialog = true
@@ -118,15 +121,19 @@ fun ClassDiagramScreen(
   ) {
     ClassDiagramCanvas(
         state = state,
-        onContextMenuRequest = { position, type -> contextMenu = position to type },
-        onRelationCreateRequest = { sourceId, targetId -> pendingRelation = sourceId to targetId },
+        onContextMenuRequest = { position, type ->
+          contextMenu = ContextMenuRequest(position, type)
+        },
+        onRelationCreateRequest = { sourceId, targetId ->
+          pendingRelation = PendingRelation(sourceId, targetId)
+        },
         onEditRequest = { openEditor(it.contextMenuType) },
     )
-    contextMenu?.let { (position, type) ->
+    contextMenu?.let { menu ->
       DiagramContextMenu(
-          position = position,
+          position = menu.position,
           title =
-              when (type) {
+              when (menu.type) {
                 ClassDiagramContextMenuType.CLASS -> "Azioni Classe"
                 ClassDiagramContextMenuType.RELATION -> "Azioni Relazione"
                 ClassDiagramContextMenuType.NOTE -> "Azioni Nota"
@@ -134,14 +141,14 @@ fun ClassDiagramScreen(
           items =
               listOf(
                   ContextMenuItem(
-                      when (type) {
+                      when (menu.type) {
                         ClassDiagramContextMenuType.CLASS -> "Modifica Proprietà"
                         ClassDiagramContextMenuType.RELATION -> "Modifica Relazione"
                         ClassDiagramContextMenuType.NOTE -> "Modifica Testo"
                       },
                       Icons.Default.Edit,
                   ) {
-                    openEditor(type)
+                    openEditor(menu.type)
                   },
                   ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
                     state.deleteSelection()?.let(messenger::show)
@@ -239,11 +246,11 @@ fun ClassDiagramScreen(
       )
     }
   }
-  pendingRelation?.let { (sourceId, targetId) ->
+  pendingRelation?.let { relation ->
     SelectClassRelationTypeDialog(
         onDismiss = { pendingRelation = null },
         onConfirm = { type ->
-          state.addRelation(sourceId, targetId, type)
+          state.addRelation(relation.sourceId, relation.targetId, type)
           messenger.show("Relazione creata")
           pendingRelation = null
         },

@@ -3,6 +3,7 @@ package com.jder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,11 +16,13 @@ import androidx.compose.ui.window.rememberWindowState
 import com.jder.data.ClassDiagramRepository
 import com.jder.data.DiagramRepository
 import com.jder.data.LogicDiagramRepository
+import com.jder.data.UpdateChecker
 import com.jder.data.UseCaseRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramState
 import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.UseCaseState
+import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
@@ -38,6 +41,8 @@ fun main() = application {
   val logicRepository = remember { LogicDiagramRepository() }
   var showExitDialog by remember { mutableStateOf(false) }
   var shouldExit by remember { mutableStateOf(false) }
+  var updateUrl by remember { mutableStateOf<String?>(null) }
+  LaunchedEffect(Unit) { updateUrl = UpdateChecker.findUpdate() }
   if (shouldExit) {
     exitApplication()
   }
@@ -71,6 +76,7 @@ fun main() = application {
           logicRepository = logicRepository,
           themeState = themeState,
       )
+      updateUrl?.let { UpdateAvailableDialog(downloadUrl = it, onDismiss = { updateUrl = null }) }
       if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false },

@@ -22,6 +22,7 @@ import com.jder.domain.model.LogicComponentType
 import com.jder.domain.model.LogicDiagram
 import com.jder.domain.model.LogicEndpoint
 import com.jder.domain.model.LogicSimulation
+import com.jder.domain.model.LogicWire
 
 private const val BUBBLE_RADIUS = 5f
 private const val PIN_DOT_RADIUS = 3f
@@ -51,10 +52,10 @@ internal fun DrawScope.drawLogicDiagram(
 ) {
   val componentsById = diagram.components.associateBy { it.id }
   val routesById = logicWireRoutes(diagram)
-  val routes = diagram.wires.mapNotNull { wire -> routesById[wire.id]?.let { wire to it } }
-  routes.forEach { (wire, points) ->
-    val value = simulation.outputOf(wire.sourceId)
-    val isSelected = wire.id == selectedId
+  val routes = diagram.wires.mapNotNull { wire -> routesById[wire.id]?.let { WireRoute(wire, it) } }
+  routes.forEach { route ->
+    val value = simulation.outputOf(route.wire.sourceId)
+    val isSelected = route.wire.id == selectedId
     val color =
         when {
           isSelected -> palette.selected
@@ -64,15 +65,16 @@ internal fun DrawScope.drawLogicDiagram(
     val width =
         when {
           isSelected -> 3f
-          wire.id == hoveredId -> 2.75f
+          route.wire.id == hoveredId -> 2.75f
           else -> 2f
         }
-    drawWirePath(points, color, width, dashed = showSignals && value == null && !isSelected)
+    drawWirePath(route.points, color, width, dashed = showSignals && value == null && !isSelected)
   }
-  logicJunctions(routes.map { (wire, points) -> wire.sourceId to points }).forEach { (net, point) ->
+  logicJunctions(routes.groupBy({ it.wire.sourceId }, { it.points })).forEach { junction ->
     val color =
-        if (showSignals) palette.signalColor(simulation.outputOf(net)) else palette.neutralWire()
-    drawCircle(color = color, radius = 3.5f, center = point)
+        if (showSignals) palette.signalColor(simulation.outputOf(junction.net))
+        else palette.neutralWire()
+    drawCircle(color = color, radius = 3.5f, center = junction.point)
   }
   diagram.components.forEach {
     drawLogicComponent(
@@ -514,3 +516,5 @@ private fun gateBodyPath(
     }
   }
 }
+
+private class WireRoute(val wire: LogicWire, val points: List<Offset>)

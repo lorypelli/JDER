@@ -7,7 +7,9 @@ export default {
             (url.pathname == '/' || url.pathname == '/index.html')
         ) {
             const mdUrl = new URL('/index.md', request.url);
-            const mdResponse = await env.ASSETS.fetch(new Request(mdUrl.toString()));
+            const mdResponse = await env.ASSETS.fetch(
+                new Request(mdUrl.toString()),
+            );
             if (mdResponse.ok) {
                 const text = await mdResponse.text();
                 const tokenCount = Math.ceil(text.length / 4);
@@ -16,17 +18,21 @@ export default {
                     headers: {
                         'Content-Type': 'text/markdown; charset=utf-8',
                         'X-Markdown-Tokens': tokenCount.toString(),
-                        'Vary': 'Accept',
+                        Vary: 'Accept',
                     },
                 });
             }
         }
         const response = await env.ASSETS.fetch(request);
         if (url.pathname == '/download/JDER.jar') {
-            const ghUrl = 'https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar';
+            const ghUrl =
+                'https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar';
             const ghResponse = await fetch(ghUrl);
             if (!ghResponse.ok) {
-                return Response.redirect('https://github.com/LoryPelli/JDER/releases/latest', 302);
+                return Response.redirect(
+                    'https://github.com/LoryPelli/JDER/releases/latest',
+                    302,
+                );
             }
             return new Response(ghResponse.body, {
                 status: ghResponse.status,

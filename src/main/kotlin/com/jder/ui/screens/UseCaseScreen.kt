@@ -11,13 +11,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.geometry.Offset
 import com.jder.data.UseCaseRepository
 import com.jder.domain.model.UseCaseState
 import com.jder.domain.model.UseCaseToolMode
 import com.jder.ui.components.ContextMenuItem
+import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.components.DiagramContextMenu
+import com.jder.ui.components.PendingRelation
 import com.jder.ui.components.ToolbarToggleButton
 import com.jder.ui.components.UseCaseContextMenuType
 import com.jder.ui.components.UseCaseDiagramCanvas
@@ -41,8 +42,8 @@ fun UseCaseScreen(state: UseCaseState, repository: UseCaseRepository, themeState
   var showRelationDialog by remember { mutableStateOf(false) }
   var showNoteDialog by remember { mutableStateOf(false) }
   var showSystemBoundaryDialog by remember { mutableStateOf(false) }
-  var pendingRelation by remember { mutableStateOf<Pair<String, String>?>(null) }
-  var contextMenu by remember { mutableStateOf<Pair<Offset, UseCaseContextMenuType>?>(null) }
+  var pendingRelation by remember { mutableStateOf<PendingRelation?>(null) }
+  var contextMenu by remember { mutableStateOf<ContextMenuRequest<UseCaseContextMenuType>?>(null) }
   fun openEditor(type: UseCaseContextMenuType) {
     when (type) {
       UseCaseContextMenuType.ACTOR -> showActorDialog = true
@@ -112,15 +113,19 @@ fun UseCaseScreen(state: UseCaseState, repository: UseCaseRepository, themeState
   ) {
     UseCaseDiagramCanvas(
         state = state,
-        onContextMenuRequest = { position, type -> contextMenu = position to type },
-        onRelationCreateRequest = { sourceId, targetId -> pendingRelation = sourceId to targetId },
+        onContextMenuRequest = { position, type ->
+          contextMenu = ContextMenuRequest(position, type)
+        },
+        onRelationCreateRequest = { sourceId, targetId ->
+          pendingRelation = PendingRelation(sourceId, targetId)
+        },
         onEditRequest = { openEditor(it.contextMenuType) },
     )
-    contextMenu?.let { (position, type) ->
+    contextMenu?.let { menu ->
       DiagramContextMenu(
-          position = position,
+          position = menu.position,
           title =
-              when (type) {
+              when (menu.type) {
                 UseCaseContextMenuType.ACTOR -> "Azioni Attore"
                 UseCaseContextMenuType.USE_CASE -> "Azioni Caso d'Uso"
                 UseCaseContextMenuType.RELATION -> "Azioni Relazione"
@@ -130,7 +135,7 @@ fun UseCaseScreen(state: UseCaseState, repository: UseCaseRepository, themeState
           items =
               listOf(
                   ContextMenuItem(
-                      when (type) {
+                      when (menu.type) {
                         UseCaseContextMenuType.ACTOR -> "Modifica Nome"
                         UseCaseContextMenuType.RELATION -> "Modifica Tipo"
                         UseCaseContextMenuType.NOTE -> "Modifica Testo"
@@ -138,7 +143,7 @@ fun UseCaseScreen(state: UseCaseState, repository: UseCaseRepository, themeState
                       },
                       Icons.Default.Edit,
                   ) {
-                    openEditor(type)
+                    openEditor(menu.type)
                   },
                   ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
                     state.deleteSelection()?.let(messenger::show)
@@ -228,11 +233,11 @@ fun UseCaseScreen(state: UseCaseState, repository: UseCaseRepository, themeState
           )
         }
   }
-  pendingRelation?.let { (sourceId, targetId) ->
+  pendingRelation?.let { relation ->
     SelectRelationTypeDialog(
         onDismiss = { pendingRelation = null },
         onConfirm = { type ->
-          state.addRelation(sourceId, targetId, type)
+          state.addRelation(relation.sourceId, relation.targetId, type)
           messenger.show("Relazione creata")
           pendingRelation = null
         },

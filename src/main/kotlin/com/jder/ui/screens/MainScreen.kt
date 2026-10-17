@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.geometry.Offset
 import com.jder.data.DiagramRepository
 import com.jder.domain.model.Attribute
 import com.jder.domain.model.Connection
@@ -19,6 +18,7 @@ import com.jder.domain.model.DiagramState
 import com.jder.domain.model.ToolMode
 import com.jder.domain.model.isManyToMany
 import com.jder.ui.components.ContextMenuItem
+import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.ContextMenuType
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.components.DiagramContextMenu
@@ -46,8 +46,8 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
   var showAddAttributeDialog by remember { mutableStateOf(false) }
   var attributeToEdit by remember { mutableStateOf<Attribute?>(null) }
   var showCreateConnectionDialog by remember { mutableStateOf(false) }
-  var connectionToEdit by remember { mutableStateOf<Pair<String, Connection>?>(null) }
-  var contextMenu by remember { mutableStateOf<Pair<Offset, ContextMenuType>?>(null) }
+  var connectionToEdit by remember { mutableStateOf<ConnectionEdit?>(null) }
+  var contextMenu by remember { mutableStateOf<ContextMenuRequest<ContextMenuType>?>(null) }
   fun openEditor(type: ContextMenuType) {
     when (type) {
       ContextMenuType.ENTITY -> showEntityDialog = true
@@ -105,7 +105,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
               messenger.show("Attributo eliminato")
             },
             onEditConnection = { entityId, connection ->
-              connectionToEdit = entityId to connection
+              connectionToEdit = ConnectionEdit(entityId, connection)
             },
             onDeleteConnection = { entityId ->
               state.selectedRelationshipId?.let {
@@ -120,7 +120,9 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
   ) {
     ERDiagramCanvas(
         state = state,
-        onContextMenuRequest = { position, type -> contextMenu = position to type },
+        onContextMenuRequest = { position, type ->
+          contextMenu = ContextMenuRequest(position, type)
+        },
         onEditRequest = { element ->
           if (element is ERElement.AttributeElement) {
             val attributes =
@@ -141,15 +143,15 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
           }
         },
     )
-    contextMenu?.let { (position, type) ->
+    contextMenu?.let { menu ->
       val isManyToMany =
           state.diagram.relationships
               .find { it.id == state.selectedRelationshipId }
               ?.isManyToMany() == true
       DiagramContextMenu(
-          position = position,
+          position = menu.position,
           title =
-              when (type) {
+              when (menu.type) {
                 ContextMenuType.ENTITY -> "Azioni Entità"
                 ContextMenuType.RELATIONSHIP -> "Azioni Relazione"
                 ContextMenuType.NOTE -> "Azioni Nota"
@@ -158,21 +160,21 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
               buildList {
                 add(
                     ContextMenuItem(
-                        if (type == ContextMenuType.NOTE) "Modifica Testo"
+                        if (menu.type == ContextMenuType.NOTE) "Modifica Testo"
                         else "Modifica Proprietà",
                         Icons.Default.Edit,
                     ) {
-                      openEditor(type)
+                      openEditor(menu.type)
                     }
                 )
-                if (type != ContextMenuType.NOTE) {
+                if (menu.type != ContextMenuType.NOTE) {
                   add(
                       ContextMenuItem("Aggiungi Attributo", Icons.Default.Add) {
                         showAddAttributeDialog = true
                       }
                   )
                 }
-                if (type == ContextMenuType.RELATIONSHIP) {
+                if (menu.type == ContextMenuType.RELATIONSHIP) {
                   add(
                       ContextMenuItem("Aggiungi Connessione", Icons.Default.Link) {
                         showCreateConnectionDialog = true
@@ -286,22 +288,22 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
       )
     }
   }
-  connectionToEdit?.let { (entityId, connection) ->
+  connectionToEdit?.let { edit ->
     state.selectedRelationshipId?.let { relId ->
       val connectedIds =
           state.diagram.relationships
               .find { it.id == relId }
               ?.connections
               ?.map { it.entityId }
-              ?.filter { it != entityId }
+              ?.filter { it != edit.entityId }
               ?.toSet() ?: emptySet()
       EditConnectionDialog(
           entities = state.diagram.entities.filter { it.id !in connectedIds },
-          currentEntityId = entityId,
-          currentCardinality = connection.cardinality,
+          currentEntityId = edit.entityId,
+          currentCardinality = edit.connection.cardinality,
           onDismiss = { connectionToEdit = null },
           onSave = { newEntityId, newCardinality ->
-            state.updateConnection(relId, entityId, newEntityId, newCardinality)
+            state.updateConnection(relId, edit.entityId, newEntityId, newCardinality)
             connectionToEdit = null
             messenger.show("Connessione modificata")
           },
@@ -309,3 +311,5 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
     }
   }
 }
+
+private class ConnectionEdit(val entityId: String, val connection: Connection)

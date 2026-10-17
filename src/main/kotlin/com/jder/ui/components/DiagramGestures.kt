@@ -1,6 +1,5 @@
 package com.jder.ui.components
 
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
@@ -38,7 +37,6 @@ internal interface DiagramPointerHandler {
   fun onHover(position: Offset?) {}
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 internal fun Modifier.diagramPointerInput(
     state: DiagramEditorState<*>,
     handler: DiagramPointerHandler,
@@ -131,7 +129,6 @@ internal fun Modifier.diagramPointerInput(
           }
         }
 
-@OptIn(ExperimentalComposeUiApi::class)
 private suspend fun AwaitPointerEventScope.trackPan(
     state: DiagramEditorState<*>,
     pointerId: PointerId,

@@ -101,9 +101,9 @@ internal fun hitTestLogic(diagram: LogicDiagram, point: Offset): LogicElement? {
   val routes = logicWireRoutes(diagram)
   diagram.wires
       .lastOrNull { wire ->
-        routes[wire.id]?.zipWithNext()?.any { (start, end) ->
-          distanceToSegment(point, start, end) <= WIRE_HIT_DISTANCE
-        } == true
+        routes[wire.id]
+            ?.zipWithNext { start, end -> distanceToSegment(point, start, end) }
+            ?.any { it <= WIRE_HIT_DISTANCE } == true
       }
       ?.let {
         return LogicElement.WireRef(it.id)
@@ -119,18 +119,20 @@ internal fun LogicElement?.toEndpoint(): LogicEndpoint? =
       else -> null
     }
 
+internal class ResolvedWire(val sourceId: String, val targetId: String, val targetPin: Int)
+
 internal fun resolveLogicWire(
     diagram: LogicDiagram,
     first: LogicEndpoint,
     second: LogicEndpoint,
     point: Offset,
-): Triple<String, String, Int>? {
+): ResolvedWire? {
   if (first.componentId == second.componentId) return null
   val componentsById = diagram.components.associateBy { it.id }
   fun orient(
       sourceEndpoint: LogicEndpoint,
       targetEndpoint: LogicEndpoint,
-  ): Triple<String, String, Int>? {
+  ): ResolvedWire? {
     val source = componentsById[sourceEndpoint.componentId] ?: return null
     val target = componentsById[targetEndpoint.componentId] ?: return null
     if (!source.type.hasOutput || sourceEndpoint.pin is LogicPin.Input) return null
@@ -146,7 +148,7 @@ internal fun resolveLogicWire(
                       .ifEmpty { (0 until target.inputPinCount).toList() }
               candidates.minByOrNull { abs(target.inputPinPosition(it).y - point.y) } ?: 0
             }
-    return Triple(source.id, target.id, pin)
+    return ResolvedWire(source.id, target.id, pin)
   }
   val firstIsSource =
       when {
@@ -166,7 +168,7 @@ internal fun connectLogic(
     onMessage: (String) -> Unit,
 ) {
   val wire = resolveLogicWire(state.diagram, first, second, point)
-  if (wire != null && state.addWire(wire.first, wire.second, wire.third)) {
+  if (wire != null && state.addWire(wire.sourceId, wire.targetId, wire.targetPin)) {
     onMessage("Collegamento creato")
   } else {
     onMessage("Collegamento non valido")

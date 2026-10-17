@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+class PendingRelation(val sourceId: String, val targetId: String)
+
 @Stable
 class SnackbarMessenger(val hostState: SnackbarHostState, private val scope: CoroutineScope) {
   fun show(message: String) {

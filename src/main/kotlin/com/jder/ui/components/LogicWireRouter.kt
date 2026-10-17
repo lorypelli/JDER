@@ -26,6 +26,8 @@ private class RouteSegment(val start: Offset, val end: Offset, val net: String) 
 
 private class RouteCandidate(val points: List<Offset>, val preference: Float)
 
+private class PricedRoute(val points: List<Offset>, val cost: Float)
+
 private object LogicRouteCache {
   private var diagram: LogicDiagram? = null
   private var routes: Map<String, List<Offset>> = emptyMap()
@@ -79,17 +81,23 @@ private fun computeRoutes(diagram: LogicDiagram): Map<String, List<Offset>> {
         }
     fun cheapest(candidates: List<RouteCandidate>) =
         candidates
-            .map { it to it.preference + routeCost(it.points, nearObstacles, nearSegments) }
-            .minBy { it.second }
+            .map {
+              PricedRoute(
+                  it.points,
+                  it.preference + routeCost(it.points, nearObstacles, nearSegments),
+              )
+            }
+            .minBy { it.cost }
     var best = cheapest(routeCandidates(start, end, sourceBounds, targetBounds))
-    if (best.second >= OVERLAP_PENALTY && end.x - start.x >= 2 * LOGIC_LEAD_LENGTH) {
+    if (best.cost >= OVERLAP_PENALTY && end.x - start.x >= 2 * LOGIC_LEAD_LENGTH) {
       val detour = cheapest(detourCandidates(start, end, sourceBounds, targetBounds))
-      if (detour.second < best.second) best = detour
+      if (detour.cost < best.cost) best = detour
     }
-    routes[wire.id] = best.first.points
-    best.first.points.zipWithNext().forEach { (a, b) ->
-      if (a != b) placed += RouteSegment(a, b, wire.sourceId)
-    }
+    routes[wire.id] = best.points
+    placed +=
+        best.points
+            .zipWithNext { a, b -> RouteSegment(a, b, wire.sourceId) }
+            .filter { it.start != it.end }
   }
   return routes
 }
@@ -248,43 +256,30 @@ private fun crosses(a: Offset, b: Offset, segment: RouteSegment): Boolean {
   }
 }
 
-internal fun logicJunctions(routes: List<Pair<String, List<Offset>>>): List<Pair<String, Offset>> {
-  val junctions = mutableListOf<Pair<String, Offset>>()
-  routes.groupBy({ it.first }, { it.second }).forEach { (net, netRoutes) ->
-    if (netRoutes.size < 2) return@forEach
-    val segments = netRoutes.flatMap { it.zipWithNext() }.filter { (a, b) -> a != b }
+internal class LogicJunction(val net: String, val point: Offset)
+
+internal fun logicJunctions(routesByNet: Map<String, List<List<Offset>>>): List<LogicJunction> {
+  val junctions = mutableListOf<LogicJunction>()
+  for (net in routesByNet.keys) {
+    val netRoutes = routesByNet.getValue(net)
+    if (netRoutes.size < 2) continue
+    val segments =
+        netRoutes
+            .flatMap { points -> points.zipWithNext { a, b -> RouteSegment(a, b, net) } }
+            .filter { it.start != it.end }
     netRoutes
         .flatMap { it.subList(1, it.size - 1) }
         .distinct()
         .forEach { point ->
           var arms = 0
-          val horizontal = segments.filter { (a, b) -> a.y == b.y && abs(a.y - point.y) < 0.5f }
-          val vertical = segments.filter { (a, b) -> a.x == b.x && abs(a.x - point.x) < 0.5f }
-          if (
-              horizontal.any { (a, b) ->
-                min(a.x, b.x) < point.x - 0.5f && max(a.x, b.x) >= point.x - 0.5f
-              }
-          )
-              arms++
-          if (
-              horizontal.any { (a, b) ->
-                max(a.x, b.x) > point.x + 0.5f && min(a.x, b.x) <= point.x + 0.5f
-              }
-          )
-              arms++
-          if (
-              vertical.any { (a, b) ->
-                min(a.y, b.y) < point.y - 0.5f && max(a.y, b.y) >= point.y - 0.5f
-              }
-          )
-              arms++
-          if (
-              vertical.any { (a, b) ->
-                max(a.y, b.y) > point.y + 0.5f && min(a.y, b.y) <= point.y + 0.5f
-              }
-          )
-              arms++
-          if (arms >= 3) junctions += net to point
+          val horizontal = segments.filter { it.isHorizontal && abs(it.start.y - point.y) < 0.5f }
+          val vertical =
+              segments.filter { it.start.x == it.end.x && abs(it.start.x - point.x) < 0.5f }
+          if (horizontal.any { it.minX < point.x - 0.5f && it.maxX >= point.x - 0.5f }) arms++
+          if (horizontal.any { it.maxX > point.x + 0.5f && it.minX <= point.x + 0.5f }) arms++
+          if (vertical.any { it.minY < point.y - 0.5f && it.maxY >= point.y - 0.5f }) arms++
+          if (vertical.any { it.maxY > point.y + 0.5f && it.minY <= point.y + 0.5f }) arms++
+          if (arms >= 3) junctions += LogicJunction(net, point)
         }
   }
   return junctions

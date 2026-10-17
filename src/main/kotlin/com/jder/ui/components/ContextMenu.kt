@@ -57,7 +57,9 @@ enum class LogicContextMenuType {
   NOTE,
 }
 
-data class ContextMenuItem(
+class ContextMenuRequest<T>(val position: Offset, val type: T)
+
+class ContextMenuItem(
     val label: String,
     val icon: ImageVector,
     val enabled: Boolean = true,

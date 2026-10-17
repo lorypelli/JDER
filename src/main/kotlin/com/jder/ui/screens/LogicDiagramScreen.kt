@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import com.jder.data.LogicDiagramRepository
 import com.jder.domain.model.LogicComponentType
@@ -30,6 +29,7 @@ import com.jder.domain.model.LogicToolMode
 import com.jder.domain.model.MAX_GATE_INPUTS
 import com.jder.domain.model.MIN_GATE_INPUTS
 import com.jder.ui.components.ContextMenuItem
+import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.components.DiagramContextMenu
 import com.jder.ui.components.LogicContextMenuType
@@ -56,7 +56,7 @@ fun LogicDiagramScreen(
   var showComponentDialog by remember { mutableStateOf(false) }
   var showNoteDialog by remember { mutableStateOf(false) }
   var showTruthTable by remember { mutableStateOf(false) }
-  var contextMenu by remember { mutableStateOf<Pair<Offset, LogicContextMenuType>?>(null) }
+  var contextMenu by remember { mutableStateOf<ContextMenuRequest<LogicContextMenuType>?>(null) }
   DiagramEditorScaffold(
       state = state,
       repository = repository,
@@ -134,7 +134,9 @@ fun LogicDiagramScreen(
   ) {
     LogicDiagramCanvas(
         state = state,
-        onContextMenuRequest = { position, type -> contextMenu = position to type },
+        onContextMenuRequest = { position, type ->
+          contextMenu = ContextMenuRequest(position, type)
+        },
         onEditRequest = { element ->
           if (element is LogicElement.NoteRef) showNoteDialog = true else showComponentDialog = true
         },
@@ -154,12 +156,12 @@ fun LogicDiagramScreen(
         )
       }
     }
-    contextMenu?.let { (position, type) ->
+    contextMenu?.let { menu ->
       val component = state.component(state.selectedComponentId)
       DiagramContextMenu(
-          position = position,
+          position = menu.position,
           title =
-              when (type) {
+              when (menu.type) {
                 LogicContextMenuType.COMPONENT ->
                     when (component?.type) {
                       LogicComponentType.INPUT -> "Azioni Ingresso"
@@ -171,7 +173,7 @@ fun LogicDiagramScreen(
               },
           items =
               buildList {
-                when (type) {
+                when (menu.type) {
                   LogicContextMenuType.COMPONENT -> {
                     add(
                         ContextMenuItem("Modifica Proprietà", Icons.Default.Edit) {
