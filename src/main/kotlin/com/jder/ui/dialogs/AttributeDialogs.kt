@@ -89,6 +89,7 @@ private fun AttributeDialog(
               onValueChange = { name = it },
               label = { Text("Nome") },
               modifier = Modifier.fillMaxWidth(),
+              singleLine = true,
           )
           Row(
               modifier = Modifier.fillMaxWidth(),
@@ -286,6 +287,7 @@ private fun AttributeDialog(
               onValueChange = { componentName = it },
               label = { Text("Nome componente") },
               modifier = Modifier.fillMaxWidth(),
+              singleLine = true,
           )
         },
         confirmButton = {

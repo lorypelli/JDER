@@ -1,18 +1,13 @@
 package com.jder.ui.dialogs
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,14 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.ClassEntityType
 import com.jder.domain.model.ClassMember
 import com.jder.domain.model.ClassRelation
 import com.jder.domain.model.ClassRelationType
 import com.jder.domain.model.Visibility
+import com.jder.ui.components.RadioOptionList
 import java.util.UUID
 
 @Composable
@@ -59,37 +53,8 @@ fun ClassEntityDialog(
               singleLine = true,
           )
           Text("Tipo:", style = MaterialTheme.typography.labelMedium)
-          Column {
-            ClassEntityType.entries.forEach { t ->
-              val isSelected = entityType == t
-              Row(
-                  modifier =
-                      Modifier.fillMaxWidth()
-                          .clip(RoundedCornerShape(10.dp))
-                          .background(
-                              if (isSelected)
-                                  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                              else MaterialTheme.colorScheme.surface
-                          )
-                          .selectable(
-                              selected = isSelected,
-                              onClick = { entityType = t },
-                              role = Role.RadioButton,
-                          )
-                          .padding(horizontal = 8.dp, vertical = 6.dp),
-                  verticalAlignment = Alignment.CenterVertically,
-              ) {
-                RadioButton(selected = isSelected, onClick = null)
-                Text(
-                    text = if (t.stereotype.isNotEmpty()) "${t.stereotype} (${t.name})" else t.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(start = 8.dp),
-                    color =
-                        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                        else MaterialTheme.colorScheme.onSurface,
-                )
-              }
-            }
+          RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) { t ->
+            if (t.stereotype.isNotEmpty()) "${t.stereotype} (${t.name})" else t.name
           }
           if (entityType == ClassEntityType.CLASS) {
             Row(
@@ -157,36 +122,8 @@ fun ClassMemberDialog(isMethod: Boolean, onDismiss: () -> Unit, onConfirm: (Clas
             )
           }
           Text("Visibilità:", style = MaterialTheme.typography.labelMedium)
-          Column {
-            Visibility.entries.forEach { v ->
-              val isSelected = visibility == v
-              Row(
-                  modifier =
-                      Modifier.fillMaxWidth()
-                          .clip(RoundedCornerShape(10.dp))
-                          .background(
-                              if (isSelected)
-                                  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                              else MaterialTheme.colorScheme.surface
-                          )
-                          .selectable(
-                              selected = isSelected,
-                              onClick = { visibility = v },
-                              role = Role.RadioButton,
-                          )
-                          .padding(horizontal = 8.dp, vertical = 6.dp),
-                  verticalAlignment = Alignment.CenterVertically,
-              ) {
-                RadioButton(selected = isSelected, onClick = null)
-                Text(
-                    text = "${v.symbol}  ${v.name.lowercase().replaceFirstChar { it.uppercase() }}",
-                    modifier = Modifier.padding(start = 8.dp),
-                    color =
-                        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                        else MaterialTheme.colorScheme.onSurface,
-                )
-              }
-            }
+          RadioOptionList(Visibility.entries, visibility, { visibility = it }) { v ->
+            "${v.symbol}  ${v.name.lowercase().replaceFirstChar { it.uppercase() }}"
           }
           Row(
               modifier = Modifier.fillMaxWidth(),
@@ -248,37 +185,7 @@ fun ClassRelationDialog(
       text = {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Text("Tipo:", style = MaterialTheme.typography.labelMedium)
-          Column {
-            ClassRelationType.entries.forEach { t ->
-              val isSelected = relType == t
-              Row(
-                  modifier =
-                      Modifier.fillMaxWidth()
-                          .clip(RoundedCornerShape(10.dp))
-                          .background(
-                              if (isSelected)
-                                  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                              else MaterialTheme.colorScheme.surface
-                          )
-                          .selectable(
-                              selected = isSelected,
-                              onClick = { relType = t },
-                              role = Role.RadioButton,
-                          )
-                          .padding(horizontal = 8.dp, vertical = 6.dp),
-                  verticalAlignment = Alignment.CenterVertically,
-              ) {
-                RadioButton(selected = isSelected, onClick = null)
-                Text(
-                    text = t.display,
-                    modifier = Modifier.padding(start = 8.dp),
-                    color =
-                        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                        else MaterialTheme.colorScheme.onSurface,
-                )
-              }
-            }
-          }
+          RadioOptionList(ClassRelationType.entries, relType, { relType = it }) { it.display }
           Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
                 value = sourceMulti,
@@ -325,37 +232,7 @@ fun SelectClassRelationTypeDialog(onDismiss: () -> Unit, onConfirm: (ClassRelati
       onDismissRequest = onDismiss,
       title = { Text("Tipo di Relazione") },
       text = {
-        Column {
-          ClassRelationType.entries.forEach { t ->
-            val isSelected = selected == t
-            Row(
-                modifier =
-                    Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            if (isSelected)
-                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                            else MaterialTheme.colorScheme.surface
-                        )
-                        .selectable(
-                            selected = isSelected,
-                            onClick = { selected = t },
-                            role = Role.RadioButton,
-                        )
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-              RadioButton(selected = isSelected, onClick = null)
-              Text(
-                  text = t.display,
-                  modifier = Modifier.padding(start = 8.dp),
-                  color =
-                      if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                      else MaterialTheme.colorScheme.onSurface,
-              )
-            }
-          }
-        }
+        RadioOptionList(ClassRelationType.entries, selected, { selected = it }) { it.display }
       },
       confirmButton = {
         TextButton(

@@ -14,9 +14,11 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.jder.data.ClassDiagramRepository
 import com.jder.data.DiagramRepository
+import com.jder.data.LogicDiagramRepository
 import com.jder.data.UseCaseRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramState
+import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.UseCaseState
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.theme.JDERTheme
@@ -28,10 +30,12 @@ fun main() = application {
   val diagramState = remember { DiagramState() }
   val useCaseState = remember { UseCaseState() }
   val classState = remember { ClassDiagramState() }
+  val logicState = remember { LogicDiagramState() }
   val themeState = remember { ThemeState() }
   val repository = remember { DiagramRepository() }
   val useCaseRepository = remember { UseCaseRepository() }
   val classRepository = remember { ClassDiagramRepository() }
+  val logicRepository = remember { LogicDiagramRepository() }
   var showExitDialog by remember { mutableStateOf(false) }
   var shouldExit by remember { mutableStateOf(false) }
   if (shouldExit) {
@@ -39,7 +43,12 @@ fun main() = application {
   }
   Window(
       onCloseRequest = {
-        if (diagramState.isModified || useCaseState.isModified || classState.isModified) {
+        if (
+            diagramState.isModified ||
+                useCaseState.isModified ||
+                classState.isModified ||
+                logicState.isModified
+        ) {
           showExitDialog = true
         } else {
           exitApplication()
@@ -55,9 +64,11 @@ fun main() = application {
           erState = diagramState,
           useCaseState = useCaseState,
           classState = classState,
+          logicState = logicState,
           repository = repository,
           useCaseRepository = useCaseRepository,
           classRepository = classRepository,
+          logicRepository = logicRepository,
           themeState = themeState,
       )
       if (showExitDialog) {

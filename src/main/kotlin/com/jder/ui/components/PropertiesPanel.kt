@@ -1,7 +1,6 @@
 package com.jder.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoFixHigh
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Link
@@ -24,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,12 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.Attribute
-import com.jder.domain.model.Cardinality
 import com.jder.domain.model.Connection
 import com.jder.domain.model.DiagramState
 import com.jder.domain.model.Entity
 import com.jder.domain.model.Note
 import com.jder.domain.model.Relationship
+import com.jder.domain.model.isManyToMany
 
 @Composable
 fun PropertiesPanel(
@@ -63,22 +60,7 @@ fun PropertiesPanel(
       modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-      Text(
-          text = "Proprietà",
-          style = MaterialTheme.typography.titleLarge,
-          color = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.align(Alignment.CenterStart),
-      )
-      IconButton(onClick = onClose, modifier = Modifier.align(Alignment.CenterEnd).size(32.dp)) {
-        Icon(
-            Icons.Default.Close,
-            contentDescription = "Chiudi pannello proprietà",
-            tint = MaterialTheme.colorScheme.onSurface,
-        )
-      }
-    }
-    Divider()
+    PropertiesPanelHeader(onClose)
     state.selectedEntityId?.let { selId ->
       val entity = state.diagram.entities.find { it.id == selId }
       entity?.let {
@@ -187,13 +169,7 @@ private fun RelationshipPropertiesContent(
     onDeleteConnection: (String) -> Unit,
     onConvertToAssociativeEntity: () -> Unit,
 ) {
-  val isNtoN =
-      relationship.connections.size == 2 &&
-          relationship.connections.all {
-            it.cardinality == Cardinality.MANY ||
-                it.cardinality == Cardinality.ZERO_MANY ||
-                it.cardinality == Cardinality.ONE_MANY
-          }
+  val isNtoN = relationship.isManyToMany()
   Card(
       modifier = Modifier.fillMaxWidth(),
       colors =

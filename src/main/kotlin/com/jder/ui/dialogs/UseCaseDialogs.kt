@@ -1,17 +1,11 @@
 package com.jder.ui.dialogs
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,13 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.UseCaseRelation
 import com.jder.domain.model.UseCaseRelationType
+import com.jder.ui.components.RadioOptionList
 
 @Composable
 fun ActorPropertiesDialog(actorName: String, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
@@ -104,54 +96,11 @@ fun UseCasePropertiesDialog(
 
 @Composable
 fun SelectRelationTypeDialog(onDismiss: () -> Unit, onConfirm: (UseCaseRelationType) -> Unit) {
-  var selected by remember { mutableStateOf(UseCaseRelationType.ASSOCIATION) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Tipo di Relazione") },
-      text = {
-        Column {
-          UseCaseRelationType.entries.forEach { type ->
-            val isSelected = selected == type
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier =
-                    Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            if (isSelected)
-                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                            else MaterialTheme.colorScheme.surface
-                        )
-                        .selectable(
-                            selected = isSelected,
-                            onClick = { selected = type },
-                            role = Role.RadioButton,
-                        )
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-            ) {
-              RadioButton(selected = isSelected, onClick = null)
-              Text(
-                  text = type.display,
-                  modifier = Modifier.padding(start = 8.dp),
-                  color =
-                      if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                      else MaterialTheme.colorScheme.onSurface,
-              )
-            }
-          }
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(selected)
-              onDismiss()
-            }
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+  RelationTypeDialog(
+      title = "Tipo di Relazione",
+      initialType = UseCaseRelationType.ASSOCIATION,
+      onDismiss = onDismiss,
+      onConfirm = onConfirm,
   )
 }
 
@@ -161,42 +110,27 @@ fun RelationEditDialog(
     onDismiss: () -> Unit,
     onConfirm: (UseCaseRelationType) -> Unit,
 ) {
-  var selected by remember { mutableStateOf(relation.type) }
+  RelationTypeDialog(
+      title = "Modifica Tipo Relazione",
+      initialType = relation.type,
+      onDismiss = onDismiss,
+      onConfirm = onConfirm,
+  )
+}
+
+@Composable
+private fun RelationTypeDialog(
+    title: String,
+    initialType: UseCaseRelationType,
+    onDismiss: () -> Unit,
+    onConfirm: (UseCaseRelationType) -> Unit,
+) {
+  var selected by remember { mutableStateOf(initialType) }
   AlertDialog(
       onDismissRequest = onDismiss,
-      title = { Text("Modifica Tipo Relazione") },
+      title = { Text(title) },
       text = {
-        Column {
-          UseCaseRelationType.entries.forEach { type ->
-            val isSelected = selected == type
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier =
-                    Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            if (isSelected)
-                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                            else MaterialTheme.colorScheme.surface
-                        )
-                        .selectable(
-                            selected = isSelected,
-                            onClick = { selected = type },
-                            role = Role.RadioButton,
-                        )
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-            ) {
-              RadioButton(selected = isSelected, onClick = null)
-              Text(
-                  text = type.display,
-                  modifier = Modifier.padding(start = 8.dp),
-                  color =
-                      if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                      else MaterialTheme.colorScheme.onSurface,
-              )
-            }
-          }
-        }
+        RadioOptionList(UseCaseRelationType.entries, selected, { selected = it }) { it.display }
       },
       confirmButton = {
         TextButton(

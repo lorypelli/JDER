@@ -5,9 +5,27 @@ import com.jder.domain.model.ClassDiagram
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassDiagramToolMode
 import com.jder.domain.model.ClassEntity
+import com.jder.domain.model.ClassEntityType
 import com.jder.domain.model.ClassRelation
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.abs
+
+sealed interface ClassElement {
+  val id: String
+
+  data class ClassRef(override val id: String) : ClassElement
+
+  data class RelationRef(override val id: String) : ClassElement
+
+  data class NoteRef(override val id: String) : ClassElement
+}
+
+internal val ClassElement.contextMenuType: ClassDiagramContextMenuType
+  get() =
+      when (this) {
+        is ClassElement.ClassRef -> ClassDiagramContextMenuType.CLASS
+        is ClassElement.RelationRef -> ClassDiagramContextMenuType.RELATION
+        is ClassElement.NoteRef -> ClassDiagramContextMenuType.NOTE
+      }
 
 internal fun classEntityHeight(entity: ClassEntity): Float {
   val headerH = if (entity.type.stereotype.isNotEmpty()) 56f else 40f
@@ -29,23 +47,22 @@ internal fun isPointNearClassRelation(
 ): Boolean {
   val start = classElementCenter(relation.sourceId, diagram) ?: return false
   val end = classElementCenter(relation.targetId, diagram) ?: return false
-  val dx = end.x - start.x
-  val dy = end.y - start.y
-  val lenSq = dx * dx + dy * dy
-  if (lenSq == 0f) return sqrt((point.x - start.x).pow(2) + (point.y - start.y).pow(2)) <= 8f
-  val t = (((point.x - start.x) * dx + (point.y - start.y) * dy) / lenSq).coerceIn(0f, 1f)
-  val projX = start.x + t * dx
-  val projY = start.y + t * dy
-  return sqrt((point.x - projX).pow(2) + (point.y - projY).pow(2)) <= 8f
+  return distanceToSegment(point, start, end) <= 8f
+}
+
+internal fun distanceToSegment(point: Offset, start: Offset, end: Offset): Float {
+  val segment = end - start
+  val lengthSquared = segment.getDistanceSquared()
+  if (lengthSquared == 0f) return (point - start).getDistance()
+  val t =
+      (((point.x - start.x) * segment.x + (point.y - start.y) * segment.y) / lengthSquared)
+          .coerceIn(0f, 1f)
+  return (point - (start + segment * t)).getDistance()
 }
 
 internal fun classElementCenter(id: String, diagram: ClassDiagram): Offset? {
-  diagram.classes
-      .find { it.id == id }
-      ?.let {
-        return Offset(it.x + it.width / 2, it.y + classEntityHeight(it) / 2)
-      }
-  return null
+  val entity = diagram.classes.find { it.id == id } ?: return null
+  return Offset(entity.x + entity.width / 2, entity.y + classEntityHeight(entity) / 2)
 }
 
 internal fun classEntityBoundaryPoint(
@@ -60,74 +77,68 @@ internal fun classEntityBoundaryPoint(
   val hw = entity.width / 2
   val hh = height / 2
   if (direction.x == 0f && direction.y == 0f) return Offset(cx, cy)
-  val tx = if (direction.x != 0f) hw / kotlin.math.abs(direction.x) else Float.MAX_VALUE
-  val ty = if (direction.y != 0f) hh / kotlin.math.abs(direction.y) else Float.MAX_VALUE
+  val tx = if (direction.x != 0f) hw / abs(direction.x) else Float.MAX_VALUE
+  val ty = if (direction.y != 0f) hh / abs(direction.y) else Float.MAX_VALUE
   val t = minOf(tx, ty)
   return Offset(cx + direction.x * t, cy + direction.y * t)
+}
+
+internal fun hitTestClassDiagram(diagram: ClassDiagram, point: Offset): ClassElement? {
+  diagram.classes
+      .lastOrNull { isPointInClassEntity(point, it) }
+      ?.let {
+        return ClassElement.ClassRef(it.id)
+      }
+  diagram.notes
+      .lastOrNull { it.contains(point) }
+      ?.let {
+        return ClassElement.NoteRef(it.id)
+      }
+  diagram.relations
+      .lastOrNull { isPointNearClassRelation(point, it, diagram) }
+      ?.let {
+        return ClassElement.RelationRef(it.id)
+      }
+  return null
+}
+
+internal fun selectClassElement(state: ClassDiagramState, element: ClassElement) {
+  when (element) {
+    is ClassElement.ClassRef -> state.selectClass(element.id)
+    is ClassElement.RelationRef -> state.selectRelation(element.id)
+    is ClassElement.NoteRef -> state.selectNote(element.id)
+  }
 }
 
 internal fun handleClassDiagramTap(
     state: ClassDiagramState,
     offset: Offset,
-    onRelationCreateRequest: ((String, String) -> Unit)?,
+    onRelationCreateRequest: (String, String) -> Unit,
 ) {
   when (state.toolMode) {
-    ClassDiagramToolMode.SELECT -> {
-      state.diagram.classes
-          .find { isPointInClassEntity(offset, it) }
-          ?.let {
-            state.selectClass(it.id)
-            return
-          }
-      state.diagram.relations
-          .find { isPointNearClassRelation(offset, it, state.diagram) }
-          ?.let {
-            state.selectRelation(it.id)
-            return
-          }
-      state.diagram.notes
-          .find {
-            offset.x >= it.x &&
-                offset.x <= it.x + it.width &&
-                offset.y >= it.y &&
-                offset.y <= it.y + it.height
-          }
-          ?.let {
-            state.selectNote(it.id)
-            return
-          }
-      state.clearSelection()
-    }
+    ClassDiagramToolMode.SELECT ->
+        hitTestClassDiagram(state.diagram, offset)?.let { selectClassElement(state, it) }
+            ?: state.clearSelection()
     ClassDiagramToolMode.CLASS -> {
       state.addClass(offset.x - 100f, offset.y - 40f, "NuovaClasse")
       state.toolMode = ClassDiagramToolMode.SELECT
     }
     ClassDiagramToolMode.INTERFACE -> {
-      state.addClass(
-          offset.x - 100f,
-          offset.y - 40f,
-          "NuovaInterfaccia",
-          com.jder.domain.model.ClassEntityType.INTERFACE,
-      )
+      state.addClass(offset.x - 100f, offset.y - 40f, "NuovaInterfaccia", ClassEntityType.INTERFACE)
       state.toolMode = ClassDiagramToolMode.SELECT
     }
     ClassDiagramToolMode.ENUM -> {
-      state.addClass(
-          offset.x - 100f,
-          offset.y - 40f,
-          "NuovoEnum",
-          com.jder.domain.model.ClassEntityType.ENUM,
-      )
+      state.addClass(offset.x - 100f, offset.y - 40f, "NuovoEnum", ClassEntityType.ENUM)
       state.toolMode = ClassDiagramToolMode.SELECT
     }
     ClassDiagramToolMode.RELATION -> {
-      val clicked = state.diagram.classes.find { isPointInClassEntity(offset, it) }?.id
+      val clicked = state.diagram.classes.lastOrNull { isPointInClassEntity(offset, it) }?.id
       if (clicked != null) {
         val pending = state.pendingRelationSourceId
         when {
           pending == null -> state.pendingRelationSourceId = clicked
           pending != clicked -> {
-            onRelationCreateRequest?.invoke(pending, clicked)
+            onRelationCreateRequest(pending, clicked)
             state.pendingRelationSourceId = null
           }
           else -> state.pendingRelationSourceId = null
@@ -143,42 +154,24 @@ internal fun handleClassDiagramTap(
   }
 }
 
-internal fun handleClassDiagramDragStart(state: ClassDiagramState, offset: Offset) {
-  val adjusted =
-      Offset(
-          (offset.x - state.panOffset.x) / state.zoom,
-          (offset.y - state.panOffset.y) / state.zoom,
-      )
-  state.diagram.classes
-      .find { isPointInClassEntity(adjusted, it) }
-      ?.let {
-        state.selectClass(it.id)
-        state.saveDragStartState()
-        return
-      }
-  state.diagram.notes
-      .find {
-        adjusted.x >= it.x &&
-            adjusted.x <= it.x + it.width &&
-            adjusted.y >= it.y &&
-            adjusted.y <= it.y + it.height
-      }
-      ?.let {
-        state.selectNote(it.id)
-        state.saveDragStartState()
-        return
-      }
+internal fun handleClassDiagramDragStart(state: ClassDiagramState, offset: Offset): ClassElement? {
+  val element = hitTestClassDiagram(state.diagram, offset) ?: return null
+  selectClassElement(state, element)
+  if (element is ClassElement.RelationRef) return null
+  state.saveDragStartState()
+  return element
 }
 
-internal fun handleClassDiagramDrag(state: ClassDiagramState, dragAmount: Offset) {
-  val dx = dragAmount.x / state.zoom
-  val dy = dragAmount.y / state.zoom
-  state.selectedClassId?.let { id ->
-    state.updateClassWithoutSave(id) { it.copy(x = it.x + dx, y = it.y + dy) }
-    return
-  }
-  state.selectedNoteId?.let { id ->
-    state.updateNoteWithoutSave(id) { it.copy(x = it.x + dx, y = it.y + dy) }
-    return
+internal fun handleClassDiagramDrag(
+    state: ClassDiagramState,
+    element: ClassElement,
+    delta: Offset,
+) {
+  when (element) {
+    is ClassElement.ClassRef ->
+        state.updateClassWithoutSave(element.id) { it.copy(x = it.x + delta.x, y = it.y + delta.y) }
+    is ClassElement.NoteRef ->
+        state.updateNoteWithoutSave(element.id) { it.copy(x = it.x + delta.x, y = it.y + delta.y) }
+    is ClassElement.RelationRef -> {}
   }
 }

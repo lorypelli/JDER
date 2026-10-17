@@ -1,13 +1,13 @@
 ---
-title: JDER - Editor di Diagrammi ER, Use Case e Class
-description: Editor gratuito e open source per diagrammi Entity-Relationship, Use Case e Class Diagram. Scritto in Kotlin e Compose Multiplatform con interfaccia Material 3, gira su Windows, macOS e Linux.
-keywords: JDER, editor diagrammi ER, Entity-Relationship, Use Case diagram, Class diagram, diagramma delle classi, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux
+title: JDER - Editor di Diagrammi ER, Use Case, Class e Logici
+description: Editor gratuito e open source per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici. Scritto in Kotlin e Compose Multiplatform con interfaccia Material 3, gira su Windows, macOS e Linux.
+keywords: JDER, editor diagrammi ER, Entity-Relationship, Use Case diagram, Class diagram, diagramma delle classi, diagramma logico, porte logiche, tabella di verità, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux
 url: https://jder.it/
 ---
 
-# JDER — Editor di Diagrammi ER, Use Case e Class
+# JDER — Editor di Diagrammi ER, Use Case, Class e Logici
 
-**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **Use Case** e **Class Diagram**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR.
+**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **Use Case**, **Class Diagram** e **diagrammi logici**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR.
 
 ## Il Tuo Editor di Diagrammi Moderno
 
@@ -29,6 +29,10 @@ Crea classi, interfacce, enumerazioni e classi astratte con attributi, metodi, v
 
 Crea attori, casi d'uso, confini di sistema e relazioni (associazione, include, extend, generalizzazione).
 
+### Diagramma Logico
+
+Crea circuiti con porte logiche (AND, OR, NOT, NAND, NOR, XOR, XNOR), ingressi e uscite collegati da fili instradati automaticamente, con simulazione in tempo reale, tabella di verità ed espressioni booleane.
+
 ## Caratteristiche Principali
 
 ### Interfaccia Moderna
@@ -41,15 +45,11 @@ Salva i tuoi diagrammi in formato JSON o esportali come immagine PNG.
 
 ### Scorciatoie da Tastiera
 
-Undo/Redo (`Ctrl+Z`/`Ctrl+Y`), Salva (`Ctrl+S`), Apri (`Ctrl+O`), Zoom (`Ctrl+±`) e altro.
+Undo/Redo (`Ctrl+Z`/`Ctrl+Y`), Salva (`Ctrl+S`), Apri (`Ctrl+O`), Esporta (`Ctrl+E`), Zoom (`Ctrl+±`) e altro (`Cmd` su macOS).
 
 ### Note e Annotazioni
 
 Aggiungi note e commenti testuali a qualsiasi punto del canvas.
-
-### Aggiornamenti Automatici
-
-Controllo automatico degli aggiornamenti all'avvio dell'applicazione.
 
 ### Veloce e Reattivo
 

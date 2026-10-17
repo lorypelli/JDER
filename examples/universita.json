@@ -1,0 +1,179 @@
+{
+    "diagramType": "er",
+    "name": "universita",
+    "entities": [
+        {
+            "id": "studente",
+            "name": "Studente",
+            "x": 80.0,
+            "y": 230.0,
+            "attributes": [
+                {
+                    "id": "studente-matricola",
+                    "name": "matricola",
+                    "type": "KEY",
+                    "x": -95.0,
+                    "y": -115.0,
+                    "isPrimaryKey": true
+                },
+                {
+                    "id": "studente-nome",
+                    "name": "nome",
+                    "type": "NORMAL",
+                    "x": 55.0,
+                    "y": -115.0
+                },
+                {
+                    "id": "studente-eta",
+                    "name": "età",
+                    "type": "DERIVED",
+                    "x": -70.0,
+                    "y": 115.0
+                },
+                {
+                    "id": "studente-telefoni",
+                    "name": "telefoni",
+                    "type": "MULTIVALUED",
+                    "x": 40.0,
+                    "y": 115.0,
+                    "multiplicity": "(0,N)"
+                }
+            ]
+        },
+        {
+            "id": "corso",
+            "name": "Corso",
+            "x": 640.0,
+            "y": 230.0,
+            "attributes": [
+                {
+                    "id": "corso-codice",
+                    "name": "codice",
+                    "type": "KEY",
+                    "x": -60.0,
+                    "y": -115.0,
+                    "isPrimaryKey": true
+                },
+                {
+                    "id": "corso-titolo",
+                    "name": "titolo",
+                    "type": "NORMAL",
+                    "x": 50.0,
+                    "y": -115.0
+                },
+                {
+                    "id": "corso-crediti",
+                    "name": "crediti",
+                    "type": "NORMAL",
+                    "x": 150.0,
+                    "y": -10.0
+                }
+            ]
+        },
+        {
+            "id": "docente",
+            "name": "Docente",
+            "x": 640.0,
+            "y": 560.0,
+            "attributes": [
+                {
+                    "id": "docente-id",
+                    "name": "id",
+                    "type": "KEY",
+                    "x": -160.0,
+                    "isPrimaryKey": true
+                },
+                {
+                    "id": "docente-nome",
+                    "name": "nome",
+                    "type": "NORMAL",
+                    "x": -60.0,
+                    "y": 115.0
+                },
+                {
+                    "id": "docente-cognome",
+                    "name": "cognome",
+                    "type": "NORMAL",
+                    "x": 50.0,
+                    "y": 115.0
+                },
+                {
+                    "id": "docente-indirizzo",
+                    "name": "indirizzo",
+                    "type": "COMPOSITE",
+                    "x": 210.0,
+                    "components": [
+                        {
+                            "id": "docente-via",
+                            "name": "via",
+                            "type": "NORMAL"
+                        },
+                        {
+                            "id": "docente-citta",
+                            "name": "città",
+                            "type": "NORMAL"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "id": "iscrizione",
+            "name": "Iscrizione",
+            "x": 370.0,
+            "y": 205.0,
+            "attributes": [
+                {
+                    "id": "iscrizione-voto",
+                    "name": "voto",
+                    "type": "NORMAL",
+                    "y": -110.0
+                },
+                {
+                    "id": "iscrizione-data",
+                    "name": "data",
+                    "type": "NORMAL",
+                    "y": 110.0
+                }
+            ],
+            "connections": [
+                {
+                    "entityId": "studente",
+                    "cardinality": "ZERO_MANY"
+                },
+                {
+                    "entityId": "corso",
+                    "cardinality": "ZERO_MANY"
+                }
+            ]
+        },
+        {
+            "id": "insegnamento",
+            "name": "Insegnamento",
+            "x": 650.0,
+            "y": 380.0,
+            "connections": [
+                {
+                    "entityId": "corso",
+                    "cardinality": "ONE_ONE"
+                },
+                {
+                    "entityId": "docente",
+                    "cardinality": "ZERO_MANY"
+                }
+            ]
+        }
+    ],
+    "notes": [
+        {
+            "id": "nota",
+            "text": "Ogni corso è tenuto da un solo docente, mentre uno studente può iscriversi a più corsi.",
+            "x": 60.0,
+            "y": 480.0,
+            "width": 280.0,
+            "height": 90.0
+        }
+    ]
+}

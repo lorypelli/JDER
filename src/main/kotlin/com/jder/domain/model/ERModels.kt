@@ -28,6 +28,9 @@ data class Relationship(
     val documentation: String = "",
 )
 
+fun Relationship.isManyToMany(): Boolean =
+    connections.size == 2 && connections.all { it.cardinality.isMany }
+
 @Serializable data class Connection(val entityId: String, val cardinality: Cardinality)
 
 @Serializable
@@ -37,7 +40,10 @@ enum class Cardinality(val display: String) {
   ONE_ONE("(1,1)"),
   MANY("N"),
   ZERO_MANY("(0,N)"),
-  ONE_MANY("(1,N)"),
+  ONE_MANY("(1,N)");
+
+  val isMany: Boolean
+    get() = this == MANY || this == ZERO_MANY || this == ONE_MANY
 }
 
 @Serializable

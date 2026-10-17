@@ -6,12 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AutoFixHigh
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -19,13 +13,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
@@ -37,168 +37,6 @@ enum class ContextMenuType {
   NOTE,
 }
 
-@Composable
-fun ContextMenu(
-    position: Offset,
-    type: ContextMenuType,
-    onDismiss: () -> Unit,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-    onAddAttribute: (() -> Unit)? = null,
-    onAddConnection: (() -> Unit)? = null,
-    onConvertToAssociativeEntity: (() -> Unit)? = null,
-    isNtoNRelationship: Boolean = false,
-) {
-  val coroutineScope = rememberCoroutineScope()
-  Popup(
-      alignment = Alignment.TopStart,
-      offset = IntOffset(position.x.toInt(), position.y.toInt()),
-      onDismissRequest = onDismiss,
-      properties = PopupProperties(focusable = true),
-  ) {
-    Surface(
-        modifier = Modifier.width(220.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp,
-        shadowElevation = 8.dp,
-    ) {
-      Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text(
-            text =
-                when (type) {
-                  ContextMenuType.ENTITY -> "Azioni Entità"
-                  ContextMenuType.RELATIONSHIP -> "Azioni Relazione"
-                  ContextMenuType.NOTE -> "Azioni Nota"
-                },
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        Divider()
-        DropdownMenuItem(
-            text = {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Edit, null, modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(12.dp))
-                Text(
-                    when (type) {
-                      ContextMenuType.ENTITY -> "Modifica Proprietà"
-                      ContextMenuType.RELATIONSHIP -> "Modifica Proprietà"
-                      ContextMenuType.NOTE -> "Modifica Testo"
-                    }
-                )
-              }
-            },
-            onClick = {
-              coroutineScope.launch {
-                delay(150.milliseconds)
-                onDismiss()
-                onEdit()
-              }
-            },
-            leadingIcon = null,
-        )
-        if (onAddAttribute != null && type != ContextMenuType.NOTE) {
-          DropdownMenuItem(
-              text = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Icon(Icons.Default.Add, null, modifier = Modifier.size(20.dp))
-                  Spacer(Modifier.width(12.dp))
-                  Text("Aggiungi Attributo")
-                }
-              },
-              onClick = {
-                coroutineScope.launch {
-                  delay(150.milliseconds)
-                  onDismiss()
-                  onAddAttribute()
-                }
-              },
-              leadingIcon = null,
-          )
-        }
-        onAddConnection?.let { addConnection ->
-          DropdownMenuItem(
-              text = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Icon(Icons.Default.Link, null, modifier = Modifier.size(20.dp))
-                  Spacer(Modifier.width(12.dp))
-                  Text("Aggiungi Connessione")
-                }
-              },
-              onClick = {
-                coroutineScope.launch {
-                  delay(150.milliseconds)
-                  onDismiss()
-                  addConnection()
-                }
-              },
-              leadingIcon = null,
-          )
-        }
-        onConvertToAssociativeEntity?.let { convertToAssociative ->
-          DropdownMenuItem(
-              text = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Icon(
-                      Icons.Default.AutoFixHigh,
-                      null,
-                      modifier = Modifier.size(20.dp),
-                      tint =
-                          if (isNtoNRelationship) MaterialTheme.colorScheme.primary
-                          else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                  )
-                  Spacer(Modifier.width(12.dp))
-                  Text(
-                      "Converti in Entità Associativa",
-                      color =
-                          if (isNtoNRelationship) MaterialTheme.colorScheme.onSurface
-                          else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                  )
-                }
-              },
-              onClick = {
-                if (isNtoNRelationship) {
-                  coroutineScope.launch {
-                    delay(150.milliseconds)
-                    onDismiss()
-                    convertToAssociative()
-                  }
-                }
-              },
-              leadingIcon = null,
-              enabled = isNtoNRelationship,
-          )
-        }
-        Divider()
-        DropdownMenuItem(
-            text = {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Default.Delete,
-                    null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                Spacer(Modifier.width(12.dp))
-                Text("Elimina", color = MaterialTheme.colorScheme.error)
-              }
-            },
-            onClick = {
-              coroutineScope.launch {
-                delay(150.milliseconds)
-                onDismiss()
-                onDelete()
-              }
-            },
-            leadingIcon = null,
-        )
-      }
-    }
-  }
-}
-
 enum class UseCaseContextMenuType {
   ACTOR,
   USE_CASE,
@@ -207,119 +45,45 @@ enum class UseCaseContextMenuType {
   SYSTEM,
 }
 
-@Composable
-fun UseCaseContextMenu(
-    position: Offset,
-    type: UseCaseContextMenuType,
-    onDismiss: () -> Unit,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-) {
-  val coroutineScope = rememberCoroutineScope()
-  Popup(
-      alignment = Alignment.TopStart,
-      offset = IntOffset(position.x.toInt(), position.y.toInt()),
-      onDismissRequest = onDismiss,
-      properties = PopupProperties(focusable = true),
-  ) {
-    Surface(
-        modifier = Modifier.width(210.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp,
-        shadowElevation = 8.dp,
-    ) {
-      Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text(
-            text =
-                when (type) {
-                  UseCaseContextMenuType.ACTOR -> "Azioni Attore"
-                  UseCaseContextMenuType.USE_CASE -> "Azioni Caso d'Uso"
-                  UseCaseContextMenuType.RELATION -> "Azioni Relazione"
-                  UseCaseContextMenuType.NOTE -> "Azioni Nota"
-                  UseCaseContextMenuType.SYSTEM -> "Azioni Sistema"
-                },
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        Divider()
-        DropdownMenuItem(
-            text = {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Edit, null, modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(12.dp))
-                Text(
-                    when (type) {
-                      UseCaseContextMenuType.ACTOR -> "Modifica Nome"
-                      UseCaseContextMenuType.USE_CASE -> "Modifica Proprietà"
-                      UseCaseContextMenuType.RELATION -> "Modifica Tipo"
-                      UseCaseContextMenuType.NOTE -> "Modifica Testo"
-                      UseCaseContextMenuType.SYSTEM -> "Modifica Proprietà"
-                    }
-                )
-              }
-            },
-            onClick = {
-              coroutineScope.launch {
-                delay(150.milliseconds)
-                onDismiss()
-                onEdit()
-              }
-            },
-            leadingIcon = null,
-        )
-        Divider()
-        DropdownMenuItem(
-            text = {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Default.Delete,
-                    null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                Spacer(Modifier.width(12.dp))
-                Text("Elimina", color = MaterialTheme.colorScheme.error)
-              }
-            },
-            onClick = {
-              coroutineScope.launch {
-                delay(150.milliseconds)
-                onDismiss()
-                onDelete()
-              }
-            },
-            leadingIcon = null,
-        )
-      }
-    }
-  }
-}
-
 enum class ClassDiagramContextMenuType {
   CLASS,
   RELATION,
   NOTE,
 }
 
+enum class LogicContextMenuType {
+  COMPONENT,
+  WIRE,
+  NOTE,
+}
+
+data class ContextMenuItem(
+    val label: String,
+    val icon: ImageVector,
+    val enabled: Boolean = true,
+    val isDestructive: Boolean = false,
+    val onClick: () -> Unit,
+)
+
 @Composable
-fun ClassDiagramContextMenu(
+fun DiagramContextMenu(
     position: Offset,
-    type: ClassDiagramContextMenuType,
+    title: String,
+    items: List<ContextMenuItem>,
     onDismiss: () -> Unit,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
 ) {
   val coroutineScope = rememberCoroutineScope()
+  val positionProvider =
+      remember(position) {
+        CursorPositionProvider(IntOffset(position.x.toInt(), position.y.toInt()))
+      }
   Popup(
-      alignment = Alignment.TopStart,
-      offset = IntOffset(position.x.toInt(), position.y.toInt()),
+      popupPositionProvider = positionProvider,
       onDismissRequest = onDismiss,
       properties = PopupProperties(focusable = true),
   ) {
     Surface(
-        modifier = Modifier.width(210.dp),
+        modifier = Modifier.width(230.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 8.dp,
@@ -327,64 +91,54 @@ fun ClassDiagramContextMenu(
     ) {
       Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Text(
-            text =
-                when (type) {
-                  ClassDiagramContextMenuType.CLASS -> "Azioni Classe"
-                  ClassDiagramContextMenuType.RELATION -> "Azioni Relazione"
-                  ClassDiagramContextMenuType.NOTE -> "Azioni Nota"
-                },
+            text = title,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
         Divider()
-        DropdownMenuItem(
-            text = {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Edit, null, modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(12.dp))
-                Text(
-                    when (type) {
-                      ClassDiagramContextMenuType.CLASS -> "Modifica Proprietà"
-                      ClassDiagramContextMenuType.RELATION -> "Modifica Relazione"
-                      ClassDiagramContextMenuType.NOTE -> "Modifica Testo"
-                    }
-                )
+        items.forEachIndexed { index, item ->
+          if (item.isDestructive && index > 0) Divider()
+          val contentColor =
+              when {
+                !item.enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                item.isDestructive -> MaterialTheme.colorScheme.error
+                else -> MaterialTheme.colorScheme.onSurface
               }
-            },
-            onClick = {
-              coroutineScope.launch {
-                delay(150.milliseconds)
-                onDismiss()
-                onEdit()
-              }
-            },
-            leadingIcon = null,
-        )
-        Divider()
-        DropdownMenuItem(
-            text = {
-              Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Default.Delete,
-                    null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                Spacer(Modifier.width(12.dp))
-                Text("Elimina", color = MaterialTheme.colorScheme.error)
-              }
-            },
-            onClick = {
-              coroutineScope.launch {
-                delay(150.milliseconds)
-                onDismiss()
-                onDelete()
-              }
-            },
-            leadingIcon = null,
-        )
+          DropdownMenuItem(
+              text = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                  Icon(item.icon, null, modifier = Modifier.size(20.dp), tint = contentColor)
+                  Spacer(Modifier.width(12.dp))
+                  Text(item.label, color = contentColor)
+                }
+              },
+              onClick = {
+                coroutineScope.launch {
+                  delay(150.milliseconds)
+                  onDismiss()
+                  item.onClick()
+                }
+              },
+              enabled = item.enabled,
+          )
+        }
       }
     }
+  }
+}
+
+private class CursorPositionProvider(private val offset: IntOffset) : PopupPositionProvider {
+  override fun calculatePosition(
+      anchorBounds: IntRect,
+      windowSize: IntSize,
+      layoutDirection: LayoutDirection,
+      popupContentSize: IntSize,
+  ): IntOffset {
+    var x = anchorBounds.left + offset.x
+    var y = anchorBounds.top + offset.y
+    if (x + popupContentSize.width > windowSize.width) x -= popupContentSize.width
+    if (y + popupContentSize.height > windowSize.height) y -= popupContentSize.height
+    return IntOffset(x.coerceAtLeast(0), y.coerceAtLeast(0))
   }
 }

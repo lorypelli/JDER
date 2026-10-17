@@ -3,13 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.geometry.Offset
 import java.util.UUID
 
-class DiagramState {
-  var diagram by mutableStateOf(ERDiagram(name = "Nuovo Diagramma E-R"))
-    private set
-
+class DiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo Diagramma E-R") }) {
   var selectedEntityId by mutableStateOf<String?>(null)
     private set
 
@@ -20,209 +16,140 @@ class DiagramState {
     private set
 
   var toolMode by mutableStateOf(ToolMode.SELECT)
-  var isModified by mutableStateOf(false)
-    private set
 
-  var currentFile by mutableStateOf<String?>(null)
-  var zoom by mutableStateOf(1.0f)
-  var panOffset by mutableStateOf(Offset.Zero)
-  private val undoStack = mutableListOf<ERDiagram>()
-  private val redoStack = mutableListOf<ERDiagram>()
-  private val maxUndoSize = 50
+  override val diagramName: String
+    get() = diagram.name
 
-  private fun saveState() {
-    undoStack.add(
-        diagram.copy(
-            entities = diagram.entities.map { it.copy(attributes = it.attributes.toList()) },
-            relationships =
-                diagram.relationships.map {
-                  it.copy(
-                      attributes = it.attributes.toList(),
-                      connections = it.connections.toList(),
-                  )
-                },
-            notes = diagram.notes.toList(),
-        )
-    )
-    if (undoStack.size > maxUndoSize) {
-      undoStack.removeAt(0)
+  override val isEmpty: Boolean
+    get() = diagram.entities.isEmpty() && diagram.relationships.isEmpty() && diagram.notes.isEmpty()
+
+  override val hasSelection: Boolean
+    get() = selectedEntityId != null || selectedRelationshipId != null || selectedNoteId != null
+
+  override val isSelectTool: Boolean
+    get() = toolMode == ToolMode.SELECT
+
+  override fun withName(diagram: ERDiagram, name: String) = diagram.copy(name = name)
+
+  override fun pruneSelection() {
+    if (selectedEntityId != null && diagram.entities.none { it.id == selectedEntityId }) {
+      selectedEntityId = null
     }
-    redoStack.clear()
-  }
-
-  fun undo() {
-    if (undoStack.isNotEmpty()) {
-      redoStack.add(
-          diagram.copy(
-              entities = diagram.entities.map { it.copy(attributes = it.attributes.toList()) },
-              relationships =
-                  diagram.relationships.map {
-                    it.copy(
-                        attributes = it.attributes.toList(),
-                        connections = it.connections.toList(),
-                    )
-                  },
-              notes = diagram.notes.toList(),
-          )
-      )
-      diagram = undoStack.removeAt(undoStack.size - 1)
-      isModified = true
-      if (selectedEntityId != null && diagram.entities.none { it.id == selectedEntityId }) {
-        selectedEntityId = null
-      }
-      if (
-          selectedRelationshipId != null &&
-              diagram.relationships.none { it.id == selectedRelationshipId }
-      ) {
-        selectedRelationshipId = null
-      }
-      if (selectedNoteId != null && diagram.notes.none { it.id == selectedNoteId }) {
-        selectedNoteId = null
-      }
+    if (
+        selectedRelationshipId != null &&
+            diagram.relationships.none { it.id == selectedRelationshipId }
+    ) {
+      selectedRelationshipId = null
+    }
+    if (selectedNoteId != null && diagram.notes.none { it.id == selectedNoteId }) {
+      selectedNoteId = null
     }
   }
 
-  fun redo() {
-    if (redoStack.isNotEmpty()) {
-      undoStack.add(
-          diagram.copy(
-              entities = diagram.entities.map { it.copy(attributes = it.attributes.toList()) },
-              relationships =
-                  diagram.relationships.map {
-                    it.copy(
-                        attributes = it.attributes.toList(),
-                        connections = it.connections.toList(),
-                    )
-                  },
-              notes = diagram.notes.toList(),
-          )
-      )
-      diagram = redoStack.removeAt(redoStack.size - 1)
-      isModified = true
-      if (selectedEntityId != null && diagram.entities.none { it.id == selectedEntityId }) {
-        selectedEntityId = null
-      }
-      if (
-          selectedRelationshipId != null &&
-              diagram.relationships.none { it.id == selectedRelationshipId }
-      ) {
-        selectedRelationshipId = null
-      }
-      if (selectedNoteId != null && diagram.notes.none { it.id == selectedNoteId }) {
-        selectedNoteId = null
-      }
-    }
+  override fun resetToolMode() {
+    toolMode = ToolMode.SELECT
   }
 
-  fun canUndo(): Boolean = undoStack.isNotEmpty()
-
-  fun canRedo(): Boolean = redoStack.isNotEmpty()
+  override fun deleteSelection(): String? {
+    selectedEntityId?.let {
+      deleteEntity(it)
+      return "Entità eliminata"
+    }
+    selectedRelationshipId?.let {
+      deleteRelationship(it)
+      return "Relazione eliminata"
+    }
+    selectedNoteId?.let {
+      deleteNote(it)
+      return "Nota eliminata"
+    }
+    return null
+  }
 
   fun addEntity(x: Float, y: Float, name: String) {
-    saveState()
     val newEntity = Entity(id = UUID.randomUUID().toString(), name = name, x = x, y = y)
-    diagram = diagram.copy(entities = diagram.entities + newEntity)
-    isModified = true
+    edit { it.copy(entities = it.entities + newEntity) }
+    selectEntity(newEntity.id)
   }
 
   fun addRelationship(x: Float, y: Float, name: String) {
-    saveState()
     val newRelationship = Relationship(id = UUID.randomUUID().toString(), name = name, x = x, y = y)
-    diagram = diagram.copy(relationships = diagram.relationships + newRelationship)
-    isModified = true
+    edit { it.copy(relationships = it.relationships + newRelationship) }
+    selectRelationship(newRelationship.id)
   }
 
   fun addNote(x: Float, y: Float, text: String) {
-    saveState()
     val newNote = Note(id = UUID.randomUUID().toString(), text = text, x = x, y = y)
-    diagram = diagram.copy(notes = diagram.notes + newNote)
-    isModified = true
+    edit { it.copy(notes = it.notes + newNote) }
+    selectNote(newNote.id)
   }
 
   fun updateEntity(entityId: String, update: (Entity) -> Entity) {
-    saveState()
-    diagram =
-        diagram.copy(entities = diagram.entities.map { if (it.id == entityId) update(it) else it })
-    isModified = true
+    edit { d -> d.copy(entities = d.entities.map { if (it.id == entityId) update(it) else it }) }
   }
 
   fun updateEntityWithoutSave(entityId: String, update: (Entity) -> Entity) {
-    diagram =
-        diagram.copy(entities = diagram.entities.map { if (it.id == entityId) update(it) else it })
-    isModified = true
+    editWithoutSave { d ->
+      d.copy(entities = d.entities.map { if (it.id == entityId) update(it) else it })
+    }
   }
 
   fun updateRelationship(relationshipId: String, update: (Relationship) -> Relationship) {
-    saveState()
-    diagram =
-        diagram.copy(
-            relationships =
-                diagram.relationships.map { if (it.id == relationshipId) update(it) else it }
-        )
-    isModified = true
+    edit { d ->
+      d.copy(
+          relationships = d.relationships.map { if (it.id == relationshipId) update(it) else it }
+      )
+    }
   }
 
   fun updateRelationshipWithoutSave(
       relationshipId: String,
       update: (Relationship) -> Relationship,
   ) {
-    diagram =
-        diagram.copy(
-            relationships =
-                diagram.relationships.map { if (it.id == relationshipId) update(it) else it }
-        )
-    isModified = true
+    editWithoutSave { d ->
+      d.copy(
+          relationships = d.relationships.map { if (it.id == relationshipId) update(it) else it }
+      )
+    }
   }
 
   fun updateNote(noteId: String, update: (Note) -> Note) {
-    saveState()
-    diagram = diagram.copy(notes = diagram.notes.map { if (it.id == noteId) update(it) else it })
-    isModified = true
+    edit { d -> d.copy(notes = d.notes.map { if (it.id == noteId) update(it) else it }) }
   }
 
   fun updateNoteWithoutSave(noteId: String, update: (Note) -> Note) {
-    diagram = diagram.copy(notes = diagram.notes.map { if (it.id == noteId) update(it) else it })
-    isModified = true
-  }
-
-  fun saveDragStartState() {
-    saveState()
+    editWithoutSave { d -> d.copy(notes = d.notes.map { if (it.id == noteId) update(it) else it }) }
   }
 
   fun deleteEntity(entityId: String) {
-    saveState()
-    diagram =
-        diagram.copy(
-            entities = diagram.entities.filter { it.id != entityId },
-            relationships =
-                diagram.relationships.map { relationship ->
-                  relationship.copy(
-                      connections = relationship.connections.filter { it.entityId != entityId }
-                  )
-                },
-        )
+    edit { d ->
+      d.copy(
+          entities = d.entities.filter { it.id != entityId },
+          relationships =
+              d.relationships.map { relationship ->
+                relationship.copy(
+                    connections = relationship.connections.filter { it.entityId != entityId }
+                )
+              },
+      )
+    }
     if (selectedEntityId == entityId) {
       selectedEntityId = null
     }
-    isModified = true
   }
 
   fun deleteRelationship(relationshipId: String) {
-    saveState()
-    diagram = diagram.copy(relationships = diagram.relationships.filter { it.id != relationshipId })
+    edit { d -> d.copy(relationships = d.relationships.filter { it.id != relationshipId }) }
     if (selectedRelationshipId == relationshipId) {
       selectedRelationshipId = null
     }
-    isModified = true
   }
 
   fun deleteNote(noteId: String) {
-    saveState()
-    diagram = diagram.copy(notes = diagram.notes.filter { it.id != noteId })
+    edit { d -> d.copy(notes = d.notes.filter { it.id != noteId }) }
     if (selectedNoteId == noteId) {
       selectedNoteId = null
     }
-    isModified = true
   }
 
   fun addAttributeToEntity(entityId: String, attribute: Attribute) {
@@ -329,51 +256,15 @@ class DiagramState {
     selectedRelationshipId = null
   }
 
-  fun clearSelection() {
+  override fun clearSelection() {
     selectedEntityId = null
     selectedRelationshipId = null
     selectedNoteId = null
   }
 
-  fun loadDiagram(newDiagram: ERDiagram, filePath: String?) {
-    diagram = newDiagram
-    currentFile = filePath
-    isModified = false
-    clearSelection()
-  }
-
-  fun newDiagram() {
-    diagram = ERDiagram(name = "Nuovo Diagramma E-R")
-    currentFile = null
-    isModified = false
-    clearSelection()
-  }
-
-  fun markAsSaved(filePath: String) {
-    currentFile = filePath
-    isModified = false
-  }
-
-  fun updateDiagramName(newName: String) {
-    diagram = diagram.copy(name = newName)
-  }
-
-  fun resetView() {
-    zoom = 1.0f
-    panOffset = Offset.Zero
-  }
-
   fun convertToAssociativeEntity(relationshipId: String) {
     val relationship = diagram.relationships.find { it.id == relationshipId } ?: return
-    if (relationship.connections.size != 2) return
-    val isNtoN =
-        relationship.connections.all {
-          it.cardinality == Cardinality.MANY ||
-              it.cardinality == Cardinality.ZERO_MANY ||
-              it.cardinality == Cardinality.ONE_MANY
-        }
-    if (!isNtoN) return
-    saveState()
+    if (!relationship.isManyToMany()) return
     val conn1 = relationship.connections[0]
     val conn2 = relationship.connections[1]
     val entity1 = diagram.entities.find { it.id == conn1.entityId }
@@ -422,13 +313,12 @@ class DiagramState {
                     ),
             ),
         )
-    diagram =
-        diagram.copy(
-            entities = diagram.entities + newEntity,
-            relationships =
-                diagram.relationships.filter { it.id != relationshipId } + newRelationships,
-        )
+    edit { d ->
+      d.copy(
+          entities = d.entities + newEntity,
+          relationships = d.relationships.filter { it.id != relationshipId } + newRelationships,
+      )
+    }
     selectedRelationshipId = null
-    isModified = true
   }
 }

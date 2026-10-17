@@ -2,7 +2,7 @@
     <url>
         <loc>https://jder.it/</loc>
         <changefreq>monthly</changefreq>
-        <lastmod>2026-03-20</lastmod>
+        <lastmod>2026-10-17</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
@@ -20,19 +20,25 @@
     <url>
         <loc>https://jder.it/class.png</loc>
         <changefreq>monthly</changefreq>
-        <lastmod>2026-03-20</lastmod>
+        <lastmod>2026-10-17</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://jder.it/er.png</loc>
         <changefreq>monthly</changefreq>
-        <lastmod>2026-03-20</lastmod>
+        <lastmod>2026-10-17</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://jder.it/usecase.png</loc>
         <changefreq>monthly</changefreq>
-        <lastmod>2026-03-20</lastmod>
+        <lastmod>2026-10-17</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/logic.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-10-17</lastmod>
         <priority>1.0</priority>
     </url>
 </urlset>

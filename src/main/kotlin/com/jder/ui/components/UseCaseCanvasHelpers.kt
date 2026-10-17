@@ -2,19 +2,44 @@ package com.jder.ui.components
 
 import androidx.compose.ui.geometry.Offset
 import com.jder.domain.model.Actor
+import com.jder.domain.model.SystemBoundary
 import com.jder.domain.model.UseCase
 import com.jder.domain.model.UseCaseDiagram
 import com.jder.domain.model.UseCaseRelation
 import com.jder.domain.model.UseCaseState
 import com.jder.domain.model.UseCaseToolMode
-import kotlin.math.pow
-import kotlin.math.sqrt
+
+private const val ACTOR_LABEL_HEIGHT = 20f
+
+sealed interface UseCaseElement {
+  val id: String
+
+  data class ActorRef(override val id: String) : UseCaseElement
+
+  data class UseCaseRef(override val id: String) : UseCaseElement
+
+  data class RelationRef(override val id: String) : UseCaseElement
+
+  data class NoteRef(override val id: String) : UseCaseElement
+
+  data class SystemRef(override val id: String) : UseCaseElement
+}
+
+internal val UseCaseElement.contextMenuType: UseCaseContextMenuType
+  get() =
+      when (this) {
+        is UseCaseElement.ActorRef -> UseCaseContextMenuType.ACTOR
+        is UseCaseElement.UseCaseRef -> UseCaseContextMenuType.USE_CASE
+        is UseCaseElement.RelationRef -> UseCaseContextMenuType.RELATION
+        is UseCaseElement.NoteRef -> UseCaseContextMenuType.NOTE
+        is UseCaseElement.SystemRef -> UseCaseContextMenuType.SYSTEM
+      }
 
 internal fun isPointInActor(point: Offset, actor: Actor): Boolean =
     point.x >= actor.x &&
         point.x <= actor.x + actor.width &&
         point.y >= actor.y &&
-        point.y <= actor.y + actor.height
+        point.y <= actor.y + actor.height + ACTOR_LABEL_HEIGHT
 
 internal fun isPointInUseCase(point: Offset, useCase: UseCase): Boolean {
   val cx = useCase.x + useCase.width / 2
@@ -26,6 +51,9 @@ internal fun isPointInUseCase(point: Offset, useCase: UseCase): Boolean {
   return dx * dx + dy * dy <= 1f
 }
 
+internal fun SystemBoundary.contains(point: Offset): Boolean =
+    point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height
+
 internal fun isPointNearRelation(
     point: Offset,
     relation: UseCaseRelation,
@@ -33,79 +61,61 @@ internal fun isPointNearRelation(
 ): Boolean {
   val start = getElementCenter(relation.sourceId, diagram) ?: return false
   val end = getElementCenter(relation.targetId, diagram) ?: return false
-  val dx = end.x - start.x
-  val dy = end.y - start.y
-  val lenSq = dx * dx + dy * dy
-  if (lenSq == 0f) return sqrt((point.x - start.x).pow(2) + (point.y - start.y).pow(2)) <= 8f
-  val t = (((point.x - start.x) * dx + (point.y - start.y) * dy) / lenSq).coerceIn(0f, 1f)
-  val projX = start.x + t * dx
-  val projY = start.y + t * dy
-  return sqrt((point.x - projX).pow(2) + (point.y - projY).pow(2)) <= 8f
+  return distanceToSegment(point, start, end) <= 8f
 }
 
-internal fun findClickedActorOrUseCase(offset: Offset, state: UseCaseState): String? {
-  state.diagram.actors
-      .find { isPointInActor(offset, it) }
+internal fun findClickedActorOrUseCase(offset: Offset, state: UseCaseState): String? =
+    state.diagram.useCases.lastOrNull { isPointInUseCase(offset, it) }?.id
+        ?: state.diagram.actors.lastOrNull { isPointInActor(offset, it) }?.id
+
+internal fun hitTestUseCaseDiagram(diagram: UseCaseDiagram, point: Offset): UseCaseElement? {
+  diagram.notes
+      .lastOrNull { it.contains(point) }
       ?.let {
-        return it.id
+        return UseCaseElement.NoteRef(it.id)
       }
-  state.diagram.useCases
-      .find { isPointInUseCase(offset, it) }
+  diagram.useCases
+      .lastOrNull { isPointInUseCase(point, it) }
       ?.let {
-        return it.id
+        return UseCaseElement.UseCaseRef(it.id)
+      }
+  diagram.actors
+      .lastOrNull { isPointInActor(point, it) }
+      ?.let {
+        return UseCaseElement.ActorRef(it.id)
+      }
+  diagram.relations
+      .lastOrNull { isPointNearRelation(point, it, diagram) }
+      ?.let {
+        return UseCaseElement.RelationRef(it.id)
+      }
+  diagram.systemBoundaries
+      .lastOrNull { it.contains(point) }
+      ?.let {
+        return UseCaseElement.SystemRef(it.id)
       }
   return null
+}
+
+internal fun selectUseCaseElement(state: UseCaseState, element: UseCaseElement) {
+  when (element) {
+    is UseCaseElement.ActorRef -> state.selectActor(element.id)
+    is UseCaseElement.UseCaseRef -> state.selectUseCase(element.id)
+    is UseCaseElement.RelationRef -> state.selectRelation(element.id)
+    is UseCaseElement.NoteRef -> state.selectNote(element.id)
+    is UseCaseElement.SystemRef -> state.selectSystemBoundary(element.id)
+  }
 }
 
 internal fun handleUseCaseCanvasTap(
     state: UseCaseState,
     offset: Offset,
-    onRelationCreateRequest: ((String, String) -> Unit)?,
+    onRelationCreateRequest: (String, String) -> Unit,
 ) {
   when (state.toolMode) {
-    UseCaseToolMode.SELECT -> {
-      state.diagram.actors
-          .find { isPointInActor(offset, it) }
-          ?.let {
-            state.selectActor(it.id)
-            return
-          }
-      state.diagram.useCases
-          .find { isPointInUseCase(offset, it) }
-          ?.let {
-            state.selectUseCase(it.id)
-            return
-          }
-      state.diagram.relations
-          .find { isPointNearRelation(offset, it, state.diagram) }
-          ?.let {
-            state.selectRelation(it.id)
-            return
-          }
-      state.diagram.notes
-          .find {
-            offset.x >= it.x &&
-                offset.x <= it.x + it.width &&
-                offset.y >= it.y &&
-                offset.y <= it.y + it.height
-          }
-          ?.let {
-            state.selectNote(it.id)
-            return
-          }
-      state.diagram.systemBoundaries
-          .find {
-            offset.x >= it.x &&
-                offset.x <= it.x + it.width &&
-                offset.y >= it.y &&
-                offset.y <= it.y + it.height
-          }
-          ?.let {
-            state.selectSystemBoundary(it.id)
-            return
-          }
-      state.clearSelection()
-    }
+    UseCaseToolMode.SELECT ->
+        hitTestUseCaseDiagram(state.diagram, offset)?.let { selectUseCaseElement(state, it) }
+            ?: state.clearSelection()
     UseCaseToolMode.ACTOR -> {
       state.addActor(offset.x - 25f, offset.y - 45f, "Nuovo Attore")
       state.toolMode = UseCaseToolMode.SELECT
@@ -121,7 +131,7 @@ internal fun handleUseCaseCanvasTap(
         when {
           pending == null -> state.pendingRelationSourceId = clickedId
           pending != clickedId -> {
-            onRelationCreateRequest?.invoke(pending, clickedId)
+            onRelationCreateRequest(pending, clickedId)
             state.pendingRelationSourceId = null
           }
           else -> state.pendingRelationSourceId = null
@@ -141,76 +151,28 @@ internal fun handleUseCaseCanvasTap(
   }
 }
 
-internal fun handleUseCaseDragStart(state: UseCaseState, offset: Offset) {
-  val adjusted =
-      Offset(
-          (offset.x - state.panOffset.x) / state.zoom,
-          (offset.y - state.panOffset.y) / state.zoom,
-      )
-  state.diagram.actors
-      .find { isPointInActor(adjusted, it) }
-      ?.let {
-        state.selectActor(it.id)
-        state.saveDragStartState()
-        return
-      }
-  state.diagram.useCases
-      .find { isPointInUseCase(adjusted, it) }
-      ?.let {
-        state.selectUseCase(it.id)
-        state.saveDragStartState()
-        return
-      }
-  state.diagram.notes
-      .find {
-        adjusted.x >= it.x &&
-            adjusted.x <= it.x + it.width &&
-            adjusted.y >= it.y &&
-            adjusted.y <= it.y + it.height
-      }
-      ?.let {
-        state.selectNote(it.id)
-        state.saveDragStartState()
-        return
-      }
-  state.diagram.systemBoundaries
-      .find {
-        adjusted.x >= it.x &&
-            adjusted.x <= it.x + it.width &&
-            adjusted.y >= it.y &&
-            adjusted.y <= it.y + it.height
-      }
-      ?.let {
-        state.selectSystemBoundary(it.id)
-        state.saveDragStartState()
-      }
+internal fun handleUseCaseDragStart(state: UseCaseState, offset: Offset): UseCaseElement? {
+  val element = hitTestUseCaseDiagram(state.diagram, offset) ?: return null
+  selectUseCaseElement(state, element)
+  if (element is UseCaseElement.RelationRef) return null
+  state.saveDragStartState()
+  return element
 }
 
-internal fun handleUseCaseDrag(state: UseCaseState, dragAmount: Offset) {
-  state.selectedActorId?.let {
-    state.updateActorWithoutSave(it) { actor ->
-      actor.copy(x = actor.x + dragAmount.x / state.zoom, y = actor.y + dragAmount.y / state.zoom)
-    }
-  }
-  state.selectedUseCaseId?.let {
-    state.updateUseCaseWithoutSave(it) { useCase ->
-      useCase.copy(
-          x = useCase.x + dragAmount.x / state.zoom,
-          y = useCase.y + dragAmount.y / state.zoom,
-      )
-    }
-  }
-  state.selectedNoteId?.let {
-    state.updateNoteWithoutSave(it) { note ->
-      note.copy(x = note.x + dragAmount.x / state.zoom, y = note.y + dragAmount.y / state.zoom)
-    }
-  }
-  state.selectedSystemBoundaryId?.let {
-    state.updateSystemBoundaryWithoutSave(it) { boundary ->
-      boundary.copy(
-          x = boundary.x + dragAmount.x / state.zoom,
-          y = boundary.y + dragAmount.y / state.zoom,
-      )
-    }
+internal fun handleUseCaseDrag(state: UseCaseState, element: UseCaseElement, delta: Offset) {
+  when (element) {
+    is UseCaseElement.ActorRef ->
+        state.updateActorWithoutSave(element.id) { it.copy(x = it.x + delta.x, y = it.y + delta.y) }
+    is UseCaseElement.UseCaseRef ->
+        state.updateUseCaseWithoutSave(element.id) {
+          it.copy(x = it.x + delta.x, y = it.y + delta.y)
+        }
+    is UseCaseElement.NoteRef ->
+        state.updateNoteWithoutSave(element.id) { it.copy(x = it.x + delta.x, y = it.y + delta.y) }
+    is UseCaseElement.SystemRef ->
+        state.updateSystemBoundaryWithoutSave(element.id) {
+          it.copy(x = it.x + delta.x, y = it.y + delta.y)
+        }
+    is UseCaseElement.RelationRef -> {}
   }
 }

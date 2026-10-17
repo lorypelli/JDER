@@ -39,6 +39,7 @@ fun RelationshipPropertiesDialog(
               onValueChange = { name = it },
               label = { Text("Nome") },
               modifier = Modifier.fillMaxWidth(),
+              singleLine = true,
           )
           OutlinedTextField(
               value = documentation,

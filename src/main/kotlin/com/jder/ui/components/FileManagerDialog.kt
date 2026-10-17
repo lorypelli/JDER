@@ -57,17 +57,23 @@ enum class FileManagerMode {
   OPEN,
 }
 
+private var lastUsedDirectory = File(System.getProperty("user.home"))
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FileManagerDialog(
     mode: FileManagerMode,
-    initialDirectory: File,
     fileExtension: String,
     title: String,
     defaultFileName: String? = null,
+    initialDirectory: File = lastUsedDirectory,
     onDismiss: () -> Unit,
     onFileSelected: (File) -> Unit,
 ) {
+  val selectFile: (File) -> Unit = { file ->
+    file.parentFile?.let { lastUsedDirectory = it }
+    onFileSelected(file)
+  }
   var currentDirectory by remember { mutableStateOf(initialDirectory) }
   var fileName by remember { mutableStateOf(defaultFileName ?: "") }
   var selectedFile by remember { mutableStateOf<File?>(null) }
@@ -266,9 +272,9 @@ fun FileManagerDialog(
                         }
                       } else if (
                           mode == FileManagerMode.OPEN &&
-                              it.extension == fileExtension.removePrefix(".")
+                              it.extension.equals(fileExtension.removePrefix("."), true)
                       ) {
-                        onFileSelected(it)
+                        selectFile(it)
                       }
                     },
                 )
@@ -317,22 +323,31 @@ fun FileManagerDialog(
               onClick = {
                 when (mode) {
                   FileManagerMode.SAVE -> {
-                    if (fileName.isBlank()) {
+                    val trimmedName = fileName.trim()
+                    val baseName =
+                        if (trimmedName.endsWith(fileExtension, ignoreCase = true))
+                            trimmedName.dropLast(fileExtension.length).trim()
+                        else trimmedName
+                    if (baseName.isBlank()) {
                       errorMessage = "Inserisci un nome per il file"
                       return@Button
                     }
-                    val file = File(currentDirectory, "$fileName$fileExtension")
+                    if (baseName.any { it in "/\\:*?\"<>|" }) {
+                      errorMessage = "Il nome del file contiene caratteri non validi"
+                      return@Button
+                    }
+                    val file = File(currentDirectory, "$baseName$fileExtension")
                     if (file.exists()) {
                       fileToOverwrite = file
                       showOverwriteDialog = true
                     } else {
-                      onFileSelected(file)
+                      selectFile(file)
                     }
                   }
                   FileManagerMode.OPEN -> {
                     selectedFile?.let {
                       if (it.exists() && it.isFile) {
-                        onFileSelected(it)
+                        selectFile(it)
                       }
                     }
                   }
@@ -408,7 +423,7 @@ fun FileManagerDialog(
         confirmButton = {
           Button(
               onClick = {
-                fileToOverwrite?.let { onFileSelected(it) }
+                fileToOverwrite?.let { selectFile(it) }
                 showOverwriteDialog = false
                 fileToOverwrite = null
               }

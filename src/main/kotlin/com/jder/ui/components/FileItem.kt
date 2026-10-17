@@ -41,7 +41,7 @@ fun FileItem(
   var lastClickTime by remember { mutableStateOf(0L) }
   val isValidFile =
       if (mode == FileManagerMode.OPEN) {
-        file.isDirectory || file.extension == fileExtension.removePrefix(".")
+        file.isDirectory || file.extension.equals(fileExtension.removePrefix("."), true)
       } else {
         true
       }

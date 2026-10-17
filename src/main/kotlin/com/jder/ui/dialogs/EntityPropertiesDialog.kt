@@ -38,6 +38,7 @@ fun EntityPropertiesDialog(entity: Entity, onDismiss: () -> Unit, onSave: (Entit
               onValueChange = { name = it },
               label = { Text("Nome") },
               modifier = Modifier.fillMaxWidth(),
+              singleLine = true,
           )
           Row(
               modifier = Modifier.fillMaxWidth(),

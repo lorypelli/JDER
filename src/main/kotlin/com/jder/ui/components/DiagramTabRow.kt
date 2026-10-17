@@ -5,34 +5,22 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
-enum class DiagramMode {
-  ER,
-  CLASS_DIAGRAM,
-  USE_CASE,
-}
+import com.jder.domain.model.DiagramType
 
 @Composable
 fun DiagramTabRow(
-    currentMode: DiagramMode,
-    onModeChange: (DiagramMode) -> Unit,
+    currentType: DiagramType,
+    onTypeChange: (DiagramType) -> Unit,
+    isModified: (DiagramType) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
-  TabRow(selectedTabIndex = currentMode.ordinal, modifier = modifier) {
-    Tab(
-        selected = currentMode == DiagramMode.ER,
-        onClick = { onModeChange(DiagramMode.ER) },
-        text = { Text("Diagramma E/R") },
-    )
-    Tab(
-        selected = currentMode == DiagramMode.CLASS_DIAGRAM,
-        onClick = { onModeChange(DiagramMode.CLASS_DIAGRAM) },
-        text = { Text("Diagramma Classi") },
-    )
-    Tab(
-        selected = currentMode == DiagramMode.USE_CASE,
-        onClick = { onModeChange(DiagramMode.USE_CASE) },
-        text = { Text("Casi d'Uso") },
-    )
+  TabRow(selectedTabIndex = currentType.ordinal, modifier = modifier) {
+    DiagramType.entries.forEach { type ->
+      Tab(
+          selected = currentType == type,
+          onClick = { onTypeChange(type) },
+          text = { Text(if (isModified(type)) "${type.tabLabel} •" else type.tabLabel) },
+      )
+    }
   }
 }

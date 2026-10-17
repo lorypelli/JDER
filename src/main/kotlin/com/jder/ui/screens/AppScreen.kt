@@ -12,11 +12,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.jder.data.ClassDiagramRepository
 import com.jder.data.DiagramRepository
+import com.jder.data.LogicDiagramRepository
 import com.jder.data.UseCaseRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramState
+import com.jder.domain.model.DiagramType
+import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.UseCaseState
-import com.jder.ui.components.DiagramMode
 import com.jder.ui.components.DiagramTabRow
 import com.jder.ui.theme.ThemeState
 
@@ -25,32 +27,48 @@ fun AppScreen(
     erState: DiagramState,
     useCaseState: UseCaseState,
     classState: ClassDiagramState,
+    logicState: LogicDiagramState,
     repository: DiagramRepository,
     useCaseRepository: UseCaseRepository,
     classRepository: ClassDiagramRepository,
+    logicRepository: LogicDiagramRepository,
     themeState: ThemeState,
 ) {
-  var currentMode by remember { mutableStateOf(DiagramMode.ER) }
+  var currentType by remember { mutableStateOf(DiagramType.ER) }
   Column(modifier = Modifier.fillMaxSize()) {
     DiagramTabRow(
-        currentMode = currentMode,
-        onModeChange = { currentMode = it },
+        currentType = currentType,
+        onTypeChange = { currentType = it },
+        isModified = { type ->
+          when (type) {
+            DiagramType.ER -> erState.isModified
+            DiagramType.CLASS_DIAGRAM -> classState.isModified
+            DiagramType.USE_CASE -> useCaseState.isModified
+            DiagramType.LOGIC -> logicState.isModified
+          }
+        },
         modifier = Modifier.fillMaxWidth(),
     )
     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-      when (currentMode) {
-        DiagramMode.ER ->
+      when (currentType) {
+        DiagramType.ER ->
             MainScreen(state = erState, repository = repository, themeState = themeState)
-        DiagramMode.CLASS_DIAGRAM ->
+        DiagramType.CLASS_DIAGRAM ->
             ClassDiagramScreen(
                 state = classState,
                 repository = classRepository,
                 themeState = themeState,
             )
-        DiagramMode.USE_CASE ->
+        DiagramType.USE_CASE ->
             UseCaseScreen(
                 state = useCaseState,
                 repository = useCaseRepository,
+                themeState = themeState,
+            )
+        DiagramType.LOGIC ->
+            LogicDiagramScreen(
+                state = logicState,
+                repository = logicRepository,
                 themeState = themeState,
             )
       }

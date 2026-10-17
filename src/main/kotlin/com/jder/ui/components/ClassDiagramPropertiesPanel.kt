@@ -1,7 +1,6 @@
 package com.jder.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -14,13 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,22 +50,7 @@ fun ClassDiagramPropertiesPanel(
       modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-      Text(
-          text = "Proprietà",
-          style = MaterialTheme.typography.titleLarge,
-          color = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.align(Alignment.CenterStart),
-      )
-      IconButton(onClick = onClose, modifier = Modifier.align(Alignment.CenterEnd).size(32.dp)) {
-        Icon(
-            Icons.Default.Close,
-            contentDescription = "Chiudi pannello proprietà",
-            tint = MaterialTheme.colorScheme.onSurface,
-        )
-      }
-    }
-    Divider()
+    PropertiesPanelHeader(onClose)
     state.selectedClassId?.let { selId ->
       state.diagram.classes
           .find { it.id == selId }

@@ -1,6 +1,6 @@
 # JDER
 
-**Java Diagrammi E/R** — Un editor moderno e multipiattaforma per diagrammi Entità-Relazione, Use Case e delle Classi
+**Java Diagrammi E/R** — Un editor moderno e multipiattaforma per diagrammi Entità-Relazione, Use Case, delle Classi e Logici
 
 [![Website](https://img.shields.io/badge/Website-jder.it-blue?style=for-the-badge)](https://jder.it/)
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
@@ -58,6 +58,19 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - Definisci **Confini di Sistema** per raggruppare i casi d'uso
 - Aggiungi **Note testuali** condivise con il componente note E/R
 
+#### Diagramma Logico
+
+- Inserisci **Porte Logiche** con i simboli standard: `AND`, `OR`, `NOT`, `NAND`, `NOR`, `XOR`, `XNOR`
+  - Da 2 a 8 ingressi per le porte a più ingressi, etichetta opzionale (es. `U1`)
+- Aggiungi **Ingressi** (interruttori 0/1, cliccabili) e **Uscite** (indicatori luminosi)
+- Collega gli elementi **trascinando da un pin all'altro** (oppure con lo strumento Collegamento)
+  - I collegamenti vengono instradati automaticamente evitando gli altri componenti
+- **Simulazione in tempo reale**: i fili si colorano in base al valore (1, 0 o indefinito)
+  - Gestisce anche circuiti con retroazione (es. latch SR) e segnala quelli che oscillano
+- **Tabella di verità** generata automaticamente (copiabile negli appunti)
+- **Espressione booleana** di ogni uscita e porta nel pannello Proprietà
+- Aggiungi **Note testuali** come negli altri diagrammi
+
 ---
 
 ### 🎨 Interfaccia & UX
@@ -66,48 +79,56 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - **Modalità Chiara & Scura** con transizione animata fluida
 - **20 palette di colori Material ufficiali** selezionabili a runtime:
   - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero
-- **Navigazione a schede** tra i diagrammi E/R e Use Case
+- **Navigazione a schede** tra i quattro tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
 - **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
 - **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
+- **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
 
 ---
 
 ### 🖱️ Controlli della Lavagna
 
-| Azione                  | Controllo                              |
-| ----------------------- | -------------------------------------- |
-| Zoom Avanti             | `Ctrl` + `+` o scroll mouse su        |
-| Zoom Indietro           | `Ctrl` + `-` o scroll mouse giù       |
-| Scorrimento             | Trascinamento con tasto centrale mouse |
-| Seleziona e Sposta      | Clic sinistro + trascinamento          |
-| Apri menu contestuale   | Clic destro sull'elemento              |
-| Reimposta Zoom          | Menu Vista → Reimposta Zoom            |
+| Azione                  | Controllo                                                    |
+| ----------------------- | ------------------------------------------------------------ |
+| Zoom Avanti             | `Ctrl` + `+` o scroll mouse su (verso il cursore)            |
+| Zoom Indietro           | `Ctrl` + `-` o scroll mouse giù                              |
+| Scorrimento             | Trascinamento su un'area vuota o con il tasto centrale       |
+| Seleziona e Sposta      | Clic sinistro + trascinamento                                |
+| Modifica elemento       | Doppio clic sull'elemento                                    |
+| Apri menu contestuale   | Clic destro sull'elemento (`Ctrl` + clic su macOS)           |
+| Collega porte logiche   | Trascinamento da un pin a un altro                           |
+| Reimposta Zoom          | `Ctrl` + `0` o Menu Vista → Reimposta Zoom                   |
 
 ---
 
 ### ⌨️ Scorciatoie da Tastiera
 
-| Scorciatoia        | Azione                          |
-| ------------------ | ------------------------------- |
-| `Ctrl + Z`         | Annulla                         |
-| `Ctrl + Y`         | Ripeti                          |
-| `Ctrl + S`         | Salva                           |
-| `Ctrl + Shift + S` | Salva con nome                  |
-| `Ctrl + O`         | Apri                            |
-| `Ctrl + N`         | Nuovo Diagramma                 |
-| `Ctrl + +`         | Zoom Avanti                     |
-| `Ctrl + -`         | Zoom Indietro                   |
-| `Delete`           | Elimina elemento selezionato    |
+Su macOS si può usare `Cmd` al posto di `Ctrl`.
+
+| Scorciatoia                      | Azione                                  |
+| -------------------------------- | --------------------------------------- |
+| `Ctrl + Z`                       | Annulla                                 |
+| `Ctrl + Y` / `Ctrl + Shift + Z`  | Ripeti                                  |
+| `Ctrl + S`                       | Salva                                   |
+| `Ctrl + Shift + S`               | Salva con nome                          |
+| `Ctrl + O`                       | Apri                                    |
+| `Ctrl + N`                       | Nuovo Diagramma                         |
+| `Ctrl + E`                       | Esporta come PNG                        |
+| `Ctrl + +`                       | Zoom Avanti                             |
+| `Ctrl + -`                       | Zoom Indietro                           |
+| `Ctrl + 0`                       | Reimposta Zoom                          |
+| `Delete` / `Backspace`           | Elimina elemento selezionato            |
+| `Esc`                            | Deseleziona e torna allo strumento Seleziona |
 
 ---
 
 ### 💾 Salvataggio & Esportazione
 
 - Salva i diagrammi in formato **JSON** (`.json`)
-- Apri e ricarica diagrammi salvati in precedenza
-- Esporta qualsiasi diagramma come **immagine PNG**
+- Apri e ricarica diagrammi salvati in precedenza (un file di un altro tipo di diagramma viene riconosciuto e non sovrascritto per errore)
+- Esporta qualsiasi diagramma come **immagine PNG** ad alta risoluzione, identica a quanto mostrato sulla lavagna e ritagliata sul contenuto
 - Finestra di dialogo per modifiche non salvate alla chiusura o all'apertura di un nuovo diagramma
-- Cronologia globale annulla/ripeti (fino a 50 stati)
+- Cronologia annulla/ripeti per ogni diagramma (fino a 50 stati)
 
 ---
 
@@ -149,12 +170,22 @@ Poi eseguilo con:
 java -jar JDER.jar
 ```
 
+### Diagrammi di esempio
+
+La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, classi, casi d'uso e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito sono generati da questi file.
+
 ### Compilare dal sorgente
 
 ```bash
 git clone https://github.com/LoryPelli/JDER.git
 cd JDER
 ./gradlew run
+```
+
+Per eseguire i test:
+
+```bash
+./gradlew test
 ```
 
 Per creare un JAR standalone:
@@ -171,31 +202,38 @@ Il file di output si troverà in `build/libs/JDER.jar`.
 
 ```
 src/
+├── test/kotlin/com/jder/            # Test (simulazione logica, file, gesti sulla lavagna)
 └── main/
     ├── kotlin/com/jder/
     │   ├── Main.kt                    # Punto di ingresso dell'app
     │   ├── data/
+    │   │   ├── DiagramFileRepository.kt    # Persistenza JSON generica con riconoscimento del tipo
     │   │   ├── DiagramRepository.kt        # Persistenza JSON E/R
     │   │   ├── UseCaseRepository.kt        # Persistenza JSON Use Case
     │   │   ├── ClassDiagramRepository.kt   # Persistenza JSON Diagramma Classi
+    │   │   ├── LogicDiagramRepository.kt   # Persistenza JSON Diagramma Logico
     │   │   ├── ImageExporter.kt            # Esportazione PNG via Skia
     │   │   └── JsonConfig.kt               # Configurazione kotlinx.serialization
     │   ├── domain/model/
+    │   │   ├── DiagramEditorState.kt       # Stato comune: file, modifiche, annulla/ripeti, zoom
+    │   │   ├── UndoHistory.kt              # Cronologia annulla/ripeti
+    │   │   ├── DiagramType.kt              # Tipi di diagramma (schede e file)
     │   │   ├── ERModels.kt                 # Data class Entità, Relazione, Attributo, Nota
     │   │   ├── UseCaseModels.kt            # Data class Attore, CasoDUso, ConfineDelSistema
     │   │   ├── ClassDiagramModels.kt       # Data class ClassEntity, ClassMember, ClassRelation
-    │   │   ├── DiagramState.kt             # Stato E/R + annulla/ripeti
-    │   │   ├── UseCaseState.kt             # Stato Use Case + annulla/ripeti
-    │   │   ├── ClassDiagramState.kt        # Stato Diagramma Classi + annulla/ripeti
-    │   │   ├── ToolMode.kt                 # Modalità strumento E/R
-    │   │   ├── UseCaseToolMode.kt          # Modalità strumento Use Case
-    │   │   └── ClassDiagramToolMode.kt     # Modalità strumento Diagramma Classi
+    │   │   ├── LogicModels.kt              # Data class LogicComponent, LogicWire, LogicDiagram
+    │   │   ├── LogicSimulator.kt           # Simulazione, tabella di verità, espressioni booleane
+    │   │   ├── DiagramState.kt             # Stato E/R
+    │   │   ├── UseCaseState.kt             # Stato Use Case
+    │   │   ├── ClassDiagramState.kt        # Stato Diagramma Classi
+    │   │   ├── LogicDiagramState.kt        # Stato Diagramma Logico
+    │   │   └── *ToolMode.kt                # Modalità strumento di ogni diagramma
     │   └── ui/
-    │       ├── components/            # Componenti UI riutilizzabili
+    │       ├── components/            # Lavagne, disegno, gesti, barre strumenti, pannelli
     │       ├── dialogs/               # Finestre di dialogo per proprietà e creazione
-    │       ├── screens/               # AppScreen, MainScreen, UseCaseScreen, ClassDiagramScreen
+    │       ├── screens/               # AppScreen, DiagramEditorScaffold e una schermata per diagramma
     │       ├── theme/                 # Tema, Palette Colori, StatoTema
-    │       └── utils/                 # Renderer diagrammi e PNG
+    │       └── utils/                 # Esportazione PNG e utilità di piattaforma
     └── resources/
         └── jder_icon.png
 ```

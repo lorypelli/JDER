@@ -5,23 +5,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case e Class Diagram. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta name="keywords"
-        content="JDER, Entity-Relationship, ER diagram, Use Case diagram, Class diagram, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
+        content="JDER, Entity-Relationship, ER diagram, Use Case diagram, Class diagram, diagrammi logici, porte logiche, logic gates, tabella di verità, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
     <meta name="author" content="LoryPelli" />
     <meta name="robots" content="index, follow" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
     <meta property="og:site_name" content="JDER" />
-    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Use Case e Class" />
+    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Use Case, Class e Logici" />
     <meta property="og:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case e Class Diagram. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta property="og:url" content="https://jder.it/" />
     <meta property="og:image" content="https://jder.it/favicon.ico" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Use Case e Class" />
+    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Use Case, Class e Logici" />
     <meta name="twitter:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case e Class Diagram. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta name="twitter:image" content="https://jder.it/favicon.ico" />
     <link rel="icon" href="favicon.ico" />
     <link rel="canonical" href="https://jder.it/" />
@@ -33,7 +33,7 @@
         "url": "https://jder.it/download",
         "name": "Scarica JDER",
         "inLanguage": "it-IT",
-        "description": "Editor gratuito e open source per diagrammi Entity-Relationship, Use Case e Class Diagram. Scritto in Kotlin e Compose Multiplatform, gira su Windows, macOS e Linux.",
+        "description": "Editor gratuito e open source per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici. Scritto in Kotlin e Compose Multiplatform, gira su Windows, macOS e Linux.",
         "author": {
             "@type": "Person",
             "name": "LoryPelli",
@@ -65,13 +65,13 @@
         }
     }
     </script>
-    <title>JDER - Editor di Diagrammi ER, Use Case e Class</title>
+    <title>JDER - Editor di Diagrammi ER, Use Case, Class e Logici</title>
 </head>
 
 <body>
     <header>
         <h1>JDER</h1>
-        <p>Editor di Diagrammi ER, Use Case e Class</p>
+        <p>Editor di Diagrammi ER, Use Case, Class e Logici</p>
     </header>
     <main>
         <section class="hero">
@@ -114,6 +114,12 @@
                         corrette</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Diagramma Logico</h3>
+                    <p>Porte logiche AND, OR, NOT, NAND, NOR, XOR e XNOR con simulazione in tempo reale, tabella di
+                        verità ed espressioni booleane</p>
+                </div>
+                <div class="feature-card">
                     <div class="feature-icon">🎨</div>
                     <h3>Interfaccia Material 3</h3>
                     <p>Design pulito con tema chiaro/scuro e 20 palette di colori ufficiali selezionabili in tempo reale
@@ -127,7 +133,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">⌨️</div>
                     <h3>Scorciatoie e Controlli</h3>
-                    <p>Undo/Redo, zoom, pan con mouse centrale e scorciatoie da tastiera per un workflow efficiente</p>
+                    <p>Undo/Redo, zoom verso il cursore, pan trascinando la lavagna e scorciatoie da tastiera per un workflow efficiente</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📝</div>
@@ -146,24 +152,33 @@
             <div class="screenshot-grid">
                 <figure class="screenshot-card">
                     <a href="/er.png" target="_blank">
-                        <img src="/er.png" alt="Esempio di Diagramma Entity-Relationship in JDER" loading="lazy"
-                            decoding="async" />
+                        <img src="/er.png" alt="Diagramma E/R in JDER: studenti, corsi e docenti di un'università"
+                            width="1600" height="900" loading="lazy" decoding="async" />
                     </a>
                     <figcaption>Diagramma E/R</figcaption>
                 </figure>
                 <figure class="screenshot-card">
                     <a href="/class.png" target="_blank">
-                        <img src="/class.png" alt="Esempio di Diagramma delle Classi in JDER" loading="lazy"
-                            decoding="async" />
+                        <img src="/class.png"
+                            alt="Diagramma delle Classi in JDER: e-commerce con ereditarietà, interfacce ed enumerazioni"
+                            width="1600" height="900" loading="lazy" decoding="async" />
                     </a>
                     <figcaption>Diagramma delle Classi</figcaption>
                 </figure>
                 <figure class="screenshot-card">
                     <a href="/usecase.png" target="_blank">
-                        <img src="/usecase.png" alt="Esempio di Diagramma Use Case in JDER" loading="lazy"
-                            decoding="async" />
+                        <img src="/usecase.png" alt="Diagramma Use Case in JDER: sistema di gestione di una biblioteca"
+                            width="1600" height="900" loading="lazy" decoding="async" />
                     </a>
                     <figcaption>Diagramma Use Case</figcaption>
+                </figure>
+                <figure class="screenshot-card">
+                    <a href="/logic.png" target="_blank">
+                        <img src="/logic.png"
+                            alt="Diagramma Logico in JDER: sommatore completo con porte XOR, AND e OR e valori simulati"
+                            width="1600" height="900" loading="lazy" decoding="async" />
+                    </a>
+                    <figcaption>Diagramma Logico</figcaption>
                 </figure>
             </div>
         </section>
