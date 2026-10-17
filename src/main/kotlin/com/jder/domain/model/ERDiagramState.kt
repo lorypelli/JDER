@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.util.UUID
 
-class DiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo Diagramma E-R") }) {
+class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo Diagramma E-R") }) {
   var selectedEntityId by mutableStateOf<String?>(null)
     private set
 
@@ -15,7 +15,7 @@ class DiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo Dia
   var selectedNoteId by mutableStateOf<String?>(null)
     private set
 
-  var toolMode by mutableStateOf(ToolMode.SELECT)
+  var toolMode by mutableStateOf(ERToolMode.SELECT)
 
   override val diagramName: String
     get() = diagram.name
@@ -27,7 +27,7 @@ class DiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo Dia
     get() = selectedEntityId != null || selectedRelationshipId != null || selectedNoteId != null
 
   override val isSelectTool: Boolean
-    get() = toolMode == ToolMode.SELECT
+    get() = toolMode == ERToolMode.SELECT
 
   override fun withName(diagram: ERDiagram, name: String) = diagram.copy(name = name)
 
@@ -47,7 +47,7 @@ class DiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo Dia
   }
 
   override fun resetToolMode() {
-    toolMode = ToolMode.SELECT
+    toolMode = ERToolMode.SELECT
   }
 
   override fun deleteSelection(): String? {

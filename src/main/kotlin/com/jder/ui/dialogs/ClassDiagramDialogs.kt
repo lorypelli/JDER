@@ -34,7 +34,8 @@ fun ClassEntityDialog(
     isAbstract: Boolean,
     documentation: String,
     onDismiss: () -> Unit,
-    onConfirm: (String, ClassEntityType, Boolean, String) -> Unit,
+    onConfirm:
+        (name: String, type: ClassEntityType, isAbstract: Boolean, documentation: String) -> Unit,
 ) {
   var entityName by remember { mutableStateOf(name) }
   var entityType by remember { mutableStateOf(type) }
@@ -54,7 +55,7 @@ fun ClassEntityDialog(
           )
           Text("Tipo:", style = MaterialTheme.typography.labelMedium)
           RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) { t ->
-            if (t.stereotype.isNotEmpty()) "${t.stereotype} (${t.name})" else t.name
+            t.display
           }
           if (entityType == ClassEntityType.CLASS) {
             Row(
@@ -91,7 +92,11 @@ fun ClassEntityDialog(
 }
 
 @Composable
-fun ClassMemberDialog(isMethod: Boolean, onDismiss: () -> Unit, onConfirm: (ClassMember) -> Unit) {
+fun ClassMemberDialog(
+    isMethod: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: (member: ClassMember) -> Unit,
+) {
   var memberName by remember { mutableStateOf("") }
   var memberType by remember { mutableStateOf("") }
   var visibility by remember { mutableStateOf(Visibility.PUBLIC) }
@@ -123,7 +128,7 @@ fun ClassMemberDialog(isMethod: Boolean, onDismiss: () -> Unit, onConfirm: (Clas
           }
           Text("Visibilità:", style = MaterialTheme.typography.labelMedium)
           RadioOptionList(Visibility.entries, visibility, { visibility = it }) { v ->
-            "${v.symbol}  ${v.name.lowercase().replaceFirstChar { it.uppercase() }}"
+            "${v.symbol}  ${v.display}"
           }
           Row(
               modifier = Modifier.fillMaxWidth(),
@@ -173,7 +178,13 @@ fun ClassMemberDialog(isMethod: Boolean, onDismiss: () -> Unit, onConfirm: (Clas
 fun ClassRelationDialog(
     relation: ClassRelation,
     onDismiss: () -> Unit,
-    onConfirm: (ClassRelationType, String, String, String) -> Unit,
+    onConfirm:
+        (
+            type: ClassRelationType,
+            sourceMultiplicity: String,
+            targetMultiplicity: String,
+            label: String,
+        ) -> Unit,
 ) {
   var relType by remember { mutableStateOf(relation.type) }
   var sourceMulti by remember { mutableStateOf(relation.sourceMultiplicity) }
@@ -226,7 +237,10 @@ fun ClassRelationDialog(
 }
 
 @Composable
-fun SelectClassRelationTypeDialog(onDismiss: () -> Unit, onConfirm: (ClassRelationType) -> Unit) {
+fun SelectClassRelationTypeDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (type: ClassRelationType) -> Unit,
+) {
   var selected by remember { mutableStateOf(ClassRelationType.ASSOCIATION) }
   AlertDialog(
       onDismissRequest = onDismiss,

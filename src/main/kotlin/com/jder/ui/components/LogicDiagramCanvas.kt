@@ -21,7 +21,7 @@ import com.jder.domain.model.snapToLogicGrid
 private class LogicWirePreview(
     val anchor: Offset,
     val cursor: Offset,
-    val fromOutput: Boolean,
+    val isFromOutput: Boolean,
     val target: LogicElement.PinRef?,
 )
 
@@ -54,7 +54,7 @@ fun LogicDiagramCanvas(
 
           override fun onDoubleTap(position: Offset): Boolean {
             if (!state.isSelectTool) return false
-            val element = hitTestLogic(state.diagram, position) ?: return false
+            val element = hitTestLogicDiagram(state.diagram, position) ?: return false
             if (element is LogicElement.ToggleRef || element is LogicElement.WireRef) return false
             selectLogicElement(state, element)
             currentOnEditRequest(element)
@@ -62,13 +62,13 @@ fun LogicDiagramCanvas(
           }
 
           override fun onContextClick(position: Offset, screenPosition: Offset) {
-            val element = hitTestLogic(state.diagram, position) ?: return
+            val element = hitTestLogicDiagram(state.diagram, position) ?: return
             selectLogicElement(state, element)
             currentOnContextMenuRequest(screenPosition, element.contextMenuType)
           }
 
           override fun onDragStart(position: Offset): Boolean {
-            when (val element = hitTestLogic(state.diagram, position)) {
+            when (val element = hitTestLogicDiagram(state.diagram, position)) {
               is LogicElement.PinRef -> {
                 val component = state.component(element.id) ?: return false
                 wireSource = LogicEndpoint(element.id, element.pin)
@@ -76,7 +76,7 @@ fun LogicDiagramCanvas(
                     LogicWirePreview(
                         anchor = component.pinPosition(element.pin),
                         cursor = position,
-                        fromOutput = element.pin == LogicPin.Output,
+                        isFromOutput = element.pin == LogicPin.Output,
                         target = null,
                     )
               }
@@ -127,7 +127,7 @@ fun LogicDiagramCanvas(
                       cursor =
                           candidate?.let { pin -> state.component(pin.id)?.pinPosition(pin.pin) }
                               ?: position,
-                      fromOutput = it.fromOutput,
+                      isFromOutput = it.isFromOutput,
                       target = candidate,
                   )
                 }
@@ -137,7 +137,7 @@ fun LogicDiagramCanvas(
             wireSource?.let { source ->
               val target =
                   wirePreview?.target?.let { LogicEndpoint(it.id, it.pin) }
-                      ?: hitTestLogic(state.diagram, position).toEndpoint()
+                      ?: hitTestLogicDiagram(state.diagram, position).toEndpoint()
               if (target != null && target.componentId != source.componentId) {
                 connectLogic(state, source, target, position, currentOnMessage)
               }
@@ -150,7 +150,7 @@ fun LogicDiagramCanvas(
           }
 
           override fun onHover(position: Offset?) {
-            hovered = position?.let { hitTestLogic(state.diagram, it) }
+            hovered = position?.let { hitTestLogicDiagram(state.diagram, it) }
           }
         }
       }
@@ -179,7 +179,7 @@ fun LogicDiagramCanvas(
               listOfNotNull(hovered as? LogicElement.PinRef, preview?.target).distinct(),
           pendingSource = state.pendingWireSource,
       )
-      preview?.let { drawLogicWirePreview(it.anchor, it.cursor, it.fromOutput, palette) }
+      preview?.let { drawLogicWirePreview(it.anchor, it.cursor, it.isFromOutput, palette) }
     }
   }
 }

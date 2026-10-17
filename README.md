@@ -203,8 +203,8 @@ src/
     │   ├── Main.kt                    # Punto di ingresso dell'app
     │   ├── data/
     │   │   ├── DiagramFileRepository.kt    # Persistenza JSON generica con riconoscimento del tipo
-    │   │   ├── DiagramRepository.kt        # Persistenza JSON E/R
-    │   │   ├── UseCaseRepository.kt        # Persistenza JSON Use Case
+    │   │   ├── ERDiagramRepository.kt      # Persistenza JSON E/R
+    │   │   ├── UseCaseDiagramRepository.kt # Persistenza JSON Use Case
     │   │   ├── ClassDiagramRepository.kt   # Persistenza JSON Diagramma Classi
     │   │   ├── LogicDiagramRepository.kt   # Persistenza JSON Diagramma Logico
     │   │   ├── ImageExporter.kt            # Esportazione PNG via Skia
@@ -214,13 +214,13 @@ src/
     │   │   ├── DiagramEditorState.kt       # Stato comune: file, modifiche, annulla/ripeti, zoom
     │   │   ├── UndoHistory.kt              # Cronologia annulla/ripeti
     │   │   ├── DiagramType.kt              # Tipi di diagramma (schede e file)
-    │   │   ├── ERModels.kt                 # Data class Entità, Relazione, Attributo, Nota
-    │   │   ├── UseCaseModels.kt            # Data class Attore, CasoDUso, ConfineDelSistema
+    │   │   ├── ERModels.kt                 # Data class Entity, Relationship, Attribute, Note
+    │   │   ├── UseCaseModels.kt            # Data class Actor, UseCase, SystemBoundary
     │   │   ├── ClassDiagramModels.kt       # Data class ClassEntity, ClassMember, ClassRelation
     │   │   ├── LogicModels.kt              # Data class LogicComponent, LogicWire, LogicDiagram
     │   │   ├── LogicSimulator.kt           # Simulazione, tabella di verità, espressioni booleane
-    │   │   ├── DiagramState.kt             # Stato E/R
-    │   │   ├── UseCaseState.kt             # Stato Use Case
+    │   │   ├── ERDiagramState.kt           # Stato E/R
+    │   │   ├── UseCaseDiagramState.kt      # Stato Use Case
     │   │   ├── ClassDiagramState.kt        # Stato Diagramma Classi
     │   │   ├── LogicDiagramState.kt        # Stato Diagramma Logico
     │   │   └── *ToolMode.kt                # Modalità strumento di ogni diagramma

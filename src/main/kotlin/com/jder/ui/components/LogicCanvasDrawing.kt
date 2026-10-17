@@ -68,7 +68,7 @@ internal fun DrawScope.drawLogicDiagram(
           route.wire.id == hoveredId -> 2.75f
           else -> 2f
         }
-    drawWirePath(route.points, color, width, dashed = showSignals && value == null && !isSelected)
+    drawWirePath(route.points, color, width, isDashed = showSignals && value == null && !isSelected)
   }
   logicJunctions(routes.groupBy({ it.wire.sourceId }, { it.points })).forEach { junction ->
     val color =
@@ -105,11 +105,12 @@ internal fun DrawScope.drawLogicDiagram(
 internal fun DrawScope.drawLogicWirePreview(
     anchor: Offset,
     cursor: Offset,
-    fromOutput: Boolean,
+    isFromOutput: Boolean,
     palette: DiagramPalette,
 ) {
-  val points = if (fromOutput) logicWirePoints(anchor, cursor) else logicWirePoints(cursor, anchor)
-  drawWirePath(points, palette.selected, 2f, dashed = true)
+  val points =
+      if (isFromOutput) logicWirePoints(anchor, cursor) else logicWirePoints(cursor, anchor)
+  drawWirePath(points, palette.selected, 2f, isDashed = true)
 }
 
 internal fun logicDiagramBounds(diagram: LogicDiagram, textMeasurer: TextMeasurer): Rect? {
@@ -138,7 +139,7 @@ private fun DrawScope.drawWirePath(
     points: List<Offset>,
     color: Color,
     width: Float,
-    dashed: Boolean,
+    isDashed: Boolean,
 ) {
   val path =
       Path().apply {
@@ -153,7 +154,7 @@ private fun DrawScope.drawWirePath(
               width = width,
               cap = StrokeCap.Round,
               join = StrokeJoin.Round,
-              pathEffect = if (dashed) PathEffect.dashPathEffect(floatArrayOf(6f, 4f)) else null,
+              pathEffect = if (isDashed) PathEffect.dashPathEffect(floatArrayOf(6f, 4f)) else null,
           ),
   )
 }

@@ -169,7 +169,11 @@ fun ToolbarFileMenu(
       }
       Divider()
       ToolbarMenuItem("Salva", Icons.Default.Save, shortcutLabel("S")) { runAction(onSaveDiagram) }
-      ToolbarMenuItem("Salva con nome...", Icons.Default.Save, shortcutLabel("S", shift = true)) {
+      ToolbarMenuItem(
+          "Salva con nome...",
+          Icons.Default.Save,
+          shortcutLabel("S", hasShift = true),
+      ) {
         runAction(onSaveAsDiagram)
       }
       ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {

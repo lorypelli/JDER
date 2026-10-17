@@ -2,38 +2,38 @@ package com.jder.ui.components
 
 import androidx.compose.ui.geometry.Offset
 import com.jder.domain.model.Attribute
-import com.jder.domain.model.DiagramState
 import com.jder.domain.model.ERDiagram
+import com.jder.domain.model.ERDiagramState
+import com.jder.domain.model.ERToolMode
 import com.jder.domain.model.Entity
-import com.jder.domain.model.ToolMode
 import kotlin.math.abs
 
 private const val ATTRIBUTE_HIT_RADIUS = 24f
 
 sealed interface ERElement {
-  val ownerId: String
+  val id: String
 
-  data class EntityElement(override val ownerId: String) : ERElement
+  data class EntityRef(override val id: String) : ERElement
 
-  data class RelationshipElement(override val ownerId: String) : ERElement
+  data class RelationshipRef(override val id: String) : ERElement
 
-  data class NoteElement(override val ownerId: String) : ERElement
+  data class NoteRef(override val id: String) : ERElement
 
-  data class AttributeElement(
+  data class AttributeRef(
       val attributeId: String,
-      override val ownerId: String,
+      override val id: String,
       val isEntityAttribute: Boolean,
   ) : ERElement
 }
 
-internal val ERElement.contextMenuType: ContextMenuType
+internal val ERElement.contextMenuType: ERContextMenuType
   get() =
       when (this) {
-        is ERElement.EntityElement -> ContextMenuType.ENTITY
-        is ERElement.RelationshipElement -> ContextMenuType.RELATIONSHIP
-        is ERElement.NoteElement -> ContextMenuType.NOTE
-        is ERElement.AttributeElement ->
-            if (isEntityAttribute) ContextMenuType.ENTITY else ContextMenuType.RELATIONSHIP
+        is ERElement.EntityRef -> ERContextMenuType.ENTITY
+        is ERElement.RelationshipRef -> ERContextMenuType.RELATIONSHIP
+        is ERElement.NoteRef -> ERContextMenuType.NOTE
+        is ERElement.AttributeRef ->
+            if (isEntityAttribute) ERContextMenuType.ENTITY else ERContextMenuType.RELATIONSHIP
       }
 
 internal fun isPointInDiamond(
@@ -97,11 +97,11 @@ private fun attributeAt(
         }
         ?.let { attributes[it] }
 
-internal fun hitTestER(diagram: ERDiagram, point: Offset): ERElement? {
+internal fun hitTestERDiagram(diagram: ERDiagram, point: Offset): ERElement? {
   diagram.notes
       .lastOrNull { it.contains(point) }
       ?.let {
-        return ERElement.NoteElement(it.id)
+        return ERElement.NoteRef(it.id)
       }
   diagram.relationships.asReversed().forEach { relationship ->
     attributeAt(
@@ -113,82 +113,80 @@ internal fun hitTestER(diagram: ERDiagram, point: Offset): ERElement? {
             point,
         )
         ?.let {
-          return ERElement.AttributeElement(it.id, relationship.id, isEntityAttribute = false)
+          return ERElement.AttributeRef(it.id, relationship.id, isEntityAttribute = false)
         }
   }
   diagram.relationships
       .lastOrNull { isPointInDiamond(point, it.x, it.y, it.width, it.height) }
       ?.let {
-        return ERElement.RelationshipElement(it.id)
+        return ERElement.RelationshipRef(it.id)
       }
   diagram.entities.asReversed().forEach { entity ->
     attributeAt(entity.attributes, entity.x, entity.y, entity.width, entity.height, point)?.let {
-      return ERElement.AttributeElement(it.id, entity.id, isEntityAttribute = true)
+      return ERElement.AttributeRef(it.id, entity.id, isEntityAttribute = true)
     }
   }
   diagram.entities
       .lastOrNull { it.contains(point) }
       ?.let {
-        return ERElement.EntityElement(it.id)
+        return ERElement.EntityRef(it.id)
       }
   return null
 }
 
-internal fun selectERElement(state: DiagramState, element: ERElement) {
+internal fun selectERElement(state: ERDiagramState, element: ERElement) {
   when (element) {
-    is ERElement.EntityElement -> state.selectEntity(element.ownerId)
-    is ERElement.RelationshipElement -> state.selectRelationship(element.ownerId)
-    is ERElement.NoteElement -> state.selectNote(element.ownerId)
-    is ERElement.AttributeElement ->
-        if (element.isEntityAttribute) state.selectEntity(element.ownerId)
-        else state.selectRelationship(element.ownerId)
+    is ERElement.EntityRef -> state.selectEntity(element.id)
+    is ERElement.RelationshipRef -> state.selectRelationship(element.id)
+    is ERElement.NoteRef -> state.selectNote(element.id)
+    is ERElement.AttributeRef ->
+        if (element.isEntityAttribute) state.selectEntity(element.id)
+        else state.selectRelationship(element.id)
   }
 }
 
-internal fun handleCanvasTap(state: DiagramState, offset: Offset) {
+internal fun handleERTap(state: ERDiagramState, offset: Offset) {
   when (state.toolMode) {
-    ToolMode.SELECT ->
-        hitTestER(state.diagram, offset)?.let { selectERElement(state, it) }
+    ERToolMode.SELECT ->
+        hitTestERDiagram(state.diagram, offset)?.let { selectERElement(state, it) }
             ?: state.clearSelection()
-    ToolMode.ENTITY -> {
+    ERToolMode.ENTITY -> {
       state.addEntity(offset.x - 70f, offset.y - 35f, "Nuova Entità")
-      state.toolMode = ToolMode.SELECT
+      state.toolMode = ERToolMode.SELECT
     }
-    ToolMode.RELATIONSHIP -> {
+    ERToolMode.RELATIONSHIP -> {
       state.addRelationship(offset.x - 60f, offset.y - 60f, "Nuova Relazione")
-      state.toolMode = ToolMode.SELECT
+      state.toolMode = ERToolMode.SELECT
     }
-    ToolMode.NOTE -> {
+    ERToolMode.NOTE -> {
       state.addNote(offset.x - 120f, offset.y - 90f, "Nuova Nota")
-      state.toolMode = ToolMode.SELECT
+      state.toolMode = ERToolMode.SELECT
     }
   }
 }
 
-internal fun handleDragStart(state: DiagramState, offset: Offset): ERElement? {
-  val element = hitTestER(state.diagram, offset) ?: return null
+internal fun handleERDragStart(state: ERDiagramState, offset: Offset): ERElement? {
+  val element = hitTestERDiagram(state.diagram, offset) ?: return null
   selectERElement(state, element)
   state.saveDragStartState()
   return element
 }
 
-internal fun handleDrag(state: DiagramState, element: ERElement, delta: Offset) {
+internal fun handleERDrag(state: ERDiagramState, element: ERElement, delta: Offset) {
   when (element) {
-    is ERElement.EntityElement ->
-        state.updateEntityWithoutSave(element.ownerId) {
+    is ERElement.EntityRef ->
+        state.updateEntityWithoutSave(element.id) {
           it.copy(x = it.x + delta.x, y = it.y + delta.y)
         }
-    is ERElement.RelationshipElement ->
-        state.updateRelationshipWithoutSave(element.ownerId) {
+    is ERElement.RelationshipRef ->
+        state.updateRelationshipWithoutSave(element.id) {
           it.copy(x = it.x + delta.x, y = it.y + delta.y)
         }
-    is ERElement.NoteElement ->
-        state.updateNoteWithoutSave(element.ownerId) {
-          it.copy(x = it.x + delta.x, y = it.y + delta.y)
-        }
-    is ERElement.AttributeElement ->
+    is ERElement.NoteRef ->
+        state.updateNoteWithoutSave(element.id) { it.copy(x = it.x + delta.x, y = it.y + delta.y) }
+    is ERElement.AttributeRef ->
         if (element.isEntityAttribute) {
-          state.updateEntityWithoutSave(element.ownerId) { entity ->
+          state.updateEntityWithoutSave(element.id) { entity ->
             entity.copy(
                 attributes =
                     orbitAttribute(
@@ -203,7 +201,7 @@ internal fun handleDrag(state: DiagramState, element: ERElement, delta: Offset) 
             )
           }
         } else {
-          state.updateRelationshipWithoutSave(element.ownerId) { relationship ->
+          state.updateRelationshipWithoutSave(element.id) { relationship ->
             relationship.copy(
                 attributes =
                     orbitAttribute(

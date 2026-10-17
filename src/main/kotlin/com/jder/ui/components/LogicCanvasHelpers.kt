@@ -80,7 +80,7 @@ internal fun logicPinAt(diagram: LogicDiagram, point: Offset): LogicElement.PinR
   return best
 }
 
-internal fun hitTestLogic(diagram: LogicDiagram, point: Offset): LogicElement? {
+internal fun hitTestLogicDiagram(diagram: LogicDiagram, point: Offset): LogicElement? {
   diagram.notes
       .lastOrNull { it.contains(point) }
       ?.let {
@@ -186,13 +186,13 @@ internal fun selectLogicElement(state: LogicDiagramState, element: LogicElement)
 internal fun handleLogicTap(state: LogicDiagramState, point: Offset, onMessage: (String) -> Unit) {
   when (val mode = state.toolMode) {
     LogicToolMode.SELECT ->
-        when (val element = hitTestLogic(state.diagram, point)) {
+        when (val element = hitTestLogicDiagram(state.diagram, point)) {
           is LogicElement.ToggleRef -> state.toggleInput(element.id)
           null -> state.clearSelection()
           else -> selectLogicElement(state, element)
         }
     LogicToolMode.WIRE -> {
-      val endpoint = hitTestLogic(state.diagram, point).toEndpoint()
+      val endpoint = hitTestLogicDiagram(state.diagram, point).toEndpoint()
       val pending = state.pendingWireSource
       when {
         endpoint == null || pending?.componentId == endpoint.componentId ->

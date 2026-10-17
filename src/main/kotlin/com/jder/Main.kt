@@ -14,14 +14,14 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.jder.data.ClassDiagramRepository
-import com.jder.data.DiagramRepository
+import com.jder.data.ERDiagramRepository
 import com.jder.data.LogicDiagramRepository
 import com.jder.data.UpdateChecker
-import com.jder.data.UseCaseRepository
+import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
-import com.jder.domain.model.DiagramState
+import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
-import com.jder.domain.model.UseCaseState
+import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.theme.JDERTheme
@@ -30,13 +30,13 @@ import java.awt.Dimension
 
 fun main() = application {
   val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
-  val diagramState = remember { DiagramState() }
-  val useCaseState = remember { UseCaseState() }
+  val erState = remember { ERDiagramState() }
+  val useCaseState = remember { UseCaseDiagramState() }
   val classState = remember { ClassDiagramState() }
   val logicState = remember { LogicDiagramState() }
   val themeState = remember { ThemeState() }
-  val repository = remember { DiagramRepository() }
-  val useCaseRepository = remember { UseCaseRepository() }
+  val erRepository = remember { ERDiagramRepository() }
+  val useCaseRepository = remember { UseCaseDiagramRepository() }
   val classRepository = remember { ClassDiagramRepository() }
   val logicRepository = remember { LogicDiagramRepository() }
   var showExitDialog by remember { mutableStateOf(false) }
@@ -49,7 +49,7 @@ fun main() = application {
   Window(
       onCloseRequest = {
         if (
-            diagramState.isModified ||
+            erState.isModified ||
                 useCaseState.isModified ||
                 classState.isModified ||
                 logicState.isModified
@@ -66,11 +66,11 @@ fun main() = application {
     window.minimumSize = Dimension(800, 600)
     JDERTheme(darkTheme = themeState.isDarkTheme, colorPalette = themeState.selectedPalette) {
       AppScreen(
-          erState = diagramState,
+          erState = erState,
           useCaseState = useCaseState,
           classState = classState,
           logicState = logicState,
-          repository = repository,
+          erRepository = erRepository,
           useCaseRepository = useCaseRepository,
           classRepository = classRepository,
           logicRepository = logicRepository,

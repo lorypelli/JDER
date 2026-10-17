@@ -20,7 +20,9 @@ fun UpdateAvailableDialog(downloadUrl: String, onDismiss: () -> Unit) {
       confirmButton = {
         TextButton(
             onClick = {
-              runCatching { uriHandler.openUri(downloadUrl) }
+              try {
+                uriHandler.openUri(downloadUrl)
+              } catch (e: Exception) {}
               onDismiss()
             }
         ) {

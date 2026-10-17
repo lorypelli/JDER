@@ -190,7 +190,7 @@ private fun DrawScope.drawMemberText(
     textColor: Color,
     isMethod: Boolean,
 ) {
-  val prefix = member.visibility.symbol + " "
+  val prefix = "${member.visibility.symbol} "
   val suffix = if (member.type.isNotEmpty()) ": ${member.type}" else ""
   val paramSuffix = if (isMethod) "()" else ""
   val result =

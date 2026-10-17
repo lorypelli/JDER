@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.util.UUID
 
-class UseCaseState :
+class UseCaseDiagramState :
     DiagramEditorState<UseCaseDiagram>({ UseCaseDiagram(name = "Nuovo Diagramma Casi d'Uso") }) {
   var selectedActorId by mutableStateOf<String?>(null)
     private set

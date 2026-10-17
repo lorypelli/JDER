@@ -359,7 +359,7 @@ private fun DrawScope.drawAttribute(
   val arrowStartY = position.y - dirY * 60f
   val connectionPoint =
       if (isRectangle) {
-        getClosestPointOnRectangle(
+        closestPointOnRectangle(
             ownerX,
             ownerY,
             ownerWidth,
@@ -368,7 +368,7 @@ private fun DrawScope.drawAttribute(
             arrowStartY,
         )
       } else {
-        getClosestPointOnDiamond(
+        closestPointOnDiamond(
             centerX,
             centerY,
             ownerWidth,
@@ -480,7 +480,7 @@ private fun DrawScope.drawAttribute(
   }
 }
 
-internal fun getClosestPointOnRectangle(
+internal fun closestPointOnRectangle(
     rectX: Float,
     rectY: Float,
     rectWidth: Float,
@@ -499,7 +499,7 @@ internal fun getClosestPointOnRectangle(
   return Offset(centerX + dx * scale, centerY + dy * scale)
 }
 
-internal fun getClosestPointOnDiamond(
+internal fun closestPointOnDiamond(
     centerX: Float,
     centerY: Float,
     width: Float,

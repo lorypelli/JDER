@@ -2,38 +2,26 @@ package com.jder.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.Actor
-import com.jder.domain.model.Note
 import com.jder.domain.model.SystemBoundary
 import com.jder.domain.model.UseCase
+import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseRelation
-import com.jder.domain.model.UseCaseState
 
 @Composable
 fun UseCasePropertiesPanel(
-    state: UseCaseState,
+    state: UseCaseDiagramState,
     onEditActor: () -> Unit,
     onEditUseCase: () -> Unit,
     onEditRelation: () -> Unit,
@@ -68,7 +56,7 @@ fun UseCasePropertiesPanel(
           }
     }
     state.selectedNoteId?.let { selId ->
-      state.diagram.notes.find { it.id == selId }?.let { NotePropertiesContentUC(it, onEditNote) }
+      state.diagram.notes.find { it.id == selId }?.let { NotePropertiesContent(it, onEditNote) }
     }
     state.selectedSystemBoundaryId?.let { selId ->
       state.diagram.systemBoundaries
@@ -78,7 +66,7 @@ fun UseCasePropertiesPanel(
   }
 }
 
-private fun findElementName(id: String, state: UseCaseState): String {
+private fun findElementName(id: String, state: UseCaseDiagramState): String {
   state.diagram.actors
       .find { it.id == id }
       ?.let {
@@ -93,58 +81,18 @@ private fun findElementName(id: String, state: UseCaseState): String {
 }
 
 @Composable
-private fun PropertyCard(
-    title: String,
-    editLabel: String,
-    onEdit: () -> Unit,
-    extraContent: @Composable ColumnScope.() -> Unit = {},
-) {
-  Card(
-      modifier = Modifier.fillMaxWidth(),
-      colors =
-          CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-  ) {
-    Column(modifier = Modifier.padding(12.dp)) {
-      Text(
-          title,
-          style = MaterialTheme.typography.titleMedium,
-          color = MaterialTheme.colorScheme.onSecondaryContainer,
-      )
-      extraContent()
-    }
-  }
-  Spacer(Modifier.height(8.dp))
-  Button(
-      onClick = onEdit,
-      modifier = Modifier.fillMaxWidth(),
-      colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-  ) {
-    Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
-    Spacer(Modifier.width(8.dp))
-    Text(editLabel)
-  }
-}
-
-@Composable
 private fun ActorPropertiesContent(actor: Actor, onEdit: () -> Unit) {
-  PropertyCard(title = "Attore: ${actor.name}", editLabel = "Modifica Nome", onEdit = onEdit)
+  PropertyCard("Attore: ${actor.name}")
+  Spacer(Modifier.height(8.dp))
+  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
 }
 
 @Composable
 private fun UseCasePropertiesContent(useCase: UseCase, onEdit: () -> Unit) {
-  PropertyCard(
-      title = "Caso d'Uso: ${useCase.name}",
-      editLabel = "Modifica Proprietà",
-      onEdit = onEdit,
-  ) {
-    if (useCase.documentation.isNotBlank()) {
-      Spacer(Modifier.height(4.dp))
-      Text(
-          useCase.documentation.take(60) + if (useCase.documentation.length > 60) "..." else "",
-          style = MaterialTheme.typography.bodySmall,
-      )
-    }
-  }
+  PropertyCard("Caso d'Uso: ${useCase.name}")
+  Spacer(Modifier.height(8.dp))
+  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+  DocumentationCard(useCase.documentation)
 }
 
 @Composable
@@ -154,36 +102,20 @@ private fun RelationPropertiesContent(
     targetName: String,
     onEdit: () -> Unit,
 ) {
-  PropertyCard(title = "Relazione", editLabel = "Modifica Tipo", onEdit = onEdit) {
-    Spacer(Modifier.height(4.dp))
-    Text("Tipo: ${relation.type.display}", style = MaterialTheme.typography.bodyMedium)
-    Text("Da: $sourceName", style = MaterialTheme.typography.bodySmall)
-    Text("A: $targetName", style = MaterialTheme.typography.bodySmall)
+  PropertyCard("Relazione") {
+    PropertyDetail("Tipo: ${relation.type.display}")
+    PropertyDetail("Da: $sourceName")
+    PropertyDetail("A: $targetName")
   }
-}
-
-@Composable
-private fun NotePropertiesContentUC(note: Note, onEdit: () -> Unit) {
-  PropertyCard(title = "Nota", editLabel = "Modifica Testo", onEdit = onEdit) {
-    Spacer(Modifier.height(4.dp))
-    Text(
-        note.text.take(50) + if (note.text.length > 50) "..." else "",
-        style = MaterialTheme.typography.bodyMedium,
-    )
-  }
+  Spacer(Modifier.height(8.dp))
+  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
 }
 
 @Composable
 private fun SystemBoundaryPropertiesContent(boundary: SystemBoundary, onEdit: () -> Unit) {
-  PropertyCard(
-      title = "Sistema: ${boundary.name}",
-      editLabel = "Modifica Proprietà",
-      onEdit = onEdit,
-  ) {
-    Spacer(Modifier.height(4.dp))
-    Text(
-        "${boundary.width.toInt()} × ${boundary.height.toInt()} px",
-        style = MaterialTheme.typography.bodySmall,
-    )
+  PropertyCard("Sistema: ${boundary.name}") {
+    PropertyDetail("Dimensioni: ${boundary.width.toInt()} × ${boundary.height.toInt()} px")
   }
+  Spacer(Modifier.height(8.dp))
+  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
 }

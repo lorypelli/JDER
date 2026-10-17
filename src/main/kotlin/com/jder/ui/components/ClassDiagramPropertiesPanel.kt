@@ -2,37 +2,22 @@ package com.jder.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassEntity
 import com.jder.domain.model.ClassMember
 import com.jder.domain.model.ClassRelation
-import com.jder.domain.model.Note
 
 @Composable
 fun ClassDiagramPropertiesPanel(
@@ -42,7 +27,7 @@ fun ClassDiagramPropertiesPanel(
     onEditNote: () -> Unit,
     onAddAttribute: () -> Unit,
     onAddMethod: () -> Unit,
-    onDeleteMember: (String) -> Unit,
+    onDeleteMember: (memberId: String) -> Unit,
     onClose: () -> Unit,
 ) {
   val scrollState = rememberScrollState()
@@ -70,38 +55,7 @@ fun ClassDiagramPropertiesPanel(
           ?.let { ClassRelationPropertiesContent(it, state, onEditRelation) }
     }
     state.selectedNoteId?.let { selId ->
-      state.diagram.notes
-          .find { it.id == selId }
-          ?.let { NotePropertiesContentClass(it, onEditNote) }
-    }
-  }
-}
-
-@Composable
-private fun PropertyCardClass(
-    title: String,
-    editLabel: String,
-    onEdit: () -> Unit,
-    extraContent: @Composable ColumnScope.() -> Unit = {},
-) {
-  Card(
-      modifier = Modifier.fillMaxWidth(),
-      colors =
-          CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-  ) {
-    Column(modifier = Modifier.padding(12.dp)) {
-      Text(
-          title,
-          style = MaterialTheme.typography.titleMedium,
-          color = MaterialTheme.colorScheme.onSecondaryContainer,
-      )
-      Spacer(Modifier.height(8.dp))
-      extraContent()
-      Spacer(Modifier.height(8.dp))
-      Button(onClick = onEdit, modifier = Modifier.fillMaxWidth()) {
-        Icon(Icons.Default.Edit, null, modifier = Modifier.size(16.dp))
-        Text(editLabel, modifier = Modifier.padding(start = 8.dp))
-      }
+      state.diagram.notes.find { it.id == selId }?.let { NotePropertiesContent(it, onEditNote) }
     }
   }
 }
@@ -112,111 +66,46 @@ private fun ClassEntityPropertiesContent(
     onEdit: () -> Unit,
     onAddAttribute: () -> Unit,
     onAddMethod: () -> Unit,
-    onDeleteMember: (String) -> Unit,
+    onDeleteMember: (memberId: String) -> Unit,
 ) {
-  PropertyCardClass(
-      title = "${entity.type.stereotype} ${entity.name}".trim(),
-      editLabel = "Modifica Proprietà",
-      onEdit = onEdit,
-      extraContent = {
-        Text(
-            "Tipo: ${entity.type.name}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
-        if (entity.isAbstract) {
-          Text(
-              "Astratta: sì",
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-        }
-        if (entity.documentation.isNotEmpty()) {
-          Spacer(Modifier.height(4.dp))
-          Text(
-              "Documentazione:",
-              style = MaterialTheme.typography.labelSmall,
-              fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-          Text(
-              entity.documentation,
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-        }
-      },
-  )
-  if (entity.attributes.isNotEmpty()) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-    ) {
-      Column(modifier = Modifier.padding(12.dp)) {
-        Text(
-            "Attributi",
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onTertiaryContainer,
-        )
-        entity.attributes.forEach { MemberRow(it, onDeleteMember) }
-      }
-    }
+  PropertyCard("Classe: ${entity.name}") {
+    PropertyDetail("Tipo: ${entity.type.display}")
+    if (entity.isAbstract) PropertyDetail("Astratta: sì")
   }
-  if (entity.methods.isNotEmpty()) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-    ) {
-      Column(modifier = Modifier.padding(12.dp)) {
-        Text(
-            "Metodi",
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onTertiaryContainer,
-        )
-        entity.methods.forEach { MemberRow(it, onDeleteMember) }
-      }
-    }
-  }
-  OutlinedButton(onClick = onAddAttribute, modifier = Modifier.fillMaxWidth()) {
-    Text("+ Aggiungi Attributo")
-  }
-  OutlinedButton(onClick = onAddMethod, modifier = Modifier.fillMaxWidth()) {
-    Text("+ Aggiungi Metodo")
-  }
+  Spacer(Modifier.height(8.dp))
+  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+  PropertyOutlinedButton("Aggiungi Attributo", Icons.Default.Add, onAddAttribute)
+  PropertyOutlinedButton("Aggiungi Metodo", Icons.Default.Add, onAddMethod)
+  MemberList("Attributi:", entity.attributes, onDeleteMember)
+  MemberList("Metodi:", entity.methods, onDeleteMember)
+  DocumentationCard(entity.documentation)
 }
 
 @Composable
-private fun MemberRow(member: ClassMember, onDelete: (String) -> Unit) {
-  Row(
-      modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-      verticalAlignment = Alignment.CenterVertically,
-  ) {
-    val label = buildString {
-      append(member.visibility.symbol)
-      append(" ")
-      append(member.name)
-      if (member.type.isNotEmpty()) append(": ${member.type}")
-      if (member.isStatic) append(" [static]")
-      if (member.isAbstract) append(" [abstract]")
-    }
-    Text(
-        label,
-        style = MaterialTheme.typography.bodySmall,
-        modifier = Modifier.weight(1f),
-        color = MaterialTheme.colorScheme.onTertiaryContainer,
+private fun MemberList(
+    title: String,
+    members: List<ClassMember>,
+    onDelete: (memberId: String) -> Unit,
+) {
+  if (members.isEmpty()) return
+  PropertyListTitle(title)
+  members.forEach {
+    PropertyItemCard(
+        title = "${it.visibility.symbol} ${it.name}",
+        subtitle = memberDetails(it),
+        deleteDescription = "Elimina membro",
+        onDelete = { onDelete(it.id) },
     )
-    IconButton(onClick = { onDelete(member.id) }, modifier = Modifier.size(24.dp)) {
-      Icon(
-          Icons.Default.Delete,
-          "Elimina membro",
-          tint = MaterialTheme.colorScheme.error,
-          modifier = Modifier.size(16.dp),
-      )
-    }
   }
 }
+
+private fun memberDetails(member: ClassMember): String =
+    buildString {
+          append(member.type)
+          if (member.isStatic) append(" [static]")
+          if (member.isAbstract) append(" [abstract]")
+        }
+        .trim()
 
 @Composable
 private fun ClassRelationPropertiesContent(
@@ -226,60 +115,18 @@ private fun ClassRelationPropertiesContent(
 ) {
   val sourceName = state.diagram.classes.find { it.id == relation.sourceId }?.name ?: "?"
   val targetName = state.diagram.classes.find { it.id == relation.targetId }?.name ?: "?"
-  PropertyCardClass(
-      title = "Relazione: ${relation.type.display}",
-      editLabel = "Modifica Relazione",
-      onEdit = onEdit,
-      extraContent = {
-        Text(
-            "Da: $sourceName",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
-        Text(
-            "A: $targetName",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
-        if (relation.sourceMultiplicity.isNotEmpty()) {
-          Text(
-              "Molteplicità sorgente: ${relation.sourceMultiplicity}",
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-        }
-        if (relation.targetMultiplicity.isNotEmpty()) {
-          Text(
-              "Molteplicità destinazione: ${relation.targetMultiplicity}",
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-        }
-        if (relation.label.isNotEmpty()) {
-          Text(
-              "Etichetta: ${relation.label}",
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-        }
-      },
-  )
-}
-
-@Composable
-private fun NotePropertiesContentClass(note: Note, onEdit: () -> Unit) {
-  PropertyCardClass(
-      title = "Nota",
-      editLabel = "Modifica Testo",
-      onEdit = onEdit,
-      extraContent = {
-        if (note.text.isNotEmpty()) {
-          Text(
-              note.text,
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSecondaryContainer,
-          )
-        }
-      },
-  )
+  PropertyCard("Relazione") {
+    PropertyDetail("Tipo: ${relation.type.display}")
+    PropertyDetail("Da: $sourceName")
+    PropertyDetail("A: $targetName")
+    if (relation.sourceMultiplicity.isNotEmpty()) {
+      PropertyDetail("Molteplicità sorgente: ${relation.sourceMultiplicity}")
+    }
+    if (relation.targetMultiplicity.isNotEmpty()) {
+      PropertyDetail("Molteplicità destinazione: ${relation.targetMultiplicity}")
+    }
+    if (relation.label.isNotEmpty()) PropertyDetail("Etichetta: ${relation.label}")
+  }
+  Spacer(Modifier.height(8.dp))
+  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
 }

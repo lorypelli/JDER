@@ -28,7 +28,13 @@ private class GitHubAsset(
 
 object UpdateChecker {
   suspend fun findUpdate(): String? =
-      withContext(Dispatchers.IO) { runCatching { checkLatestRelease() }.getOrNull() }
+      withContext(Dispatchers.IO) {
+        try {
+          checkLatestRelease()
+        } catch (e: Exception) {
+          null
+        }
+      }
 
   private fun checkLatestRelease(): String? {
     val jar = runningJar() ?: return null

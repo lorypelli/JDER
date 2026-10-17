@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
-import com.jder.domain.model.UseCaseState
+import com.jder.domain.model.UseCaseDiagramState
 
 @Composable
 fun UseCaseDiagramCanvas(
-    state: UseCaseState,
+    state: UseCaseDiagramState,
     onContextMenuRequest: (Offset, UseCaseContextMenuType) -> Unit,
     onRelationCreateRequest: (String, String) -> Unit,
     onEditRequest: (UseCaseElement) -> Unit,
@@ -36,7 +36,7 @@ fun UseCaseDiagramCanvas(
           var dragged: UseCaseElement? = null
 
           override fun onTap(position: Offset) =
-              handleUseCaseCanvasTap(state, position, currentOnRelationCreateRequest)
+              handleUseCaseTap(state, position, currentOnRelationCreateRequest)
 
           override fun onDoubleTap(position: Offset): Boolean {
             if (!state.isSelectTool) return false

@@ -31,7 +31,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-enum class ContextMenuType {
+enum class ERContextMenuType {
   ENTITY,
   RELATIONSHIP,
   NOTE,

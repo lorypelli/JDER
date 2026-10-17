@@ -270,8 +270,8 @@ internal fun DrawScope.drawUseCaseRelation(
     palette: DiagramPalette,
     textMeasurer: TextMeasurer,
 ) {
-  val sourceCenter = getElementCenter(relation.sourceId, diagram) ?: return
-  val targetCenter = getElementCenter(relation.targetId, diagram) ?: return
+  val sourceCenter = useCaseElementCenter(relation.sourceId, diagram) ?: return
+  val targetCenter = useCaseElementCenter(relation.targetId, diagram) ?: return
   val lineColor = if (isSelected) palette.selected else palette.outline
   val strokeWidth = if (isSelected) 3f else 1.5f
   val dx = targetCenter.x - sourceCenter.x
@@ -281,9 +281,10 @@ internal fun DrawScope.drawUseCaseRelation(
   val normX = dx / dist
   val normY = dy / dist
   val sourcePoint =
-      getElementBoundaryPoint(relation.sourceId, diagram, Offset(normX, normY)) ?: sourceCenter
+      useCaseElementBoundaryPoint(relation.sourceId, diagram, Offset(normX, normY)) ?: sourceCenter
   val targetPoint =
-      getElementBoundaryPoint(relation.targetId, diagram, Offset(-normX, -normY)) ?: targetCenter
+      useCaseElementBoundaryPoint(relation.targetId, diagram, Offset(-normX, -normY))
+          ?: targetCenter
   val arrowSize = 13f
   when (relation.type) {
     UseCaseRelationType.ASSOCIATION -> {
@@ -369,7 +370,7 @@ private fun DrawScope.drawArrowHead(
   }
 }
 
-internal fun getElementCenter(id: String, diagram: UseCaseDiagram): Offset? {
+internal fun useCaseElementCenter(id: String, diagram: UseCaseDiagram): Offset? {
   diagram.actors
       .find { it.id == id }
       ?.let {
@@ -383,7 +384,7 @@ internal fun getElementCenter(id: String, diagram: UseCaseDiagram): Offset? {
   return null
 }
 
-internal fun getElementBoundaryPoint(
+internal fun useCaseElementBoundaryPoint(
     id: String,
     diagram: UseCaseDiagram,
     dirFromCenter: Offset,

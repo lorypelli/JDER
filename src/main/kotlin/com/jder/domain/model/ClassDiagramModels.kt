@@ -3,19 +3,19 @@ package com.jder.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class ClassEntityType(val stereotype: String) {
-  CLASS(""),
-  INTERFACE("<<interface>>"),
-  ENUM("<<enum>>"),
-  ABSTRACT_CLASS("<<abstract>>"),
+enum class ClassEntityType(val stereotype: String, val display: String) {
+  CLASS("", "Classe"),
+  INTERFACE("<<interface>>", "Interfaccia"),
+  ENUM("<<enum>>", "Enumerazione"),
+  ABSTRACT_CLASS("<<abstract>>", "Classe astratta"),
 }
 
 @Serializable
-enum class Visibility(val symbol: String) {
-  PUBLIC("+"),
-  PRIVATE("-"),
-  PROTECTED("#"),
-  PACKAGE("~"),
+enum class Visibility(val symbol: String, val display: String) {
+  PUBLIC("+", "Pubblico"),
+  PRIVATE("-", "Privato"),
+  PROTECTED("#", "Protetto"),
+  PACKAGE("~", "Package"),
 }
 
 @Serializable

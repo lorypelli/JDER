@@ -42,22 +42,26 @@ import com.jder.domain.model.AttributeType
 import java.util.UUID
 
 @Composable
-fun AddAttributeDialog(onDismiss: () -> Unit, onAdd: (Attribute) -> Unit) {
+fun AddAttributeDialog(onDismiss: () -> Unit, onConfirm: (attribute: Attribute) -> Unit) {
   AttributeDialog(
       title = "Aggiungi Attributo",
       initialAttribute = null,
       onDismiss = onDismiss,
-      onConfirm = onAdd,
+      onConfirm = onConfirm,
   )
 }
 
 @Composable
-fun EditAttributeDialog(attribute: Attribute, onDismiss: () -> Unit, onSave: (Attribute) -> Unit) {
+fun EditAttributeDialog(
+    attribute: Attribute,
+    onDismiss: () -> Unit,
+    onConfirm: (attribute: Attribute) -> Unit,
+) {
   AttributeDialog(
       title = "Modifica Attributo",
       initialAttribute = attribute,
       onDismiss = onDismiss,
-      onConfirm = onSave,
+      onConfirm = onConfirm,
   )
 }
 
@@ -67,7 +71,7 @@ private fun AttributeDialog(
     title: String,
     initialAttribute: Attribute?,
     onDismiss: () -> Unit,
-    onConfirm: (Attribute) -> Unit,
+    onConfirm: (attribute: Attribute) -> Unit,
 ) {
   var name by remember { mutableStateOf(initialAttribute?.name ?: "") }
   var isPrimaryKey by remember { mutableStateOf(initialAttribute?.isPrimaryKey ?: false) }
@@ -116,14 +120,7 @@ private fun AttributeDialog(
           }
           ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
             OutlinedTextField(
-                value =
-                    when (attributeType) {
-                      AttributeType.NORMAL -> "Normale"
-                      AttributeType.KEY -> "Chiave"
-                      AttributeType.MULTIVALUED -> "Multivalore"
-                      AttributeType.DERIVED -> "Derivato"
-                      AttributeType.COMPOSITE -> "Composto"
-                    },
+                value = attributeType.display,
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Tipo") },
@@ -132,14 +129,14 @@ private fun AttributeDialog(
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
               DropdownMenuItem(
-                  text = { Text("Normale") },
+                  text = { Text(AttributeType.NORMAL.display) },
                   onClick = {
                     attributeType = AttributeType.NORMAL
                     expanded = false
                   },
               )
               DropdownMenuItem(
-                  text = { Text("Chiave") },
+                  text = { Text(AttributeType.KEY.display) },
                   onClick = {
                     attributeType = AttributeType.KEY
                     isPrimaryKey = true
@@ -147,21 +144,21 @@ private fun AttributeDialog(
                   },
               )
               DropdownMenuItem(
-                  text = { Text("Multivalore") },
+                  text = { Text(AttributeType.MULTIVALUED.display) },
                   onClick = {
                     attributeType = AttributeType.MULTIVALUED
                     expanded = false
                   },
               )
               DropdownMenuItem(
-                  text = { Text("Derivato") },
+                  text = { Text(AttributeType.DERIVED.display) },
                   onClick = {
                     attributeType = AttributeType.DERIVED
                     expanded = false
                   },
               )
               DropdownMenuItem(
-                  text = { Text("Composto") },
+                  text = { Text(AttributeType.COMPOSITE.display) },
                   onClick = {
                     attributeType = AttributeType.COMPOSITE
                     isPrimaryKey = false
@@ -271,7 +268,7 @@ private fun AttributeDialog(
                 name.isNotBlank() &&
                     (attributeType != AttributeType.COMPOSITE || components.isNotEmpty()),
         ) {
-          Text(if (initialAttribute != null) "Salva" else "Aggiungi")
+          Text(if (initialAttribute != null) "Conferma" else "Aggiungi")
         }
       },
       dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },

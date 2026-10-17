@@ -1,5 +1,5 @@
 package com.jder.domain.model
-enum class ToolMode {
+enum class ERToolMode {
   SELECT,
   ENTITY,
   RELATIONSHIP,

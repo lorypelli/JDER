@@ -35,7 +35,7 @@ private const val MAX_EXPORT_DIMENSION = 16_000f
 
 private val exportTextMeasurer by lazy { createDiagramTextMeasurer() }
 
-fun renderDiagramToBitmap(diagram: ERDiagram, palette: DiagramPalette): ImageBitmap =
+fun renderERDiagramToBitmap(diagram: ERDiagram, palette: DiagramPalette): ImageBitmap =
     renderDiagramImage(erDiagramBounds(diagram, exportTextMeasurer), palette) {
       drawERDiagram(diagram, palette, exportTextMeasurer)
     }

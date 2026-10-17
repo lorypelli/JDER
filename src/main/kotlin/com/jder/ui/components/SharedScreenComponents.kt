@@ -1,20 +1,13 @@
 package com.jder.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Snackbar
@@ -63,26 +56,6 @@ fun DiagramSnackbarHost(hostState: SnackbarHostState) {
         actionColor = MaterialTheme.colorScheme.primary,
     )
   }
-}
-
-@Composable
-fun PropertiesPanelHeader(onClose: () -> Unit) {
-  Box(modifier = Modifier.fillMaxWidth()) {
-    Text(
-        text = "Proprietà",
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.align(Alignment.CenterStart),
-    )
-    IconButton(onClick = onClose, modifier = Modifier.align(Alignment.CenterEnd).size(32.dp)) {
-      Icon(
-          Icons.Default.Close,
-          contentDescription = "Chiudi pannello proprietà",
-          tint = MaterialTheme.colorScheme.onSurface,
-      )
-    }
-  }
-  Divider()
 }
 
 @Composable

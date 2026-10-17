@@ -11,20 +11,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.jder.data.DiagramRepository
+import com.jder.data.ERDiagramRepository
 import com.jder.domain.model.Attribute
 import com.jder.domain.model.Connection
-import com.jder.domain.model.DiagramState
-import com.jder.domain.model.ToolMode
+import com.jder.domain.model.ERDiagramState
+import com.jder.domain.model.ERToolMode
 import com.jder.domain.model.isManyToMany
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
-import com.jder.ui.components.ContextMenuType
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.components.DiagramContextMenu
+import com.jder.ui.components.ERContextMenuType
 import com.jder.ui.components.ERDiagramCanvas
 import com.jder.ui.components.ERElement
-import com.jder.ui.components.PropertiesPanel
+import com.jder.ui.components.ERPropertiesPanel
 import com.jder.ui.components.ToolbarToggleButton
 import com.jder.ui.components.rememberSnackbarMessenger
 import com.jder.ui.dialogs.AddAttributeDialog
@@ -35,10 +35,14 @@ import com.jder.ui.dialogs.EntityPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.RelationshipPropertiesDialog
 import com.jder.ui.theme.ThemeState
-import com.jder.ui.utils.renderDiagramToBitmap
+import com.jder.ui.utils.renderERDiagramToBitmap
 
 @Composable
-fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: ThemeState) {
+fun ERDiagramScreen(
+    state: ERDiagramState,
+    repository: ERDiagramRepository,
+    themeState: ThemeState,
+) {
   val messenger = rememberSnackbarMessenger()
   var showEntityDialog by remember { mutableStateOf(false) }
   var showRelationshipDialog by remember { mutableStateOf(false) }
@@ -47,12 +51,12 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
   var attributeToEdit by remember { mutableStateOf<Attribute?>(null) }
   var showCreateConnectionDialog by remember { mutableStateOf(false) }
   var connectionToEdit by remember { mutableStateOf<ConnectionEdit?>(null) }
-  var contextMenu by remember { mutableStateOf<ContextMenuRequest<ContextMenuType>?>(null) }
-  fun openEditor(type: ContextMenuType) {
+  var contextMenu by remember { mutableStateOf<ContextMenuRequest<ERContextMenuType>?>(null) }
+  fun openEditor(type: ERContextMenuType) {
     when (type) {
-      ContextMenuType.ENTITY -> showEntityDialog = true
-      ContextMenuType.RELATIONSHIP -> showRelationshipDialog = true
-      ContextMenuType.NOTE -> showNoteDialog = true
+      ERContextMenuType.ENTITY -> showEntityDialog = true
+      ERContextMenuType.RELATIONSHIP -> showRelationshipDialog = true
+      ERContextMenuType.NOTE -> showNoteDialog = true
     }
   }
   fun convertSelectedRelationship() {
@@ -66,30 +70,34 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
       repository = repository,
       themeState = themeState,
       messenger = messenger,
-      renderImage = { renderDiagramToBitmap(state.diagram, it) },
+      renderImage = { renderERDiagramToBitmap(state.diagram, it) },
       emptyHint =
           "Scegli Entità, Relazione o Nota dalla barra degli strumenti e clicca sulla lavagna",
       tools = {
         ToolbarToggleButton(
             CustomIcons.Rectangle,
             "Crea Entità",
-            state.toolMode == ToolMode.ENTITY,
+            state.toolMode == ERToolMode.ENTITY,
         ) {
-          state.toolMode = ToolMode.ENTITY
+          state.toolMode = ERToolMode.ENTITY
         }
         ToolbarToggleButton(
             CustomIcons.Diamond,
             "Crea Relazione",
-            state.toolMode == ToolMode.RELATIONSHIP,
+            state.toolMode == ERToolMode.RELATIONSHIP,
         ) {
-          state.toolMode = ToolMode.RELATIONSHIP
+          state.toolMode = ERToolMode.RELATIONSHIP
         }
-        ToolbarToggleButton(CustomIcons.StickyNote, "Crea Nota", state.toolMode == ToolMode.NOTE) {
-          state.toolMode = ToolMode.NOTE
+        ToolbarToggleButton(
+            CustomIcons.StickyNote,
+            "Crea Nota",
+            state.toolMode == ERToolMode.NOTE,
+        ) {
+          state.toolMode = ERToolMode.NOTE
         }
       },
       properties = {
-        PropertiesPanel(
+        ERPropertiesPanel(
             state = state,
             onEditEntity = { showEntityDialog = true },
             onEditRelationship = { showRelationshipDialog = true },
@@ -124,20 +132,20 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
           contextMenu = ContextMenuRequest(position, type)
         },
         onEditRequest = { element ->
-          if (element is ERElement.AttributeElement) {
+          if (element is ERElement.AttributeRef) {
             val attributes =
                 if (element.isEntityAttribute) {
-                  state.diagram.entities.find { it.id == element.ownerId }?.attributes
+                  state.diagram.entities.find { it.id == element.id }?.attributes
                 } else {
-                  state.diagram.relationships.find { it.id == element.ownerId }?.attributes
+                  state.diagram.relationships.find { it.id == element.id }?.attributes
                 }
             attributeToEdit = attributes?.find { it.id == element.attributeId }
           } else {
             openEditor(
                 when (element) {
-                  is ERElement.EntityElement -> ContextMenuType.ENTITY
-                  is ERElement.RelationshipElement -> ContextMenuType.RELATIONSHIP
-                  else -> ContextMenuType.NOTE
+                  is ERElement.EntityRef -> ERContextMenuType.ENTITY
+                  is ERElement.RelationshipRef -> ERContextMenuType.RELATIONSHIP
+                  else -> ERContextMenuType.NOTE
                 }
             )
           }
@@ -152,29 +160,29 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
           position = menu.position,
           title =
               when (menu.type) {
-                ContextMenuType.ENTITY -> "Azioni Entità"
-                ContextMenuType.RELATIONSHIP -> "Azioni Relazione"
-                ContextMenuType.NOTE -> "Azioni Nota"
+                ERContextMenuType.ENTITY -> "Azioni Entità"
+                ERContextMenuType.RELATIONSHIP -> "Azioni Relazione"
+                ERContextMenuType.NOTE -> "Azioni Nota"
               },
           items =
               buildList {
                 add(
                     ContextMenuItem(
-                        if (menu.type == ContextMenuType.NOTE) "Modifica Testo"
+                        if (menu.type == ERContextMenuType.NOTE) "Modifica Testo"
                         else "Modifica Proprietà",
                         Icons.Default.Edit,
                     ) {
                       openEditor(menu.type)
                     }
                 )
-                if (menu.type != ContextMenuType.NOTE) {
+                if (menu.type != ERContextMenuType.NOTE) {
                   add(
                       ContextMenuItem("Aggiungi Attributo", Icons.Default.Add) {
                         showAddAttributeDialog = true
                       }
                   )
                 }
-                if (menu.type == ContextMenuType.RELATIONSHIP) {
+                if (menu.type == ERContextMenuType.RELATIONSHIP) {
                   add(
                       ContextMenuItem("Aggiungi Connessione", Icons.Default.Link) {
                         showCreateConnectionDialog = true
@@ -206,7 +214,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
           EntityPropertiesDialog(
               entity = entity,
               onDismiss = { showEntityDialog = false },
-              onSave = { updated ->
+              onConfirm = { updated ->
                 state.updateEntity(entity.id) { updated }
                 showEntityDialog = false
                 messenger.show("Entità modificata")
@@ -221,7 +229,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
           RelationshipPropertiesDialog(
               relationship = rel,
               onDismiss = { showRelationshipDialog = false },
-              onSave = { updated ->
+              onConfirm = { updated ->
                 state.updateRelationship(rel.id) { updated }
                 showRelationshipDialog = false
                 messenger.show("Relazione modificata")
@@ -247,7 +255,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
   if (showAddAttributeDialog) {
     AddAttributeDialog(
         onDismiss = { showAddAttributeDialog = false },
-        onAdd = { attribute ->
+        onConfirm = { attribute ->
           state.selectedEntityId?.let { state.addAttributeToEntity(it, attribute) }
           state.selectedRelationshipId?.let { state.addAttributeToRelationship(it, attribute) }
           showAddAttributeDialog = false
@@ -259,7 +267,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
     EditAttributeDialog(
         attribute = attribute,
         onDismiss = { attributeToEdit = null },
-        onSave = { updated ->
+        onConfirm = { updated ->
           state.selectedEntityId?.let { state.updateAttributeInEntity(it, attribute.id, updated) }
           state.selectedRelationshipId?.let {
             state.updateAttributeInRelationship(it, attribute.id, updated)
@@ -280,7 +288,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
       CreateConnectionDialog(
           entities = state.diagram.entities.filter { it.id !in connectedIds },
           onDismiss = { showCreateConnectionDialog = false },
-          onCreate = { entityId, cardinality ->
+          onConfirm = { entityId, cardinality ->
             state.addConnection(relId, entityId, cardinality)
             showCreateConnectionDialog = false
             messenger.show("Connessione creata")
@@ -302,7 +310,7 @@ fun MainScreen(state: DiagramState, repository: DiagramRepository, themeState: T
           currentEntityId = edit.entityId,
           currentCardinality = edit.connection.cardinality,
           onDismiss = { connectionToEdit = null },
-          onSave = { newEntityId, newCardinality ->
+          onConfirm = { newEntityId, newCardinality ->
             state.updateConnection(relId, edit.entityId, newEntityId, newCardinality)
             connectionToEdit = null
             messenger.show("Connessione modificata")

@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.jder.data.UseCaseRepository
-import com.jder.domain.model.UseCaseState
+import com.jder.data.UseCaseDiagramRepository
+import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseToolMode
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
@@ -35,7 +35,11 @@ import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderUseCaseDiagramToBitmap
 
 @Composable
-fun UseCaseScreen(state: UseCaseState, repository: UseCaseRepository, themeState: ThemeState) {
+fun UseCaseDiagramScreen(
+    state: UseCaseDiagramState,
+    repository: UseCaseDiagramRepository,
+    themeState: ThemeState,
+) {
   val messenger = rememberSnackbarMessenger()
   var showActorDialog by remember { mutableStateOf(false) }
   var showUseCaseDialog by remember { mutableStateOf(false) }

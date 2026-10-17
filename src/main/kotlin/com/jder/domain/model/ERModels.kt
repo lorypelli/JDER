@@ -59,12 +59,12 @@ data class Attribute(
 )
 
 @Serializable
-enum class AttributeType {
-  NORMAL,
-  KEY,
-  MULTIVALUED,
-  DERIVED,
-  COMPOSITE,
+enum class AttributeType(val display: String) {
+  NORMAL("Normale"),
+  KEY("Chiave"),
+  MULTIVALUED("Multivalore"),
+  DERIVED("Derivato"),
+  COMPOSITE("Composto"),
 }
 
 @Serializable

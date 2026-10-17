@@ -5,8 +5,8 @@ import com.jder.domain.model.Actor
 import com.jder.domain.model.SystemBoundary
 import com.jder.domain.model.UseCase
 import com.jder.domain.model.UseCaseDiagram
+import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseRelation
-import com.jder.domain.model.UseCaseState
 import com.jder.domain.model.UseCaseToolMode
 
 private const val ACTOR_LABEL_HEIGHT = 20f
@@ -59,12 +59,12 @@ internal fun isPointNearRelation(
     relation: UseCaseRelation,
     diagram: UseCaseDiagram,
 ): Boolean {
-  val start = getElementCenter(relation.sourceId, diagram) ?: return false
-  val end = getElementCenter(relation.targetId, diagram) ?: return false
+  val start = useCaseElementCenter(relation.sourceId, diagram) ?: return false
+  val end = useCaseElementCenter(relation.targetId, diagram) ?: return false
   return distanceToSegment(point, start, end) <= 8f
 }
 
-internal fun findClickedActorOrUseCase(offset: Offset, state: UseCaseState): String? =
+internal fun findClickedActorOrUseCase(offset: Offset, state: UseCaseDiagramState): String? =
     state.diagram.useCases.lastOrNull { isPointInUseCase(offset, it) }?.id
         ?: state.diagram.actors.lastOrNull { isPointInActor(offset, it) }?.id
 
@@ -97,7 +97,7 @@ internal fun hitTestUseCaseDiagram(diagram: UseCaseDiagram, point: Offset): UseC
   return null
 }
 
-internal fun selectUseCaseElement(state: UseCaseState, element: UseCaseElement) {
+internal fun selectUseCaseElement(state: UseCaseDiagramState, element: UseCaseElement) {
   when (element) {
     is UseCaseElement.ActorRef -> state.selectActor(element.id)
     is UseCaseElement.UseCaseRef -> state.selectUseCase(element.id)
@@ -107,8 +107,8 @@ internal fun selectUseCaseElement(state: UseCaseState, element: UseCaseElement) 
   }
 }
 
-internal fun handleUseCaseCanvasTap(
-    state: UseCaseState,
+internal fun handleUseCaseTap(
+    state: UseCaseDiagramState,
     offset: Offset,
     onRelationCreateRequest: (String, String) -> Unit,
 ) {
@@ -151,7 +151,7 @@ internal fun handleUseCaseCanvasTap(
   }
 }
 
-internal fun handleUseCaseDragStart(state: UseCaseState, offset: Offset): UseCaseElement? {
+internal fun handleUseCaseDragStart(state: UseCaseDiagramState, offset: Offset): UseCaseElement? {
   val element = hitTestUseCaseDiagram(state.diagram, offset) ?: return null
   selectUseCaseElement(state, element)
   if (element is UseCaseElement.RelationRef) return null
@@ -159,7 +159,7 @@ internal fun handleUseCaseDragStart(state: UseCaseState, offset: Offset): UseCas
   return element
 }
 
-internal fun handleUseCaseDrag(state: UseCaseState, element: UseCaseElement, delta: Offset) {
+internal fun handleUseCaseDrag(state: UseCaseDiagramState, element: UseCaseElement, delta: Offset) {
   when (element) {
     is UseCaseElement.ActorRef ->
         state.updateActorWithoutSave(element.id) { it.copy(x = it.x + delta.x, y = it.y + delta.y) }

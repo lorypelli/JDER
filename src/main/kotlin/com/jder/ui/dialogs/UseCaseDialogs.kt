@@ -20,7 +20,11 @@ import com.jder.domain.model.UseCaseRelationType
 import com.jder.ui.components.RadioOptionList
 
 @Composable
-fun ActorPropertiesDialog(actorName: String, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
+fun ActorPropertiesDialog(
+    actorName: String,
+    onDismiss: () -> Unit,
+    onConfirm: (name: String) -> Unit,
+) {
   var name by remember { mutableStateOf(actorName) }
   AlertDialog(
       onDismissRequest = onDismiss,
@@ -54,7 +58,7 @@ fun UseCasePropertiesDialog(
     useCaseName: String,
     useCaseDocumentation: String,
     onDismiss: () -> Unit,
-    onConfirm: (String, String) -> Unit,
+    onConfirm: (name: String, documentation: String) -> Unit,
 ) {
   var name by remember { mutableStateOf(useCaseName) }
   var documentation by remember { mutableStateOf(useCaseDocumentation) }
@@ -95,7 +99,10 @@ fun UseCasePropertiesDialog(
 }
 
 @Composable
-fun SelectRelationTypeDialog(onDismiss: () -> Unit, onConfirm: (UseCaseRelationType) -> Unit) {
+fun SelectRelationTypeDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (type: UseCaseRelationType) -> Unit,
+) {
   RelationTypeDialog(
       title = "Tipo di Relazione",
       initialType = UseCaseRelationType.ASSOCIATION,
@@ -108,7 +115,7 @@ fun SelectRelationTypeDialog(onDismiss: () -> Unit, onConfirm: (UseCaseRelationT
 fun RelationEditDialog(
     relation: UseCaseRelation,
     onDismiss: () -> Unit,
-    onConfirm: (UseCaseRelationType) -> Unit,
+    onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
   RelationTypeDialog(
       title = "Modifica Tipo Relazione",
@@ -123,7 +130,7 @@ private fun RelationTypeDialog(
     title: String,
     initialType: UseCaseRelationType,
     onDismiss: () -> Unit,
-    onConfirm: (UseCaseRelationType) -> Unit,
+    onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
   var selected by remember { mutableStateOf(initialType) }
   AlertDialog(
@@ -152,7 +159,7 @@ fun SystemBoundaryDialog(
     boundaryWidth: Float,
     boundaryHeight: Float,
     onDismiss: () -> Unit,
-    onConfirm: (String, Float, Float) -> Unit,
+    onConfirm: (name: String, width: Float, height: Float) -> Unit,
 ) {
   var name by remember { mutableStateOf(boundaryName) }
   var width by remember { mutableStateOf(boundaryWidth.toInt().toString()) }

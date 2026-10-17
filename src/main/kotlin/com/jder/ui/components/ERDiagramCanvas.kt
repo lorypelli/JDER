@@ -13,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
-import com.jder.domain.model.DiagramState
+import com.jder.domain.model.ERDiagramState
 
 @Composable
 fun ERDiagramCanvas(
-    state: DiagramState,
-    onContextMenuRequest: (Offset, ContextMenuType) -> Unit,
+    state: ERDiagramState,
+    onContextMenuRequest: (Offset, ERContextMenuType) -> Unit,
     onEditRequest: (ERElement) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -33,29 +33,29 @@ fun ERDiagramCanvas(
         object : DiagramPointerHandler {
           var dragged: ERElement? = null
 
-          override fun onTap(position: Offset) = handleCanvasTap(state, position)
+          override fun onTap(position: Offset) = handleERTap(state, position)
 
           override fun onDoubleTap(position: Offset): Boolean {
             if (!state.isSelectTool) return false
-            val element = hitTestER(state.diagram, position) ?: return false
+            val element = hitTestERDiagram(state.diagram, position) ?: return false
             selectERElement(state, element)
             currentOnEditRequest(element)
             return true
           }
 
           override fun onContextClick(position: Offset, screenPosition: Offset) {
-            val element = hitTestER(state.diagram, position) ?: return
+            val element = hitTestERDiagram(state.diagram, position) ?: return
             selectERElement(state, element)
             currentOnContextMenuRequest(screenPosition, element.contextMenuType)
           }
 
           override fun onDragStart(position: Offset): Boolean {
-            dragged = handleDragStart(state, position)
+            dragged = handleERDragStart(state, position)
             return dragged != null
           }
 
           override fun onDrag(position: Offset, delta: Offset) {
-            dragged?.let { handleDrag(state, it, delta) }
+            dragged?.let { handleERDrag(state, it, delta) }
           }
 
           override fun onDragEnd(position: Offset) {
@@ -64,7 +64,7 @@ fun ERDiagramCanvas(
           }
 
           override fun onHover(position: Offset?) {
-            hoveredId = position?.let { hitTestER(state.diagram, it)?.ownerId }
+            hoveredId = position?.let { hitTestERDiagram(state.diagram, it)?.id }
           }
         }
       }

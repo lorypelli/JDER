@@ -21,7 +21,11 @@ import androidx.compose.ui.unit.dp
 import com.jder.domain.model.Entity
 
 @Composable
-fun EntityPropertiesDialog(entity: Entity, onDismiss: () -> Unit, onSave: (Entity) -> Unit) {
+fun EntityPropertiesDialog(
+    entity: Entity,
+    onDismiss: () -> Unit,
+    onConfirm: (entity: Entity) -> Unit,
+) {
   var name by remember { mutableStateOf(entity.name) }
   var isWeak by remember { mutableStateOf(entity.isWeak) }
   var documentation by remember { mutableStateOf(entity.documentation) }
@@ -59,11 +63,11 @@ fun EntityPropertiesDialog(entity: Entity, onDismiss: () -> Unit, onSave: (Entit
       confirmButton = {
         Button(
             onClick = {
-              onSave(entity.copy(name = name, isWeak = isWeak, documentation = documentation))
+              onConfirm(entity.copy(name = name, isWeak = isWeak, documentation = documentation))
             },
             enabled = name.isNotBlank(),
         ) {
-          Text("Salva")
+          Text("Conferma")
         }
       },
       dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },

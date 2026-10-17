@@ -11,25 +11,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.jder.data.ClassDiagramRepository
-import com.jder.data.DiagramRepository
+import com.jder.data.ERDiagramRepository
 import com.jder.data.LogicDiagramRepository
-import com.jder.data.UseCaseRepository
+import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
-import com.jder.domain.model.DiagramState
 import com.jder.domain.model.DiagramType
+import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
-import com.jder.domain.model.UseCaseState
+import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.components.DiagramTabRow
 import com.jder.ui.theme.ThemeState
 
 @Composable
 fun AppScreen(
-    erState: DiagramState,
-    useCaseState: UseCaseState,
+    erState: ERDiagramState,
+    useCaseState: UseCaseDiagramState,
     classState: ClassDiagramState,
     logicState: LogicDiagramState,
-    repository: DiagramRepository,
-    useCaseRepository: UseCaseRepository,
+    erRepository: ERDiagramRepository,
+    useCaseRepository: UseCaseDiagramRepository,
     classRepository: ClassDiagramRepository,
     logicRepository: LogicDiagramRepository,
     themeState: ThemeState,
@@ -52,7 +52,7 @@ fun AppScreen(
     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
       when (currentType) {
         DiagramType.ER ->
-            MainScreen(state = erState, repository = repository, themeState = themeState)
+            ERDiagramScreen(state = erState, repository = erRepository, themeState = themeState)
         DiagramType.CLASS_DIAGRAM ->
             ClassDiagramScreen(
                 state = classState,
@@ -60,7 +60,7 @@ fun AppScreen(
                 themeState = themeState,
             )
         DiagramType.USE_CASE ->
-            UseCaseScreen(
+            UseCaseDiagramScreen(
                 state = useCaseState,
                 repository = useCaseRepository,
                 themeState = themeState,

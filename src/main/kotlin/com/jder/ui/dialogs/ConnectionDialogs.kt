@@ -26,7 +26,7 @@ import com.jder.domain.model.Entity
 fun CreateConnectionDialog(
     entities: List<Entity>,
     onDismiss: () -> Unit,
-    onCreate: (String, Cardinality) -> Unit,
+    onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
   ConnectionDialog(
       title = "Crea Connessione",
@@ -34,7 +34,7 @@ fun CreateConnectionDialog(
       initialEntityId = null,
       initialCardinality = Cardinality.ONE,
       onDismiss = onDismiss,
-      onConfirm = onCreate,
+      onConfirm = onConfirm,
   )
 }
 
@@ -44,7 +44,7 @@ fun EditConnectionDialog(
     currentEntityId: String,
     currentCardinality: Cardinality,
     onDismiss: () -> Unit,
-    onSave: (String, Cardinality) -> Unit,
+    onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
   ConnectionDialog(
       title = "Modifica Connessione",
@@ -52,7 +52,7 @@ fun EditConnectionDialog(
       initialEntityId = currentEntityId,
       initialCardinality = currentCardinality,
       onDismiss = onDismiss,
-      onConfirm = onSave,
+      onConfirm = onConfirm,
   )
 }
 
@@ -64,7 +64,7 @@ private fun ConnectionDialog(
     initialEntityId: String?,
     initialCardinality: Cardinality,
     onDismiss: () -> Unit,
-    onConfirm: (String, Cardinality) -> Unit,
+    onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
   var selectedEntity by remember { mutableStateOf(entities.find { it.id == initialEntityId }) }
   var selectedCardinality by remember { mutableStateOf(initialCardinality) }
@@ -154,7 +154,7 @@ private fun ConnectionDialog(
               },
               enabled = selectedEntity != null,
           ) {
-            Text(if (initialEntityId != null) "Salva" else "Crea")
+            Text("Conferma")
           }
         }
       },

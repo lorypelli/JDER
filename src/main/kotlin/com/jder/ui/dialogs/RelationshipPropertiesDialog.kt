@@ -22,7 +22,7 @@ import com.jder.domain.model.Relationship
 fun RelationshipPropertiesDialog(
     relationship: Relationship,
     onDismiss: () -> Unit,
-    onSave: (Relationship) -> Unit,
+    onConfirm: (relationship: Relationship) -> Unit,
 ) {
   var name by remember { mutableStateOf(relationship.name) }
   var documentation by remember { mutableStateOf(relationship.documentation) }
@@ -52,10 +52,10 @@ fun RelationshipPropertiesDialog(
       },
       confirmButton = {
         Button(
-            onClick = { onSave(relationship.copy(name = name, documentation = documentation)) },
+            onClick = { onConfirm(relationship.copy(name = name, documentation = documentation)) },
             enabled = name.isNotBlank(),
         ) {
-          Text("Salva")
+          Text("Conferma")
         }
       },
       dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
