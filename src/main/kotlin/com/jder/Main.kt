@@ -31,12 +31,14 @@ import com.jder.data.LogicDiagramRepository
 import com.jder.data.UpdateChecker
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
+import com.jder.domain.model.DiagramEditorState
 import com.jder.domain.model.DiagramType
 import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.components.AppMenuBar
 import com.jder.ui.components.DiagramMenuHost
+import com.jder.ui.components.DockMenu
 import com.jder.ui.components.LocalDiagramMenuHost
 import com.jder.ui.components.WindowMenuBar
 import com.jder.ui.components.appMenus
@@ -69,6 +71,7 @@ fun main() {
         val logicRepository = remember { LogicDiagramRepository() }
         val menuHost = remember { DiagramMenuHost() }
         var currentType by remember { mutableStateOf(DiagramType.ER) }
+        var pendingNewDiagram by remember { mutableStateOf<DiagramType?>(null) }
         var showExitDialog by remember { mutableStateOf(false) }
         var showAboutDialog by remember { mutableStateOf(false) }
         var shouldExit by remember { mutableStateOf(false) }
@@ -79,6 +82,13 @@ fun main() {
                 useCaseState.isModified ||
                 classState.isModified ||
                 logicState.isModified
+        fun diagramState(type: DiagramType): DiagramEditorState<*> =
+            when (type) {
+                DiagramType.ER -> erState
+                DiagramType.CLASS_DIAGRAM -> classState
+                DiagramType.USE_CASE -> useCaseState
+                DiagramType.LOGIC -> logicState
+            }
         fun requestExit() {
             if (hasUnsavedChanges()) {
                 showExitDialog = true
@@ -100,6 +110,14 @@ fun main() {
             LaunchedEffect(isModified) {
                 window.rootPane.putClientProperty("Window.documentModified", isModified)
             }
+            LaunchedEffect(pendingNewDiagram, menuHost.commands) {
+                val type = pendingNewDiagram
+                val commands = menuHost.commands
+                if (type != null && commands != null && commands.state === diagramState(type)) {
+                    pendingNewDiagram = null
+                    commands.onNewDiagram()
+                }
+            }
             val menus =
                 appMenus(
                     commands = menuHost.commands,
@@ -113,6 +131,12 @@ fun main() {
                 )
             if (isMacOS) {
                 AppMenuBar(menus = menus, onAbout = { showAboutDialog = true })
+                DockMenu(
+                    onNewDiagram = { type ->
+                        currentType = type
+                        pendingNewDiagram = type
+                    }
+                )
             }
             JDERTheme(
                 darkTheme = themeState.isDarkTheme,
