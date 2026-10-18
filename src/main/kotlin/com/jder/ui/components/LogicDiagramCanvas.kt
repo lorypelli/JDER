@@ -34,8 +34,7 @@ fun LogicDiagramCanvas(
     modifier: Modifier = Modifier,
 ) {
   val textMeasurer = rememberDiagramTextMeasurer()
-  val colorScheme = MaterialTheme.colorScheme
-  val palette = remember(colorScheme) { colorScheme.toDiagramPalette() }
+  val palette = MaterialTheme.colorScheme.toDiagramPalette()
   var hovered by remember { mutableStateOf<LogicElement?>(null) }
   var wirePreview by remember { mutableStateOf<LogicWirePreview?>(null) }
   val currentOnContextMenuRequest by rememberUpdatedState(onContextMenuRequest)

@@ -23,8 +23,7 @@ fun ERDiagramCanvas(
     modifier: Modifier = Modifier,
 ) {
   val textMeasurer = rememberDiagramTextMeasurer()
-  val colorScheme = MaterialTheme.colorScheme
-  val palette = remember(colorScheme) { colorScheme.toDiagramPalette() }
+  val palette = MaterialTheme.colorScheme.toDiagramPalette()
   var hoveredId by remember { mutableStateOf<String?>(null) }
   val currentOnContextMenuRequest by rememberUpdatedState(onContextMenuRequest)
   val currentOnEditRequest by rememberUpdatedState(onEditRequest)
