@@ -50,48 +50,43 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WithTooltip(text: String, content: @Composable () -> Unit) {
-  TooltipArea(
-      tooltip = {
-        Surface(
-            shape = RoundedCornerShape(4.dp),
-            color = MaterialTheme.colorScheme.inverseSurface,
-            shadowElevation = 4.dp,
-        ) {
-          Text(
-              text = text,
-              color = MaterialTheme.colorScheme.inverseOnSurface,
-              style = MaterialTheme.typography.bodySmall,
-              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-          )
-        }
-      },
-      delayMillis = 500,
-      tooltipPlacement = TooltipPlacement.CursorPoint(offset = DpOffset(0.dp, 16.dp)),
-  ) {
-    content()
-  }
+    TooltipArea(
+        tooltip = {
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = MaterialTheme.colorScheme.inverseSurface,
+                shadowElevation = 4.dp,
+            ) {
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                )
+            }
+        },
+        delayMillis = 500,
+        tooltipPlacement = TooltipPlacement.CursorPoint(offset = DpOffset(0.dp, 16.dp)),
+    ) {
+        content()
+    }
 }
 
 @Composable
-fun ToolbarToggleButton(
-    icon: ImageVector,
-    label: String,
-    checked: Boolean,
-    onClick: () -> Unit,
-) {
-  WithTooltip(label) {
-    IconToggleButton(
-        checked = checked,
-        onCheckedChange = { onClick() },
-        colors =
-            IconButtonDefaults.iconToggleButtonColors(
-                checkedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                checkedContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            ),
-    ) {
-      Icon(icon, label)
+fun ToolbarToggleButton(icon: ImageVector, label: String, checked: Boolean, onClick: () -> Unit) {
+    WithTooltip(label) {
+        IconToggleButton(
+            checked = checked,
+            onCheckedChange = { onClick() },
+            colors =
+                IconButtonDefaults.iconToggleButtonColors(
+                    checkedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    checkedContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                ),
+        ) {
+            Icon(icon, label)
+        }
     }
-  }
 }
 
 @Composable
@@ -102,15 +97,29 @@ fun ToolbarIconButton(
     enabled: Boolean = true,
     tint: Color = LocalContentColor.current,
 ) {
-  WithTooltip(label) {
-    IconButton(onClick = onClick, enabled = enabled) {
-      Icon(
-          icon,
-          label,
-          tint = if (enabled) tint else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-      )
+    WithTooltip(label) {
+        IconButton(onClick = onClick, enabled = enabled) {
+            Icon(
+                icon,
+                label,
+                tint =
+                    if (enabled) tint else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            )
+        }
     }
-  }
+}
+
+@Composable
+fun ToolbarTool(tool: DiagramTool) {
+    when (tool) {
+        is DiagramTool.Mode ->
+            ToolbarToggleButton(tool.icon, tool.label, tool.isSelected, tool.onSelect)
+        is DiagramTool.Toggle ->
+            ToolbarToggleButton(tool.icon, tool.label, tool.isChecked, tool.onToggle)
+        is DiagramTool.Action -> ToolbarIconButton(tool.icon, tool.label, tool.onClick)
+        is DiagramTool.Group -> tool.tools.forEach { ToolbarTool(it) }
+        DiagramTool.Divider -> ToolbarVerticalDivider()
+    }
 }
 
 @Composable
@@ -121,22 +130,22 @@ private fun ToolbarMenuItem(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
-  DropdownMenuItem(
-      text = { Text(text) },
-      onClick = onClick,
-      leadingIcon = { Icon(icon, null) },
-      trailingIcon =
-          shortcut?.let {
-            {
-              Text(
-                  it,
-                  style = MaterialTheme.typography.labelMedium,
-                  color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-            }
-          },
-      enabled = enabled,
-  )
+    DropdownMenuItem(
+        text = { Text(text) },
+        onClick = onClick,
+        leadingIcon = { Icon(icon, null) },
+        trailingIcon =
+            shortcut?.let {
+                {
+                    Text(
+                        it,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
+        enabled = enabled,
+    )
 }
 
 @Composable
@@ -149,103 +158,107 @@ fun ToolbarFileMenu(
     hasSelection: Boolean,
     onDeleteSelected: () -> Unit,
 ) {
-  val coroutineScope = rememberCoroutineScope()
-  var showFileMenu by remember { mutableStateOf(false) }
-  fun runAction(action: () -> Unit) {
-    coroutineScope.launch {
-      delay(150.milliseconds)
-      showFileMenu = false
-      action()
+    val coroutineScope = rememberCoroutineScope()
+    var showFileMenu by remember { mutableStateOf(false) }
+    fun runAction(action: () -> Unit) {
+        coroutineScope.launch {
+            delay(150.milliseconds)
+            showFileMenu = false
+            action()
+        }
     }
-  }
-  Box {
-    TextButton(onClick = { showFileMenu = true }) { Text("File") }
-    DropdownMenu(expanded = showFileMenu, onDismissRequest = { showFileMenu = false }) {
-      ToolbarMenuItem("Nuovo Diagramma", Icons.Default.Add, shortcutLabel("N")) {
-        runAction(onNewDiagram)
-      }
-      ToolbarMenuItem("Apri Diagramma...", Icons.Default.FolderOpen, shortcutLabel("O")) {
-        runAction(onOpenDiagram)
-      }
-      Divider()
-      ToolbarMenuItem("Salva", Icons.Default.Save, shortcutLabel("S")) { runAction(onSaveDiagram) }
-      ToolbarMenuItem(
-          "Salva con nome...",
-          Icons.Default.Save,
-          shortcutLabel("S", hasShift = true),
-      ) {
-        runAction(onSaveAsDiagram)
-      }
-      ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {
-        runAction(onExportPNG)
-      }
-      Divider()
-      ToolbarMenuItem(
-          "Elimina Elemento Selezionato",
-          Icons.Default.Delete,
-          enabled = hasSelection,
-      ) {
-        runAction(onDeleteSelected)
-      }
+    Box {
+        TextButton(onClick = { showFileMenu = true }) { Text("File") }
+        DropdownMenu(expanded = showFileMenu, onDismissRequest = { showFileMenu = false }) {
+            ToolbarMenuItem("Nuovo Diagramma", Icons.Default.Add, shortcutLabel("N")) {
+                runAction(onNewDiagram)
+            }
+            ToolbarMenuItem("Apri Diagramma...", Icons.Default.FolderOpen, shortcutLabel("O")) {
+                runAction(onOpenDiagram)
+            }
+            Divider()
+            ToolbarMenuItem("Salva", Icons.Default.Save, shortcutLabel("S")) {
+                runAction(onSaveDiagram)
+            }
+            ToolbarMenuItem(
+                "Salva con nome...",
+                Icons.Default.Save,
+                shortcutLabel("S", hasShift = true),
+            ) {
+                runAction(onSaveAsDiagram)
+            }
+            ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {
+                runAction(onExportPNG)
+            }
+            Divider()
+            ToolbarMenuItem(
+                "Elimina Elemento Selezionato",
+                Icons.Default.Delete,
+                enabled = hasSelection,
+            ) {
+                runAction(onDeleteSelected)
+            }
+        }
     }
-  }
 }
 
 @Composable
 fun ToolbarExportMenu(onExportPNG: () -> Unit) {
-  val coroutineScope = rememberCoroutineScope()
-  var showExportMenu by remember { mutableStateOf(false) }
-  Box {
-    TextButton(onClick = { showExportMenu = true }) { Text("Esporta") }
-    DropdownMenu(expanded = showExportMenu, onDismissRequest = { showExportMenu = false }) {
-      ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {
-        coroutineScope.launch {
-          delay(150.milliseconds)
-          showExportMenu = false
-          onExportPNG()
+    val coroutineScope = rememberCoroutineScope()
+    var showExportMenu by remember { mutableStateOf(false) }
+    Box {
+        TextButton(onClick = { showExportMenu = true }) { Text("Esporta") }
+        DropdownMenu(expanded = showExportMenu, onDismissRequest = { showExportMenu = false }) {
+            ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {
+                coroutineScope.launch {
+                    delay(150.milliseconds)
+                    showExportMenu = false
+                    onExportPNG()
+                }
+            }
         }
-      }
     }
-  }
 }
 
 @Composable
 fun ToolbarViewMenuBox(onZoomIn: () -> Unit, onZoomOut: () -> Unit, onResetZoom: () -> Unit) {
-  val coroutineScope = rememberCoroutineScope()
-  var showViewMenu by remember { mutableStateOf(false) }
-  fun runAction(action: () -> Unit) {
-    coroutineScope.launch {
-      delay(150.milliseconds)
-      showViewMenu = false
-      action()
+    val coroutineScope = rememberCoroutineScope()
+    var showViewMenu by remember { mutableStateOf(false) }
+    fun runAction(action: () -> Unit) {
+        coroutineScope.launch {
+            delay(150.milliseconds)
+            showViewMenu = false
+            action()
+        }
     }
-  }
-  Box {
-    TextButton(onClick = { showViewMenu = true }) { Text("Vista") }
-    DropdownMenu(expanded = showViewMenu, onDismissRequest = { showViewMenu = false }) {
-      ToolbarMenuItem("Zoom In", Icons.Default.ZoomIn, shortcutLabel("+")) { runAction(onZoomIn) }
-      ToolbarMenuItem("Zoom Out", Icons.Default.ZoomOut, shortcutLabel("-")) {
-        runAction(onZoomOut)
-      }
-      ToolbarMenuItem("Reimposta Zoom", Icons.Default.CenterFocusWeak, shortcutLabel("0")) {
-        runAction(onResetZoom)
-      }
+    Box {
+        TextButton(onClick = { showViewMenu = true }) { Text("Vista") }
+        DropdownMenu(expanded = showViewMenu, onDismissRequest = { showViewMenu = false }) {
+            ToolbarMenuItem("Zoom In", Icons.Default.ZoomIn, shortcutLabel("+")) {
+                runAction(onZoomIn)
+            }
+            ToolbarMenuItem("Zoom Out", Icons.Default.ZoomOut, shortcutLabel("-")) {
+                runAction(onZoomOut)
+            }
+            ToolbarMenuItem("Reimposta Zoom", Icons.Default.CenterFocusWeak, shortcutLabel("0")) {
+                runAction(onResetZoom)
+            }
+        }
     }
-  }
 }
 
 @Composable
 fun ToolbarPaletteTheme(themeState: ThemeState) {
-  PaletteSelector(
-      selectedPalette = themeState.selectedPalette,
-      onPaletteSelected = themeState::selectPalette,
-      modifier = Modifier.padding(horizontal = 4.dp),
-  )
-  ThemeToggleButton(
-      isDarkTheme = themeState.isDarkTheme,
-      onToggle = themeState::toggleTheme,
-      modifier = Modifier.padding(horizontal = 4.dp),
-  )
+    PaletteSelector(
+        selectedPalette = themeState.selectedPalette,
+        onPaletteSelected = themeState::selectPalette,
+        modifier = Modifier.padding(horizontal = 4.dp),
+    )
+    ThemeToggleButton(
+        isDarkTheme = themeState.isDarkTheme,
+        onToggle = themeState::toggleTheme,
+        modifier = Modifier.padding(horizontal = 4.dp),
+    )
 }
 
 @Composable
@@ -255,24 +268,24 @@ fun ToolbarZoomControls(
     onZoomOut: () -> Unit,
     onResetZoom: () -> Unit,
 ) {
-  Text(
-      text = zoomPercentage,
-      style = MaterialTheme.typography.bodyMedium,
-      modifier = Modifier.padding(horizontal = 8.dp),
-  )
-  ToolbarIconButton(Icons.Default.ZoomOut, "Zoom Out (${shortcutLabel("-")})", onZoomOut)
-  ToolbarIconButton(
-      Icons.Default.CenterFocusWeak,
-      "Reimposta Zoom (${shortcutLabel("0")})",
-      onResetZoom,
-  )
-  ToolbarIconButton(Icons.Default.ZoomIn, "Zoom In (${shortcutLabel("+")})", onZoomIn)
+    Text(
+        text = zoomPercentage,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(horizontal = 8.dp),
+    )
+    ToolbarIconButton(Icons.Default.ZoomOut, "Zoom Out (${shortcutLabel("-")})", onZoomOut)
+    ToolbarIconButton(
+        Icons.Default.CenterFocusWeak,
+        "Reimposta Zoom (${shortcutLabel("0")})",
+        onResetZoom,
+    )
+    ToolbarIconButton(Icons.Default.ZoomIn, "Zoom In (${shortcutLabel("+")})", onZoomIn)
 }
 
 @Composable
 fun ToolbarVerticalDivider() {
-  Box(
-      modifier =
-          Modifier.height(32.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant)
-  )
+    Box(
+        modifier =
+            Modifier.height(32.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant)
+    )
 }

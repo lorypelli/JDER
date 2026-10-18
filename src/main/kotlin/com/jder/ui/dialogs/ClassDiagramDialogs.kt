@@ -37,58 +37,58 @@ fun ClassEntityDialog(
     onConfirm:
         (name: String, type: ClassEntityType, isAbstract: Boolean, documentation: String) -> Unit,
 ) {
-  var entityName by remember { mutableStateOf(name) }
-  var entityType by remember { mutableStateOf(type) }
-  var abstract by remember { mutableStateOf(isAbstract) }
-  var docs by remember { mutableStateOf(documentation) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Classe") },
-      text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          OutlinedTextField(
-              value = entityName,
-              onValueChange = { entityName = it },
-              label = { Text("Nome") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          Text("Tipo:", style = MaterialTheme.typography.labelMedium)
-          RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) { t ->
-            t.display
-          }
-          if (entityType == ClassEntityType.CLASS) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-              Text("Astratta", style = MaterialTheme.typography.bodyMedium)
-              Switch(checked = abstract, onCheckedChange = { abstract = it })
+    var entityName by remember { mutableStateOf(name) }
+    var entityType by remember { mutableStateOf(type) }
+    var abstract by remember { mutableStateOf(isAbstract) }
+    var docs by remember { mutableStateOf(documentation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Classe") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = entityName,
+                    onValueChange = { entityName = it },
+                    label = { Text("Nome") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) { t ->
+                    t.display
+                }
+                if (entityType == ClassEntityType.CLASS) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Astratta", style = MaterialTheme.typography.bodyMedium)
+                        Switch(checked = abstract, onCheckedChange = { abstract = it })
+                    }
+                }
+                OutlinedTextField(
+                    value = docs,
+                    onValueChange = { docs = it },
+                    label = { Text("Documentazione") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    maxLines = 4,
+                )
             }
-          }
-          OutlinedTextField(
-              value = docs,
-              onValueChange = { docs = it },
-              label = { Text("Documentazione") },
-              modifier = Modifier.fillMaxWidth().height(100.dp),
-              maxLines = 4,
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(entityName, entityType, abstract, docs)
-              onDismiss()
-            },
-            enabled = entityName.isNotBlank(),
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(entityName, entityType, abstract, docs)
+                    onDismiss()
+                },
+                enabled = entityName.isNotBlank(),
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 @Composable
@@ -97,81 +97,81 @@ fun ClassMemberDialog(
     onDismiss: () -> Unit,
     onConfirm: (member: ClassMember) -> Unit,
 ) {
-  var memberName by remember { mutableStateOf("") }
-  var memberType by remember { mutableStateOf("") }
-  var visibility by remember { mutableStateOf(Visibility.PUBLIC) }
-  var isStatic by remember { mutableStateOf(false) }
-  var isAbstract by remember { mutableStateOf(false) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text(if (isMethod) "Aggiungi Metodo" else "Aggiungi Attributo") },
-      text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-          ) {
-            OutlinedTextField(
-                value = memberName,
-                onValueChange = { memberName = it },
-                label = { Text("Nome") },
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-            )
-            OutlinedTextField(
-                value = memberType,
-                onValueChange = { memberType = it },
-                label = { Text("Tipo") },
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-            )
-          }
-          Text("Visibilità:", style = MaterialTheme.typography.labelMedium)
-          RadioOptionList(Visibility.entries, visibility, { visibility = it }) { v ->
-            "${v.symbol}  ${v.display}"
-          }
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.SpaceBetween,
-          ) {
-            Text("Statico", style = MaterialTheme.typography.bodyMedium)
-            Switch(checked = isStatic, onCheckedChange = { isStatic = it })
-          }
-          if (isMethod) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-              Text("Astratto", style = MaterialTheme.typography.bodyMedium)
-              Switch(checked = isAbstract, onCheckedChange = { isAbstract = it })
+    var memberName by remember { mutableStateOf("") }
+    var memberType by remember { mutableStateOf("") }
+    var visibility by remember { mutableStateOf(Visibility.PUBLIC) }
+    var isStatic by remember { mutableStateOf(false) }
+    var isAbstract by remember { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (isMethod) "Aggiungi Metodo" else "Aggiungi Attributo") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    OutlinedTextField(
+                        value = memberName,
+                        onValueChange = { memberName = it },
+                        label = { Text("Nome") },
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                    )
+                    OutlinedTextField(
+                        value = memberType,
+                        onValueChange = { memberType = it },
+                        label = { Text("Tipo") },
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                    )
+                }
+                Text("Visibilità:", style = MaterialTheme.typography.labelMedium)
+                RadioOptionList(Visibility.entries, visibility, { visibility = it }) { v ->
+                    "${v.symbol}  ${v.display}"
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text("Statico", style = MaterialTheme.typography.bodyMedium)
+                    Switch(checked = isStatic, onCheckedChange = { isStatic = it })
+                }
+                if (isMethod) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Astratto", style = MaterialTheme.typography.bodyMedium)
+                        Switch(checked = isAbstract, onCheckedChange = { isAbstract = it })
+                    }
+                }
             }
-          }
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(
-                  ClassMember(
-                      id = UUID.randomUUID().toString(),
-                      name = memberName,
-                      type = memberType,
-                      visibility = visibility,
-                      isStatic = isStatic,
-                      isAbstract = isAbstract,
-                  )
-              )
-              onDismiss()
-            },
-            enabled = memberName.isNotBlank(),
-        ) {
-          Text("Aggiungi")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(
+                        ClassMember(
+                            id = UUID.randomUUID().toString(),
+                            name = memberName,
+                            type = memberType,
+                            visibility = visibility,
+                            isStatic = isStatic,
+                            isAbstract = isAbstract,
+                        )
+                    )
+                    onDismiss()
+                },
+                enabled = memberName.isNotBlank(),
+            ) {
+                Text("Aggiungi")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 @Composable
@@ -186,54 +186,54 @@ fun ClassRelationDialog(
             label: String,
         ) -> Unit,
 ) {
-  var relType by remember { mutableStateOf(relation.type) }
-  var sourceMulti by remember { mutableStateOf(relation.sourceMultiplicity) }
-  var targetMulti by remember { mutableStateOf(relation.targetMultiplicity) }
-  var label by remember { mutableStateOf(relation.label) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Modifica Relazione") },
-      text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          Text("Tipo:", style = MaterialTheme.typography.labelMedium)
-          RadioOptionList(ClassRelationType.entries, relType, { relType = it }) { it.display }
-          Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
-                value = sourceMulti,
-                onValueChange = { sourceMulti = it },
-                label = { Text("Moltep. sorgente") },
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-            )
-            OutlinedTextField(
-                value = targetMulti,
-                onValueChange = { targetMulti = it },
-                label = { Text("Moltep. destinazione") },
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-            )
-          }
-          OutlinedTextField(
-              value = label,
-              onValueChange = { label = it },
-              label = { Text("Etichetta") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(relType, sourceMulti, targetMulti, label)
-              onDismiss()
+    var relType by remember { mutableStateOf(relation.type) }
+    var sourceMulti by remember { mutableStateOf(relation.sourceMultiplicity) }
+    var targetMulti by remember { mutableStateOf(relation.targetMultiplicity) }
+    var label by remember { mutableStateOf(relation.label) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Modifica Relazione") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                RadioOptionList(ClassRelationType.entries, relType, { relType = it }) { it.display }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = sourceMulti,
+                        onValueChange = { sourceMulti = it },
+                        label = { Text("Moltep. sorgente") },
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                    )
+                    OutlinedTextField(
+                        value = targetMulti,
+                        onValueChange = { targetMulti = it },
+                        label = { Text("Moltep. destinazione") },
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                    )
+                }
+                OutlinedTextField(
+                    value = label,
+                    onValueChange = { label = it },
+                    label = { Text("Etichetta") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
             }
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(relType, sourceMulti, targetMulti, label)
+                    onDismiss()
+                }
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 @Composable
@@ -241,23 +241,23 @@ fun SelectClassRelationTypeDialog(
     onDismiss: () -> Unit,
     onConfirm: (type: ClassRelationType) -> Unit,
 ) {
-  var selected by remember { mutableStateOf(ClassRelationType.ASSOCIATION) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Tipo di Relazione") },
-      text = {
-        RadioOptionList(ClassRelationType.entries, selected, { selected = it }) { it.display }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(selected)
-              onDismiss()
+    var selected by remember { mutableStateOf(ClassRelationType.ASSOCIATION) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tipo di Relazione") },
+        text = {
+            RadioOptionList(ClassRelationType.entries, selected, { selected = it }) { it.display }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(selected)
+                    onDismiss()
+                }
+            ) {
+                Text("Conferma")
             }
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }

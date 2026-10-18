@@ -32,29 +32,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 enum class ERContextMenuType {
-  ENTITY,
-  RELATIONSHIP,
-  NOTE,
+    ENTITY,
+    RELATIONSHIP,
+    NOTE,
 }
 
 enum class UseCaseContextMenuType {
-  ACTOR,
-  USE_CASE,
-  RELATION,
-  NOTE,
-  SYSTEM,
+    ACTOR,
+    USE_CASE,
+    RELATION,
+    NOTE,
+    SYSTEM,
 }
 
 enum class ClassDiagramContextMenuType {
-  CLASS,
-  RELATION,
-  NOTE,
+    CLASS,
+    RELATION,
+    NOTE,
 }
 
 enum class LogicContextMenuType {
-  COMPONENT,
-  WIRE,
-  NOTE,
+    COMPONENT,
+    WIRE,
+    NOTE,
 }
 
 class ContextMenuRequest<T>(val position: Offset, val type: T)
@@ -74,73 +74,78 @@ fun DiagramContextMenu(
     items: List<ContextMenuItem>,
     onDismiss: () -> Unit,
 ) {
-  val coroutineScope = rememberCoroutineScope()
-  val positionProvider =
-      remember(position) {
-        CursorPositionProvider(IntOffset(position.x.toInt(), position.y.toInt()))
-      }
-  Popup(
-      popupPositionProvider = positionProvider,
-      onDismissRequest = onDismiss,
-      properties = PopupProperties(focusable = true),
-  ) {
-    Surface(
-        modifier = Modifier.width(230.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp,
-        shadowElevation = 8.dp,
-    ) {
-      Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        Divider()
-        items.forEachIndexed { index, item ->
-          if (item.isDestructive && index > 0) Divider()
-          val contentColor =
-              when {
-                !item.enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                item.isDestructive -> MaterialTheme.colorScheme.error
-                else -> MaterialTheme.colorScheme.onSurface
-              }
-          DropdownMenuItem(
-              text = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  Icon(item.icon, null, modifier = Modifier.size(20.dp), tint = contentColor)
-                  Spacer(Modifier.width(12.dp))
-                  Text(item.label, color = contentColor)
-                }
-              },
-              onClick = {
-                coroutineScope.launch {
-                  delay(150.milliseconds)
-                  onDismiss()
-                  item.onClick()
-                }
-              },
-              enabled = item.enabled,
-          )
+    val coroutineScope = rememberCoroutineScope()
+    val positionProvider =
+        remember(position) {
+            CursorPositionProvider(IntOffset(position.x.toInt(), position.y.toInt()))
         }
-      }
+    Popup(
+        popupPositionProvider = positionProvider,
+        onDismissRequest = onDismiss,
+        properties = PopupProperties(focusable = true),
+    ) {
+        Surface(
+            modifier = Modifier.width(230.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp,
+            shadowElevation = 8.dp,
+        ) {
+            Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                Divider()
+                items.forEachIndexed { index, item ->
+                    if (item.isDestructive && index > 0) Divider()
+                    val contentColor =
+                        when {
+                            !item.enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                            item.isDestructive -> MaterialTheme.colorScheme.error
+                            else -> MaterialTheme.colorScheme.onSurface
+                        }
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    item.icon,
+                                    null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = contentColor,
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Text(item.label, color = contentColor)
+                            }
+                        },
+                        onClick = {
+                            coroutineScope.launch {
+                                delay(150.milliseconds)
+                                onDismiss()
+                                item.onClick()
+                            }
+                        },
+                        enabled = item.enabled,
+                    )
+                }
+            }
+        }
     }
-  }
 }
 
 private class CursorPositionProvider(private val offset: IntOffset) : PopupPositionProvider {
-  override fun calculatePosition(
-      anchorBounds: IntRect,
-      windowSize: IntSize,
-      layoutDirection: LayoutDirection,
-      popupContentSize: IntSize,
-  ): IntOffset {
-    var x = anchorBounds.left + offset.x
-    var y = anchorBounds.top + offset.y
-    if (x + popupContentSize.width > windowSize.width) x -= popupContentSize.width
-    if (y + popupContentSize.height > windowSize.height) y -= popupContentSize.height
-    return IntOffset(x.coerceAtLeast(0), y.coerceAtLeast(0))
-  }
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize,
+    ): IntOffset {
+        var x = anchorBounds.left + offset.x
+        var y = anchorBounds.top + offset.y
+        if (x + popupContentSize.width > windowSize.width) x -= popupContentSize.width
+        if (y + popupContentSize.height > windowSize.height) y -= popupContentSize.height
+        return IntOffset(x.coerceAtLeast(0), y.coerceAtLeast(0))
+    }
 }

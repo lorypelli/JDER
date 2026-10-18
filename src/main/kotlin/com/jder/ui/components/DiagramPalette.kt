@@ -23,28 +23,28 @@ data class DiagramPalette(
     val signalLow: Color,
     val signalUnknown: Color,
 ) {
-  val selected: Color
-    get() = tertiary
+    val selected: Color
+        get() = tertiary
 }
 
 fun ColorScheme.toDiagramPalette(): DiagramPalette {
-  val isDark = background.luminance() < 0.5f
-  return DiagramPalette(
-      background = background,
-      surface = surface,
-      surfaceVariant = surfaceVariant,
-      text = onSurface,
-      primary = primary,
-      secondary = secondary,
-      tertiary = tertiary,
-      error = error,
-      outline = outline,
-      grid = if (isDark) surfaceVariant.copy(alpha = 0.55f) else surfaceVariant,
-      textBackground = surface.copy(alpha = 0.9f),
-      signalHigh = if (isDark) Color(0xFF66BB6A) else Color(0xFF2E7D32),
-      signalLow = lerp(background, onSurface, 0.55f),
-      signalUnknown = outline,
-  )
+    val isDark = background.luminance() < 0.5f
+    return DiagramPalette(
+        background = background,
+        surface = surface,
+        surfaceVariant = surfaceVariant,
+        text = onSurface,
+        primary = primary,
+        secondary = secondary,
+        tertiary = tertiary,
+        error = error,
+        outline = outline,
+        grid = if (isDark) surfaceVariant.copy(alpha = 0.55f) else surfaceVariant,
+        textBackground = surface.copy(alpha = 0.9f),
+        signalHigh = if (isDark) Color(0xFF66BB6A) else Color(0xFF2E7D32),
+        signalLow = lerp(background, onSurface, 0.55f),
+        signalUnknown = outline,
+    )
 }
 
 fun ColorScheme.toExportPalette(): DiagramPalette =

@@ -24,40 +24,42 @@ fun RelationshipPropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (relationship: Relationship) -> Unit,
 ) {
-  var name by remember { mutableStateOf(relationship.name) }
-  var documentation by remember { mutableStateOf(relationship.documentation) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Relazione") },
-      text = {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-          OutlinedTextField(
-              value = name,
-              onValueChange = { name = it },
-              label = { Text("Nome") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          OutlinedTextField(
-              value = documentation,
-              onValueChange = { documentation = it },
-              label = { Text("Documentazione") },
-              modifier = Modifier.fillMaxWidth().height(100.dp),
-              maxLines = 5,
-          )
-        }
-      },
-      confirmButton = {
-        Button(
-            onClick = { onConfirm(relationship.copy(name = name, documentation = documentation)) },
-            enabled = name.isNotBlank(),
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+    var name by remember { mutableStateOf(relationship.name) }
+    var documentation by remember { mutableStateOf(relationship.documentation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Relazione") },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Nome") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = documentation,
+                    onValueChange = { documentation = it },
+                    label = { Text("Documentazione") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    maxLines = 5,
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(relationship.copy(name = name, documentation = documentation))
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }

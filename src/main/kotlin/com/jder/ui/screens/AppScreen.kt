@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.jder.data.ClassDiagramRepository
 import com.jder.data.ERDiagramRepository
@@ -33,45 +29,50 @@ fun AppScreen(
     classRepository: ClassDiagramRepository,
     logicRepository: LogicDiagramRepository,
     themeState: ThemeState,
+    currentType: DiagramType,
+    onTypeChange: (DiagramType) -> Unit,
 ) {
-  var currentType by remember { mutableStateOf(DiagramType.ER) }
-  Column(modifier = Modifier.fillMaxSize()) {
-    DiagramTabRow(
-        currentType = currentType,
-        onTypeChange = { currentType = it },
-        isModified = { type ->
-          when (type) {
-            DiagramType.ER -> erState.isModified
-            DiagramType.CLASS_DIAGRAM -> classState.isModified
-            DiagramType.USE_CASE -> useCaseState.isModified
-            DiagramType.LOGIC -> logicState.isModified
-          }
-        },
-        modifier = Modifier.fillMaxWidth(),
-    )
-    Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-      when (currentType) {
-        DiagramType.ER ->
-            ERDiagramScreen(state = erState, repository = erRepository, themeState = themeState)
-        DiagramType.CLASS_DIAGRAM ->
-            ClassDiagramScreen(
-                state = classState,
-                repository = classRepository,
-                themeState = themeState,
-            )
-        DiagramType.USE_CASE ->
-            UseCaseDiagramScreen(
-                state = useCaseState,
-                repository = useCaseRepository,
-                themeState = themeState,
-            )
-        DiagramType.LOGIC ->
-            LogicDiagramScreen(
-                state = logicState,
-                repository = logicRepository,
-                themeState = themeState,
-            )
-      }
+    Column(modifier = Modifier.fillMaxSize()) {
+        DiagramTabRow(
+            currentType = currentType,
+            onTypeChange = onTypeChange,
+            isModified = { type ->
+                when (type) {
+                    DiagramType.ER -> erState.isModified
+                    DiagramType.CLASS_DIAGRAM -> classState.isModified
+                    DiagramType.USE_CASE -> useCaseState.isModified
+                    DiagramType.LOGIC -> logicState.isModified
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+            when (currentType) {
+                DiagramType.ER ->
+                    ERDiagramScreen(
+                        state = erState,
+                        repository = erRepository,
+                        themeState = themeState,
+                    )
+                DiagramType.CLASS_DIAGRAM ->
+                    ClassDiagramScreen(
+                        state = classState,
+                        repository = classRepository,
+                        themeState = themeState,
+                    )
+                DiagramType.USE_CASE ->
+                    UseCaseDiagramScreen(
+                        state = useCaseState,
+                        repository = useCaseRepository,
+                        themeState = themeState,
+                    )
+                DiagramType.LOGIC ->
+                    LogicDiagramScreen(
+                        state = logicState,
+                        repository = logicRepository,
+                        themeState = themeState,
+                    )
+            }
+        }
     }
-  }
 }

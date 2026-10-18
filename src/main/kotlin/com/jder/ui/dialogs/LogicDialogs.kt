@@ -59,216 +59,236 @@ fun LogicComponentDialog(
     onDismiss: () -> Unit,
     onConfirm: (label: String, type: LogicComponentType, inputCount: Int, value: Boolean) -> Unit,
 ) {
-  var label by remember { mutableStateOf(component.label) }
-  var type by remember { mutableStateOf(component.type) }
-  var inputCount by remember {
-    mutableStateOf(component.inputCount.coerceIn(MIN_GATE_INPUTS, MAX_GATE_INPUTS))
-  }
-  var value by remember { mutableStateOf(component.value) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = {
-        Text(
-            when (component.type) {
-              LogicComponentType.INPUT -> "Proprietà Ingresso"
-              LogicComponentType.OUTPUT -> "Proprietà Uscita"
-              else -> "Proprietà Porta Logica"
-            }
-        )
-      },
-      text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          OutlinedTextField(
-              value = label,
-              onValueChange = { label = it },
-              label = { Text("Etichetta") },
-              placeholder = { if (component.type.isGate) Text("Opzionale, es. U1") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          if (component.type.isGate) {
-            Text("Tipo di porta:", style = MaterialTheme.typography.labelMedium)
-            LogicComponentType.gates.chunked(4).forEach { row ->
-              Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                row.forEach { gate ->
-                  FilterChip(
-                      selected = type == gate,
-                      onClick = { type = gate },
-                      label = { Text(gate.display) },
-                      leadingIcon = {
-                        Icon(CustomIcons.gate(gate), null, modifier = Modifier.size(18.dp))
-                      },
-                  )
+    var label by remember { mutableStateOf(component.label) }
+    var type by remember { mutableStateOf(component.type) }
+    var inputCount by remember {
+        mutableStateOf(component.inputCount.coerceIn(MIN_GATE_INPUTS, MAX_GATE_INPUTS))
+    }
+    var value by remember { mutableStateOf(component.value) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                when (component.type) {
+                    LogicComponentType.INPUT -> "Proprietà Ingresso"
+                    LogicComponentType.OUTPUT -> "Proprietà Uscita"
+                    else -> "Proprietà Porta Logica"
                 }
-              }
-            }
-            if (type.supportsMultipleInputs) {
-              Row(
-                  modifier = Modifier.fillMaxWidth(),
-                  verticalAlignment = Alignment.CenterVertically,
-                  horizontalArrangement = Arrangement.SpaceBetween,
-              ) {
-                Text("Numero di ingressi", style = MaterialTheme.typography.bodyMedium)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                  IconButton(
-                      onClick = { inputCount-- },
-                      enabled = inputCount > MIN_GATE_INPUTS,
-                  ) {
-                    Icon(Icons.Default.Remove, contentDescription = "Rimuovi ingresso")
-                  }
-                  Text("$inputCount", style = MaterialTheme.typography.titleMedium)
-                  IconButton(
-                      onClick = { inputCount++ },
-                      enabled = inputCount < MAX_GATE_INPUTS,
-                  ) {
-                    Icon(Icons.Default.Add, contentDescription = "Aggiungi ingresso")
-                  }
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = label,
+                    onValueChange = { label = it },
+                    label = { Text("Etichetta") },
+                    placeholder = { if (component.type.isGate) Text("Opzionale, es. U1") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                if (component.type.isGate) {
+                    Text("Tipo di porta:", style = MaterialTheme.typography.labelMedium)
+                    LogicComponentType.gates.chunked(4).forEach { row ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            row.forEach { gate ->
+                                FilterChip(
+                                    selected = type == gate,
+                                    onClick = { type = gate },
+                                    label = { Text(gate.display) },
+                                    leadingIcon = {
+                                        Icon(
+                                            CustomIcons.gate(gate),
+                                            null,
+                                            modifier = Modifier.size(18.dp),
+                                        )
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    if (type.supportsMultipleInputs) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text("Numero di ingressi", style = MaterialTheme.typography.bodyMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(
+                                    onClick = { inputCount-- },
+                                    enabled = inputCount > MIN_GATE_INPUTS,
+                                ) {
+                                    Icon(
+                                        Icons.Default.Remove,
+                                        contentDescription = "Rimuovi ingresso",
+                                    )
+                                }
+                                Text("$inputCount", style = MaterialTheme.typography.titleMedium)
+                                IconButton(
+                                    onClick = { inputCount++ },
+                                    enabled = inputCount < MAX_GATE_INPUTS,
+                                ) {
+                                    Icon(
+                                        Icons.Default.Add,
+                                        contentDescription = "Aggiungi ingresso",
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
-              }
+                if (component.type == LogicComponentType.INPUT) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            "Valore: ${if (value) "1" else "0"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Switch(checked = value, onCheckedChange = { value = it })
+                    }
+                }
             }
-          }
-          if (component.type == LogicComponentType.INPUT) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(label.trim(), type, inputCount, value)
+                    onDismiss()
+                }
             ) {
-              Text(
-                  "Valore: ${if (value) "1" else "0"}",
-                  style = MaterialTheme.typography.bodyMedium,
-              )
-              Switch(checked = value, onCheckedChange = { value = it })
+                Text("Conferma")
             }
-          }
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(label.trim(), type, inputCount, value)
-              onDismiss()
-            }
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 private fun bit(value: Boolean?): String =
     when (value) {
-      true -> "1"
-      false -> "0"
-      null -> "?"
+        true -> "1"
+        false -> "0"
+        null -> "?"
     }
 
 private fun columnName(component: LogicComponent): String =
     component.label.ifBlank { component.type.display }
 
 private fun LogicTruthTable.toClipboardText(): String = buildString {
-  append((inputs.map(::columnName) + "|" + outputs.map(::columnName)).joinToString("\t"))
-  rows.forEach { row ->
-    append('\n')
-    append((row.inputs.map(::bit) + "|" + row.outputs.map(::bit)).joinToString("\t"))
-  }
+    append((inputs.map(::columnName) + "|" + outputs.map(::columnName)).joinToString("\t"))
+    rows.forEach { row ->
+        append('\n')
+        append((row.inputs.map(::bit) + "|" + row.outputs.map(::bit)).joinToString("\t"))
+    }
 }
 
 @Composable
 fun TruthTableDialog(diagram: LogicDiagram, onDismiss: () -> Unit) {
-  val table = remember(diagram) { LogicSimulator.truthTable(diagram) }
-  val inputCount = diagram.components.count { it.type == LogicComponentType.INPUT }
-  val clipboardManager = LocalClipboardManager.current
-  val hasRows = table != null && table.outputs.isNotEmpty()
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Tabella di verità") },
-      text = {
-        when {
-          table == null ->
-              Text(
-                  "Il circuito ha $inputCount ingressi: la tabella di verità ne supporta al " +
-                      "massimo ${LogicSimulator.MAX_TRUTH_TABLE_INPUTS}."
-              )
-          table.outputs.isEmpty() ->
-              Text("Aggiungi almeno un'uscita al circuito per calcolare la tabella di verità.")
-          else -> TruthTableContent(table, diagram)
-        }
-      },
-      confirmButton = { TextButton(onClick = onDismiss) { Text("Chiudi") } },
-      dismissButton =
-          if (hasRows) {
-            {
-              TextButton(
-                  onClick = {
-                    table?.let { clipboardManager.setText(AnnotatedString(it.toClipboardText())) }
-                  }
-              ) {
-                Text("Copia")
-              }
+    val table = remember(diagram) { LogicSimulator.truthTable(diagram) }
+    val inputCount = diagram.components.count { it.type == LogicComponentType.INPUT }
+    val clipboardManager = LocalClipboardManager.current
+    val hasRows = table != null && table.outputs.isNotEmpty()
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Tabella di verità") },
+        text = {
+            when {
+                table == null ->
+                    Text(
+                        "Il circuito ha $inputCount ingressi: la tabella di verità ne supporta al " +
+                            "massimo ${LogicSimulator.MAX_TRUTH_TABLE_INPUTS}."
+                    )
+                table.outputs.isEmpty() ->
+                    Text(
+                        "Aggiungi almeno un'uscita al circuito per calcolare la tabella di verità."
+                    )
+                else -> TruthTableContent(table, diagram)
             }
-          } else null,
-  )
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Chiudi") } },
+        dismissButton =
+            if (hasRows) {
+                {
+                    TextButton(
+                        onClick = {
+                            table?.let {
+                                clipboardManager.setText(AnnotatedString(it.toClipboardText()))
+                            }
+                        }
+                    ) {
+                        Text("Copia")
+                    }
+                }
+            } else null,
+    )
 }
 
 @Composable
 private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
-  val cellWidth = 52.dp
-  val tableWidth = cellWidth * (table.inputs.size + table.outputs.size) + 9.dp
-  Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-    Box(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-      Column(modifier = Modifier.width(tableWidth)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          table.inputs.forEach { TruthTableCell(columnName(it), cellWidth, isHeader = true) }
-          TruthTableSeparator()
-          table.outputs.forEach {
-            TruthTableCell(columnName(it), cellWidth, isHeader = true, isOutput = true)
-          }
-        }
-        Divider()
-        LazyColumn(modifier = Modifier.heightIn(max = 320.dp)) {
-          itemsIndexed(table.rows) { index, row ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier =
-                    Modifier.background(
-                        if (index % 2 == 1)
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                        else Color.Transparent
-                    ),
-            ) {
-              row.inputs.forEach { TruthTableCell(bit(it), cellWidth) }
-              TruthTableSeparator()
-              row.outputs.forEach { TruthTableCell(bit(it), cellWidth, isOutput = true) }
+    val cellWidth = 52.dp
+    val tableWidth = cellWidth * (table.inputs.size + table.outputs.size) + 9.dp
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Box(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+            Column(modifier = Modifier.width(tableWidth)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    table.inputs.forEach {
+                        TruthTableCell(columnName(it), cellWidth, isHeader = true)
+                    }
+                    TruthTableSeparator()
+                    table.outputs.forEach {
+                        TruthTableCell(columnName(it), cellWidth, isHeader = true, isOutput = true)
+                    }
+                }
+                Divider()
+                LazyColumn(modifier = Modifier.heightIn(max = 320.dp)) {
+                    itemsIndexed(table.rows) { index, row ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier =
+                                Modifier.background(
+                                    if (index % 2 == 1)
+                                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                    else Color.Transparent
+                                ),
+                        ) {
+                            row.inputs.forEach { TruthTableCell(bit(it), cellWidth) }
+                            TruthTableSeparator()
+                            row.outputs.forEach {
+                                TruthTableCell(bit(it), cellWidth, isOutput = true)
+                            }
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-    val expressions =
-        remember(diagram) {
-          table.outputs.mapNotNull { output ->
-            LogicSimulator.expression(diagram, output.id)?.let { "${columnName(output)} = $it" }
-          }
+        val expressions =
+            remember(diagram) {
+                table.outputs.mapNotNull { output ->
+                    LogicSimulator.expression(diagram, output.id)?.let {
+                        "${columnName(output)} = $it"
+                    }
+                }
+            }
+        if (expressions.isNotEmpty()) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text("Espressioni:", style = MaterialTheme.typography.labelMedium)
+                expressions.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
+            }
         }
-    if (expressions.isNotEmpty()) {
-      Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text("Espressioni:", style = MaterialTheme.typography.labelMedium)
-        expressions.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
-      }
     }
-  }
 }
 
 @Composable
 private fun TruthTableSeparator() {
-  Box(
-      modifier =
-          Modifier.padding(horizontal = 4.dp)
-              .width(1.dp)
-              .heightIn(min = 28.dp)
-              .background(MaterialTheme.colorScheme.outline)
-  )
+    Box(
+        modifier =
+            Modifier.padding(horizontal = 4.dp)
+                .width(1.dp)
+                .heightIn(min = 28.dp)
+                .background(MaterialTheme.colorScheme.outline)
+    )
 }
 
 @Composable
@@ -278,15 +298,16 @@ private fun TruthTableCell(
     isHeader: Boolean = false,
     isOutput: Boolean = false,
 ) {
-  Text(
-      text = text,
-      modifier = Modifier.width(width).padding(vertical = 4.dp),
-      textAlign = TextAlign.Center,
-      maxLines = 1,
-      overflow = TextOverflow.Ellipsis,
-      fontWeight = if (isHeader || isOutput) FontWeight.Bold else FontWeight.Normal,
-      color =
-          if (isOutput) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-      style = MaterialTheme.typography.bodyMedium,
-  )
+    Text(
+        text = text,
+        modifier = Modifier.width(width).padding(vertical = 4.dp),
+        textAlign = TextAlign.Center,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        fontWeight = if (isHeader || isOutput) FontWeight.Bold else FontWeight.Normal,
+        color =
+            if (isOutput) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.bodyMedium,
+    )
 }

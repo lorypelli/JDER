@@ -4,7 +4,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -44,89 +43,91 @@ fun DiagramToolbar(
     onUndo: () -> Unit,
     onRedo: () -> Unit,
     onDeleteSelected: () -> Unit,
+    tools: List<DiagramTool>,
     modifier: Modifier = Modifier,
-    tools: @Composable RowScope.() -> Unit,
 ) {
-  val title = buildString {
-    append("JDER - ")
-    append(state.currentFile?.let { File(it).name } ?: state.diagramName)
-    if (state.isModified) append(" *")
-  }
-  val hasSelection = state.hasSelection
-  Column(modifier = modifier) {
-    TopAppBar(
-        title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        actions = {
-          ToolbarFileMenu(
-              onNewDiagram = onNewDiagram,
-              onOpenDiagram = onOpenDiagram,
-              onSaveDiagram = onSaveDiagram,
-              onSaveAsDiagram = onSaveAsDiagram,
-              onExportPNG = onExportPNG,
-              hasSelection = hasSelection,
-              onDeleteSelected = onDeleteSelected,
-          )
-          ToolbarViewMenuBox(
-              onZoomIn = state::zoomIn,
-              onZoomOut = state::zoomOut,
-              onResetZoom = state::resetView,
-          )
-          ToolbarExportMenu(onExportPNG = onExportPNG)
-          ToolbarPaletteTheme(themeState = themeState)
-        },
-    )
-    Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = 2.dp) {
-      Row(
-          modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-          verticalAlignment = Alignment.CenterVertically,
-      ) {
-        Row(
-            modifier = Modifier.weight(1f).horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-          ToolbarToggleButton(
-              icon = Icons.Default.NearMe,
-              label = "Seleziona e Sposta (Esc)",
-              checked = state.isSelectTool,
-              onClick = state::resetToolMode,
-          )
-          ToolbarVerticalDivider()
-          ToolbarIconButton(
-              icon = Icons.Default.Undo,
-              label = "Annulla (${shortcutLabel("Z")})",
-              onClick = onUndo,
-              enabled = state.canUndo(),
-          )
-          ToolbarIconButton(
-              icon = Icons.Default.Redo,
-              label = "Ripristina (${shortcutLabel("Y")})",
-              onClick = onRedo,
-              enabled = state.canRedo(),
-          )
-          ToolbarVerticalDivider()
-          tools()
-          ToolbarVerticalDivider()
-          ToolbarIconButton(
-              icon = Icons.Default.Save,
-              label = "Salva (${shortcutLabel("S")})",
-              onClick = onSaveDiagram,
-          )
-          ToolbarIconButton(
-              icon = Icons.Default.Delete,
-              label = "Elimina Elemento Selezionato (${if (isMacOS) "⌫" else "Canc"})",
-              onClick = onDeleteSelected,
-              enabled = hasSelection,
-              tint = MaterialTheme.colorScheme.error,
-          )
-        }
-        ToolbarZoomControls(
-            zoomPercentage = "${(state.zoom * 100).roundToInt()}%",
-            onZoomIn = state::zoomIn,
-            onZoomOut = state::zoomOut,
-            onResetZoom = state::resetView,
-        )
-      }
+    val title = buildString {
+        append("JDER - ")
+        append(state.currentFile?.let { File(it).name } ?: state.diagramName)
+        if (state.isModified) append(" *")
     }
-  }
+    val hasSelection = state.hasSelection
+    Column(modifier = modifier) {
+        TopAppBar(
+            title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            actions = {
+                if (isMacOS) {
+                    ToolbarFileMenu(
+                        onNewDiagram = onNewDiagram,
+                        onOpenDiagram = onOpenDiagram,
+                        onSaveDiagram = onSaveDiagram,
+                        onSaveAsDiagram = onSaveAsDiagram,
+                        onExportPNG = onExportPNG,
+                        hasSelection = hasSelection,
+                        onDeleteSelected = onDeleteSelected,
+                    )
+                    ToolbarViewMenuBox(
+                        onZoomIn = state::zoomIn,
+                        onZoomOut = state::zoomOut,
+                        onResetZoom = state::resetView,
+                    )
+                    ToolbarExportMenu(onExportPNG = onExportPNG)
+                }
+                ToolbarPaletteTheme(themeState = themeState)
+            },
+        )
+        Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = 2.dp) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f).horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ToolbarToggleButton(
+                        icon = Icons.Default.NearMe,
+                        label = "Seleziona e Sposta (Esc)",
+                        checked = state.isSelectTool,
+                        onClick = state::resetToolMode,
+                    )
+                    ToolbarVerticalDivider()
+                    ToolbarIconButton(
+                        icon = Icons.Default.Undo,
+                        label = "Annulla (${shortcutLabel("Z")})",
+                        onClick = onUndo,
+                        enabled = state.canUndo(),
+                    )
+                    ToolbarIconButton(
+                        icon = Icons.Default.Redo,
+                        label = "Ripristina (${shortcutLabel("Y")})",
+                        onClick = onRedo,
+                        enabled = state.canRedo(),
+                    )
+                    ToolbarVerticalDivider()
+                    tools.forEach { ToolbarTool(it) }
+                    ToolbarVerticalDivider()
+                    ToolbarIconButton(
+                        icon = Icons.Default.Save,
+                        label = "Salva (${shortcutLabel("S")})",
+                        onClick = onSaveDiagram,
+                    )
+                    ToolbarIconButton(
+                        icon = Icons.Default.Delete,
+                        label = "Elimina Elemento Selezionato (${if (isMacOS) "⌫" else "Canc"})",
+                        onClick = onDeleteSelected,
+                        enabled = hasSelection,
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+                ToolbarZoomControls(
+                    zoomPercentage = "${(state.zoom * 100).roundToInt()}%",
+                    onZoomIn = state::zoomIn,
+                    onZoomOut = state::zoomOut,
+                    onResetZoom = state::resetView,
+                )
+            }
+        }
+    }
 }

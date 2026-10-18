@@ -35,15 +35,15 @@ fun Relationship.isManyToMany(): Boolean =
 
 @Serializable
 enum class Cardinality(val display: String) {
-  ONE("1"),
-  ZERO_ONE("(0,1)"),
-  ONE_ONE("(1,1)"),
-  MANY("N"),
-  ZERO_MANY("(0,N)"),
-  ONE_MANY("(1,N)");
+    ONE("1"),
+    ZERO_ONE("(0,1)"),
+    ONE_ONE("(1,1)"),
+    MANY("N"),
+    ZERO_MANY("(0,N)"),
+    ONE_MANY("(1,N)");
 
-  val isMany: Boolean
-    get() = this == MANY || this == ZERO_MANY || this == ONE_MANY
+    val isMany: Boolean
+        get() = this == MANY || this == ZERO_MANY || this == ONE_MANY
 }
 
 @Serializable
@@ -60,11 +60,11 @@ data class Attribute(
 
 @Serializable
 enum class AttributeType(val display: String) {
-  NORMAL("Normale"),
-  KEY("Chiave"),
-  MULTIVALUED("Multivalore"),
-  DERIVED("Derivato"),
-  COMPOSITE("Composto"),
+    NORMAL("Normale"),
+    KEY("Chiave"),
+    MULTIVALUED("Multivalore"),
+    DERIVED("Derivato"),
+    COMPOSITE("Composto"),
 }
 
 @Serializable

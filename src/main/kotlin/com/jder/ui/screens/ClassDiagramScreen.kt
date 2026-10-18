@@ -1,6 +1,7 @@
 package com.jder.ui.screens
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -20,8 +21,9 @@ import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.components.DiagramContextMenu
+import com.jder.ui.components.DiagramSelectionMenu
+import com.jder.ui.components.DiagramTool
 import com.jder.ui.components.PendingRelation
-import com.jder.ui.components.ToolbarToggleButton
 import com.jder.ui.components.contextMenuType
 import com.jder.ui.components.rememberSnackbarMessenger
 import com.jder.ui.dialogs.ClassEntityDialog
@@ -38,222 +40,253 @@ fun ClassDiagramScreen(
     repository: ClassDiagramRepository,
     themeState: ThemeState,
 ) {
-  val messenger = rememberSnackbarMessenger()
-  var showClassDialog by remember { mutableStateOf(false) }
-  var showRelationDialog by remember { mutableStateOf(false) }
-  var showNoteDialog by remember { mutableStateOf(false) }
-  var showAddAttributeDialog by remember { mutableStateOf(false) }
-  var showAddMethodDialog by remember { mutableStateOf(false) }
-  var pendingRelation by remember { mutableStateOf<PendingRelation?>(null) }
-  var contextMenu by remember {
-    mutableStateOf<ContextMenuRequest<ClassDiagramContextMenuType>?>(null)
-  }
-  fun openEditor(type: ClassDiagramContextMenuType) {
-    when (type) {
-      ClassDiagramContextMenuType.CLASS -> showClassDialog = true
-      ClassDiagramContextMenuType.RELATION -> showRelationDialog = true
-      ClassDiagramContextMenuType.NOTE -> showNoteDialog = true
+    val messenger = rememberSnackbarMessenger()
+    var showClassDialog by remember { mutableStateOf(false) }
+    var showRelationDialog by remember { mutableStateOf(false) }
+    var showNoteDialog by remember { mutableStateOf(false) }
+    var showAddAttributeDialog by remember { mutableStateOf(false) }
+    var showAddMethodDialog by remember { mutableStateOf(false) }
+    var pendingRelation by remember { mutableStateOf<PendingRelation?>(null) }
+    var contextMenu by remember {
+        mutableStateOf<ContextMenuRequest<ClassDiagramContextMenuType>?>(null)
     }
-  }
-  DiagramEditorScaffold(
-      state = state,
-      repository = repository,
-      themeState = themeState,
-      messenger = messenger,
-      renderImage = { renderClassDiagramToBitmap(state.diagram, it) },
-      emptyHint =
-          "Scegli Classe, Interfaccia, Enum o Nota dalla barra degli strumenti e clicca sulla lavagna",
-      tools = {
-        ToolbarToggleButton(
-            CustomIcons.Rectangle,
-            "Crea Classe",
-            state.toolMode == ClassDiagramToolMode.CLASS,
-        ) {
-          state.toolMode = ClassDiagramToolMode.CLASS
+    fun openEditor(type: ClassDiagramContextMenuType) {
+        when (type) {
+            ClassDiagramContextMenuType.CLASS -> showClassDialog = true
+            ClassDiagramContextMenuType.RELATION -> showRelationDialog = true
+            ClassDiagramContextMenuType.NOTE -> showNoteDialog = true
         }
-        ToolbarToggleButton(
-            CustomIcons.Interface,
-            "Crea Interfaccia",
-            state.toolMode == ClassDiagramToolMode.INTERFACE,
-        ) {
-          state.toolMode = ClassDiagramToolMode.INTERFACE
+    }
+    fun selectedType(): ClassDiagramContextMenuType? =
+        when {
+            state.selectedClassId != null -> ClassDiagramContextMenuType.CLASS
+            state.selectedRelationId != null -> ClassDiagramContextMenuType.RELATION
+            state.selectedNoteId != null -> ClassDiagramContextMenuType.NOTE
+            else -> null
         }
-        ToolbarToggleButton(
-            Icons.Default.FormatListNumbered,
-            "Crea Enum",
-            state.toolMode == ClassDiagramToolMode.ENUM,
-        ) {
-          state.toolMode = ClassDiagramToolMode.ENUM
+    fun actionsTitle(type: ClassDiagramContextMenuType): String =
+        when (type) {
+            ClassDiagramContextMenuType.CLASS -> "Azioni Classe"
+            ClassDiagramContextMenuType.RELATION -> "Azioni Relazione"
+            ClassDiagramContextMenuType.NOTE -> "Azioni Nota"
         }
-        ToolbarToggleButton(
-            Icons.Default.ArrowRightAlt,
-            "Crea Relazione (clicca la classe sorgente e poi la destinazione)",
-            state.toolMode == ClassDiagramToolMode.RELATION,
-        ) {
-          state.toolMode = ClassDiagramToolMode.RELATION
-          state.pendingRelationSourceId = null
-        }
-        ToolbarToggleButton(
-            CustomIcons.StickyNote,
-            "Crea Nota",
-            state.toolMode == ClassDiagramToolMode.NOTE,
-        ) {
-          state.toolMode = ClassDiagramToolMode.NOTE
-        }
-      },
-      properties = {
-        ClassDiagramPropertiesPanel(
-            state = state,
-            onEditClass = { showClassDialog = true },
-            onEditRelation = { showRelationDialog = true },
-            onEditNote = { showNoteDialog = true },
-            onAddAttribute = { showAddAttributeDialog = true },
-            onAddMethod = { showAddMethodDialog = true },
-            onDeleteMember = { memberId ->
-              state.selectedClassId?.let {
-                state.deleteMemberFromClass(it, memberId)
-                messenger.show("Membro eliminato")
-              }
-            },
-            onClose = { state.clearSelection() },
+    fun actions(type: ClassDiagramContextMenuType): List<ContextMenuItem> = buildList {
+        add(
+            ContextMenuItem(
+                when (type) {
+                    ClassDiagramContextMenuType.CLASS -> "Modifica Proprietà"
+                    ClassDiagramContextMenuType.RELATION -> "Modifica Relazione"
+                    ClassDiagramContextMenuType.NOTE -> "Modifica Testo"
+                },
+                Icons.Default.Edit,
+            ) {
+                openEditor(type)
+            }
         )
-      },
-  ) {
-    ClassDiagramCanvas(
+        if (type == ClassDiagramContextMenuType.CLASS) {
+            add(
+                ContextMenuItem("Aggiungi Attributo", Icons.Default.Add) {
+                    showAddAttributeDialog = true
+                }
+            )
+            add(
+                ContextMenuItem("Aggiungi Metodo", Icons.Default.Add) { showAddMethodDialog = true }
+            )
+        }
+        add(
+            ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+                state.deleteSelection()?.let(messenger::show)
+            }
+        )
+    }
+    DiagramEditorScaffold(
         state = state,
-        onContextMenuRequest = { position, type ->
-          contextMenu = ContextMenuRequest(position, type)
+        repository = repository,
+        themeState = themeState,
+        messenger = messenger,
+        renderImage = { renderClassDiagramToBitmap(state.diagram, it) },
+        emptyHint =
+            "Scegli Classe, Interfaccia, Enum o Nota dalla barra degli strumenti e clicca sulla lavagna",
+        tools =
+            listOf(
+                DiagramTool.Mode(
+                    CustomIcons.Rectangle,
+                    "Crea Classe",
+                    "Classe",
+                    state.toolMode == ClassDiagramToolMode.CLASS,
+                ) {
+                    state.toolMode = ClassDiagramToolMode.CLASS
+                },
+                DiagramTool.Mode(
+                    CustomIcons.Interface,
+                    "Crea Interfaccia",
+                    "Interfaccia",
+                    state.toolMode == ClassDiagramToolMode.INTERFACE,
+                ) {
+                    state.toolMode = ClassDiagramToolMode.INTERFACE
+                },
+                DiagramTool.Mode(
+                    Icons.Default.FormatListNumbered,
+                    "Crea Enum",
+                    "Enum",
+                    state.toolMode == ClassDiagramToolMode.ENUM,
+                ) {
+                    state.toolMode = ClassDiagramToolMode.ENUM
+                },
+                DiagramTool.Mode(
+                    Icons.Default.ArrowRightAlt,
+                    "Crea Relazione (clicca la classe sorgente e poi la destinazione)",
+                    "Relazione",
+                    state.toolMode == ClassDiagramToolMode.RELATION,
+                ) {
+                    state.toolMode = ClassDiagramToolMode.RELATION
+                    state.pendingRelationSourceId = null
+                },
+                DiagramTool.Mode(
+                    CustomIcons.StickyNote,
+                    "Crea Nota",
+                    "Nota",
+                    state.toolMode == ClassDiagramToolMode.NOTE,
+                ) {
+                    state.toolMode = ClassDiagramToolMode.NOTE
+                },
+            ),
+        selectionMenu = {
+            selectedType()?.let { DiagramSelectionMenu(actionsTitle(it), actions(it)) }
         },
-        onRelationCreateRequest = { sourceId, targetId ->
-          pendingRelation = PendingRelation(sourceId, targetId)
+        properties = {
+            ClassDiagramPropertiesPanel(
+                state = state,
+                onEditClass = { showClassDialog = true },
+                onEditRelation = { showRelationDialog = true },
+                onEditNote = { showNoteDialog = true },
+                onAddAttribute = { showAddAttributeDialog = true },
+                onAddMethod = { showAddMethodDialog = true },
+                onDeleteMember = { memberId ->
+                    state.selectedClassId?.let {
+                        state.deleteMemberFromClass(it, memberId)
+                        messenger.show("Membro eliminato")
+                    }
+                },
+                onClose = { state.clearSelection() },
+            )
         },
-        onEditRequest = { openEditor(it.contextMenuType) },
-    )
-    contextMenu?.let { menu ->
-      DiagramContextMenu(
-          position = menu.position,
-          title =
-              when (menu.type) {
-                ClassDiagramContextMenuType.CLASS -> "Azioni Classe"
-                ClassDiagramContextMenuType.RELATION -> "Azioni Relazione"
-                ClassDiagramContextMenuType.NOTE -> "Azioni Nota"
-              },
-          items =
-              listOf(
-                  ContextMenuItem(
-                      when (menu.type) {
-                        ClassDiagramContextMenuType.CLASS -> "Modifica Proprietà"
-                        ClassDiagramContextMenuType.RELATION -> "Modifica Relazione"
-                        ClassDiagramContextMenuType.NOTE -> "Modifica Testo"
-                      },
-                      Icons.Default.Edit,
-                  ) {
-                    openEditor(menu.type)
-                  },
-                  ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
-                    state.deleteSelection()?.let(messenger::show)
-                  },
-              ),
-          onDismiss = { contextMenu = null },
-      )
-    }
-  }
-  if (showClassDialog) {
-    state.diagram.classes
-        .find { it.id == state.selectedClassId }
-        ?.let { entity ->
-          ClassEntityDialog(
-              name = entity.name,
-              type = entity.type,
-              isAbstract = entity.isAbstract,
-              documentation = entity.documentation,
-              onDismiss = { showClassDialog = false },
-              onConfirm = { newName, newType, newAbstract, newDoc ->
-                state.updateClass(entity.id) {
-                  it.copy(
-                      name = newName,
-                      type = newType,
-                      isAbstract = newAbstract,
-                      documentation = newDoc,
-                  )
-                }
-                showClassDialog = false
-                messenger.show("Classe modificata")
-              },
-          )
+    ) {
+        ClassDiagramCanvas(
+            state = state,
+            onContextMenuRequest = { position, type ->
+                contextMenu = ContextMenuRequest(position, type)
+            },
+            onRelationCreateRequest = { sourceId, targetId ->
+                pendingRelation = PendingRelation(sourceId, targetId)
+            },
+            onEditRequest = { openEditor(it.contextMenuType) },
+        )
+        contextMenu?.let { menu ->
+            DiagramContextMenu(
+                position = menu.position,
+                title = actionsTitle(menu.type),
+                items = actions(menu.type),
+                onDismiss = { contextMenu = null },
+            )
         }
-  }
-  if (showRelationDialog) {
-    state.diagram.relations
-        .find { it.id == state.selectedRelationId }
-        ?.let { relation ->
-          ClassRelationDialog(
-              relation = relation,
-              onDismiss = { showRelationDialog = false },
-              onConfirm = { newType, srcMulti, tgtMulti, lbl ->
-                state.updateRelation(relation.id) {
-                  it.copy(
-                      type = newType,
-                      sourceMultiplicity = srcMulti,
-                      targetMultiplicity = tgtMulti,
-                      label = lbl,
-                  )
-                }
-                showRelationDialog = false
-                messenger.show("Relazione modificata")
-              },
-          )
-        }
-  }
-  if (showNoteDialog) {
-    state.diagram.notes
-        .find { it.id == state.selectedNoteId }
-        ?.let { note ->
-          NotePropertiesDialog(
-              noteText = note.text,
-              onDismiss = { showNoteDialog = false },
-              onConfirm = { newText ->
-                state.updateNote(note.id) { it.copy(text = newText) }
-                showNoteDialog = false
-                messenger.show("Nota modificata")
-              },
-          )
-        }
-  }
-  if (showAddAttributeDialog) {
-    state.selectedClassId?.let { classId ->
-      ClassMemberDialog(
-          isMethod = false,
-          onDismiss = { showAddAttributeDialog = false },
-          onConfirm = { member ->
-            state.addMemberToClass(classId, member, isMethod = false)
-            showAddAttributeDialog = false
-            messenger.show("Attributo aggiunto")
-          },
-      )
     }
-  }
-  if (showAddMethodDialog) {
-    state.selectedClassId?.let { classId ->
-      ClassMemberDialog(
-          isMethod = true,
-          onDismiss = { showAddMethodDialog = false },
-          onConfirm = { member ->
-            state.addMemberToClass(classId, member, isMethod = true)
-            showAddMethodDialog = false
-            messenger.show("Metodo aggiunto")
-          },
-      )
+    if (showClassDialog) {
+        state.diagram.classes
+            .find { it.id == state.selectedClassId }
+            ?.let { entity ->
+                ClassEntityDialog(
+                    name = entity.name,
+                    type = entity.type,
+                    isAbstract = entity.isAbstract,
+                    documentation = entity.documentation,
+                    onDismiss = { showClassDialog = false },
+                    onConfirm = { newName, newType, newAbstract, newDoc ->
+                        state.updateClass(entity.id) {
+                            it.copy(
+                                name = newName,
+                                type = newType,
+                                isAbstract = newAbstract,
+                                documentation = newDoc,
+                            )
+                        }
+                        showClassDialog = false
+                        messenger.show("Classe modificata")
+                    },
+                )
+            }
     }
-  }
-  pendingRelation?.let { relation ->
-    SelectClassRelationTypeDialog(
-        onDismiss = { pendingRelation = null },
-        onConfirm = { type ->
-          state.addRelation(relation.sourceId, relation.targetId, type)
-          messenger.show("Relazione creata")
-          pendingRelation = null
-        },
-    )
-  }
+    if (showRelationDialog) {
+        state.diagram.relations
+            .find { it.id == state.selectedRelationId }
+            ?.let { relation ->
+                ClassRelationDialog(
+                    relation = relation,
+                    onDismiss = { showRelationDialog = false },
+                    onConfirm = { newType, srcMulti, tgtMulti, lbl ->
+                        state.updateRelation(relation.id) {
+                            it.copy(
+                                type = newType,
+                                sourceMultiplicity = srcMulti,
+                                targetMultiplicity = tgtMulti,
+                                label = lbl,
+                            )
+                        }
+                        showRelationDialog = false
+                        messenger.show("Relazione modificata")
+                    },
+                )
+            }
+    }
+    if (showNoteDialog) {
+        state.diagram.notes
+            .find { it.id == state.selectedNoteId }
+            ?.let { note ->
+                NotePropertiesDialog(
+                    noteText = note.text,
+                    onDismiss = { showNoteDialog = false },
+                    onConfirm = { newText ->
+                        state.updateNote(note.id) { it.copy(text = newText) }
+                        showNoteDialog = false
+                        messenger.show("Nota modificata")
+                    },
+                )
+            }
+    }
+    if (showAddAttributeDialog) {
+        state.selectedClassId?.let { classId ->
+            ClassMemberDialog(
+                isMethod = false,
+                onDismiss = { showAddAttributeDialog = false },
+                onConfirm = { member ->
+                    state.addMemberToClass(classId, member, isMethod = false)
+                    showAddAttributeDialog = false
+                    messenger.show("Attributo aggiunto")
+                },
+            )
+        }
+    }
+    if (showAddMethodDialog) {
+        state.selectedClassId?.let { classId ->
+            ClassMemberDialog(
+                isMethod = true,
+                onDismiss = { showAddMethodDialog = false },
+                onConfirm = { member ->
+                    state.addMemberToClass(classId, member, isMethod = true)
+                    showAddMethodDialog = false
+                    messenger.show("Metodo aggiunto")
+                },
+            )
+        }
+    }
+    pendingRelation?.let { relation ->
+        SelectClassRelationTypeDialog(
+            onDismiss = { pendingRelation = null },
+            onConfirm = { type ->
+                state.addRelation(relation.sourceId, relation.targetId, type)
+                messenger.show("Relazione creata")
+                pendingRelation = null
+            },
+        )
+    }
 }

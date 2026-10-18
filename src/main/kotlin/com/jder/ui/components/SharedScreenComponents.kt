@@ -31,31 +31,31 @@ class PendingRelation(val sourceId: String, val targetId: String)
 
 @Stable
 class SnackbarMessenger(val hostState: SnackbarHostState, private val scope: CoroutineScope) {
-  fun show(message: String) {
-    scope.launch {
-      hostState.currentSnackbarData?.dismiss()
-      hostState.showSnackbar(message)
+    fun show(message: String) {
+        scope.launch {
+            hostState.currentSnackbarData?.dismiss()
+            hostState.showSnackbar(message)
+        }
     }
-  }
 }
 
 @Composable
 fun rememberSnackbarMessenger(): SnackbarMessenger {
-  val hostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-  return remember(hostState, scope) { SnackbarMessenger(hostState, scope) }
+    val hostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    return remember(hostState, scope) { SnackbarMessenger(hostState, scope) }
 }
 
 @Composable
 fun DiagramSnackbarHost(hostState: SnackbarHostState) {
-  SnackbarHost(hostState) {
-    Snackbar(
-        snackbarData = it,
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        actionColor = MaterialTheme.colorScheme.primary,
-    )
-  }
+    SnackbarHost(hostState) {
+        Snackbar(
+            snackbarData = it,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            actionColor = MaterialTheme.colorScheme.primary,
+        )
+    }
 }
 
 @Composable
@@ -65,57 +65,58 @@ fun <T> RadioOptionList(
     onSelect: (T) -> Unit,
     label: (T) -> String,
 ) {
-  Column {
-    options.forEach { option ->
-      val isSelected = option == selected
-      Row(
-          verticalAlignment = Alignment.CenterVertically,
-          modifier =
-              Modifier.fillMaxWidth()
-                  .clip(RoundedCornerShape(10.dp))
-                  .background(
-                      if (isSelected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                      else MaterialTheme.colorScheme.surface
-                  )
-                  .selectable(
-                      selected = isSelected,
-                      onClick = { onSelect(option) },
-                      role = Role.RadioButton,
-                  )
-                  .padding(horizontal = 8.dp, vertical = 6.dp),
-      ) {
-        RadioButton(selected = isSelected, onClick = null)
-        Text(
-            text = label(option),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(start = 8.dp),
-            color =
-                if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                else MaterialTheme.colorScheme.onSurface,
-        )
-      }
+    Column {
+        options.forEach { option ->
+            val isSelected = option == selected
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            if (isSelected)
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                            else MaterialTheme.colorScheme.surface
+                        )
+                        .selectable(
+                            selected = isSelected,
+                            onClick = { onSelect(option) },
+                            role = Role.RadioButton,
+                        )
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+            ) {
+                RadioButton(selected = isSelected, onClick = null)
+                Text(
+                    text = label(option),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 8.dp),
+                    color =
+                        if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                        else MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
     }
-  }
 }
 
 @Composable
 fun ConfirmNewDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Conferma nuovo diagramma") },
-      text = { Text("Ci sono modifiche non salvate. Vuoi creare un nuovo diagramma comunque?") },
-      confirmButton = { TextButton(onClick = onConfirm) { Text("Sì") } },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("No") } },
-  )
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Conferma nuovo diagramma") },
+        text = { Text("Ci sono modifiche non salvate. Vuoi creare un nuovo diagramma comunque?") },
+        confirmButton = { TextButton(onClick = onConfirm) { Text("Sì") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("No") } },
+    )
 }
 
 @Composable
 fun ConfirmOpenDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Conferma apertura diagramma") },
-      text = { Text("Ci sono modifiche non salvate. Vuoi aprire un altro diagramma comunque?") },
-      confirmButton = { TextButton(onClick = onConfirm) { Text("Sì") } },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("No") } },
-  )
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Conferma apertura diagramma") },
+        text = { Text("Ci sono modifiche non salvate. Vuoi aprire un altro diagramma comunque?") },
+        confirmButton = { TextButton(onClick = onConfirm) { Text("Sì") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("No") } },
+    )
 }

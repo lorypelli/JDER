@@ -12,129 +12,129 @@ const val MAX_ZOOM = 3f
 private const val ZOOM_STEP = 1.2f
 
 abstract class DiagramEditorState<T>(private val createEmptyDiagram: () -> T) {
-  private val diagramState = mutableStateOf(createEmptyDiagram())
-  var diagram: T
-    get() = diagramState.value
-    private set(value) {
-      val previous = diagramState.value
-      diagramState.value = value
-      onDiagramChanged(previous, value)
+    private val diagramState = mutableStateOf(createEmptyDiagram())
+    var diagram: T
+        get() = diagramState.value
+        private set(value) {
+            val previous = diagramState.value
+            diagramState.value = value
+            onDiagramChanged(previous, value)
+        }
+
+    var currentFile by mutableStateOf<String?>(null)
+    var isModified by mutableStateOf(false)
+        private set
+
+    var zoom by mutableStateOf(1.0f)
+    var panOffset by mutableStateOf(Offset.Zero)
+    var viewportSize = Size.Zero
+    private val history = UndoHistory<T>()
+    private var dragSnapshot: T? = null
+
+    abstract val diagramName: String
+    abstract val isEmpty: Boolean
+    abstract val hasSelection: Boolean
+    abstract val isSelectTool: Boolean
+
+    protected abstract fun withName(diagram: T, name: String): T
+
+    protected abstract fun pruneSelection()
+
+    abstract fun clearSelection()
+
+    abstract fun resetToolMode()
+
+    abstract fun deleteSelection(): String?
+
+    protected open fun onDiagramChanged(previous: T, current: T) {}
+
+    protected fun edit(transform: (T) -> T) {
+        commitDragState()
+        history.record(diagram)
+        diagram = transform(diagram)
+        isModified = true
     }
 
-  var currentFile by mutableStateOf<String?>(null)
-  var isModified by mutableStateOf(false)
-    private set
-
-  var zoom by mutableStateOf(1.0f)
-  var panOffset by mutableStateOf(Offset.Zero)
-  var viewportSize = Size.Zero
-  private val history = UndoHistory<T>()
-  private var dragSnapshot: T? = null
-
-  abstract val diagramName: String
-  abstract val isEmpty: Boolean
-  abstract val hasSelection: Boolean
-  abstract val isSelectTool: Boolean
-
-  protected abstract fun withName(diagram: T, name: String): T
-
-  protected abstract fun pruneSelection()
-
-  abstract fun clearSelection()
-
-  abstract fun resetToolMode()
-
-  abstract fun deleteSelection(): String?
-
-  protected open fun onDiagramChanged(previous: T, current: T) {}
-
-  protected fun edit(transform: (T) -> T) {
-    commitDragState()
-    history.record(diagram)
-    diagram = transform(diagram)
-    isModified = true
-  }
-
-  protected fun editWithoutSave(transform: (T) -> T) {
-    val updated = transform(diagram)
-    if (updated == diagram) return
-    diagram = updated
-    isModified = true
-  }
-
-  fun saveDragStartState() {
-    dragSnapshot = diagram
-  }
-
-  fun commitDragState() {
-    dragSnapshot?.let { if (it != diagram) history.record(it) }
-    dragSnapshot = null
-  }
-
-  fun canUndo(): Boolean = history.canUndo
-
-  fun canRedo(): Boolean = history.canRedo
-
-  fun undo() {
-    commitDragState()
-    history.undo(diagram)?.let {
-      diagram = it
-      isModified = true
-      pruneSelection()
+    protected fun editWithoutSave(transform: (T) -> T) {
+        val updated = transform(diagram)
+        if (updated == diagram) return
+        diagram = updated
+        isModified = true
     }
-  }
 
-  fun redo() {
-    commitDragState()
-    history.redo(diagram)?.let {
-      diagram = it
-      isModified = true
-      pruneSelection()
+    fun saveDragStartState() {
+        dragSnapshot = diagram
     }
-  }
 
-  fun loadDiagram(newDiagram: T, filePath: String?) {
-    diagram = newDiagram
-    currentFile = filePath
-    isModified = false
-    history.clear()
-    dragSnapshot = null
-    clearSelection()
-    resetToolMode()
-    resetView()
-  }
+    fun commitDragState() {
+        dragSnapshot?.let { if (it != diagram) history.record(it) }
+        dragSnapshot = null
+    }
 
-  fun newDiagram() {
-    loadDiagram(createEmptyDiagram(), null)
-  }
+    fun canUndo(): Boolean = history.canUndo
 
-  fun markAsSaved(filePath: String) {
-    currentFile = filePath
-    isModified = false
-  }
+    fun canRedo(): Boolean = history.canRedo
 
-  fun diagramNamed(name: String): T = withName(diagram, name)
+    fun undo() {
+        commitDragState()
+        history.undo(diagram)?.let {
+            diagram = it
+            isModified = true
+            pruneSelection()
+        }
+    }
 
-  fun updateDiagramName(newName: String) {
-    diagram = withName(diagram, newName)
-  }
+    fun redo() {
+        commitDragState()
+        history.redo(diagram)?.let {
+            diagram = it
+            isModified = true
+            pruneSelection()
+        }
+    }
 
-  fun zoomAround(factor: Float, focus: Offset) {
-    val newZoom = (zoom * factor).coerceIn(MIN_ZOOM, MAX_ZOOM)
-    panOffset = focus - (focus - panOffset) * (newZoom / zoom)
-    zoom = newZoom
-  }
+    fun loadDiagram(newDiagram: T, filePath: String?) {
+        diagram = newDiagram
+        currentFile = filePath
+        isModified = false
+        history.clear()
+        dragSnapshot = null
+        clearSelection()
+        resetToolMode()
+        resetView()
+    }
 
-  fun zoomIn() {
-    zoomAround(ZOOM_STEP, viewportSize.center)
-  }
+    fun newDiagram() {
+        loadDiagram(createEmptyDiagram(), null)
+    }
 
-  fun zoomOut() {
-    zoomAround(1f / ZOOM_STEP, viewportSize.center)
-  }
+    fun markAsSaved(filePath: String) {
+        currentFile = filePath
+        isModified = false
+    }
 
-  fun resetView() {
-    zoom = 1.0f
-    panOffset = Offset.Zero
-  }
+    fun diagramNamed(name: String): T = withName(diagram, name)
+
+    fun updateDiagramName(newName: String) {
+        diagram = withName(diagram, newName)
+    }
+
+    fun zoomAround(factor: Float, focus: Offset) {
+        val newZoom = (zoom * factor).coerceIn(MIN_ZOOM, MAX_ZOOM)
+        panOffset = focus - (focus - panOffset) * (newZoom / zoom)
+        zoom = newZoom
+    }
+
+    fun zoomIn() {
+        zoomAround(ZOOM_STEP, viewportSize.center)
+    }
+
+    fun zoomOut() {
+        zoomAround(1f / ZOOM_STEP, viewportSize.center)
+    }
+
+    fun resetView() {
+        zoom = 1.0f
+        panOffset = Offset.Zero
+    }
 }

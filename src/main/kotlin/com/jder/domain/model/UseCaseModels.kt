@@ -25,10 +25,10 @@ data class UseCase(
 
 @Serializable
 enum class UseCaseRelationType(val display: String) {
-  ASSOCIATION("Associazione"),
-  INCLUDE("<<include>>"),
-  EXTEND("<<extend>>"),
-  GENERALIZATION("Generalizzazione"),
+    ASSOCIATION("Associazione"),
+    INCLUDE("<<include>>"),
+    EXTEND("<<extend>>"),
+    GENERALIZATION("Generalizzazione"),
 }
 
 @Serializable

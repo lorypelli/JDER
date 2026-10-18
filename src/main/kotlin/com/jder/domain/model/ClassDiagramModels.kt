@@ -4,18 +4,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ClassEntityType(val stereotype: String, val display: String) {
-  CLASS("", "Classe"),
-  INTERFACE("<<interface>>", "Interfaccia"),
-  ENUM("<<enum>>", "Enumerazione"),
-  ABSTRACT_CLASS("<<abstract>>", "Classe astratta"),
+    CLASS("", "Classe"),
+    INTERFACE("<<interface>>", "Interfaccia"),
+    ENUM("<<enum>>", "Enumerazione"),
+    ABSTRACT_CLASS("<<abstract>>", "Classe astratta"),
 }
 
 @Serializable
 enum class Visibility(val symbol: String, val display: String) {
-  PUBLIC("+", "Pubblico"),
-  PRIVATE("-", "Privato"),
-  PROTECTED("#", "Protetto"),
-  PACKAGE("~", "Package"),
+    PUBLIC("+", "Pubblico"),
+    PRIVATE("-", "Privato"),
+    PROTECTED("#", "Protetto"),
+    PACKAGE("~", "Package"),
 }
 
 @Serializable
@@ -30,12 +30,12 @@ data class ClassMember(
 
 @Serializable
 enum class ClassRelationType(val display: String) {
-  ASSOCIATION("Associazione"),
-  AGGREGATION("Aggregazione"),
-  COMPOSITION("Composizione"),
-  INHERITANCE("Ereditarietà"),
-  REALIZATION("Realizzazione"),
-  DEPENDENCY("Dipendenza"),
+    ASSOCIATION("Associazione"),
+    AGGREGATION("Aggregazione"),
+    COMPOSITION("Composizione"),
+    INHERITANCE("Ereditarietà"),
+    REALIZATION("Realizzazione"),
+    DEPENDENCY("Dipendenza"),
 }
 
 @Serializable

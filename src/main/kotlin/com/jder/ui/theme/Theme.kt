@@ -9,6 +9,6 @@ fun JDERTheme(
     colorPalette: ColorPalette = ColorPalettes.Blue,
     content: @Composable () -> Unit,
 ) {
-  val colorScheme = if (darkTheme) colorPalette.darkScheme else colorPalette.lightScheme
-  MaterialTheme(colorScheme = colorScheme, content = content)
+    val colorScheme = if (darkTheme) colorPalette.darkScheme else colorPalette.lightScheme
+    MaterialTheme(colorScheme = colorScheme, content = content)
 }

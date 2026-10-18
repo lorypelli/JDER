@@ -26,50 +26,52 @@ fun EntityPropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (entity: Entity) -> Unit,
 ) {
-  var name by remember { mutableStateOf(entity.name) }
-  var isWeak by remember { mutableStateOf(entity.isWeak) }
-  var documentation by remember { mutableStateOf(entity.documentation) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Entità") },
-      text = {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-          OutlinedTextField(
-              value = name,
-              onValueChange = { name = it },
-              label = { Text("Nome") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween,
-          ) {
-            Text("Entità Debole")
-            Switch(checked = isWeak, onCheckedChange = { isWeak = it })
-          }
-          OutlinedTextField(
-              value = documentation,
-              onValueChange = { documentation = it },
-              label = { Text("Documentazione") },
-              modifier = Modifier.fillMaxWidth().height(100.dp),
-              maxLines = 5,
-          )
-        }
-      },
-      confirmButton = {
-        Button(
-            onClick = {
-              onConfirm(entity.copy(name = name, isWeak = isWeak, documentation = documentation))
-            },
-            enabled = name.isNotBlank(),
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+    var name by remember { mutableStateOf(entity.name) }
+    var isWeak by remember { mutableStateOf(entity.isWeak) }
+    var documentation by remember { mutableStateOf(entity.documentation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Entità") },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Nome") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text("Entità Debole")
+                    Switch(checked = isWeak, onCheckedChange = { isWeak = it })
+                }
+                OutlinedTextField(
+                    value = documentation,
+                    onValueChange = { documentation = it },
+                    label = { Text("Documentazione") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    maxLines = 5,
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(
+                        entity.copy(name = name, isWeak = isWeak, documentation = documentation)
+                    )
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }

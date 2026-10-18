@@ -35,9 +35,9 @@ import com.jder.domain.model.MIN_GATE_INPUTS
 
 fun logicValueLabel(value: Boolean?): String =
     when (value) {
-      true -> "1 (alto)"
-      false -> "0 (basso)"
-      null -> "indefinito"
+        true -> "1 (alto)"
+        false -> "0 (basso)"
+        null -> "indefinito"
     }
 
 @Composable
@@ -47,22 +47,24 @@ fun LogicPropertiesPanel(
     onEditNote: () -> Unit,
     onClose: () -> Unit,
 ) {
-  val scrollState = rememberScrollState()
-  Column(
-      modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-  ) {
-    PropertiesPanelHeader(onClose)
-    state.component(state.selectedComponentId)?.let {
-      LogicComponentContent(it, state, onEditComponent)
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        PropertiesPanelHeader(onClose)
+        state.component(state.selectedComponentId)?.let {
+            LogicComponentContent(it, state, onEditComponent)
+        }
+        state.selectedWireId?.let { selId ->
+            state.diagram.wires.find { it.id == selId }?.let { LogicWireContent(it, state) }
+        }
+        state.selectedNoteId?.let { selId ->
+            state.diagram.notes
+                .find { it.id == selId }
+                ?.let { NotePropertiesContent(it, onEditNote) }
+        }
     }
-    state.selectedWireId?.let { selId ->
-      state.diagram.wires.find { it.id == selId }?.let { LogicWireContent(it, state) }
-    }
-    state.selectedNoteId?.let { selId ->
-      state.diagram.notes.find { it.id == selId }?.let { NotePropertiesContent(it, onEditNote) }
-    }
-  }
 }
 
 @Composable
@@ -71,90 +73,91 @@ private fun LogicComponentContent(
     state: LogicDiagramState,
     onEdit: () -> Unit,
 ) {
-  val type = component.type
-  val kind =
-      when (type) {
-        LogicComponentType.INPUT -> "ingresso"
-        LogicComponentType.OUTPUT -> "uscita"
-        else -> "porta logica ${type.display}"
-      }
-  val value =
-      when (type) {
-        LogicComponentType.INPUT -> component.value
-        LogicComponentType.OUTPUT -> state.simulation.inputOf(component.id, 0)
-        else -> state.simulation.outputOf(component.id)
-      }
-  val valueLabel = if (type == LogicComponentType.INPUT) "Valore" else "Valore attuale"
-  PropertyCard("Componente: ${component.displayName}") {
-    PropertyDetail("Tipo: $kind")
-    if (type.isGate) PropertyDetail("Ingressi: ${component.inputPinCount}")
-    PropertyDetail("$valueLabel: ${logicValueLabel(value)}", isEmphasized = true)
-  }
-  Spacer(Modifier.height(8.dp))
-  PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
-  if (type == LogicComponentType.INPUT) {
-    PropertyOutlinedButton(
-        "Commuta Valore",
-        Icons.Default.ToggleOn,
-        { state.toggleInput(component.id) },
-    )
-  }
-  if (type.supportsMultipleInputs) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-      Text("Numero di ingressi", style = MaterialTheme.typography.bodyMedium)
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        IconButton(
-            onClick = { state.setInputCount(component.id, component.inputPinCount - 1) },
-            enabled = component.inputPinCount > MIN_GATE_INPUTS,
-        ) {
-          Icon(Icons.Default.Remove, contentDescription = "Rimuovi ingresso")
+    val type = component.type
+    val kind =
+        when (type) {
+            LogicComponentType.INPUT -> "ingresso"
+            LogicComponentType.OUTPUT -> "uscita"
+            else -> "porta logica ${type.display}"
         }
-        Text("${component.inputPinCount}", style = MaterialTheme.typography.titleMedium)
-        IconButton(
-            onClick = { state.setInputCount(component.id, component.inputPinCount + 1) },
-            enabled = component.inputPinCount < MAX_GATE_INPUTS,
-        ) {
-          Icon(Icons.Default.Add, contentDescription = "Aggiungi ingresso")
+    val value =
+        when (type) {
+            LogicComponentType.INPUT -> component.value
+            LogicComponentType.OUTPUT -> state.simulation.inputOf(component.id, 0)
+            else -> state.simulation.outputOf(component.id)
         }
-      }
+    val valueLabel = if (type == LogicComponentType.INPUT) "Valore" else "Valore attuale"
+    PropertyCard("Componente: ${component.displayName}") {
+        PropertyDetail("Tipo: $kind")
+        if (type.isGate) PropertyDetail("Ingressi: ${component.inputPinCount}")
+        PropertyDetail("$valueLabel: ${logicValueLabel(value)}", isEmphasized = true)
     }
-  }
-  if (type != LogicComponentType.INPUT) {
-    val expression =
-        remember(state.diagram.components, state.diagram.wires, component.id) {
-          LogicSimulator.expression(state.diagram, component.id)
-        }
-    expression?.let {
-      PropertyDetailCard(
-          "Espressione booleana:",
-          if (type == LogicComponentType.OUTPUT) "${component.label.ifBlank { "Y" }} = $it" else it,
-      )
+    Spacer(Modifier.height(8.dp))
+    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    if (type == LogicComponentType.INPUT) {
+        PropertyOutlinedButton(
+            "Commuta Valore",
+            Icons.Default.ToggleOn,
+            { state.toggleInput(component.id) },
+        )
     }
-  }
+    if (type.supportsMultipleInputs) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text("Numero di ingressi", style = MaterialTheme.typography.bodyMedium)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { state.setInputCount(component.id, component.inputPinCount - 1) },
+                    enabled = component.inputPinCount > MIN_GATE_INPUTS,
+                ) {
+                    Icon(Icons.Default.Remove, contentDescription = "Rimuovi ingresso")
+                }
+                Text("${component.inputPinCount}", style = MaterialTheme.typography.titleMedium)
+                IconButton(
+                    onClick = { state.setInputCount(component.id, component.inputPinCount + 1) },
+                    enabled = component.inputPinCount < MAX_GATE_INPUTS,
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Aggiungi ingresso")
+                }
+            }
+        }
+    }
+    if (type != LogicComponentType.INPUT) {
+        val expression =
+            remember(state.diagram.components, state.diagram.wires, component.id) {
+                LogicSimulator.expression(state.diagram, component.id)
+            }
+        expression?.let {
+            PropertyDetailCard(
+                "Espressione booleana:",
+                if (type == LogicComponentType.OUTPUT) "${component.label.ifBlank { "Y" }} = $it"
+                else it,
+            )
+        }
+    }
 }
 
 @Composable
 private fun LogicWireContent(wire: LogicWire, state: LogicDiagramState) {
-  val source = state.component(wire.sourceId)
-  val target = state.component(wire.targetId)
-  val pin = if ((target?.inputPinCount ?: 0) > 1) " (ingresso ${wire.targetPin + 1})" else ""
-  PropertyCard("Collegamento") {
-    PropertyDetail("Da: ${source?.displayName ?: "?"}")
-    PropertyDetail("A: ${target?.displayName ?: "?"}$pin")
-    PropertyDetail(
-        "Valore: ${logicValueLabel(state.simulation.outputOf(wire.sourceId))}",
-        isEmphasized = true,
+    val source = state.component(wire.sourceId)
+    val target = state.component(wire.targetId)
+    val pin = if ((target?.inputPinCount ?: 0) > 1) " (ingresso ${wire.targetPin + 1})" else ""
+    PropertyCard("Collegamento") {
+        PropertyDetail("Da: ${source?.displayName ?: "?"}")
+        PropertyDetail("A: ${target?.displayName ?: "?"}$pin")
+        PropertyDetail(
+            "Valore: ${logicValueLabel(state.simulation.outputOf(wire.sourceId))}",
+            isEmphasized = true,
+        )
+    }
+    Spacer(Modifier.height(8.dp))
+    PropertyOutlinedButton(
+        "Elimina Collegamento",
+        Icons.Default.Delete,
+        { state.deleteWire(wire.id) },
+        isDestructive = true,
     )
-  }
-  Spacer(Modifier.height(8.dp))
-  PropertyOutlinedButton(
-      "Elimina Collegamento",
-      Icons.Default.Delete,
-      { state.deleteWire(wire.id) },
-      isDestructive = true,
-  )
 }

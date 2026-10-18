@@ -20,7 +20,7 @@ dependencies {
     implementation(compose.desktop.macos_arm64)
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
 }
 compose.desktop {
     application {
@@ -44,7 +44,7 @@ java {
 }
 spotless {
     kotlin {
-        ktfmt()
+        ktfmt().kotlinlangStyle()
     }
 }
 tasks.withType<KotlinCompile>().configureEach {

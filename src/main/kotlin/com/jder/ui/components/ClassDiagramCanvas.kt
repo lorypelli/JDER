@@ -23,73 +23,74 @@ fun ClassDiagramCanvas(
     onEditRequest: (ClassElement) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  val textMeasurer = rememberDiagramTextMeasurer()
-  val palette = MaterialTheme.colorScheme.toDiagramPalette()
-  var hoveredId by remember { mutableStateOf<String?>(null) }
-  val currentOnContextMenuRequest by rememberUpdatedState(onContextMenuRequest)
-  val currentOnRelationCreateRequest by rememberUpdatedState(onRelationCreateRequest)
-  val currentOnEditRequest by rememberUpdatedState(onEditRequest)
-  val handler =
-      remember(state) {
-        object : DiagramPointerHandler {
-          var dragged: ClassElement? = null
+    val textMeasurer = rememberDiagramTextMeasurer()
+    val palette = MaterialTheme.colorScheme.toDiagramPalette()
+    var hoveredId by remember { mutableStateOf<String?>(null) }
+    val currentOnContextMenuRequest by rememberUpdatedState(onContextMenuRequest)
+    val currentOnRelationCreateRequest by rememberUpdatedState(onRelationCreateRequest)
+    val currentOnEditRequest by rememberUpdatedState(onEditRequest)
+    val handler =
+        remember(state) {
+            object : DiagramPointerHandler {
+                var dragged: ClassElement? = null
 
-          override fun onTap(position: Offset) =
-              handleClassDiagramTap(state, position, currentOnRelationCreateRequest)
+                override fun onTap(position: Offset) =
+                    handleClassDiagramTap(state, position, currentOnRelationCreateRequest)
 
-          override fun onDoubleTap(position: Offset): Boolean {
-            if (!state.isSelectTool) return false
-            val element = hitTestClassDiagram(state.diagram, position) ?: return false
-            selectClassElement(state, element)
-            currentOnEditRequest(element)
-            return true
-          }
+                override fun onDoubleTap(position: Offset): Boolean {
+                    if (!state.isSelectTool) return false
+                    val element = hitTestClassDiagram(state.diagram, position) ?: return false
+                    selectClassElement(state, element)
+                    currentOnEditRequest(element)
+                    return true
+                }
 
-          override fun onContextClick(position: Offset, screenPosition: Offset) {
-            val element = hitTestClassDiagram(state.diagram, position) ?: return
-            selectClassElement(state, element)
-            currentOnContextMenuRequest(screenPosition, element.contextMenuType)
-          }
+                override fun onContextClick(position: Offset, screenPosition: Offset) {
+                    val element = hitTestClassDiagram(state.diagram, position) ?: return
+                    selectClassElement(state, element)
+                    currentOnContextMenuRequest(screenPosition, element.contextMenuType)
+                }
 
-          override fun onDragStart(position: Offset): Boolean {
-            dragged = handleClassDiagramDragStart(state, position)
-            return dragged != null
-          }
+                override fun onDragStart(position: Offset): Boolean {
+                    dragged = handleClassDiagramDragStart(state, position)
+                    return dragged != null
+                }
 
-          override fun onDrag(position: Offset, delta: Offset) {
-            dragged?.let { handleClassDiagramDrag(state, it, delta) }
-          }
+                override fun onDrag(position: Offset, delta: Offset) {
+                    dragged?.let { handleClassDiagramDrag(state, it, delta) }
+                }
 
-          override fun onDragEnd(position: Offset) {
-            dragged = null
-            state.commitDragState()
-          }
+                override fun onDragEnd(position: Offset) {
+                    dragged = null
+                    state.commitDragState()
+                }
 
-          override fun onHover(position: Offset?) {
-            hoveredId = position?.let { hitTestClassDiagram(state.diagram, it)?.id }
-          }
+                override fun onHover(position: Offset?) {
+                    hoveredId = position?.let { hitTestClassDiagram(state.diagram, it)?.id }
+                }
+            }
         }
-      }
-  val pointerIcon =
-      when {
-        !state.isSelectTool -> PointerIcon.Crosshair
-        hoveredId != null -> PointerIcon.Hand
-        else -> PointerIcon.Default
-      }
-  Canvas(
-      modifier =
-          modifier.fillMaxSize().diagramPointerInput(state, handler).pointerHoverIcon(pointerIcon)
-  ) {
-    drawCanvasBackground(state, palette)
-    withViewport(state) {
-      drawClassDiagram(
-          diagram = state.diagram,
-          palette = palette,
-          textMeasurer = textMeasurer,
-          selectedId = state.selectedClassId ?: state.selectedRelationId ?: state.selectedNoteId,
-          hoveredId = hoveredId,
-          pendingSourceId = state.pendingRelationSourceId,
-      )
+    val pointerIcon =
+        when {
+            !state.isSelectTool -> PointerIcon.Crosshair
+            hoveredId != null -> PointerIcon.Hand
+            else -> PointerIcon.Default
+        }
+    Canvas(
+        modifier =
+            modifier.fillMaxSize().diagramPointerInput(state, handler).pointerHoverIcon(pointerIcon)
+    ) {
+        drawCanvasBackground(state, palette)
+        withViewport(state) {
+            drawClassDiagram(
+                diagram = state.diagram,
+                palette = palette,
+                textMeasurer = textMeasurer,
+                selectedId =
+                    state.selectedClassId ?: state.selectedRelationId ?: state.selectedNoteId,
+                hoveredId = hoveredId,
+                pendingSourceId = state.pendingRelationSourceId,
+            )
+        }
     }
-  }
 }

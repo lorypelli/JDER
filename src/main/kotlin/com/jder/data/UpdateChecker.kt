@@ -27,45 +27,47 @@ private class GitHubAsset(
 )
 
 object UpdateChecker {
-  suspend fun findUpdate(): String? =
-      withContext(Dispatchers.IO) {
-        try {
-          checkLatestRelease()
-        } catch (e: Exception) {
-          null
+    suspend fun findUpdate(): String? =
+        withContext(Dispatchers.IO) {
+            try {
+                checkLatestRelease()
+            } catch (_: Exception) {
+                null
+            }
         }
-      }
 
-  private fun checkLatestRelease(): String? {
-    val jar = runningJar() ?: return null
-    val asset = latestReleaseJar() ?: return null
-    val remoteSha256 = asset.digest?.takeIf { it.startsWith("sha256:") }?.substringAfter(':')
-    val isDifferent =
-        asset.size != jar.length() ||
-            (remoteSha256 != null && !remoteSha256.equals(sha256(jar), ignoreCase = true))
-    return if (isDifferent) asset.downloadUrl else null
-  }
-
-  private fun runningJar(): File? {
-    val location = javaClass.protectionDomain.codeSource?.location ?: return null
-    return File(location.toURI()).takeIf { it.isFile }
-  }
-
-  private fun latestReleaseJar(): GitHubAsset? {
-    val connection = URI(LATEST_RELEASE_URL).toURL().openConnection()
-    connection.connectTimeout = TIMEOUT_MS
-    connection.readTimeout = TIMEOUT_MS
-    connection.setRequestProperty("Accept", "application/vnd.github+json")
-    connection.setRequestProperty("User-Agent", "JDER")
-    val body = connection.inputStream.bufferedReader().use { it.readText() }
-    return releaseJson.decodeFromString(GitHubRelease.serializer(), body).assets.firstOrNull {
-      it.name.endsWith(".jar")
+    private fun checkLatestRelease(): String? {
+        val jar = runningJar() ?: return null
+        val asset = latestReleaseJar() ?: return null
+        val remoteSha256 = asset.digest?.takeIf { it.startsWith("sha256:") }?.substringAfter(':')
+        val isDifferent =
+            asset.size != jar.length() ||
+                (remoteSha256 != null && !remoteSha256.equals(sha256(jar), ignoreCase = true))
+        return if (isDifferent) asset.downloadUrl else null
     }
-  }
 
-  private fun sha256(file: File): String {
-    val digest = MessageDigest.getInstance("SHA-256")
-    DigestInputStream(file.inputStream(), digest).use { it.copyTo(OutputStream.nullOutputStream()) }
-    return digest.digest().joinToString("") { "%02x".format(it) }
-  }
+    private fun runningJar(): File? {
+        val location = javaClass.protectionDomain.codeSource?.location ?: return null
+        return File(location.toURI()).takeIf { it.isFile }
+    }
+
+    private fun latestReleaseJar(): GitHubAsset? {
+        val connection = URI(LATEST_RELEASE_URL).toURL().openConnection()
+        connection.connectTimeout = TIMEOUT_MS
+        connection.readTimeout = TIMEOUT_MS
+        connection.setRequestProperty("Accept", "application/vnd.github+json")
+        connection.setRequestProperty("User-Agent", "JDER")
+        val body = connection.inputStream.bufferedReader().use { it.readText() }
+        return releaseJson.decodeFromString(GitHubRelease.serializer(), body).assets.firstOrNull {
+            it.name.endsWith(".jar")
+        }
+    }
+
+    private fun sha256(file: File): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        DigestInputStream(file.inputStream(), digest).use {
+            it.copyTo(OutputStream.nullOutputStream())
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
+    }
 }

@@ -8,27 +8,27 @@ import androidx.compose.ui.platform.LocalUriHandler
 
 @Composable
 fun UpdateAvailableDialog(downloadUrl: String, onDismiss: () -> Unit) {
-  val uriHandler = LocalUriHandler.current
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Aggiornamento disponibile") },
-      text = {
-        Text(
-            "È disponibile una nuova versione di JDER. Scarica il nuovo JDER.jar e usalo al posto di quello attuale."
-        )
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              try {
-                uriHandler.openUri(downloadUrl)
-              } catch (e: Exception) {}
-              onDismiss()
+    val uriHandler = LocalUriHandler.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Aggiornamento disponibile") },
+        text = {
+            Text(
+                "È disponibile una nuova versione di JDER. Scarica il nuovo JDER.jar e usalo al posto di quello attuale."
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    try {
+                        uriHandler.openUri(downloadUrl)
+                    } catch (_: Exception) {}
+                    onDismiss()
+                }
+            ) {
+                Text("Scarica")
             }
-        ) {
-          Text("Scarica")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Più tardi") } },
-  )
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Più tardi") } },
+    )
 }

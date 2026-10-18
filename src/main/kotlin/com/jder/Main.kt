@@ -1,13 +1,25 @@
 package com.jder
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
@@ -19,82 +31,157 @@ import com.jder.data.LogicDiagramRepository
 import com.jder.data.UpdateChecker
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
+import com.jder.domain.model.DiagramType
 import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.UseCaseDiagramState
+import com.jder.ui.components.AppMenuBar
+import com.jder.ui.components.DiagramMenuHost
+import com.jder.ui.components.LocalDiagramMenuHost
+import com.jder.ui.components.WindowMenuBar
+import com.jder.ui.components.appMenus
+import com.jder.ui.components.diagramTypeKeys
+import com.jder.ui.components.toggleFullscreen
+import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
+import com.jder.ui.utils.isMacOS
+import com.jder.ui.utils.setDockIcon
 import java.awt.Dimension
 
-fun main() = application {
-  val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
-  val erState = remember { ERDiagramState() }
-  val useCaseState = remember { UseCaseDiagramState() }
-  val classState = remember { ClassDiagramState() }
-  val logicState = remember { LogicDiagramState() }
-  val themeState = remember { ThemeState() }
-  val erRepository = remember { ERDiagramRepository() }
-  val useCaseRepository = remember { UseCaseDiagramRepository() }
-  val classRepository = remember { ClassDiagramRepository() }
-  val logicRepository = remember { LogicDiagramRepository() }
-  var showExitDialog by remember { mutableStateOf(false) }
-  var shouldExit by remember { mutableStateOf(false) }
-  var updateUrl by remember { mutableStateOf<String?>(null) }
-  LaunchedEffect(Unit) { updateUrl = UpdateChecker.findUpdate() }
-  if (shouldExit) {
-    exitApplication()
-  }
-  Window(
-      onCloseRequest = {
-        if (
+fun main() {
+    System.setProperty("apple.awt.application.name", "JDER")
+    System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS")
+    System.setProperty("compose.application.configure.swing.globals", "true")
+    setDockIcon("jder_icon.png")
+    application {
+        val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
+        val erState = remember { ERDiagramState() }
+        val useCaseState = remember { UseCaseDiagramState() }
+        val classState = remember { ClassDiagramState() }
+        val logicState = remember { LogicDiagramState() }
+        val themeState = remember { ThemeState() }
+        val erRepository = remember { ERDiagramRepository() }
+        val useCaseRepository = remember { UseCaseDiagramRepository() }
+        val classRepository = remember { ClassDiagramRepository() }
+        val logicRepository = remember { LogicDiagramRepository() }
+        val menuHost = remember { DiagramMenuHost() }
+        var currentType by remember { mutableStateOf(DiagramType.ER) }
+        var showExitDialog by remember { mutableStateOf(false) }
+        var showAboutDialog by remember { mutableStateOf(false) }
+        var shouldExit by remember { mutableStateOf(false) }
+        var updateUrl by remember { mutableStateOf<String?>(null) }
+        LaunchedEffect(Unit) { updateUrl = UpdateChecker.findUpdate() }
+        fun hasUnsavedChanges() =
             erState.isModified ||
                 useCaseState.isModified ||
                 classState.isModified ||
                 logicState.isModified
-        ) {
-          showExitDialog = true
-        } else {
-          exitApplication()
+        fun requestExit() {
+            if (hasUnsavedChanges()) {
+                showExitDialog = true
+            } else {
+                exitApplication()
+            }
         }
-      },
-      title = "JDER - Java Diagrammi E/R",
-      state = windowState,
-      icon = painterResource("jder_icon.png"),
-  ) {
-    window.minimumSize = Dimension(800, 600)
-    JDERTheme(darkTheme = themeState.isDarkTheme, colorPalette = themeState.selectedPalette) {
-      AppScreen(
-          erState = erState,
-          useCaseState = useCaseState,
-          classState = classState,
-          logicState = logicState,
-          erRepository = erRepository,
-          useCaseRepository = useCaseRepository,
-          classRepository = classRepository,
-          logicRepository = logicRepository,
-          themeState = themeState,
-      )
-      updateUrl?.let { UpdateAvailableDialog(downloadUrl = it, onDismiss = { updateUrl = null }) }
-      if (showExitDialog) {
-        AlertDialog(
-            onDismissRequest = { showExitDialog = false },
-            title = { Text("Conferma chiusura") },
-            text = { Text("Ci sono modifiche non salvate. Vuoi uscire comunque?") },
-            confirmButton = {
-              TextButton(
-                  onClick = {
-                    showExitDialog = false
-                    shouldExit = true
-                  }
-              ) {
-                Text("Sì")
-              }
-            },
-            dismissButton = { TextButton(onClick = { showExitDialog = false }) { Text("No") } },
-        )
-      }
+        if (shouldExit) {
+            exitApplication()
+        }
+        Window(
+            onCloseRequest = { requestExit() },
+            title = "JDER - Java Diagrammi E/R",
+            state = windowState,
+            icon = painterResource("jder_icon.png"),
+        ) {
+            window.minimumSize = Dimension(800, 600)
+            val isModified = hasUnsavedChanges()
+            LaunchedEffect(isModified) {
+                window.rootPane.putClientProperty("Window.documentModified", isModified)
+            }
+            val menus =
+                appMenus(
+                    commands = menuHost.commands,
+                    themeState = themeState,
+                    windowState = windowState,
+                    currentType = currentType,
+                    onTypeChange = { currentType = it },
+                    onAbout = { showAboutDialog = true },
+                    onExit = { requestExit() },
+                    uriHandler = LocalUriHandler.current,
+                )
+            if (isMacOS) {
+                AppMenuBar(menus = menus, onAbout = { showAboutDialog = true })
+            }
+            JDERTheme(
+                darkTheme = themeState.isDarkTheme,
+                colorPalette = themeState.selectedPalette,
+            ) {
+                Column(
+                    modifier =
+                        Modifier.fillMaxSize().onPreviewKeyEvent { event ->
+                            val typeIndex = diagramTypeKeys.indexOf(event.key)
+                            when {
+                                event.type != KeyEventType.KeyDown -> false
+                                (event.isCtrlPressed || event.isMetaPressed) && typeIndex >= 0 -> {
+                                    currentType = DiagramType.entries[typeIndex]
+                                    true
+                                }
+                                !isMacOS && event.key == Key.F11 -> {
+                                    toggleFullscreen(windowState)
+                                    true
+                                }
+                                else -> false
+                            }
+                        }
+                ) {
+                    if (!isMacOS) {
+                        WindowMenuBar(menus)
+                    }
+                    CompositionLocalProvider(LocalDiagramMenuHost provides menuHost) {
+                        AppScreen(
+                            erState = erState,
+                            useCaseState = useCaseState,
+                            classState = classState,
+                            logicState = logicState,
+                            erRepository = erRepository,
+                            useCaseRepository = useCaseRepository,
+                            classRepository = classRepository,
+                            logicRepository = logicRepository,
+                            themeState = themeState,
+                            currentType = currentType,
+                            onTypeChange = { currentType = it },
+                        )
+                    }
+                }
+                updateUrl?.let {
+                    UpdateAvailableDialog(downloadUrl = it, onDismiss = { updateUrl = null })
+                }
+                if (showAboutDialog) {
+                    AboutDialog(onDismiss = { showAboutDialog = false })
+                }
+                if (showExitDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showExitDialog = false },
+                        title = { Text("Conferma chiusura") },
+                        text = { Text("Ci sono modifiche non salvate. Vuoi uscire comunque?") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    showExitDialog = false
+                                    shouldExit = true
+                                }
+                            ) {
+                                Text("Sì")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showExitDialog = false }) { Text("No") }
+                        },
+                    )
+                }
+            }
+        }
     }
-  }
 }

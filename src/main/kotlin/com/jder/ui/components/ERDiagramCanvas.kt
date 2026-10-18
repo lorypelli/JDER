@@ -22,71 +22,71 @@ fun ERDiagramCanvas(
     onEditRequest: (ERElement) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  val textMeasurer = rememberDiagramTextMeasurer()
-  val palette = MaterialTheme.colorScheme.toDiagramPalette()
-  var hoveredId by remember { mutableStateOf<String?>(null) }
-  val currentOnContextMenuRequest by rememberUpdatedState(onContextMenuRequest)
-  val currentOnEditRequest by rememberUpdatedState(onEditRequest)
-  val handler =
-      remember(state) {
-        object : DiagramPointerHandler {
-          var dragged: ERElement? = null
+    val textMeasurer = rememberDiagramTextMeasurer()
+    val palette = MaterialTheme.colorScheme.toDiagramPalette()
+    var hoveredId by remember { mutableStateOf<String?>(null) }
+    val currentOnContextMenuRequest by rememberUpdatedState(onContextMenuRequest)
+    val currentOnEditRequest by rememberUpdatedState(onEditRequest)
+    val handler =
+        remember(state) {
+            object : DiagramPointerHandler {
+                var dragged: ERElement? = null
 
-          override fun onTap(position: Offset) = handleERTap(state, position)
+                override fun onTap(position: Offset) = handleERTap(state, position)
 
-          override fun onDoubleTap(position: Offset): Boolean {
-            if (!state.isSelectTool) return false
-            val element = hitTestERDiagram(state.diagram, position) ?: return false
-            selectERElement(state, element)
-            currentOnEditRequest(element)
-            return true
-          }
+                override fun onDoubleTap(position: Offset): Boolean {
+                    if (!state.isSelectTool) return false
+                    val element = hitTestERDiagram(state.diagram, position) ?: return false
+                    selectERElement(state, element)
+                    currentOnEditRequest(element)
+                    return true
+                }
 
-          override fun onContextClick(position: Offset, screenPosition: Offset) {
-            val element = hitTestERDiagram(state.diagram, position) ?: return
-            selectERElement(state, element)
-            currentOnContextMenuRequest(screenPosition, element.contextMenuType)
-          }
+                override fun onContextClick(position: Offset, screenPosition: Offset) {
+                    val element = hitTestERDiagram(state.diagram, position) ?: return
+                    selectERElement(state, element)
+                    currentOnContextMenuRequest(screenPosition, element.contextMenuType)
+                }
 
-          override fun onDragStart(position: Offset): Boolean {
-            dragged = handleERDragStart(state, position)
-            return dragged != null
-          }
+                override fun onDragStart(position: Offset): Boolean {
+                    dragged = handleERDragStart(state, position)
+                    return dragged != null
+                }
 
-          override fun onDrag(position: Offset, delta: Offset) {
-            dragged?.let { handleERDrag(state, it, delta) }
-          }
+                override fun onDrag(position: Offset, delta: Offset) {
+                    dragged?.let { handleERDrag(state, it, delta) }
+                }
 
-          override fun onDragEnd(position: Offset) {
-            dragged = null
-            state.commitDragState()
-          }
+                override fun onDragEnd(position: Offset) {
+                    dragged = null
+                    state.commitDragState()
+                }
 
-          override fun onHover(position: Offset?) {
-            hoveredId = position?.let { hitTestERDiagram(state.diagram, it)?.id }
-          }
+                override fun onHover(position: Offset?) {
+                    hoveredId = position?.let { hitTestERDiagram(state.diagram, it)?.id }
+                }
+            }
         }
-      }
-  val pointerIcon =
-      when {
-        !state.isSelectTool -> PointerIcon.Crosshair
-        hoveredId != null -> PointerIcon.Hand
-        else -> PointerIcon.Default
-      }
-  Canvas(
-      modifier =
-          modifier.fillMaxSize().diagramPointerInput(state, handler).pointerHoverIcon(pointerIcon)
-  ) {
-    drawCanvasBackground(state, palette)
-    withViewport(state) {
-      drawERDiagram(
-          diagram = state.diagram,
-          palette = palette,
-          textMeasurer = textMeasurer,
-          selectedId =
-              state.selectedEntityId ?: state.selectedRelationshipId ?: state.selectedNoteId,
-          hoveredId = hoveredId,
-      )
+    val pointerIcon =
+        when {
+            !state.isSelectTool -> PointerIcon.Crosshair
+            hoveredId != null -> PointerIcon.Hand
+            else -> PointerIcon.Default
+        }
+    Canvas(
+        modifier =
+            modifier.fillMaxSize().diagramPointerInput(state, handler).pointerHoverIcon(pointerIcon)
+    ) {
+        drawCanvasBackground(state, palette)
+        withViewport(state) {
+            drawERDiagram(
+                diagram = state.diagram,
+                palette = palette,
+                textMeasurer = textMeasurer,
+                selectedId =
+                    state.selectedEntityId ?: state.selectedRelationshipId ?: state.selectedNoteId,
+                hoveredId = hoveredId,
+            )
+        }
     }
-  }
 }

@@ -21,31 +21,31 @@ fun NotePropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (text: String) -> Unit,
 ) {
-  var text by remember { mutableStateOf(noteText) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Nota") },
-      text = {
-        Column {
-          OutlinedTextField(
-              value = text,
-              onValueChange = { text = it },
-              label = { Text("Testo") },
-              modifier = Modifier.fillMaxWidth().height(200.dp),
-              maxLines = 10,
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(text)
-              onDismiss()
+    var text by remember { mutableStateOf(noteText) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Nota") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = { Text("Testo") },
+                    modifier = Modifier.fillMaxWidth().height(200.dp),
+                    maxLines = 10,
+                )
             }
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(text)
+                    onDismiss()
+                }
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }

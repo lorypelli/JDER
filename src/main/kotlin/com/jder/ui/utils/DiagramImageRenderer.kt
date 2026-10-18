@@ -37,17 +37,17 @@ private val exportTextMeasurer by lazy { createDiagramTextMeasurer() }
 
 fun renderERDiagramToBitmap(diagram: ERDiagram, palette: DiagramPalette): ImageBitmap =
     renderDiagramImage(erDiagramBounds(diagram, exportTextMeasurer), palette) {
-      drawERDiagram(diagram, palette, exportTextMeasurer)
+        drawERDiagram(diagram, palette, exportTextMeasurer)
     }
 
 fun renderClassDiagramToBitmap(diagram: ClassDiagram, palette: DiagramPalette): ImageBitmap =
     renderDiagramImage(classDiagramBounds(diagram), palette) {
-      drawClassDiagram(diagram, palette, exportTextMeasurer)
+        drawClassDiagram(diagram, palette, exportTextMeasurer)
     }
 
 fun renderUseCaseDiagramToBitmap(diagram: UseCaseDiagram, palette: DiagramPalette): ImageBitmap =
     renderDiagramImage(useCaseDiagramBounds(diagram, exportTextMeasurer), palette) {
-      drawUseCaseDiagram(diagram, palette, exportTextMeasurer)
+        drawUseCaseDiagram(diagram, palette, exportTextMeasurer)
     }
 
 fun renderLogicDiagramToBitmap(
@@ -57,7 +57,7 @@ fun renderLogicDiagramToBitmap(
     palette: DiagramPalette,
 ): ImageBitmap =
     renderDiagramImage(logicDiagramBounds(diagram, exportTextMeasurer), palette) {
-      drawLogicDiagram(diagram, palette, exportTextMeasurer, simulation, showSignals)
+        drawLogicDiagram(diagram, palette, exportTextMeasurer, simulation, showSignals)
     }
 
 private fun renderDiagramImage(
@@ -65,30 +65,30 @@ private fun renderDiagramImage(
     palette: DiagramPalette,
     draw: DrawScope.() -> Unit,
 ): ImageBitmap {
-  val bounds = (contentBounds ?: Rect(0f, 0f, 400f, 300f)).inflate(EXPORT_PADDING)
-  val scale =
-      minOf(
-          EXPORT_SCALE,
-          sqrt(MAX_EXPORT_PIXELS / (bounds.width * bounds.height)),
-          MAX_EXPORT_DIMENSION / bounds.width,
-          MAX_EXPORT_DIMENSION / bounds.height,
-      )
-  val width = (bounds.width * scale).roundToInt().coerceAtLeast(1)
-  val height = (bounds.height * scale).roundToInt().coerceAtLeast(1)
-  val image = ImageBitmap(width, height)
-  CanvasDrawScope().draw(
-      Density(1f),
-      LayoutDirection.Ltr,
-      Canvas(image),
-      Size(width.toFloat(), height.toFloat()),
-  ) {
-    drawRect(palette.background)
-    withTransform({
-      scale(scale, scale, Offset.Zero)
-      translate(-bounds.left, -bounds.top)
-    }) {
-      draw()
+    val bounds = (contentBounds ?: Rect(0f, 0f, 400f, 300f)).inflate(EXPORT_PADDING)
+    val scale =
+        minOf(
+            EXPORT_SCALE,
+            sqrt(MAX_EXPORT_PIXELS / (bounds.width * bounds.height)),
+            MAX_EXPORT_DIMENSION / bounds.width,
+            MAX_EXPORT_DIMENSION / bounds.height,
+        )
+    val width = (bounds.width * scale).roundToInt().coerceAtLeast(1)
+    val height = (bounds.height * scale).roundToInt().coerceAtLeast(1)
+    val image = ImageBitmap(width, height)
+    CanvasDrawScope().draw(
+        Density(1f),
+        LayoutDirection.Ltr,
+        Canvas(image),
+        Size(width.toFloat(), height.toFloat()),
+    ) {
+        drawRect(palette.background)
+        withTransform({
+            scale(scale, scale, Offset.Zero)
+            translate(-bounds.left, -bounds.top)
+        }) {
+            draw()
+        }
     }
-  }
-  return image
+    return image
 }

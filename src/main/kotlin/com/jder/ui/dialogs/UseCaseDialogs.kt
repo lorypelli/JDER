@@ -25,32 +25,32 @@ fun ActorPropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (name: String) -> Unit,
 ) {
-  var name by remember { mutableStateOf(actorName) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Attore") },
-      text = {
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-        )
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(name)
-              onDismiss()
-            },
-            enabled = name.isNotBlank(),
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+    var name by remember { mutableStateOf(actorName) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Attore") },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Nome") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(name)
+                    onDismiss()
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 @Composable
@@ -60,42 +60,42 @@ fun UseCasePropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (name: String, documentation: String) -> Unit,
 ) {
-  var name by remember { mutableStateOf(useCaseName) }
-  var documentation by remember { mutableStateOf(useCaseDocumentation) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Caso d'Uso") },
-      text = {
-        Column {
-          OutlinedTextField(
-              value = name,
-              onValueChange = { name = it },
-              label = { Text("Nome") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          OutlinedTextField(
-              value = documentation,
-              onValueChange = { documentation = it },
-              label = { Text("Documentazione") },
-              modifier = Modifier.fillMaxWidth().height(120.dp).padding(top = 8.dp),
-              maxLines = 5,
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(name, documentation)
-              onDismiss()
-            },
-            enabled = name.isNotBlank(),
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+    var name by remember { mutableStateOf(useCaseName) }
+    var documentation by remember { mutableStateOf(useCaseDocumentation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Caso d'Uso") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Nome") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = documentation,
+                    onValueChange = { documentation = it },
+                    label = { Text("Documentazione") },
+                    modifier = Modifier.fillMaxWidth().height(120.dp).padding(top = 8.dp),
+                    maxLines = 5,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(name, documentation)
+                    onDismiss()
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 @Composable
@@ -103,12 +103,12 @@ fun SelectRelationTypeDialog(
     onDismiss: () -> Unit,
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
-  RelationTypeDialog(
-      title = "Tipo di Relazione",
-      initialType = UseCaseRelationType.ASSOCIATION,
-      onDismiss = onDismiss,
-      onConfirm = onConfirm,
-  )
+    RelationTypeDialog(
+        title = "Tipo di Relazione",
+        initialType = UseCaseRelationType.ASSOCIATION,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    )
 }
 
 @Composable
@@ -117,12 +117,12 @@ fun RelationEditDialog(
     onDismiss: () -> Unit,
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
-  RelationTypeDialog(
-      title = "Modifica Tipo Relazione",
-      initialType = relation.type,
-      onDismiss = onDismiss,
-      onConfirm = onConfirm,
-  )
+    RelationTypeDialog(
+        title = "Modifica Tipo Relazione",
+        initialType = relation.type,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    )
 }
 
 @Composable
@@ -132,25 +132,25 @@ private fun RelationTypeDialog(
     onDismiss: () -> Unit,
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
-  var selected by remember { mutableStateOf(initialType) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text(title) },
-      text = {
-        RadioOptionList(UseCaseRelationType.entries, selected, { selected = it }) { it.display }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(selected)
-              onDismiss()
+    var selected by remember { mutableStateOf(initialType) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            RadioOptionList(UseCaseRelationType.entries, selected, { selected = it }) { it.display }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(selected)
+                    onDismiss()
+                }
+            ) {
+                Text("Conferma")
             }
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }
 
 @Composable
@@ -161,52 +161,52 @@ fun SystemBoundaryDialog(
     onDismiss: () -> Unit,
     onConfirm: (name: String, width: Float, height: Float) -> Unit,
 ) {
-  var name by remember { mutableStateOf(boundaryName) }
-  var width by remember { mutableStateOf(boundaryWidth.toInt().toString()) }
-  var height by remember { mutableStateOf(boundaryHeight.toInt().toString()) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text("Proprietà Sistema") },
-      text = {
-        Column {
-          OutlinedTextField(
-              value = name,
-              onValueChange = { name = it },
-              label = { Text("Nome") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          OutlinedTextField(
-              value = width,
-              onValueChange = { width = it.filter { c -> c.isDigit() } },
-              label = { Text("Larghezza") },
-              modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-              singleLine = true,
-          )
-          OutlinedTextField(
-              value = height,
-              onValueChange = { height = it.filter { c -> c.isDigit() } },
-              label = { Text("Altezza") },
-              modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-              singleLine = true,
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-            onClick = {
-              onConfirm(
-                  name,
-                  width.toFloatOrNull()?.coerceAtLeast(100f) ?: boundaryWidth,
-                  height.toFloatOrNull()?.coerceAtLeast(80f) ?: boundaryHeight,
-              )
-              onDismiss()
-            },
-            enabled = name.isNotBlank(),
-        ) {
-          Text("Conferma")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
+    var name by remember { mutableStateOf(boundaryName) }
+    var width by remember { mutableStateOf(boundaryWidth.toInt().toString()) }
+    var height by remember { mutableStateOf(boundaryHeight.toInt().toString()) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Sistema") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Nome") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = width,
+                    onValueChange = { width = it.filter { c -> c.isDigit() } },
+                    label = { Text("Larghezza") },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = height,
+                    onValueChange = { height = it.filter { c -> c.isDigit() } },
+                    label = { Text("Altezza") },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    singleLine = true,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(
+                        name,
+                        width.toFloatOrNull()?.coerceAtLeast(100f) ?: boundaryWidth,
+                        height.toFloatOrNull()?.coerceAtLeast(80f) ?: boundaryHeight,
+                    )
+                    onDismiss()
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text("Conferma")
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+    )
 }

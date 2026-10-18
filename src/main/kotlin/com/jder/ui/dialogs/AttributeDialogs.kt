@@ -43,12 +43,12 @@ import java.util.UUID
 
 @Composable
 fun AddAttributeDialog(onDismiss: () -> Unit, onConfirm: (attribute: Attribute) -> Unit) {
-  AttributeDialog(
-      title = "Aggiungi Attributo",
-      initialAttribute = null,
-      onDismiss = onDismiss,
-      onConfirm = onConfirm,
-  )
+    AttributeDialog(
+        title = "Aggiungi Attributo",
+        initialAttribute = null,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    )
 }
 
 @Composable
@@ -57,12 +57,12 @@ fun EditAttributeDialog(
     onDismiss: () -> Unit,
     onConfirm: (attribute: Attribute) -> Unit,
 ) {
-  AttributeDialog(
-      title = "Modifica Attributo",
-      initialAttribute = attribute,
-      onDismiss = onDismiss,
-      onConfirm = onConfirm,
-  )
+    AttributeDialog(
+        title = "Modifica Attributo",
+        initialAttribute = attribute,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,244 +73,260 @@ private fun AttributeDialog(
     onDismiss: () -> Unit,
     onConfirm: (attribute: Attribute) -> Unit,
 ) {
-  var name by remember { mutableStateOf(initialAttribute?.name ?: "") }
-  var isPrimaryKey by remember { mutableStateOf(initialAttribute?.isPrimaryKey ?: false) }
-  var attributeType by remember { mutableStateOf(initialAttribute?.type ?: AttributeType.NORMAL) }
-  var multiplicity by remember { mutableStateOf(initialAttribute?.multiplicity ?: "") }
-  var components by remember { mutableStateOf(initialAttribute?.components ?: emptyList()) }
-  var expanded by remember { mutableStateOf(false) }
-  var showAddComponentDialog by remember { mutableStateOf(false) }
-  AlertDialog(
-      onDismissRequest = onDismiss,
-      title = { Text(title) },
-      text = {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-          OutlinedTextField(
-              value = name,
-              onValueChange = { name = it },
-              label = { Text("Nome") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
-          Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically,
-          ) {
-            Text("Chiave Primaria")
-            Switch(
-                checked = isPrimaryKey,
-                onCheckedChange = { isPrimaryKey = it },
-                enabled = attributeType != AttributeType.KEY,
-            )
-          }
-          AnimatedVisibility(
-              visible = attributeType == AttributeType.KEY,
-              enter = expandVertically() + fadeIn(),
-              exit = shrinkVertically() + fadeOut(),
-          ) {
-            Text(
-                text = "Gli attributi di tipo Chiave sono sempre chiavi primarie",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-          }
-          ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-            OutlinedTextField(
-                value = attributeType.display,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Tipo") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.fillMaxWidth().menuAnchor(),
-            )
-            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-              DropdownMenuItem(
-                  text = { Text(AttributeType.NORMAL.display) },
-                  onClick = {
-                    attributeType = AttributeType.NORMAL
-                    expanded = false
-                  },
-              )
-              DropdownMenuItem(
-                  text = { Text(AttributeType.KEY.display) },
-                  onClick = {
-                    attributeType = AttributeType.KEY
-                    isPrimaryKey = true
-                    expanded = false
-                  },
-              )
-              DropdownMenuItem(
-                  text = { Text(AttributeType.MULTIVALUED.display) },
-                  onClick = {
-                    attributeType = AttributeType.MULTIVALUED
-                    expanded = false
-                  },
-              )
-              DropdownMenuItem(
-                  text = { Text(AttributeType.DERIVED.display) },
-                  onClick = {
-                    attributeType = AttributeType.DERIVED
-                    expanded = false
-                  },
-              )
-              DropdownMenuItem(
-                  text = { Text(AttributeType.COMPOSITE.display) },
-                  onClick = {
-                    attributeType = AttributeType.COMPOSITE
-                    isPrimaryKey = false
-                    expanded = false
-                  },
-              )
-            }
-          }
-          AnimatedVisibility(
-              visible = attributeType == AttributeType.MULTIVALUED,
-              enter = expandVertically() + fadeIn(),
-              exit = shrinkVertically() + fadeOut(),
-          ) {
-            OutlinedTextField(
-                value = multiplicity,
-                onValueChange = { multiplicity = it },
-                label = { Text("Molteplicità (es: 1..N, 0..N)") },
-                placeholder = { Text("1..N") },
-                modifier = Modifier.fillMaxWidth(),
-            )
-          }
-          AnimatedVisibility(
-              visible = attributeType == AttributeType.COMPOSITE,
-              enter = expandVertically() + fadeIn(),
-              exit = shrinkVertically() + fadeOut(),
-          ) {
+    var name by remember { mutableStateOf(initialAttribute?.name ?: "") }
+    var isPrimaryKey by remember { mutableStateOf(initialAttribute?.isPrimaryKey ?: false) }
+    var attributeType by remember { mutableStateOf(initialAttribute?.type ?: AttributeType.NORMAL) }
+    var multiplicity by remember { mutableStateOf(initialAttribute?.multiplicity ?: "") }
+    var components by remember { mutableStateOf(initialAttribute?.components ?: emptyList()) }
+    var expanded by remember { mutableStateOf(false) }
+    var showAddComponentDialog by remember { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-              Divider()
-              Row(
-                  modifier = Modifier.fillMaxWidth(),
-                  horizontalArrangement = Arrangement.SpaceBetween,
-                  verticalAlignment = Alignment.CenterVertically,
-              ) {
-                Text("Componenti (${components.size})", style = MaterialTheme.typography.titleSmall)
-                IconButton(onClick = { showAddComponentDialog = true }) {
-                  Icon(Icons.Default.Add, "Aggiungi componente")
-                }
-              }
-              if (components.isNotEmpty()) {
-                Column(
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Nome") },
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                  components.forEach { component ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors =
-                            CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer
-                            ),
-                    ) {
-                      Row(
-                          modifier = Modifier.fillMaxWidth().padding(8.dp),
-                          horizontalArrangement = Arrangement.SpaceBetween,
-                          verticalAlignment = Alignment.CenterVertically,
-                      ) {
-                        Text(component.name, style = MaterialTheme.typography.bodyMedium)
-                        IconButton(
-                            onClick = { components = components.filter { it.id != component.id } }
-                        ) {
-                          Icon(
-                              Icons.Default.Delete,
-                              "Rimuovi componente",
-                              tint = MaterialTheme.colorScheme.error,
-                          )
-                        }
-                      }
-                    }
-                  }
-                }
-              } else {
-                Text(
-                    "Nessun componente. Aggiungi componenti per l'attributo composto.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    singleLine = true,
                 )
-              }
-            }
-          }
-        }
-      },
-      confirmButton = {
-        Button(
-            onClick = {
-              if (name.isNotBlank()) {
-                val finalIsPrimaryKey = attributeType == AttributeType.KEY || isPrimaryKey
-                val newAttribute =
-                    Attribute(
-                        id = initialAttribute?.id ?: UUID.randomUUID().toString(),
-                        name = name,
-                        type = attributeType,
-                        isPrimaryKey = finalIsPrimaryKey,
-                        components =
-                            if (attributeType == AttributeType.COMPOSITE) components
-                            else emptyList(),
-                        multiplicity =
-                            if (attributeType == AttributeType.MULTIVALUED) multiplicity else "",
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Chiave Primaria")
+                    Switch(
+                        checked = isPrimaryKey,
+                        onCheckedChange = { isPrimaryKey = it },
+                        enabled = attributeType != AttributeType.KEY,
                     )
-                onConfirm(newAttribute)
-              }
-            },
-            enabled =
-                name.isNotBlank() &&
-                    (attributeType != AttributeType.COMPOSITE || components.isNotEmpty()),
-        ) {
-          Text(if (initialAttribute != null) "Conferma" else "Aggiungi")
-        }
-      },
-      dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
-  )
-  if (showAddComponentDialog) {
-    var componentName by remember { mutableStateOf("") }
-    AlertDialog(
-        onDismissRequest = { showAddComponentDialog = false },
-        title = { Text("Aggiungi Componente") },
-        text = {
-          OutlinedTextField(
-              value = componentName,
-              onValueChange = { componentName = it },
-              label = { Text("Nome componente") },
-              modifier = Modifier.fillMaxWidth(),
-              singleLine = true,
-          )
+                }
+                AnimatedVisibility(
+                    visible = attributeType == AttributeType.KEY,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    Text(
+                        text = "Gli attributi di tipo Chiave sono sempre chiavi primarie",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+                    OutlinedTextField(
+                        value = attributeType.display,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Tipo") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                        },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(AttributeType.NORMAL.display) },
+                            onClick = {
+                                attributeType = AttributeType.NORMAL
+                                expanded = false
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(AttributeType.KEY.display) },
+                            onClick = {
+                                attributeType = AttributeType.KEY
+                                isPrimaryKey = true
+                                expanded = false
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(AttributeType.MULTIVALUED.display) },
+                            onClick = {
+                                attributeType = AttributeType.MULTIVALUED
+                                expanded = false
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(AttributeType.DERIVED.display) },
+                            onClick = {
+                                attributeType = AttributeType.DERIVED
+                                expanded = false
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(AttributeType.COMPOSITE.display) },
+                            onClick = {
+                                attributeType = AttributeType.COMPOSITE
+                                isPrimaryKey = false
+                                expanded = false
+                            },
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = attributeType == AttributeType.MULTIVALUED,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    OutlinedTextField(
+                        value = multiplicity,
+                        onValueChange = { multiplicity = it },
+                        label = { Text("Molteplicità (es: 1..N, 0..N)") },
+                        placeholder = { Text("1..N") },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                AnimatedVisibility(
+                    visible = attributeType == AttributeType.COMPOSITE,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Divider()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                "Componenti (${components.size})",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            IconButton(onClick = { showAddComponentDialog = true }) {
+                                Icon(Icons.Default.Add, "Aggiungi componente")
+                            }
+                        }
+                        if (components.isNotEmpty()) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                components.forEach { component ->
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors =
+                                            CardDefaults.cardColors(
+                                                containerColor =
+                                                    MaterialTheme.colorScheme.secondaryContainer
+                                            ),
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Text(
+                                                component.name,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                            )
+                                            IconButton(
+                                                onClick = {
+                                                    components =
+                                                        components.filter { it.id != component.id }
+                                                }
+                                            ) {
+                                                Icon(
+                                                    Icons.Default.Delete,
+                                                    "Rimuovi componente",
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Text(
+                                "Nessun componente. Aggiungi componenti per l'attributo composto.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(vertical = 8.dp),
+                            )
+                        }
+                    }
+                }
+            }
         },
         confirmButton = {
-          Button(
-              onClick = {
-                if (componentName.isNotBlank()) {
-                  val newComponent =
-                      Attribute(
-                          id = UUID.randomUUID().toString(),
-                          name = componentName,
-                          type = AttributeType.NORMAL,
-                          isPrimaryKey = false,
-                          components = emptyList(),
-                      )
-                  components = components + newComponent
-                  showAddComponentDialog = false
-                }
-              },
-              enabled = componentName.isNotBlank(),
-          ) {
-            Text("Aggiungi")
-          }
+            Button(
+                onClick = {
+                    if (name.isNotBlank()) {
+                        val finalIsPrimaryKey = attributeType == AttributeType.KEY || isPrimaryKey
+                        val newAttribute =
+                            Attribute(
+                                id = initialAttribute?.id ?: UUID.randomUUID().toString(),
+                                name = name,
+                                type = attributeType,
+                                isPrimaryKey = finalIsPrimaryKey,
+                                components =
+                                    if (attributeType == AttributeType.COMPOSITE) components
+                                    else emptyList(),
+                                multiplicity =
+                                    if (attributeType == AttributeType.MULTIVALUED) multiplicity
+                                    else "",
+                            )
+                        onConfirm(newAttribute)
+                    }
+                },
+                enabled =
+                    name.isNotBlank() &&
+                        (attributeType != AttributeType.COMPOSITE || components.isNotEmpty()),
+            ) {
+                Text(if (initialAttribute != null) "Conferma" else "Aggiungi")
+            }
         },
-        dismissButton = {
-          TextButton(onClick = { showAddComponentDialog = false }) { Text("Annulla") }
-        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
     )
-  }
+    if (showAddComponentDialog) {
+        var componentName by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showAddComponentDialog = false },
+            title = { Text("Aggiungi Componente") },
+            text = {
+                OutlinedTextField(
+                    value = componentName,
+                    onValueChange = { componentName = it },
+                    label = { Text("Nome componente") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (componentName.isNotBlank()) {
+                            val newComponent =
+                                Attribute(
+                                    id = UUID.randomUUID().toString(),
+                                    name = componentName,
+                                    type = AttributeType.NORMAL,
+                                    isPrimaryKey = false,
+                                    components = emptyList(),
+                                )
+                            components = components + newComponent
+                            showAddComponentDialog = false
+                        }
+                    },
+                    enabled = componentName.isNotBlank(),
+                ) {
+                    Text("Aggiungi")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddComponentDialog = false }) { Text("Annulla") }
+            },
+        )
+    }
 }

@@ -14,13 +14,13 @@ fun DiagramTabRow(
     isModified: (DiagramType) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
-  TabRow(selectedTabIndex = currentType.ordinal, modifier = modifier) {
-    DiagramType.entries.forEach { type ->
-      Tab(
-          selected = currentType == type,
-          onClick = { onTypeChange(type) },
-          text = { Text(if (isModified(type)) "${type.tabLabel} •" else type.tabLabel) },
-      )
+    TabRow(selectedTabIndex = currentType.ordinal, modifier = modifier) {
+        DiagramType.entries.forEach { type ->
+            Tab(
+                selected = currentType == type,
+                onClick = { onTypeChange(type) },
+                text = { Text(if (isModified(type)) "${type.tabLabel} •" else type.tabLabel) },
+            )
+        }
     }
-  }
 }

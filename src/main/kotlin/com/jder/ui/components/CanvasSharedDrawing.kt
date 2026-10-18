@@ -33,10 +33,10 @@ private const val MIN_GRID_SPACING_PX = 12f
 
 @Composable
 internal fun rememberDiagramTextMeasurer(): TextMeasurer {
-  val fontFamilyResolver = LocalFontFamilyResolver.current
-  return remember(fontFamilyResolver) {
-    TextMeasurer(fontFamilyResolver, Density(1f), LayoutDirection.Ltr, TEXT_MEASURER_CACHE_SIZE)
-  }
+    val fontFamilyResolver = LocalFontFamilyResolver.current
+    return remember(fontFamilyResolver) {
+        TextMeasurer(fontFamilyResolver, Density(1f), LayoutDirection.Ltr, TEXT_MEASURER_CACHE_SIZE)
+    }
 }
 
 internal fun createDiagramTextMeasurer(): TextMeasurer =
@@ -47,45 +47,42 @@ internal fun createDiagramTextMeasurer(): TextMeasurer =
         TEXT_MEASURER_CACHE_SIZE,
     )
 
-internal fun DrawScope.drawCanvasBackground(
-    state: DiagramEditorState<*>,
-    palette: DiagramPalette,
-) {
-  drawRect(color = palette.background, size = size)
-  val scale = state.zoom * density
-  var spacing = GRID_SPACING
-  while (spacing * scale < MIN_GRID_SPACING_PX) spacing *= 2f
-  val left = -state.panOffset.x / scale
-  val top = -state.panOffset.y / scale
-  val right = left + size.width / scale
-  val bottom = top + size.height / scale
-  withViewport(state) {
-    val strokeWidth = 1f / scale
-    var x = floor(left / spacing) * spacing
-    while (x <= right) {
-      drawLine(palette.grid, Offset(x, top), Offset(x, bottom), strokeWidth)
-      x += spacing
+internal fun DrawScope.drawCanvasBackground(state: DiagramEditorState<*>, palette: DiagramPalette) {
+    drawRect(color = palette.background, size = size)
+    val scale = state.zoom * density
+    var spacing = GRID_SPACING
+    while (spacing * scale < MIN_GRID_SPACING_PX) spacing *= 2f
+    val left = -state.panOffset.x / scale
+    val top = -state.panOffset.y / scale
+    val right = left + size.width / scale
+    val bottom = top + size.height / scale
+    withViewport(state) {
+        val strokeWidth = 1f / scale
+        var x = floor(left / spacing) * spacing
+        while (x <= right) {
+            drawLine(palette.grid, Offset(x, top), Offset(x, bottom), strokeWidth)
+            x += spacing
+        }
+        var y = floor(top / spacing) * spacing
+        while (y <= bottom) {
+            drawLine(palette.grid, Offset(left, y), Offset(right, y), strokeWidth)
+            y += spacing
+        }
     }
-    var y = floor(top / spacing) * spacing
-    while (y <= bottom) {
-      drawLine(palette.grid, Offset(left, y), Offset(right, y), strokeWidth)
-      y += spacing
-    }
-  }
 }
 
 internal inline fun DrawScope.withViewport(
     state: DiagramEditorState<*>,
     block: DrawScope.() -> Unit,
 ) {
-  val scale = state.zoom * density
-  withTransform(
-      {
-        translate(state.panOffset.x, state.panOffset.y)
-        scale(scale, scale, Offset.Zero)
-      },
-      block,
-  )
+    val scale = state.zoom * density
+    withTransform(
+        {
+            translate(state.panOffset.x, state.panOffset.y)
+            scale(scale, scale, Offset.Zero)
+        },
+        block,
+    )
 }
 
 internal fun TextMeasurer.measureLine(
@@ -117,10 +114,10 @@ internal fun TextMeasurer.measureBlock(
     )
 
 internal fun DrawScope.drawTextCentered(layout: TextLayoutResult, center: Offset) {
-  drawText(
-      textLayoutResult = layout,
-      topLeft = Offset(center.x - layout.size.width / 2f, center.y - layout.size.height / 2f),
-  )
+    drawText(
+        textLayoutResult = layout,
+        topLeft = Offset(center.x - layout.size.width / 2f, center.y - layout.size.height / 2f),
+    )
 }
 
 internal fun Note.contains(point: Offset): Boolean =
@@ -135,67 +132,67 @@ internal fun DrawScope.drawNoteShape(
     selectedColor: Color,
     isHovered: Boolean = false,
 ) {
-  val noteColor = Color(0xFFFFEB3B)
-  val strokeColor = if (isSelected) selectedColor else Color(0xFFFBC02D)
-  val strokeWidth =
-      when {
-        isSelected -> 3f
-        isHovered -> 2.5f
-        else -> 1.5f
-      }
-  val foldSize = 15f
-  val right = note.x + note.width
-  val bottom = note.y + note.height
-  val body =
-      Path().apply {
-        moveTo(note.x, note.y)
-        lineTo(right - foldSize, note.y)
-        lineTo(right, note.y + foldSize)
-        lineTo(right, bottom)
-        lineTo(note.x, bottom)
-        close()
-      }
-  drawPath(path = body, color = noteColor, style = Fill)
-  drawPath(path = body, color = strokeColor, style = Stroke(width = strokeWidth))
-  val foldPath =
-      Path().apply {
-        moveTo(right - foldSize, note.y)
-        lineTo(right - foldSize, note.y + foldSize)
-        lineTo(right, note.y + foldSize)
-        close()
-      }
-  drawPath(path = foldPath, color = Color(0xFFF9A825), style = Fill)
-  drawPath(path = foldPath, color = strokeColor, style = Stroke(width = 1f))
-  val padding = 10f
-  val textResult =
-      textMeasurer.measure(
-          text = note.text,
-          style = TextStyle(color = Color.Black, fontSize = 12.sp),
-          constraints =
-              Constraints(
-                  maxWidth = (note.width - padding * 2).toInt().coerceAtLeast(1),
-                  maxHeight = (note.height - padding * 2).toInt().coerceAtLeast(1),
-              ),
-      )
-  drawText(textLayoutResult = textResult, topLeft = Offset(note.x + padding, note.y + padding))
+    val noteColor = Color(0xFFFFEB3B)
+    val strokeColor = if (isSelected) selectedColor else Color(0xFFFBC02D)
+    val strokeWidth =
+        when {
+            isSelected -> 3f
+            isHovered -> 2.5f
+            else -> 1.5f
+        }
+    val foldSize = 15f
+    val right = note.x + note.width
+    val bottom = note.y + note.height
+    val body =
+        Path().apply {
+            moveTo(note.x, note.y)
+            lineTo(right - foldSize, note.y)
+            lineTo(right, note.y + foldSize)
+            lineTo(right, bottom)
+            lineTo(note.x, bottom)
+            close()
+        }
+    drawPath(path = body, color = noteColor, style = Fill)
+    drawPath(path = body, color = strokeColor, style = Stroke(width = strokeWidth))
+    val foldPath =
+        Path().apply {
+            moveTo(right - foldSize, note.y)
+            lineTo(right - foldSize, note.y + foldSize)
+            lineTo(right, note.y + foldSize)
+            close()
+        }
+    drawPath(path = foldPath, color = Color(0xFFF9A825), style = Fill)
+    drawPath(path = foldPath, color = strokeColor, style = Stroke(width = 1f))
+    val padding = 10f
+    val textResult =
+        textMeasurer.measure(
+            text = note.text,
+            style = TextStyle(color = Color.Black, fontSize = 12.sp),
+            constraints =
+                Constraints(
+                    maxWidth = (note.width - padding * 2).toInt().coerceAtLeast(1),
+                    maxHeight = (note.height - padding * 2).toInt().coerceAtLeast(1),
+                ),
+        )
+    drawText(textLayoutResult = textResult, topLeft = Offset(note.x + padding, note.y + padding))
 }
 
 internal class BoundsBuilder {
-  private var left = Float.POSITIVE_INFINITY
-  private var top = Float.POSITIVE_INFINITY
-  private var right = Float.NEGATIVE_INFINITY
-  private var bottom = Float.NEGATIVE_INFINITY
+    private var left = Float.POSITIVE_INFINITY
+    private var top = Float.POSITIVE_INFINITY
+    private var right = Float.NEGATIVE_INFINITY
+    private var bottom = Float.NEGATIVE_INFINITY
 
-  fun include(rect: Rect) {
-    left = minOf(left, rect.left)
-    top = minOf(top, rect.top)
-    right = maxOf(right, rect.right)
-    bottom = maxOf(bottom, rect.bottom)
-  }
+    fun include(rect: Rect) {
+        left = minOf(left, rect.left)
+        top = minOf(top, rect.top)
+        right = maxOf(right, rect.right)
+        bottom = maxOf(bottom, rect.bottom)
+    }
 
-  fun include(point: Offset) {
-    include(Rect(point, Size.Zero))
-  }
+    fun include(point: Offset) {
+        include(Rect(point, Size.Zero))
+    }
 
-  fun build(): Rect? = if (left > right || top > bottom) null else Rect(left, top, right, bottom)
+    fun build(): Rect? = if (left > right || top > bottom) null else Rect(left, top, right, bottom)
 }
