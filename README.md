@@ -89,16 +89,16 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 
 ### 🖱️ Controlli della Lavagna
 
-| Azione                  | Controllo                                                    |
-| ----------------------- | ------------------------------------------------------------ |
-| Zoom Avanti             | `Ctrl` + `+` o scroll mouse su (verso il cursore)            |
-| Zoom Indietro           | `Ctrl` + `-` o scroll mouse giù                              |
-| Scorrimento             | Trascinamento su un'area vuota o con il tasto centrale       |
-| Seleziona e Sposta      | Clic sinistro + trascinamento                                |
-| Modifica elemento       | Doppio clic sull'elemento                                    |
-| Apri menu contestuale   | Clic destro sull'elemento (`Ctrl` + clic su macOS)           |
-| Collega porte logiche   | Trascinamento da un pin a un altro                           |
-| Reimposta Zoom          | `Ctrl` + `0` o Menu Vista → Reimposta Zoom                   |
+| Azione                | Controllo                                              |
+| --------------------- | ------------------------------------------------------ |
+| Zoom Avanti           | `Ctrl` + `+` o scroll mouse su (verso il cursore)      |
+| Zoom Indietro         | `Ctrl` + `-` o scroll mouse giù                        |
+| Scorrimento           | Trascinamento su un'area vuota o con il tasto centrale |
+| Seleziona e Sposta    | Clic sinistro + trascinamento                          |
+| Modifica elemento     | Doppio clic sull'elemento                              |
+| Apri menu contestuale | Clic destro sull'elemento (`Ctrl` + clic su macOS)     |
+| Collega porte logiche | Trascinamento da un pin a un altro                     |
+| Reimposta Zoom        | `Ctrl` + `0` o Menu Vista → Reimposta Zoom             |
 
 ---
 
@@ -106,24 +106,24 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 
 Su macOS si può usare `Cmd` al posto di `Ctrl`.
 
-| Scorciatoia                      | Azione                                  |
-| -------------------------------- | --------------------------------------- |
-| `Ctrl + Z`                       | Annulla                                 |
-| `Ctrl + Y` / `Ctrl + Shift + Z`  | Ripeti                                  |
-| `Ctrl + S`                       | Salva                                   |
-| `Ctrl + Shift + S`               | Salva con nome                          |
-| `Ctrl + O`                       | Apri                                    |
-| `Ctrl + N`                       | Nuovo Diagramma                         |
-| `Ctrl + E`                       | Esporta come PNG                        |
-| `Ctrl + +`                       | Zoom Avanti                             |
-| `Ctrl + -`                       | Zoom Indietro                           |
-| `Ctrl + 0`                       | Reimposta Zoom                          |
-| `Ctrl + 1` … `Ctrl + 4`          | Diagramma E/R, Classi, Casi d'Uso, Logico |
-| `Delete` / `Backspace`           | Elimina elemento selezionato            |
-| `Esc`                            | Deseleziona e torna allo strumento Seleziona |
-| `F11`                            | Schermo intero (Windows e Linux)        |
-| `Ctrl + Cmd + F`                 | Schermo intero (macOS)                  |
-| `Cmd + M`                        | Riduci a icona (macOS)                  |
+| Scorciatoia                     | Azione                                       |
+| ------------------------------- | -------------------------------------------- |
+| `Ctrl + Z`                      | Annulla                                      |
+| `Ctrl + Y` / `Ctrl + Shift + Z` | Ripeti                                       |
+| `Ctrl + S`                      | Salva                                        |
+| `Ctrl + Shift + S`              | Salva con nome                               |
+| `Ctrl + O`                      | Apri                                         |
+| `Ctrl + N`                      | Nuovo Diagramma                              |
+| `Ctrl + E`                      | Esporta come PNG                             |
+| `Ctrl + +`                      | Zoom Avanti                                  |
+| `Ctrl + -`                      | Zoom Indietro                                |
+| `Ctrl + 0`                      | Reimposta Zoom                               |
+| `Ctrl + 1` … `Ctrl + 4`         | Diagramma E/R, Classi, Casi d'Uso, Logico    |
+| `Delete` / `Backspace`          | Elimina elemento selezionato                 |
+| `Esc`                           | Deseleziona e torna allo strumento Seleziona |
+| `F11`                           | Schermo intero (Windows e Linux)             |
+| `Ctrl + Cmd + F`                | Schermo intero (macOS)                       |
+| `Cmd + M`                       | Riduci a icona (macOS)                       |
 
 ---
 
@@ -139,16 +139,16 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 
 ## Stack Tecnologico
 
-| Tecnologia                                                                   | Utilizzo                   |
-| ---------------------------------------------------------------------------- | -------------------------- |
-| [Kotlin](https://kotlinlang.org/)                                            | Linguaggio principale      |
-| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | Framework UI               |
-| [Material 3](https://m3.material.io/)                                        | Sistema di design          |
+| Tecnologia                                                                   | Utilizzo                     |
+| ---------------------------------------------------------------------------- | ---------------------------- |
+| [Kotlin](https://kotlinlang.org/)                                            | Linguaggio principale        |
+| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | Framework UI                 |
+| [Material 3](https://m3.material.io/)                                        | Sistema di design            |
 | [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)     | Salvataggio/caricamento JSON |
-| [Gradle](https://gradle.org/)                                                | Sistema di build           |
-| [Cloudflare Workers](https://workers.cloudflare.com/)                        | Hosting del sito web       |
-| [Skia](https://skia.org/)                                                    | Rendering/esportazione PNG |
-| Java 11                                                                      | Target JVM                 |
+| [Gradle](https://gradle.org/)                                                | Sistema di build             |
+| [Cloudflare Workers](https://workers.cloudflare.com/)                        | Hosting del sito web         |
+| [Skia](https://skia.org/)                                                    | Rendering/esportazione PNG   |
+| Java 11                                                                      | Target JVM                   |
 
 ---
 
