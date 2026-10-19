@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.jder.ui.strings.UiStrings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -63,9 +64,10 @@ fun <T> RadioOptionList(
     options: List<T>,
     selected: T,
     onSelect: (T) -> Unit,
+    modifier: Modifier = Modifier,
     label: (T) -> String,
 ) {
-    Column {
+    Column(modifier) {
         options.forEach { option ->
             val isSelected = option == selected
             Row(
@@ -105,8 +107,8 @@ fun ConfirmNewDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
         onDismissRequest = onDismiss,
         title = { Text("Conferma nuovo diagramma") },
         text = { Text("Ci sono modifiche non salvate. Vuoi creare un nuovo diagramma comunque?") },
-        confirmButton = { TextButton(onClick = onConfirm) { Text("Sì") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("No") } },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(UiStrings.YES) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.NO) } },
     )
 }
 
@@ -116,7 +118,7 @@ fun ConfirmOpenDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
         onDismissRequest = onDismiss,
         title = { Text("Conferma apertura diagramma") },
         text = { Text("Ci sono modifiche non salvate. Vuoi aprire un altro diagramma comunque?") },
-        confirmButton = { TextButton(onClick = onConfirm) { Text("Sì") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("No") } },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(UiStrings.YES) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.NO) } },
     )
 }

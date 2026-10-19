@@ -348,16 +348,6 @@ internal fun DrawScope.drawClassRelation(
     }
 }
 
-private fun DrawScope.drawOpenArrowHead(tip: Offset, dir: Offset, color: Color, size: Float) {
-    val perpX = -dir.y
-    val perpY = dir.x
-    val base = Offset(tip.x - dir.x * size, tip.y - dir.y * size)
-    val left = Offset(base.x + perpX * size * 0.4f, base.y + perpY * size * 0.4f)
-    val right = Offset(base.x - perpX * size * 0.4f, base.y - perpY * size * 0.4f)
-    drawLine(color = color, start = tip, end = left, strokeWidth = 1.5f)
-    drawLine(color = color, start = tip, end = right, strokeWidth = 1.5f)
-}
-
 private fun DrawScope.drawHollowTriangleArrow(
     tip: Offset,
     dir: Offset,

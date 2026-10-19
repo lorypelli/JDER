@@ -1,6 +1,6 @@
 # JDER
 
-**Java Diagrammi E/R** — Un editor moderno e multipiattaforma per diagrammi Entità-Relazione, Use Case, delle Classi e Logici
+**Java Diagrammi E/R** — Un editor moderno e multipiattaforma per diagrammi Entità-Relazione, Schemi Logici, diagrammi Use Case, delle Classi, di Sequenza e Logici
 
 [![Website](https://img.shields.io/badge/Website-jder.it-blue?style=for-the-badge)](https://jder.it/)
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
@@ -34,6 +34,17 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - Pannello Proprietà per modificare elementi e connessioni
 - Menu contestuale per azioni rapide su qualsiasi elemento
 
+#### Schema Logico (Relazionale)
+
+- Il passo successivo all'E/R nella progettazione di una base di dati: crea **Tabelle** con le loro **Colonne**
+  - Chiave primaria anche composta (colonne sottolineate e segnate `PK`), colonne opzionali che ammettono `NULL` (segnate con `*`) e a valore unico (`UQ`)
+  - Tipo facoltativo per ogni colonna (es. `INT`, `VARCHAR(50)`)
+- Crea **Chiavi Esterne** con lo strumento dedicato (clic sulla tabella che riferisce e poi su quella riferita) o dalla finestra della colonna
+  - Le nuove colonne riprendono la chiave primaria della tabella riferita e possono far parte della chiave primaria (relazioni N-a-N, entità deboli)
+  - Le frecce collegano la colonna alla colonna riferita e vengono instradate evitando le altre tabelle
+- Eliminando una tabella o una colonna riferita vengono rimosse anche le chiavi esterne che la usavano
+- Aggiungi **Note testuali** come negli altri diagrammi
+
 #### Diagramma delle Classi
 
 - Crea **Classi**, **Interfacce**, **Enum** e **Classi Astratte** (con etichette stereotipo UML)
@@ -58,6 +69,16 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - Definisci **Confini di Sistema** per raggruppare i casi d'uso
 - Aggiungi **Note testuali** condivise con il componente note E/R
 
+#### Diagramma di Sequenza
+
+- Crea **Linee di Vita** per attori, oggetti e gli stereotipi di analisi **Boundary**, **Control** ed **Entity**
+- Crea **Messaggi** trascinando da una linea di vita all'altra (oppure con lo strumento Messaggio) e spostali in verticale trascinandoli
+  - Sincroni, asincroni, di risposta, di creazione (`«create»`: l'oggetto compare all'altezza del messaggio) e di distruzione (`«destroy»`: la linea di vita termina con una `X`)
+  - Messaggi a sé stessi (con lo strumento Messaggio clicca due volte la stessa linea di vita) e inversione della direzione dal pannello Proprietà
+- **Barre di attivazione** disegnate automaticamente: un messaggio sincrono attiva il destinatario fino alla risposta corrispondente
+- **Frammenti combinati** `alt`, `opt`, `loop`, `par`, `break`, `critical` e `ref`, con condizione e operandi aggiuntivi (es. `[else]`) trascinabili
+- Aggiungi **Note testuali** come negli altri diagrammi
+
 #### Diagramma Logico
 
 - Inserisci **Porte Logiche** con i simboli standard: `AND`, `OR`, `NOT`, `NAND`, `NOR`, `XOR`, `XNOR`
@@ -79,11 +100,11 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - **Modalità Chiara & Scura** con transizione animata fluida
 - **20 palette di colori Material ufficiali** selezionabili a runtime:
   - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero
-- **Navigazione a schede** tra i quattro tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
+- **Navigazione a schede** tra i sei tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
 - **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
 - **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
 - **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows e Linux sta in cima alla finestra e segue il tema dell'app
-- **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, delle classi, dei casi d'uso o logico
+- **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, schema logico o diagramma delle classi, dei casi d'uso, di sequenza o logico
 - **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
 
 ---
@@ -99,6 +120,7 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 | Modifica elemento     | Doppio clic sull'elemento                              |
 | Apri menu contestuale | Clic destro sull'elemento (`Ctrl` + clic su macOS)     |
 | Collega porte logiche | Trascinamento da un pin a un altro                     |
+| Crea un messaggio     | Trascinamento da una linea di vita a un'altra          |
 | Reimposta Zoom        | `Ctrl` + `0` o Menu Vista → Reimposta Zoom             |
 
 ---
@@ -107,24 +129,24 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 
 Su macOS si può usare `Cmd` al posto di `Ctrl`.
 
-| Scorciatoia                     | Azione                                       |
-| ------------------------------- | -------------------------------------------- |
-| `Ctrl + Z`                      | Annulla                                      |
-| `Ctrl + Y` / `Ctrl + Shift + Z` | Ripeti                                       |
-| `Ctrl + S`                      | Salva                                        |
-| `Ctrl + Shift + S`              | Salva con nome                               |
-| `Ctrl + O`                      | Apri                                         |
-| `Ctrl + N`                      | Nuovo Diagramma                              |
-| `Ctrl + E`                      | Esporta come PNG                             |
-| `Ctrl + +`                      | Zoom Avanti                                  |
-| `Ctrl + -`                      | Zoom Indietro                                |
-| `Ctrl + 0`                      | Reimposta Zoom                               |
-| `Ctrl + 1` … `Ctrl + 4`         | Diagramma E/R, Classi, Casi d'Uso, Logico    |
-| `Delete` / `Backspace`          | Elimina elemento selezionato                 |
-| `Esc`                           | Deseleziona e torna allo strumento Seleziona |
-| `F11`                           | Schermo intero (Windows e Linux)             |
-| `Ctrl + Cmd + F`                | Schermo intero (macOS)                       |
-| `Cmd + M`                       | Riduci a icona (macOS)                       |
+| Scorciatoia                     | Azione                                                             |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `Ctrl + Z`                      | Annulla                                                            |
+| `Ctrl + Y` / `Ctrl + Shift + Z` | Ripeti                                                             |
+| `Ctrl + S`                      | Salva                                                              |
+| `Ctrl + Shift + S`              | Salva con nome                                                     |
+| `Ctrl + O`                      | Apri                                                               |
+| `Ctrl + N`                      | Nuovo Diagramma                                                    |
+| `Ctrl + E`                      | Esporta come PNG                                                   |
+| `Ctrl + +`                      | Zoom Avanti                                                        |
+| `Ctrl + -`                      | Zoom Indietro                                                      |
+| `Ctrl + 0`                      | Reimposta Zoom                                                     |
+| `Ctrl + 1` … `Ctrl + 6`         | Diagramma E/R, Schema Logico, Classi, Casi d'Uso, Sequenza, Logico |
+| `Delete` / `Backspace`          | Elimina elemento selezionato                                       |
+| `Esc`                           | Deseleziona e torna allo strumento Seleziona                       |
+| `F11`                           | Schermo intero (Windows e Linux)                                   |
+| `Ctrl + Cmd + F`                | Schermo intero (macOS)                                             |
+| `Cmd + M`                       | Riduci a icona (macOS)                                             |
 
 ---
 
@@ -180,7 +202,7 @@ All'avvio JDER controlla l'ultima release su GitHub: se il `JDER.jar` pubblicato
 
 ### Diagrammi di esempio
 
-La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, classi, casi d'uso e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito sono generati da questi file.
+La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito sono generati da questi file.
 
 ### Compilare dal sorgente
 
@@ -208,28 +230,34 @@ src/
     ├── kotlin/com/jder/
     │   ├── Main.kt                    # Punto di ingresso dell'app
     │   ├── data/
-    │   │   ├── DiagramFileRepository.kt    # Persistenza JSON generica con riconoscimento del tipo
-    │   │   ├── ERDiagramRepository.kt      # Persistenza JSON E/R
-    │   │   ├── UseCaseDiagramRepository.kt # Persistenza JSON Use Case
-    │   │   ├── ClassDiagramRepository.kt   # Persistenza JSON Diagramma Classi
-    │   │   ├── LogicDiagramRepository.kt   # Persistenza JSON Diagramma Logico
-    │   │   ├── ImageExporter.kt            # Esportazione PNG via Skia
-    │   │   ├── JsonConfig.kt               # Configurazione kotlinx.serialization
-    │   │   └── UpdateChecker.kt            # Controllo aggiornamenti dalla release GitHub
+    │   │   ├── DiagramFileRepository.kt       # Persistenza JSON generica con riconoscimento del tipo
+    │   │   ├── ERDiagramRepository.kt         # Persistenza JSON E/R
+    │   │   ├── RelationalDiagramRepository.kt # Persistenza JSON Schema Logico
+    │   │   ├── UseCaseDiagramRepository.kt    # Persistenza JSON Use Case
+    │   │   ├── SequenceDiagramRepository.kt   # Persistenza JSON Diagramma di Sequenza
+    │   │   ├── ClassDiagramRepository.kt      # Persistenza JSON Diagramma Classi
+    │   │   ├── LogicDiagramRepository.kt      # Persistenza JSON Diagramma Logico
+    │   │   ├── ImageExporter.kt               # Esportazione PNG via Skia
+    │   │   ├── JsonConfig.kt                  # Configurazione kotlinx.serialization
+    │   │   └── UpdateChecker.kt               # Controllo aggiornamenti dalla release GitHub
     │   ├── domain/model/
-    │   │   ├── DiagramEditorState.kt       # Stato comune: file, modifiche, annulla/ripeti, zoom
-    │   │   ├── UndoHistory.kt              # Cronologia annulla/ripeti
-    │   │   ├── DiagramType.kt              # Tipi di diagramma (schede e file)
-    │   │   ├── ERModels.kt                 # Data class Entity, Relationship, Attribute, Note
-    │   │   ├── UseCaseModels.kt            # Data class Actor, UseCase, SystemBoundary
-    │   │   ├── ClassDiagramModels.kt       # Data class ClassEntity, ClassMember, ClassRelation
-    │   │   ├── LogicModels.kt              # Data class LogicComponent, LogicWire, LogicDiagram
-    │   │   ├── LogicSimulator.kt           # Simulazione, tabella di verità, espressioni booleane
-    │   │   ├── ERDiagramState.kt           # Stato E/R
-    │   │   ├── UseCaseDiagramState.kt      # Stato Use Case
-    │   │   ├── ClassDiagramState.kt        # Stato Diagramma Classi
-    │   │   ├── LogicDiagramState.kt        # Stato Diagramma Logico
-    │   │   └── *ToolMode.kt                # Modalità strumento di ogni diagramma
+    │   │   ├── DiagramEditorState.kt          # Stato comune: file, modifiche, annulla/ripeti, zoom
+    │   │   ├── UndoHistory.kt                 # Cronologia annulla/ripeti
+    │   │   ├── DiagramType.kt                 # Tipi di diagramma (schede e file)
+    │   │   ├── ERModels.kt                    # Data class Entity, Relationship, Attribute, Note
+    │   │   ├── RelationalModels.kt            # Data class RelationalTable, RelationalColumn, chiavi esterne
+    │   │   ├── UseCaseModels.kt               # Data class Actor, UseCase, SystemBoundary
+    │   │   ├── SequenceModels.kt              # Data class SequenceLifeline, SequenceMessage, SequenceFragment
+    │   │   ├── ClassDiagramModels.kt          # Data class ClassEntity, ClassMember, ClassRelation
+    │   │   ├── LogicModels.kt                 # Data class LogicComponent, LogicWire, LogicDiagram
+    │   │   ├── LogicSimulator.kt              # Simulazione, tabella di verità, espressioni booleane
+    │   │   ├── ERDiagramState.kt              # Stato E/R
+    │   │   ├── RelationalDiagramState.kt      # Stato Schema Logico
+    │   │   ├── UseCaseDiagramState.kt         # Stato Use Case
+    │   │   ├── SequenceDiagramState.kt        # Stato Diagramma di Sequenza
+    │   │   ├── ClassDiagramState.kt           # Stato Diagramma Classi
+    │   │   ├── LogicDiagramState.kt           # Stato Diagramma Logico
+    │   │   └── *ToolMode.kt                   # Modalità strumento di ogni diagramma
     │   └── ui/
     │       ├── components/            # Lavagne, disegno, gesti, barre strumenti, pannelli
     │       ├── dialogs/               # Finestre di dialogo per proprietà e creazione

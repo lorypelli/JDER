@@ -16,13 +16,7 @@ object CustomIcons {
         strokeWidth: Float = 2f,
         pathBuilder: PathBuilder.() -> Unit,
     ): ImageVector =
-        ImageVector.Builder(
-                name = name,
-                defaultWidth = 24.dp,
-                defaultHeight = 24.dp,
-                viewportWidth = 24f,
-                viewportHeight = 24f,
-            )
+        ImageVector.Builder(name, 24.dp, 24.dp, 24f, 24f)
             .apply {
                 path(
                     fill = null,
@@ -37,8 +31,24 @@ object CustomIcons {
 
     private fun PathBuilder.circle(centerX: Float, centerY: Float, radius: Float) {
         moveTo(centerX - radius, centerY)
-        arcToRelative(radius, radius, 0f, true, true, 2 * radius, 0f)
-        arcToRelative(radius, radius, 0f, true, true, -2 * radius, 0f)
+        arcToRelative(
+            radius,
+            radius,
+            0f,
+            isMoreThanHalf = true,
+            isPositiveArc = true,
+            2 * radius,
+            0f,
+        )
+        arcToRelative(
+            radius,
+            radius,
+            0f,
+            isMoreThanHalf = true,
+            isPositiveArc = true,
+            -2 * radius,
+            0f,
+        )
         close()
     }
 
@@ -128,11 +138,84 @@ object CustomIcons {
         }
     }
 
+    val Table: ImageVector by lazy {
+        outlineIcon("Table", 1.6f) {
+            moveTo(4f, 5f)
+            lineTo(20f, 5f)
+            lineTo(20f, 19f)
+            lineTo(4f, 19f)
+            close()
+            moveTo(4f, 10f)
+            horizontalLineTo(20f)
+            moveTo(4f, 14.5f)
+            horizontalLineTo(20f)
+            moveTo(9f, 10f)
+            verticalLineTo(19f)
+        }
+    }
+
+    val Lifeline: ImageVector by lazy {
+        outlineIcon("Lifeline", 1.8f) {
+            moveTo(5f, 3f)
+            lineTo(19f, 3f)
+            lineTo(19f, 10f)
+            lineTo(5f, 10f)
+            close()
+            moveTo(12f, 12.5f)
+            verticalLineTo(14.5f)
+            moveTo(12f, 17f)
+            verticalLineTo(19f)
+            moveTo(12f, 21.5f)
+            verticalLineTo(22.5f)
+        }
+    }
+
+    val BoundaryLifeline: ImageVector by lazy {
+        outlineIcon("BoundaryLifeline", 1.8f) {
+            moveTo(3.5f, 7f)
+            verticalLineTo(17f)
+            moveTo(3.5f, 12f)
+            horizontalLineTo(8f)
+            circle(14.5f, 12f, 6f)
+        }
+    }
+
+    val ControlLifeline: ImageVector by lazy {
+        outlineIcon("ControlLifeline", 1.8f) {
+            circle(12f, 13.5f, 7f)
+            moveTo(14f, 4f)
+            lineTo(11f, 6.5f)
+            lineTo(14f, 9f)
+        }
+    }
+
+    val EntityLifeline: ImageVector by lazy {
+        outlineIcon("EntityLifeline", 1.8f) {
+            circle(12f, 10.5f, 6.5f)
+            moveTo(5f, 19.5f)
+            horizontalLineTo(19f)
+        }
+    }
+
+    val Fragment: ImageVector by lazy {
+        outlineIcon("Fragment", 1.6f) {
+            moveTo(3f, 4f)
+            lineTo(21f, 4f)
+            lineTo(21f, 20f)
+            lineTo(3f, 20f)
+            close()
+            moveTo(3f, 9f)
+            horizontalLineTo(9f)
+            lineTo(11f, 7f)
+            verticalLineTo(4f)
+        }
+    }
+
     val AndGate: ImageVector by lazy {
-        outlineIcon("AndGate", strokeWidth = 1.6f) {
+        outlineIcon("AndGate", 1.6f) {
             moveTo(6f, 6f)
             horizontalLineTo(11.5f)
-            arcTo(6f, 6f, 0f, false, true, 11.5f, 18f)
+            arcTo(6f, 6f, 0f, isMoreThanHalf = false, isPositiveArc = true, x1 = 11.5f, y1 = 18f)
             horizontalLineTo(6f)
             close()
             leads(2f, 6f, 17.5f)
@@ -140,10 +223,10 @@ object CustomIcons {
     }
 
     val NandGate: ImageVector by lazy {
-        outlineIcon("NandGate", strokeWidth = 1.6f) {
+        outlineIcon("NandGate", 1.6f) {
             moveTo(4.5f, 6f)
             horizontalLineTo(9.5f)
-            arcTo(6f, 6f, 0f, false, true, 9.5f, 18f)
+            arcTo(6f, 6f, 0f, isMoreThanHalf = false, isPositiveArc = true, x1 = 9.5f, y1 = 18f)
             horizontalLineTo(4.5f)
             close()
             circle(17.2f, 12f, 1.7f)
@@ -152,14 +235,14 @@ object CustomIcons {
     }
 
     val OrGate: ImageVector by lazy {
-        outlineIcon("OrGate", strokeWidth = 1.6f) {
+        outlineIcon("OrGate", 1.6f) {
             orBody(5f, 18f)
             leads(1.5f, 6.1f, 18f)
         }
     }
 
     val NorGate: ImageVector by lazy {
-        outlineIcon("NorGate", strokeWidth = 1.6f) {
+        outlineIcon("NorGate", 1.6f) {
             orBody(4f, 15.5f)
             circle(17.2f, 12f, 1.7f)
             leads(1f, 5.1f, 18.9f)
@@ -167,7 +250,7 @@ object CustomIcons {
     }
 
     val XorGate: ImageVector by lazy {
-        outlineIcon("XorGate", strokeWidth = 1.6f) {
+        outlineIcon("XorGate", 1.6f) {
             orBody(7f, 19f)
             moveTo(4.5f, 6f)
             quadTo(7.5f, 12f, 4.5f, 18f)
@@ -176,7 +259,7 @@ object CustomIcons {
     }
 
     val XnorGate: ImageVector by lazy {
-        outlineIcon("XnorGate", strokeWidth = 1.6f) {
+        outlineIcon("XnorGate", 1.6f) {
             orBody(6.5f, 16f)
             moveTo(4f, 6f)
             quadTo(7f, 12f, 4f, 18f)
@@ -186,7 +269,7 @@ object CustomIcons {
     }
 
     val NotGate: ImageVector by lazy {
-        outlineIcon("NotGate", strokeWidth = 1.6f) {
+        outlineIcon("NotGate", 1.6f) {
             moveTo(6f, 6.5f)
             lineTo(6f, 17.5f)
             lineTo(15.5f, 12f)

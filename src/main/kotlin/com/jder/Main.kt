@@ -28,6 +28,8 @@ import androidx.compose.ui.window.rememberWindowState
 import com.jder.data.ClassDiagramRepository
 import com.jder.data.ERDiagramRepository
 import com.jder.data.LogicDiagramRepository
+import com.jder.data.RelationalDiagramRepository
+import com.jder.data.SequenceDiagramRepository
 import com.jder.data.UpdateChecker
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
@@ -35,6 +37,8 @@ import com.jder.domain.model.DiagramEditorState
 import com.jder.domain.model.DiagramType
 import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
+import com.jder.domain.model.RelationalDiagramState
+import com.jder.domain.model.SequenceDiagramState
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.components.AppMenuBar
 import com.jder.ui.components.DiagramMenuHost
@@ -61,12 +65,16 @@ fun main() {
     application {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
         val erState = remember { ERDiagramState() }
+        val relationalState = remember { RelationalDiagramState() }
         val useCaseState = remember { UseCaseDiagramState() }
+        val sequenceState = remember { SequenceDiagramState() }
         val classState = remember { ClassDiagramState() }
         val logicState = remember { LogicDiagramState() }
         val themeState = remember { ThemeState() }
         val erRepository = remember { ERDiagramRepository() }
+        val relationalRepository = remember { RelationalDiagramRepository() }
         val useCaseRepository = remember { UseCaseDiagramRepository() }
+        val sequenceRepository = remember { SequenceDiagramRepository() }
         val classRepository = remember { ClassDiagramRepository() }
         val logicRepository = remember { LogicDiagramRepository() }
         val menuHost = remember { DiagramMenuHost() }
@@ -79,14 +87,18 @@ fun main() {
         LaunchedEffect(Unit) { updateUrl = UpdateChecker.findUpdate() }
         fun hasUnsavedChanges() =
             erState.isModified ||
+                relationalState.isModified ||
                 useCaseState.isModified ||
+                sequenceState.isModified ||
                 classState.isModified ||
                 logicState.isModified
         fun diagramState(type: DiagramType): DiagramEditorState<*> =
             when (type) {
                 DiagramType.ER -> erState
+                DiagramType.RELATIONAL -> relationalState
                 DiagramType.CLASS_DIAGRAM -> classState
                 DiagramType.USE_CASE -> useCaseState
+                DiagramType.SEQUENCE -> sequenceState
                 DiagramType.LOGIC -> logicState
             }
         fun requestExit() {
@@ -166,11 +178,15 @@ fun main() {
                     CompositionLocalProvider(LocalDiagramMenuHost provides menuHost) {
                         AppScreen(
                             erState = erState,
+                            relationalState = relationalState,
                             useCaseState = useCaseState,
+                            sequenceState = sequenceState,
                             classState = classState,
                             logicState = logicState,
                             erRepository = erRepository,
+                            relationalRepository = relationalRepository,
                             useCaseRepository = useCaseRepository,
+                            sequenceRepository = sequenceRepository,
                             classRepository = classRepository,
                             logicRepository = logicRepository,
                             themeState = themeState,

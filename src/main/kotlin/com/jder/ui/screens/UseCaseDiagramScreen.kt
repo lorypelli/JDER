@@ -32,6 +32,7 @@ import com.jder.ui.dialogs.RelationEditDialog
 import com.jder.ui.dialogs.SelectRelationTypeDialog
 import com.jder.ui.dialogs.SystemBoundaryDialog
 import com.jder.ui.dialogs.UseCasePropertiesDialog
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderUseCaseDiagramToBitmap
 
@@ -123,7 +124,7 @@ fun UseCaseDiagramScreen(
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
                     "Crea Relazione (clicca l'elemento sorgente e poi la destinazione)",
-                    "Relazione",
+                    UiStrings.RELATION,
                     state.toolMode == UseCaseToolMode.RELATION,
                 ) {
                     state.toolMode = UseCaseToolMode.RELATION
@@ -132,7 +133,7 @@ fun UseCaseDiagramScreen(
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
                     "Crea Nota",
-                    "Nota",
+                    UiStrings.NOTE,
                     state.toolMode == UseCaseToolMode.NOTE,
                 ) {
                     state.toolMode = UseCaseToolMode.NOTE

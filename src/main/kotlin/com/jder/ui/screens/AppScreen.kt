@@ -9,11 +9,15 @@ import androidx.compose.ui.Modifier
 import com.jder.data.ClassDiagramRepository
 import com.jder.data.ERDiagramRepository
 import com.jder.data.LogicDiagramRepository
+import com.jder.data.RelationalDiagramRepository
+import com.jder.data.SequenceDiagramRepository
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramType
 import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
+import com.jder.domain.model.RelationalDiagramState
+import com.jder.domain.model.SequenceDiagramState
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.components.DiagramTabRow
 import com.jder.ui.theme.ThemeState
@@ -21,11 +25,15 @@ import com.jder.ui.theme.ThemeState
 @Composable
 fun AppScreen(
     erState: ERDiagramState,
+    relationalState: RelationalDiagramState,
     useCaseState: UseCaseDiagramState,
+    sequenceState: SequenceDiagramState,
     classState: ClassDiagramState,
     logicState: LogicDiagramState,
     erRepository: ERDiagramRepository,
+    relationalRepository: RelationalDiagramRepository,
     useCaseRepository: UseCaseDiagramRepository,
+    sequenceRepository: SequenceDiagramRepository,
     classRepository: ClassDiagramRepository,
     logicRepository: LogicDiagramRepository,
     themeState: ThemeState,
@@ -39,8 +47,10 @@ fun AppScreen(
             isModified = { type ->
                 when (type) {
                     DiagramType.ER -> erState.isModified
+                    DiagramType.RELATIONAL -> relationalState.isModified
                     DiagramType.CLASS_DIAGRAM -> classState.isModified
                     DiagramType.USE_CASE -> useCaseState.isModified
+                    DiagramType.SEQUENCE -> sequenceState.isModified
                     DiagramType.LOGIC -> logicState.isModified
                 }
             },
@@ -54,6 +64,12 @@ fun AppScreen(
                         repository = erRepository,
                         themeState = themeState,
                     )
+                DiagramType.RELATIONAL ->
+                    RelationalDiagramScreen(
+                        state = relationalState,
+                        repository = relationalRepository,
+                        themeState = themeState,
+                    )
                 DiagramType.CLASS_DIAGRAM ->
                     ClassDiagramScreen(
                         state = classState,
@@ -64,6 +80,12 @@ fun AppScreen(
                     UseCaseDiagramScreen(
                         state = useCaseState,
                         repository = useCaseRepository,
+                        themeState = themeState,
+                    )
+                DiagramType.SEQUENCE ->
+                    SequenceDiagramScreen(
+                        state = sequenceState,
+                        repository = sequenceRepository,
                         themeState = themeState,
                     )
                 DiagramType.LOGIC ->

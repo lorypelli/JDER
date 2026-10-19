@@ -19,7 +19,7 @@ private const val WEBSITE_URL = "https://jder.it/"
 private const val ISSUES_URL = "https://github.com/LoryPelli/JDER/issues"
 private const val SOURCE_URL = "https://github.com/LoryPelli/JDER"
 
-val diagramTypeKeys = listOf(Key.One, Key.Two, Key.Three, Key.Four)
+val diagramTypeKeys = listOf(Key.One, Key.Two, Key.Three, Key.Four, Key.Five, Key.Six)
 
 class DiagramMenuCommands(
     val state: DiagramEditorState<*>,

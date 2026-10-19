@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jder.domain.model.DiagramType
 
+private const val WORD_JOINER = '\u2060'
+
 @Composable
 fun DiagramTabRow(
     currentType: DiagramType,
@@ -16,10 +18,11 @@ fun DiagramTabRow(
 ) {
     TabRow(selectedTabIndex = currentType.ordinal, modifier = modifier) {
         DiagramType.entries.forEach { type ->
+            val label = type.tabLabel.replace("/", "/$WORD_JOINER")
             Tab(
                 selected = currentType == type,
                 onClick = { onTypeChange(type) },
-                text = { Text(if (isModified(type)) "${type.tabLabel} •" else type.tabLabel) },
+                text = { Text(if (isModified(type)) "$label •" else label) },
             )
         }
     }

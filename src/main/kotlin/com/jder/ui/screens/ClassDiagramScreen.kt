@@ -31,6 +31,7 @@ import com.jder.ui.dialogs.ClassMemberDialog
 import com.jder.ui.dialogs.ClassRelationDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.SelectClassRelationTypeDialog
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderClassDiagramToBitmap
 
@@ -136,7 +137,7 @@ fun ClassDiagramScreen(
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
                     "Crea Relazione (clicca la classe sorgente e poi la destinazione)",
-                    "Relazione",
+                    UiStrings.RELATION,
                     state.toolMode == ClassDiagramToolMode.RELATION,
                 ) {
                     state.toolMode = ClassDiagramToolMode.RELATION
@@ -145,7 +146,7 @@ fun ClassDiagramScreen(
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
                     "Crea Nota",
-                    "Nota",
+                    UiStrings.NOTE,
                     state.toolMode == ClassDiagramToolMode.NOTE,
                 ) {
                     state.toolMode = ClassDiagramToolMode.NOTE

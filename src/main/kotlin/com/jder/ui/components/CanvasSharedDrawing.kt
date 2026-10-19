@@ -177,6 +177,50 @@ internal fun DrawScope.drawNoteShape(
     drawText(textLayoutResult = textResult, topLeft = Offset(note.x + padding, note.y + padding))
 }
 
+internal fun DrawScope.drawArrowHead(
+    tip: Offset,
+    direction: Offset,
+    color: Color,
+    hollowFill: Color?,
+    size: Float = 12f,
+) {
+    val perpX = -direction.y
+    val perpY = direction.x
+    val base1 =
+        Offset(
+            tip.x - direction.x * size + perpX * (size * 0.45f),
+            tip.y - direction.y * size + perpY * (size * 0.45f),
+        )
+    val base2 =
+        Offset(
+            tip.x - direction.x * size - perpX * (size * 0.45f),
+            tip.y - direction.y * size - perpY * (size * 0.45f),
+        )
+    val path =
+        Path().apply {
+            moveTo(tip.x, tip.y)
+            lineTo(base1.x, base1.y)
+            lineTo(base2.x, base2.y)
+            close()
+        }
+    if (hollowFill == null) {
+        drawPath(path = path, color = color, style = Fill)
+    } else {
+        drawPath(path = path, color = hollowFill, style = Fill)
+        drawPath(path = path, color = color, style = Stroke(width = 2f))
+    }
+}
+
+internal fun DrawScope.drawOpenArrowHead(tip: Offset, dir: Offset, color: Color, size: Float) {
+    val perpX = -dir.y
+    val perpY = dir.x
+    val base = Offset(tip.x - dir.x * size, tip.y - dir.y * size)
+    val left = Offset(base.x + perpX * size * 0.4f, base.y + perpY * size * 0.4f)
+    val right = Offset(base.x - perpX * size * 0.4f, base.y - perpY * size * 0.4f)
+    drawLine(color = color, start = tip, end = left, strokeWidth = 1.5f)
+    drawLine(color = color, start = tip, end = right, strokeWidth = 1.5f)
+}
+
 internal class BoundsBuilder {
     private var left = Float.POSITIVE_INFINITY
     private var top = Float.POSITIVE_INFINITY

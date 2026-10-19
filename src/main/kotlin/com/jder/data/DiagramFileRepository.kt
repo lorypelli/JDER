@@ -48,6 +48,6 @@ open class DiagramFileRepository<T>(
             ?.let {
                 return it
             }
-        return DiagramType.entries.find { candidate -> candidate.markerKeys.any { it in content } }
+        return DiagramType.entries.find { it.markerKeys.any { it in content } }
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -357,40 +356,6 @@ internal fun DrawScope.drawUseCaseRelation(
                 size = arrowSize,
             )
         }
-    }
-}
-
-private fun DrawScope.drawArrowHead(
-    tip: Offset,
-    direction: Offset,
-    color: Color,
-    hollowFill: Color?,
-    size: Float = 12f,
-) {
-    val perpX = -direction.y
-    val perpY = direction.x
-    val base1 =
-        Offset(
-            tip.x - direction.x * size + perpX * (size * 0.45f),
-            tip.y - direction.y * size + perpY * (size * 0.45f),
-        )
-    val base2 =
-        Offset(
-            tip.x - direction.x * size - perpX * (size * 0.45f),
-            tip.y - direction.y * size - perpY * (size * 0.45f),
-        )
-    val path =
-        Path().apply {
-            moveTo(tip.x, tip.y)
-            lineTo(base1.x, base1.y)
-            lineTo(base2.x, base2.y)
-            close()
-        }
-    if (hollowFill == null) {
-        drawPath(path = path, color = color, style = Fill)
-    } else {
-        drawPath(path = path, color = hollowFill, style = Fill)
-        drawPath(path = path, color = color, style = Stroke(width = 2f))
     }
 }
 

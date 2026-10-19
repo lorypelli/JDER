@@ -42,6 +42,7 @@ import com.jder.ui.components.rememberSnackbarMessenger
 import com.jder.ui.dialogs.LogicComponentDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.TruthTableDialog
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderLogicDiagramToBitmap
 
@@ -187,7 +188,7 @@ fun LogicDiagramScreen(
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
                     "Crea Nota",
-                    "Nota",
+                    UiStrings.NOTE,
                     state.toolMode == LogicToolMode.NOTE,
                 ) {
                     state.toolMode = LogicToolMode.NOTE

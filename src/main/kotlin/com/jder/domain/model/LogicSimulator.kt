@@ -44,12 +44,12 @@ object LogicSimulator {
         val components = diagram.components
         val drivers = driversOf(diagram)
         var values: Map<String, Boolean?> =
-            components.associate { component ->
-                component.id to
-                    if (component.type == LogicComponentType.INPUT) {
-                        inputOverrides[component.id] ?: component.value
+            components.associate {
+                it.id to
+                    if (it.type == LogicComponentType.INPUT) {
+                        inputOverrides[it.id] ?: it.value
                     } else {
-                        previous[component.id]
+                        previous[it.id]
                     }
             }
         val maxIterations = components.size + 8
@@ -192,11 +192,11 @@ object LogicSimulator {
     private fun driversOf(diagram: LogicDiagram): Map<Pair<String, Int>, String> {
         val byId = diagram.components.associateBy { it.id }
         val drivers = HashMap<Pair<String, Int>, String>()
-        diagram.wires.forEach { wire ->
-            val source = byId[wire.sourceId] ?: return@forEach
-            val target = byId[wire.targetId] ?: return@forEach
-            if (source.type.hasOutput && wire.targetPin in 0 until target.inputPinCount) {
-                drivers[wire.targetId to wire.targetPin] = wire.sourceId
+        diagram.wires.forEach {
+            val source = byId[it.sourceId] ?: return@forEach
+            val target = byId[it.targetId] ?: return@forEach
+            if (source.type.hasOutput && it.targetPin in 0 until target.inputPinCount) {
+                drivers[it.targetId to it.targetPin] = it.sourceId
             }
         }
         return drivers

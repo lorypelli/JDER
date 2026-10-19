@@ -151,8 +151,8 @@ class ClassDiagramState :
     fun deleteMemberFromClass(classId: String, memberId: String) {
         updateClass(classId) {
             it.copy(
-                attributes = it.attributes.filter { a -> a.id != memberId },
-                methods = it.methods.filter { m -> m.id != memberId },
+                attributes = it.attributes.filter { it.id != memberId },
+                methods = it.methods.filter { it.id != memberId },
             )
         }
     }

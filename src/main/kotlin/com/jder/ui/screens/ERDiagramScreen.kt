@@ -35,6 +35,7 @@ import com.jder.ui.dialogs.EditConnectionDialog
 import com.jder.ui.dialogs.EntityPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.RelationshipPropertiesDialog
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderERDiagramToBitmap
 
@@ -129,7 +130,8 @@ fun ERDiagramScreen(
         messenger = messenger,
         renderImage = { renderERDiagramToBitmap(state.diagram, it) },
         emptyHint =
-            "Scegli Entità, Relazione o Nota dalla barra degli strumenti e clicca sulla lavagna",
+            "Scegli Entità, Relazione o Nota dalla barra degli strumenti e clicca sulla lavagna.\n" +
+                "Per collegare due entità, scegli Relazione e clicca prima sulla prima entità e poi sulla seconda.",
         tools =
             listOf(
                 DiagramTool.Mode(
@@ -143,7 +145,7 @@ fun ERDiagramScreen(
                 DiagramTool.Mode(
                     CustomIcons.Diamond,
                     "Crea Relazione",
-                    "Relazione",
+                    UiStrings.RELATION,
                     state.toolMode == ERToolMode.RELATIONSHIP,
                 ) {
                     state.toolMode = ERToolMode.RELATIONSHIP
@@ -151,7 +153,7 @@ fun ERDiagramScreen(
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
                     "Crea Nota",
-                    "Nota",
+                    UiStrings.NOTE,
                     state.toolMode == ERToolMode.NOTE,
                 ) {
                     state.toolMode = ERToolMode.NOTE
@@ -174,7 +176,7 @@ fun ERDiagramScreen(
                     state.selectedRelationshipId?.let {
                         state.deleteAttributeFromRelationship(it, attributeId)
                     }
-                    messenger.show("Attributo eliminato")
+                    messenger.show(UiStrings.deleted("Attributo"))
                 },
                 onEditConnection = { entityId, connection ->
                     connectionToEdit = ConnectionEdit(entityId, connection)
@@ -182,7 +184,7 @@ fun ERDiagramScreen(
                 onDeleteConnection = { entityId ->
                     state.selectedRelationshipId?.let {
                         state.deleteConnection(it, entityId)
-                        messenger.show("Connessione eliminata")
+                        messenger.show(UiStrings.deleted("Connessione"))
                     }
                 },
                 onConvertToAssociativeEntity = ::convertSelectedRelationship,

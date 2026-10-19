@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.shortcutLabel
 import kotlin.time.Duration.Companion.milliseconds
@@ -177,7 +178,7 @@ fun ToolbarFileMenu(
                 runAction(onOpenDiagram)
             }
             Divider()
-            ToolbarMenuItem("Salva", Icons.Default.Save, shortcutLabel("S")) {
+            ToolbarMenuItem(UiStrings.SAVE, Icons.Default.Save, shortcutLabel("S")) {
                 runAction(onSaveDiagram)
             }
             ToolbarMenuItem(

@@ -178,14 +178,14 @@ fun SystemBoundaryDialog(
                 )
                 OutlinedTextField(
                     value = width,
-                    onValueChange = { width = it.filter { c -> c.isDigit() } },
+                    onValueChange = { width = it.filter { it.isDigit() } },
                     label = { Text("Larghezza") },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = height,
-                    onValueChange = { height = it.filter { c -> c.isDigit() } },
+                    onValueChange = { height = it.filter { it.isDigit() } },
                     label = { Text("Altezza") },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
