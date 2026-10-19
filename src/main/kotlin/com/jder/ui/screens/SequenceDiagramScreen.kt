@@ -199,6 +199,7 @@ fun SequenceDiagramScreen(
     if (showLifelineDialog) {
         state.lifeline(state.selectedLifelineId)?.let { lifeline ->
             LifelinePropertiesDialog(
+                lifelineId = lifeline.id,
                 lifelineName = lifeline.name,
                 lifelineType = lifeline.type,
                 lifelineDocumentation = lifeline.documentation,
@@ -252,6 +253,7 @@ fun SequenceDiagramScreen(
             .find { it.id == state.selectedNoteId }
             ?.let { note ->
                 NotePropertiesDialog(
+                    noteId = note.id,
                     noteText = note.text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->

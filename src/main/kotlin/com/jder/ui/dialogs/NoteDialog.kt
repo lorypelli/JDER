@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun NotePropertiesDialog(
+    noteId: String,
     noteText: String,
     onDismiss: () -> Unit,
     onConfirm: (text: String) -> Unit,
 ) {
-    var text by remember { mutableStateOf(noteText) }
+    var text by remember(noteId) { mutableStateOf(noteText) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Nota") },

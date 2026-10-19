@@ -36,6 +36,30 @@ data class RelationalDiagram(
     val notes: List<Note> = emptyList(),
 )
 
+fun RelationalDiagram.validateReferences() {
+    val tablesById = tables.associateBy { it.id }
+    val errors = mutableListOf<String>()
+    tables.forEach tableLoop@{ table ->
+        table.columns.forEach columnLoop@{ column ->
+            val reference = column.reference ?: return@columnLoop
+            val referencedTable =
+                tablesById[reference.tableId]
+                    ?: run {
+                        errors +=
+                            "La colonna ${table.id}.${column.id} riferisce una tabella inesistente: " +
+                                reference.tableId
+                        return@columnLoop
+                    }
+            if (referencedTable.columns.none { it.id == reference.columnId }) {
+                errors +=
+                    "La colonna ${table.id}.${column.id} riferisce una colonna inesistente: " +
+                        "${reference.tableId}.${reference.columnId}"
+            }
+        }
+    }
+    if (errors.isNotEmpty()) throw DiagramValidationException(errors)
+}
+
 class RelationalForeignKey(
     val table: RelationalTable,
     val column: RelationalColumn,

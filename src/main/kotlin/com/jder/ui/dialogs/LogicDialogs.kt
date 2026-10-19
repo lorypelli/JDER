@@ -59,12 +59,13 @@ fun LogicComponentDialog(
     onDismiss: () -> Unit,
     onConfirm: (label: String, type: LogicComponentType, inputCount: Int, value: Boolean) -> Unit,
 ) {
-    var label by remember { mutableStateOf(component.label) }
-    var type by remember { mutableStateOf(component.type) }
-    var inputCount by remember {
-        mutableStateOf(component.inputCount.coerceIn(MIN_GATE_INPUTS, MAX_GATE_INPUTS))
-    }
-    var value by remember { mutableStateOf(component.value) }
+    var label by remember(component.id) { mutableStateOf(component.label) }
+    var type by remember(component.id) { mutableStateOf(component.type) }
+    var inputCount by
+        remember(component.id) {
+            mutableStateOf(component.inputCount.coerceIn(MIN_GATE_INPUTS, MAX_GATE_INPUTS))
+        }
+    var value by remember(component.id) { mutableStateOf(component.value) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -177,10 +178,24 @@ private fun columnName(component: LogicComponent): String =
     component.label.ifBlank { component.type.display }
 
 private fun LogicTruthTable.toClipboardText(): String = buildString {
-    append((inputs.map(::columnName) + "|" + outputs.map(::columnName)).joinToString("\t"))
+    append(
+        buildList {
+                addAll(inputs.map(::columnName))
+                add("|")
+                addAll(outputs.map(::columnName))
+            }
+            .joinToString("\t")
+    )
     rows.forEach { row ->
         append('\n')
-        append((row.inputs.map(::bit) + "|" + row.outputs.map(::bit)).joinToString("\t"))
+        append(
+            buildList {
+                    addAll(row.inputs.map(::bit))
+                    add("|")
+                    addAll(row.outputs.map(::bit))
+                }
+                .joinToString("\t")
+        )
     }
 }
 

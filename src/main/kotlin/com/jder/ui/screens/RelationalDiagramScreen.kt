@@ -198,6 +198,7 @@ fun RelationalDiagramScreen(
     if (showTableDialog) {
         state.table(state.selectedTableId)?.let { table ->
             TablePropertiesDialog(
+                tableId = table.id,
                 tableName = table.name,
                 tableWidth = table.width,
                 tableDocumentation = table.documentation,
@@ -217,6 +218,7 @@ fun RelationalDiagramScreen(
             .find { it.id == state.selectedNoteId }
             ?.let { note ->
                 NotePropertiesDialog(
+                    noteId = note.id,
                     noteText = note.text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->

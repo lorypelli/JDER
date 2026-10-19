@@ -36,15 +36,16 @@ import java.util.UUID
 
 @Composable
 fun LifelinePropertiesDialog(
+    lifelineId: String,
     lifelineName: String,
     lifelineType: SequenceLifelineType,
     lifelineDocumentation: String,
     onDismiss: () -> Unit,
     onConfirm: (name: String, type: SequenceLifelineType, documentation: String) -> Unit,
 ) {
-    var name by remember { mutableStateOf(lifelineName) }
-    var type by remember { mutableStateOf(lifelineType) }
-    var documentation by remember { mutableStateOf(lifelineDocumentation) }
+    var name by remember(lifelineId) { mutableStateOf(lifelineName) }
+    var type by remember(lifelineId) { mutableStateOf(lifelineType) }
+    var documentation by remember(lifelineId) { mutableStateOf(lifelineDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Linea di Vita") },
@@ -92,6 +93,7 @@ fun CreateSequenceMessageDialog(
 ) {
     SequenceMessageDialog(
         title = "Nuovo Messaggio",
+        messageId = null,
         initialLabel = "",
         initialType = SequenceMessageType.SYNC,
         isSelfMessage = isSelfMessage,
@@ -108,6 +110,7 @@ fun EditSequenceMessageDialog(
 ) {
     SequenceMessageDialog(
         title = "Modifica Messaggio",
+        messageId = message.id,
         initialLabel = message.label,
         initialType = message.type,
         isSelfMessage = message.isSelfMessage,
@@ -119,14 +122,15 @@ fun EditSequenceMessageDialog(
 @Composable
 private fun SequenceMessageDialog(
     title: String,
+    messageId: String?,
     initialLabel: String,
     initialType: SequenceMessageType,
     isSelfMessage: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (label: String, type: SequenceMessageType) -> Unit,
 ) {
-    var label by remember { mutableStateOf(initialLabel) }
-    var type by remember { mutableStateOf(initialType) }
+    var label by remember(messageId) { mutableStateOf(initialLabel) }
+    var type by remember(messageId) { mutableStateOf(initialType) }
     val types =
         SequenceMessageType.entries.filter {
             !isSelfMessage ||
@@ -176,11 +180,11 @@ fun SequenceFragmentDialog(
             height: Float,
         ) -> Unit,
 ) {
-    var type by remember { mutableStateOf(fragment.type) }
-    var condition by remember { mutableStateOf(fragment.condition) }
-    var operands by remember { mutableStateOf(fragment.operands) }
-    var width by remember { mutableStateOf(fragment.width.toInt().toString()) }
-    var height by remember { mutableStateOf(fragment.height.toInt().toString()) }
+    var type by remember(fragment.id) { mutableStateOf(fragment.type) }
+    var condition by remember(fragment.id) { mutableStateOf(fragment.condition) }
+    var operands by remember(fragment.id) { mutableStateOf(fragment.operands) }
+    var width by remember(fragment.id) { mutableStateOf(fragment.width.toInt().toString()) }
+    var height by remember(fragment.id) { mutableStateOf(fragment.height.toInt().toString()) }
     val isReference = type == SequenceFragmentType.REF
     AlertDialog(
         onDismissRequest = onDismiss,

@@ -21,11 +21,12 @@ import com.jder.ui.components.RadioOptionList
 
 @Composable
 fun ActorPropertiesDialog(
+    actorId: String,
     actorName: String,
     onDismiss: () -> Unit,
     onConfirm: (name: String) -> Unit,
 ) {
-    var name by remember { mutableStateOf(actorName) }
+    var name by remember(actorId) { mutableStateOf(actorName) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Attore") },
@@ -55,13 +56,14 @@ fun ActorPropertiesDialog(
 
 @Composable
 fun UseCasePropertiesDialog(
+    useCaseId: String,
     useCaseName: String,
     useCaseDocumentation: String,
     onDismiss: () -> Unit,
     onConfirm: (name: String, documentation: String) -> Unit,
 ) {
-    var name by remember { mutableStateOf(useCaseName) }
-    var documentation by remember { mutableStateOf(useCaseDocumentation) }
+    var name by remember(useCaseId) { mutableStateOf(useCaseName) }
+    var documentation by remember(useCaseId) { mutableStateOf(useCaseDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Caso d'Uso") },
@@ -105,6 +107,7 @@ fun SelectRelationTypeDialog(
 ) {
     RelationTypeDialog(
         title = "Tipo di Relazione",
+        relationId = null,
         initialType = UseCaseRelationType.ASSOCIATION,
         onDismiss = onDismiss,
         onConfirm = onConfirm,
@@ -119,6 +122,7 @@ fun RelationEditDialog(
 ) {
     RelationTypeDialog(
         title = "Modifica Tipo Relazione",
+        relationId = relation.id,
         initialType = relation.type,
         onDismiss = onDismiss,
         onConfirm = onConfirm,
@@ -128,11 +132,12 @@ fun RelationEditDialog(
 @Composable
 private fun RelationTypeDialog(
     title: String,
+    relationId: String?,
     initialType: UseCaseRelationType,
     onDismiss: () -> Unit,
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
-    var selected by remember { mutableStateOf(initialType) }
+    var selected by remember(relationId) { mutableStateOf(initialType) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
@@ -155,15 +160,16 @@ private fun RelationTypeDialog(
 
 @Composable
 fun SystemBoundaryDialog(
+    boundaryId: String,
     boundaryName: String,
     boundaryWidth: Float,
     boundaryHeight: Float,
     onDismiss: () -> Unit,
     onConfirm: (name: String, width: Float, height: Float) -> Unit,
 ) {
-    var name by remember { mutableStateOf(boundaryName) }
-    var width by remember { mutableStateOf(boundaryWidth.toInt().toString()) }
-    var height by remember { mutableStateOf(boundaryHeight.toInt().toString()) }
+    var name by remember(boundaryId) { mutableStateOf(boundaryName) }
+    var width by remember(boundaryId) { mutableStateOf(boundaryWidth.toInt().toString()) }
+    var height by remember(boundaryId) { mutableStateOf(boundaryHeight.toInt().toString()) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Sistema") },

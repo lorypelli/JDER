@@ -197,6 +197,7 @@ fun ClassDiagramScreen(
             .find { it.id == state.selectedClassId }
             ?.let { entity ->
                 ClassEntityDialog(
+                    entityId = entity.id,
                     name = entity.name,
                     type = entity.type,
                     isAbstract = entity.isAbstract,
@@ -244,6 +245,7 @@ fun ClassDiagramScreen(
             .find { it.id == state.selectedNoteId }
             ?.let { note ->
                 NotePropertiesDialog(
+                    noteId = note.id,
                     noteText = note.text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->

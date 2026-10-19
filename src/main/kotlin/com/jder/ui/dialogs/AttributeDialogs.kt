@@ -73,11 +73,16 @@ private fun AttributeDialog(
     onDismiss: () -> Unit,
     onConfirm: (attribute: Attribute) -> Unit,
 ) {
-    var name by remember { mutableStateOf(initialAttribute?.name ?: "") }
-    var isPrimaryKey by remember { mutableStateOf(initialAttribute?.isPrimaryKey ?: false) }
-    var attributeType by remember { mutableStateOf(initialAttribute?.type ?: AttributeType.NORMAL) }
-    var multiplicity by remember { mutableStateOf(initialAttribute?.multiplicity ?: "") }
-    var components by remember { mutableStateOf(initialAttribute?.components ?: emptyList()) }
+    val attributeId = initialAttribute?.id
+    var name by remember(attributeId) { mutableStateOf(initialAttribute?.name ?: "") }
+    var isPrimaryKey by
+        remember(attributeId) { mutableStateOf(initialAttribute?.isPrimaryKey ?: false) }
+    var attributeType by
+        remember(attributeId) { mutableStateOf(initialAttribute?.type ?: AttributeType.NORMAL) }
+    var multiplicity by
+        remember(attributeId) { mutableStateOf(initialAttribute?.multiplicity ?: "") }
+    var components by
+        remember(attributeId) { mutableStateOf(initialAttribute?.components ?: emptyList()) }
     var expanded by remember { mutableStateOf(false) }
     var showAddComponentDialog by remember { mutableStateOf(false) }
     AlertDialog(

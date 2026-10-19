@@ -261,6 +261,7 @@ fun ERDiagramScreen(
             .find { it.id == state.selectedNoteId }
             ?.let { note ->
                 NotePropertiesDialog(
+                    noteId = note.id,
                     noteText = note.text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->

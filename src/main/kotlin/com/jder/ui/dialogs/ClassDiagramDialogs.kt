@@ -29,6 +29,7 @@ import java.util.UUID
 
 @Composable
 fun ClassEntityDialog(
+    entityId: String,
     name: String,
     type: ClassEntityType,
     isAbstract: Boolean,
@@ -37,10 +38,10 @@ fun ClassEntityDialog(
     onConfirm:
         (name: String, type: ClassEntityType, isAbstract: Boolean, documentation: String) -> Unit,
 ) {
-    var entityName by remember { mutableStateOf(name) }
-    var entityType by remember { mutableStateOf(type) }
-    var abstract by remember { mutableStateOf(isAbstract) }
-    var docs by remember { mutableStateOf(documentation) }
+    var entityName by remember(entityId) { mutableStateOf(name) }
+    var entityType by remember(entityId) { mutableStateOf(type) }
+    var abstract by remember(entityId) { mutableStateOf(isAbstract) }
+    var docs by remember(entityId) { mutableStateOf(documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Classe") },
@@ -186,10 +187,10 @@ fun ClassRelationDialog(
             label: String,
         ) -> Unit,
 ) {
-    var relType by remember { mutableStateOf(relation.type) }
-    var sourceMulti by remember { mutableStateOf(relation.sourceMultiplicity) }
-    var targetMulti by remember { mutableStateOf(relation.targetMultiplicity) }
-    var label by remember { mutableStateOf(relation.label) }
+    var relType by remember(relation.id) { mutableStateOf(relation.type) }
+    var sourceMulti by remember(relation.id) { mutableStateOf(relation.sourceMultiplicity) }
+    var targetMulti by remember(relation.id) { mutableStateOf(relation.targetMultiplicity) }
+    var label by remember(relation.id) { mutableStateOf(relation.label) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Modifica Relazione") },

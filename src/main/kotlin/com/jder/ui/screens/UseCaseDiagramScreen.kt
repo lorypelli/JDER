@@ -186,6 +186,7 @@ fun UseCaseDiagramScreen(
             .find { it.id == state.selectedActorId }
             ?.let { actor ->
                 ActorPropertiesDialog(
+                    actorId = actor.id,
                     actorName = actor.name,
                     onDismiss = { showActorDialog = false },
                     onConfirm = { newName ->
@@ -201,6 +202,7 @@ fun UseCaseDiagramScreen(
             .find { it.id == state.selectedUseCaseId }
             ?.let { useCase ->
                 UseCasePropertiesDialog(
+                    useCaseId = useCase.id,
                     useCaseName = useCase.name,
                     useCaseDocumentation = useCase.documentation,
                     onDismiss = { showUseCaseDialog = false },
@@ -234,6 +236,7 @@ fun UseCaseDiagramScreen(
             .find { it.id == state.selectedNoteId }
             ?.let { note ->
                 NotePropertiesDialog(
+                    noteId = note.id,
                     noteText = note.text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
@@ -249,6 +252,7 @@ fun UseCaseDiagramScreen(
             .find { it.id == state.selectedSystemBoundaryId }
             ?.let { boundary ->
                 SystemBoundaryDialog(
+                    boundaryId = boundary.id,
                     boundaryName = boundary.name,
                     boundaryWidth = boundary.width,
                     boundaryHeight = boundary.height,

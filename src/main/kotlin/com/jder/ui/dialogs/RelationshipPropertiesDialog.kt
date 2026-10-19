@@ -24,8 +24,8 @@ fun RelationshipPropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (relationship: Relationship) -> Unit,
 ) {
-    var name by remember { mutableStateOf(relationship.name) }
-    var documentation by remember { mutableStateOf(relationship.documentation) }
+    var name by remember(relationship.id) { mutableStateOf(relationship.name) }
+    var documentation by remember(relationship.id) { mutableStateOf(relationship.documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Relazione") },

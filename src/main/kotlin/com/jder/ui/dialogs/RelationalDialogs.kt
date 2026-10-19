@@ -32,15 +32,16 @@ private class ReferenceOption(val reference: RelationalReference, val label: Str
 
 @Composable
 fun TablePropertiesDialog(
+    tableId: String,
     tableName: String,
     tableWidth: Float,
     tableDocumentation: String,
     onDismiss: () -> Unit,
     onConfirm: (name: String, width: Float, documentation: String) -> Unit,
 ) {
-    var name by remember { mutableStateOf(tableName) }
-    var width by remember { mutableStateOf(tableWidth.toInt().toString()) }
-    var documentation by remember { mutableStateOf(tableDocumentation) }
+    var name by remember(tableId) { mutableStateOf(tableName) }
+    var width by remember(tableId) { mutableStateOf(tableWidth.toInt().toString()) }
+    var documentation by remember(tableId) { mutableStateOf(tableDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Tabella") },
@@ -128,12 +129,13 @@ private fun ColumnDialog(
     onDismiss: () -> Unit,
     onConfirm: (column: RelationalColumn) -> Unit,
 ) {
-    var name by remember { mutableStateOf(initialColumn?.name ?: "") }
-    var type by remember { mutableStateOf(initialColumn?.type ?: "") }
-    var isPrimaryKey by remember { mutableStateOf(initialColumn?.isPrimaryKey ?: false) }
-    var isNullable by remember { mutableStateOf(initialColumn?.isNullable ?: false) }
-    var isUnique by remember { mutableStateOf(initialColumn?.isUnique ?: false) }
-    var reference by remember { mutableStateOf(initialColumn?.reference) }
+    val columnId = initialColumn?.id
+    var name by remember(columnId) { mutableStateOf(initialColumn?.name ?: "") }
+    var type by remember(columnId) { mutableStateOf(initialColumn?.type ?: "") }
+    var isPrimaryKey by remember(columnId) { mutableStateOf(initialColumn?.isPrimaryKey ?: false) }
+    var isNullable by remember(columnId) { mutableStateOf(initialColumn?.isNullable ?: false) }
+    var isUnique by remember(columnId) { mutableStateOf(initialColumn?.isUnique ?: false) }
+    var reference by remember(columnId) { mutableStateOf(initialColumn?.reference) }
     var expanded by remember { mutableStateOf(false) }
     val options =
         tables.flatMap { table ->

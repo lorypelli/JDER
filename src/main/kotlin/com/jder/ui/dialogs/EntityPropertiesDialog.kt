@@ -26,9 +26,9 @@ fun EntityPropertiesDialog(
     onDismiss: () -> Unit,
     onConfirm: (entity: Entity) -> Unit,
 ) {
-    var name by remember { mutableStateOf(entity.name) }
-    var isWeak by remember { mutableStateOf(entity.isWeak) }
-    var documentation by remember { mutableStateOf(entity.documentation) }
+    var name by remember(entity.id) { mutableStateOf(entity.name) }
+    var isWeak by remember(entity.id) { mutableStateOf(entity.isWeak) }
+    var documentation by remember(entity.id) { mutableStateOf(entity.documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Proprietà Entità") },
