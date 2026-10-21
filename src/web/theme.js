@@ -3,9 +3,6 @@ let toggle;
 
 const setTheme = (isDark) => {
     document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
-    toggle.querySelector('.theme-toggle-icon').textContent = isDark
-        ? '☀️'
-        : '🌙';
     toggle.querySelector('.theme-toggle-label').textContent = isDark
         ? 'Tema chiaro'
         : 'Tema scuro';

@@ -12,7 +12,11 @@
     --card-surface: linear-gradient(145deg, #ffffff, #f5f5f5);
     --muted-text: #555;
     --heading: #1e3c72;
+    --header-subtitle: #2a5298;
     --footer-link: #2a5298;
+    --footer-link-hover: #1e3c72;
+    --control-border: rgba(30, 60, 114, 0.25);
+    --control-hover: rgba(30, 60, 114, 0.08);
 }
 
 :root[data-theme="dark"] {
@@ -23,7 +27,11 @@
     --card-surface: linear-gradient(145deg, #1d2b38, #14202b);
     --muted-text: #c0cad4;
     --heading: #a9c7ff;
+    --header-subtitle: #a9c7ff;
     --footer-link: #a9c7ff;
+    --footer-link-hover: #ffffff;
+    --control-border: rgba(169, 199, 255, 0.35);
+    --control-hover: rgba(169, 199, 255, 0.12);
 }
 
 html {
@@ -151,17 +159,6 @@ body::after {
     }
 }
 
-@keyframes pulse {
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-}
-
 @keyframes wave {
     0% {
         transform: translateY(0) scaleY(1);
@@ -201,37 +198,30 @@ header {
     top: 1.25rem;
     right: 1.5rem;
     z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    border: 1px solid rgba(30, 60, 114, 0.25);
-    border-radius: 999px;
-    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--control-border);
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
     background: transparent;
-    color: var(--page-text);
+    color: var(--muted-text);
     cursor: pointer;
     font: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     transition:
         background-color 0.25s ease,
         border-color 0.25s ease,
-        transform 0.25s ease;
+        color 0.25s ease;
 }
 
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
-    background: rgba(240, 120, 24, 0.12);
-    border-color: #f07818;
-    transform: translateY(-2px);
+    background: var(--control-hover);
+    border-color: var(--heading);
+    color: var(--heading);
 }
 
 .theme-toggle:focus-visible {
-    outline: 3px solid rgba(240, 120, 24, 0.35);
+    outline: 2px solid var(--heading);
     outline-offset: 2px;
-}
-
-.theme-toggle-icon {
-    font-size: 1.1rem;
 }
 
 header::before {
@@ -267,7 +257,7 @@ header h1 {
 
 header p {
     font-size: 1.4rem;
-    color: #2a5298;
+    color: var(--header-subtitle);
     font-weight: 500;
 }
 
@@ -423,103 +413,67 @@ a:hover {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 1.2rem;
+    gap: 1rem;
     margin-top: 1.5rem;
 }
 
-.download-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: linear-gradient(135deg, #f07818 0%, #e94b3c 100%);
-    color: white;
-    padding: 1.5rem 3rem;
-    border-radius: 50px;
-    font-size: 1.4rem;
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.4s ease;
-    box-shadow: 0 8px 25px rgba(240, 120, 24, 0.4);
-    position: relative;
-    overflow: hidden;
-}
-
+.download-button,
 .guide-button {
     display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    color: white;
-    padding: 1.5rem 3rem;
-    border-radius: 50px;
-    font-size: 1.4rem;
-    font-weight: bold;
+    border-radius: 999px;
+    padding: 0.75rem 1.6rem;
+    font-size: 1rem;
+    font-weight: 600;
     text-decoration: none;
-    transition: all 0.4s ease;
-    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.4);
-    position: relative;
-    overflow: hidden;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
 }
 
-.guide-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    transition: left 0.5s ease;
-}
-
-.guide-button:hover::before {
-    left: 100%;
-}
-
-.guide-button:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 35px rgba(30, 60, 114, 0.6);
+.download-button {
+    border: 1px solid #f07818;
+    background: #f07818;
     color: white;
-}
-
-.guide-icon {
-    font-size: 1.6rem;
-}
-
-.download-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    transition: left 0.5s ease;
-}
-
-.download-button:hover::before {
-    left: 100%;
 }
 
 .download-button:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 35px rgba(240, 120, 24, 0.6);
+    border-color: #e94b3c;
+    background: #e94b3c;
     color: white;
+    transform: translateY(-2px);
 }
 
-.download-icon {
-    font-size: 1.6rem;
-    animation: pulse 2s ease-in-out infinite;
+.guide-button {
+    border: 1px solid rgba(240, 120, 24, 0.5);
+    background: transparent;
+    color: #f07818;
+}
+
+.guide-button:hover {
+    border-color: #f07818;
+    background: rgba(240, 120, 24, 0.12);
+    transform: translateY(-2px);
+}
+
+.home-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    margin: 0 auto 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.home-arrow {
+    transition: transform 0.25s ease;
+}
+
+.home-link:hover .home-arrow {
+    transform: translateX(-4px);
 }
 
 .download-card {
@@ -559,9 +513,13 @@ a:hover {
 
 .download-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     width: 100%;
+}
+
+.download-card-wide {
+    grid-column: span 2;
 }
 
 .features {
@@ -812,7 +770,7 @@ footer a {
 }
 
 footer a:hover {
-    color: #1e3c72;
+    color: var(--footer-link-hover);
 }
 
 @media (max-width: 768px) {
@@ -860,14 +818,13 @@ footer a:hover {
         padding: 0 0.5rem;
     }
 
-    .download-button {
-        padding: 1.2rem 2rem;
-        font-size: 1.2rem;
+    .download-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
 
-    .guide-button {
-        padding: 1.2rem 2rem;
-        font-size: 1.2rem;
+    .download-card-wide {
+        grid-column: span 1;
     }
 
     .features {
@@ -941,16 +898,6 @@ footer a:hover {
 
     .hero-description {
         font-size: 0.95rem;
-    }
-
-    .download-button {
-        padding: 1rem 1.5rem;
-        font-size: 1.1rem;
-    }
-
-    .guide-button {
-        padding: 1rem 1.5rem;
-        font-size: 1.1rem;
     }
 
     .features {
