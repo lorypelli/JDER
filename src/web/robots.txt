@@ -2,7 +2,10 @@ User-agent: *
 Allow: /
 Allow: /download
 Allow: /guida.pdf
-Allow: /class.png
 Allow: /er.png
+Allow: /relational.png
+Allow: /class.png
 Allow: /usecase.png
+Allow: /sequence.png
+Allow: /logic.png
 Sitemap: https://jder.it/sitemap.xml
