@@ -3,8 +3,12 @@ package com.jder.data
 import java.io.File
 import java.io.OutputStream
 import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.security.DigestInputStream
 import java.security.MessageDigest
+import java.time.Duration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
@@ -12,7 +16,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 private const val LATEST_RELEASE_URL = "https://api.github.com/repos/LoryPelli/JDER/releases/latest"
-private const val TIMEOUT_MS = 10_000
+private val requestTimeout = Duration.ofSeconds(10)
 
 private val releaseJson = Json { ignoreUnknownKeys = true }
 
@@ -52,12 +56,20 @@ object UpdateChecker {
     }
 
     private fun latestReleaseJar(): GitHubAsset? {
-        val connection = URI(LATEST_RELEASE_URL).toURL().openConnection()
-        connection.connectTimeout = TIMEOUT_MS
-        connection.readTimeout = TIMEOUT_MS
-        connection.setRequestProperty("Accept", "application/vnd.github+json")
-        connection.setRequestProperty("User-Agent", "JDER")
-        val body = connection.inputStream.bufferedReader().use { it.readText() }
+        val client =
+            HttpClient.newBuilder()
+                .connectTimeout(requestTimeout)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build()
+        val request =
+            HttpRequest.newBuilder(URI(LATEST_RELEASE_URL))
+                .timeout(requestTimeout)
+                .header("Accept", "application/vnd.github+json")
+                .header("User-Agent", "JDER")
+                .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() !in 200..299) return null
+        val body = response.body()
         return releaseJson.decodeFromString(GitHubRelease.serializer(), body).assets.firstOrNull {
             it.name.endsWith(".jar")
         }

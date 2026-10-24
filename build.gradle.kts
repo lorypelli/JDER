@@ -7,9 +7,7 @@ plugins {
 }
 group = "com.jder"
 repositories {
-    google()
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 dependencies {
     implementation(compose.desktop.common)
@@ -51,7 +49,7 @@ tasks.withType<KotlinCompile>().configureEach {
     dependsOn("clean", "spotlessApply")
     kotlinOptions {
         jvmTarget = "11"
-        freeCompilerArgs += listOf("-Xjvm-default=all")
+        freeCompilerArgs += listOf("-Xjvm-default=all", "-Xjdk-release=11")
     }
 }
 tasks.withType<Jar>().configureEach {

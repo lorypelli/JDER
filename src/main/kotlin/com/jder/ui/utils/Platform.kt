@@ -1,7 +1,7 @@
 package com.jder.ui.utils
 
-import androidx.compose.ui.res.useResource
-import java.io.File
+import java.awt.Taskbar
+import javax.imageio.ImageIO
 
 val isMacOS: Boolean = System.getProperty("os.name").orEmpty().lowercase().startsWith("mac")
 
@@ -12,9 +12,6 @@ fun shortcutLabel(key: String, hasShift: Boolean = false): String =
 fun setDockIcon(resourcePath: String) {
     if (!isMacOS) return
     try {
-        val iconFile = File.createTempFile("jder_icon", ".png")
-        iconFile.deleteOnExit()
-        useResource(resourcePath) { input -> iconFile.outputStream().use { input.copyTo(it) } }
-        System.setProperty("apple.awt.application.icon", iconFile.absolutePath)
+        Taskbar.getTaskbar().iconImage = ImageIO.read(ClassLoader.getSystemResource(resourcePath))
     } catch (_: Exception) {}
 }
