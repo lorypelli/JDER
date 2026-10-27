@@ -1,5 +1,8 @@
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Disallow: /download/JDER.jar
 Allow: /
+Allow: /index.md
 Allow: /download
 Allow: /guida.pdf
 Allow: /er.png

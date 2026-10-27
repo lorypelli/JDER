@@ -5,35 +5,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta name="keywords"
-        content="JDER, Entity-Relationship, ER diagram, Use Case diagram, Class diagram, diagrammi logici, porte logiche, logic gates, tabella di verità, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
+        content="JDER, Entity-Relationship, ER diagram, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, Sequence diagram, diagramma di sequenza, diagrammi logici, porte logiche, logic gates, tabella di verità, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
     <meta name="author" content="LoryPelli" />
     <meta name="robots" content="index, follow" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
     <meta property="og:site_name" content="JDER" />
-    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Use Case, Class e Logici" />
+    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici" />
     <meta property="og:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta property="og:url" content="https://jder.it/" />
     <meta property="og:image" content="https://jder.it/favicon.ico" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Use Case, Class e Logici" />
+    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici" />
     <meta name="twitter:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta name="twitter:image" content="https://jder.it/favicon.ico" />
     <link rel="icon" href="favicon.ico" />
     <link rel="canonical" href="https://jder.it/" />
+    <link rel="alternate" type="text/markdown" href="index.md" />
     <link rel="stylesheet" href="style.css" />
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebPage",
         "url": "https://jder.it/",
-        "name": "JDER - Editor di Diagrammi ER, Use Case, Class e Logici",
+        "name": "JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici",
         "inLanguage": "it-IT",
-        "description": "Editor gratuito e open source per diagrammi Entity-Relationship, Use Case, Class Diagram e diagrammi logici. Scritto in Kotlin e Compose Multiplatform, gira su Windows, macOS e Linux.",
+        "description": "Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici. Scritto in Kotlin e Compose Multiplatform, gira su Windows, macOS e Linux.",
         "author": {
             "@type": "Person",
             "name": "LoryPelli",
@@ -65,14 +66,14 @@
         }
     }
     </script>
-    <title>JDER - Editor di Diagrammi ER, Use Case, Class e Logici</title>
+    <title>JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici</title>
 </head>
 
 <body>
     <header>
         <div class="header-content">
             <h1>JDER</h1>
-            <p>Editor di Diagrammi ER, Use Case, Class e Logici</p>
+            <p>Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici</p>
         </div>
         <button class="theme-toggle">
             <span class="theme-toggle-label">Tema scuro</span>
@@ -101,6 +102,12 @@
                         composti) ed entità deboli</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">🔑</div>
+                    <h3>Schema Logico</h3>
+                    <p>Il passo dopo l'E/R: tabelle e colonne con chiavi primarie ed esterne, collegate da frecce che
+                        evitano le altre tabelle</p>
+                </div>
+                <div class="feature-card">
                     <div class="feature-icon">🧩</div>
                     <h3>Diagramma delle Classi</h3>
                     <p>Classi, interfacce, enumerazioni e classi astratte con attributi, metodi, visibilità e 6 tipi di
@@ -111,6 +118,12 @@
                     <h3>Diagramma Use Case</h3>
                     <p>Attori, casi d'uso, confini di sistema e relazioni include/extend/generalizzazione con frecce UML
                         corrette</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📨</div>
+                    <h3>Diagramma di Sequenza</h3>
+                    <p>Linee di vita, messaggi sincroni, asincroni, di risposta, creazione e distruzione, barre di
+                        attivazione automatiche e frammenti combinati</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔌</div>

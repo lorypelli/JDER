@@ -6,6 +6,8 @@
         "format": "biome check --write"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.5.15"
-    }
+        "@biomejs/biome": "^2.5.15",
+        "wrangler": "^4.152.0"
+    },
+    "packageManager": "pnpm@12.15.0"
 }

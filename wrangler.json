@@ -1,4 +1,5 @@
 {
+    "$schema": "node_modules/wrangler/config-schema.json",
     "name": "jder",
     "compatibility_date": "2026-03-20",
     "main": "src/web/worker/index.js",
@@ -8,6 +9,7 @@
     },
     "assets": {
         "binding": "ASSETS",
-        "directory": "./src/web"
+        "directory": "./src/web",
+        "run_worker_first": ["/"]
     }
 }
