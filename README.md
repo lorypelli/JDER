@@ -202,7 +202,7 @@ All'avvio JDER controlla l'ultima release su GitHub: se il `JDER.jar` pubblicato
 
 ### Diagrammi di esempio
 
-La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito sono generati da questi file.
+La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito, in versione chiara e scura, sono generati da questi file.
 
 ### Compilare dal sorgente
 

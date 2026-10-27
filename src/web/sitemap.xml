@@ -24,37 +24,73 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://jder.it/er.png</loc>
+        <loc>https://jder.it/screenshots/er-light.png</loc>
         <changefreq>monthly</changefreq>
         <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://jder.it/relational.png</loc>
+        <loc>https://jder.it/screenshots/er-dark.png</loc>
         <changefreq>monthly</changefreq>
         <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://jder.it/class.png</loc>
+        <loc>https://jder.it/screenshots/relational-light.png</loc>
         <changefreq>monthly</changefreq>
         <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://jder.it/usecase.png</loc>
+        <loc>https://jder.it/screenshots/relational-dark.png</loc>
         <changefreq>monthly</changefreq>
         <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://jder.it/sequence.png</loc>
+        <loc>https://jder.it/screenshots/class-light.png</loc>
         <changefreq>monthly</changefreq>
         <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://jder.it/logic.png</loc>
+        <loc>https://jder.it/screenshots/class-dark.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/screenshots/usecase-light.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/screenshots/usecase-dark.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/screenshots/sequence-light.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/screenshots/sequence-dark.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/screenshots/logic-light.png</loc>
+        <changefreq>monthly</changefreq>
+        <lastmod>2026-03-20</lastmod>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://jder.it/screenshots/logic-dark.png</loc>
         <changefreq>monthly</changefreq>
         <lastmod>2026-03-20</lastmod>
         <priority>1.0</priority>

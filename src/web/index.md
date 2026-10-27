@@ -65,17 +65,29 @@ Scritto in Kotlin con Compose Multiplatform per massime prestazioni su Windows, 
 
 ## Screenshot
 
-![Diagramma E/R in JDER: studenti, corsi e docenti di un'università](/er.png)
+![Diagramma E/R in JDER (tema chiaro): studenti, corsi e docenti di un'università](/screenshots/er-light.png)
 
-![Schema Logico in JDER: tabelle, chiavi primarie e chiavi esterne di un'università](/relational.png)
+![Diagramma E/R in JDER (tema scuro): studenti, corsi e docenti di un'università](/screenshots/er-dark.png)
 
-![Diagramma delle Classi in JDER: e-commerce con ereditarietà, interfacce ed enumerazioni](/class.png)
+![Schema Logico in JDER (tema chiaro): tabelle, chiavi primarie e chiavi esterne di un'università](/screenshots/relational-light.png)
 
-![Diagramma Use Case in JDER: sistema di gestione di una biblioteca](/usecase.png)
+![Schema Logico in JDER (tema scuro): tabelle, chiavi primarie e chiavi esterne di un'università](/screenshots/relational-dark.png)
 
-![Diagramma di Sequenza in JDER: prenotazione di un libro in una biblioteca](/sequence.png)
+![Diagramma delle Classi in JDER (tema chiaro): e-commerce con ereditarietà, interfacce ed enumerazioni](/screenshots/class-light.png)
 
-![Diagramma Logico in JDER: sommatore completo con porte XOR, AND e OR e valori simulati](/logic.png)
+![Diagramma delle Classi in JDER (tema scuro): e-commerce con ereditarietà, interfacce ed enumerazioni](/screenshots/class-dark.png)
+
+![Diagramma Use Case in JDER (tema chiaro): sistema di gestione di una biblioteca](/screenshots/usecase-light.png)
+
+![Diagramma Use Case in JDER (tema scuro): sistema di gestione di una biblioteca](/screenshots/usecase-dark.png)
+
+![Diagramma di Sequenza in JDER (tema chiaro): prenotazione di un libro in una biblioteca](/screenshots/sequence-light.png)
+
+![Diagramma di Sequenza in JDER (tema scuro): prenotazione di un libro in una biblioteca](/screenshots/sequence-dark.png)
+
+![Diagramma Logico in JDER (tema chiaro): sommatore completo con porte XOR, AND e OR e valori simulati](/screenshots/logic-light.png)
+
+![Diagramma Logico in JDER (tema scuro): sommatore completo con porte XOR, AND e OR e valori simulati](/screenshots/logic-dark.png)
 
 ## Tecnologie
 

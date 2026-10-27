@@ -693,6 +693,11 @@ a:hover {
     overflow: hidden;
 }
 
+:root:not([data-theme="dark"]) .screenshot-dark,
+:root[data-theme="dark"] .screenshot-light {
+    display: none;
+}
+
 .screenshot-card img {
     width: 100%;
     height: auto;
