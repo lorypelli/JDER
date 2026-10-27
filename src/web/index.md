@@ -1,4 +1,5 @@
 ---
+
 title: JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici
 description: Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici. Scritto in Kotlin e Compose Multiplatform con interfaccia Material 3, gira su Windows, macOS e Linux.
 keywords: JDER, editor diagrammi ER, Entity-Relationship, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, diagramma delle classi, Sequence diagram, diagramma di sequenza, diagramma logico, porte logiche, tabella di verità, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux
