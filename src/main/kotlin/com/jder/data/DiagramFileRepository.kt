@@ -31,24 +31,7 @@ open class DiagramFileRepository<T>(
             val content = diagramJson.encodeToJsonElement(serializer, diagram).jsonObject
             val tagged = JsonObject(mapOf(DIAGRAM_TYPE_KEY to JsonPrimitive(type.key)) + content)
             val encoded = diagramJson.encodeToString(JsonObject.serializer(), tagged)
-            val target = file.toPath()
-            val temporary =
-                Files.createTempFile(target.toAbsolutePath().parent, "${file.name}.", ".tmp")
-            try {
-                Files.writeString(temporary, encoded)
-                try {
-                    Files.move(
-                        temporary,
-                        target,
-                        StandardCopyOption.ATOMIC_MOVE,
-                        StandardCopyOption.REPLACE_EXISTING,
-                    )
-                } catch (_: AtomicMoveNotSupportedException) {
-                    Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING)
-                }
-            } finally {
-                Files.deleteIfExists(temporary)
-            }
+            file.writeBytesAtomically(encoded.toByteArray())
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -56,7 +39,7 @@ open class DiagramFileRepository<T>(
 
     fun loadDiagram(file: File): Result<T> =
         try {
-            val content = diagramJson.parseToJsonElement(file.readText()).jsonObject
+            val content = readJsonObject(file)
             val found = detectDiagramType(content)
             if (found != null && found != type) throw WrongDiagramTypeException(found, type)
             val diagram = diagramJson.decodeFromJsonElement(serializer, content)
@@ -65,14 +48,42 @@ open class DiagramFileRepository<T>(
         } catch (e: Exception) {
             Result.failure(e)
         }
+}
 
-    private fun detectDiagramType(content: JsonObject): DiagramType? {
-        val declared = content[DIAGRAM_TYPE_KEY]?.jsonPrimitive?.contentOrNull
-        DiagramType.entries
-            .find { it.key == declared }
-            ?.let {
-                return it
-            }
-        return DiagramType.entries.find { it.markerKeys.any { entry -> entry in content } }
+fun detectDiagramType(file: File): DiagramType? = detectDiagramType(readJsonObject(file))
+
+internal fun File.writeBytesAtomically(bytes: ByteArray) {
+    val target = toPath()
+    if (Files.exists(target) && !Files.isWritable(target)) {
+        throw AccessDeniedException(this, reason = "il file è di sola lettura")
     }
+    val temporary = File.createTempFile(".$name.", ".tmp", absoluteFile.parentFile).toPath()
+    try {
+        Files.write(temporary, bytes)
+        try {
+            Files.move(
+                temporary,
+                target,
+                StandardCopyOption.ATOMIC_MOVE,
+                StandardCopyOption.REPLACE_EXISTING,
+            )
+        } catch (_: AtomicMoveNotSupportedException) {
+            Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING)
+        }
+    } finally {
+        Files.deleteIfExists(temporary)
+    }
+}
+
+private fun readJsonObject(file: File): JsonObject =
+    diagramJson.parseToJsonElement(file.readText()).jsonObject
+
+private fun detectDiagramType(content: JsonObject): DiagramType? {
+    val declared = content[DIAGRAM_TYPE_KEY]?.jsonPrimitive?.contentOrNull
+    DiagramType.entries
+        .find { it.key == declared }
+        ?.let {
+            return it
+        }
+    return DiagramType.entries.find { it.markerKeys.any { entry -> entry in content } }
 }

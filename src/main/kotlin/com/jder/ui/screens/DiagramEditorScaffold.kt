@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -57,10 +58,18 @@ import com.jder.ui.components.SnackbarMessenger
 import com.jder.ui.components.toExportPalette
 import com.jder.ui.theme.ThemeState
 import java.io.File
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
 private val zoomInKeys = setOf(Key.Plus, Key.Equals, Key.NumPadAdd)
 private val zoomOutKeys = setOf(Key.Minus, Key.NumPadSubtract)
 private val resetZoomKeys = setOf(Key.Zero, Key.NumPad0)
+private val autoSaveDelay = 500.milliseconds
+private val imageExportLock = Any()
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -82,17 +91,56 @@ fun <T> DiagramEditorScaffold(
     var showSaveAsDialog by remember { mutableStateOf(false) }
     var showExportDialog by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+    val currentRenderImage by rememberUpdatedState(renderImage)
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
-    fun saveTo(file: File) {
+    fun currentImageKey(): Any = state.imageKey to themeState.selectedPalette
+    fun renderExportImage() =
+        currentRenderImage(themeState.selectedPalette.lightScheme.toExportPalette())
+    fun writeAutoExport(file: File, key: Any, image: () -> ImageBitmap): Result<Unit> =
+        if (key == state.exportedImageKey) Result.success(Unit)
+        else ImageExporter().exportToPNG(image(), file).onSuccess { state.exportedImageKey = key }
+    fun writeDiagram(file: File): Result<Unit> {
         val name = file.nameWithoutExtension
-        repository
-            .saveDiagram(state.diagramNamed(name), file)
+        return repository.saveDiagram(state.diagramNamed(name), file).onSuccess {
+            state.updateDiagramName(name)
+            state.markAsSaved(file.absolutePath)
+        }
+    }
+    fun autoSaveFile(): File? =
+        state.currentFile?.takeIf { state.isAutoSaveEnabled && state.isModified }?.let(::File)
+    fun autoExportFile(key: Any): File? =
+        state.imageFile
+            ?.takeIf { state.isAutoExportEnabled && key != state.exportedImageKey }
+            ?.let(::File)
+    fun autoSave(file: File): Boolean =
+        writeDiagram(file)
+            .onFailure { messenger.show("Errore nel salvataggio automatico: ${it.message}") }
+            .isSuccess
+    fun reportAutoExport(result: Result<Unit>): Boolean =
+        result
+            .onFailure { messenger.show("Errore nell'esportazione automatica: ${it.message}") }
+            .isSuccess
+    fun flushAutoSave(): Boolean {
+        val isSaved = autoSaveFile()?.let(::autoSave) ?: true
+        val key = currentImageKey()
+        val isExported =
+            autoExportFile(key)?.let { file ->
+                val result =
+                    try {
+                        synchronized(imageExportLock) {
+                            writeAutoExport(file, key, ::renderExportImage)
+                        }
+                    } catch (e: Exception) {
+                        Result.failure(e)
+                    }
+                reportAutoExport(result)
+            } ?: true
+        return isSaved && isExported
+    }
+    fun saveTo(file: File) {
+        writeDiagram(file)
             .fold(
-                onSuccess = {
-                    state.updateDiagramName(name)
-                    state.markAsSaved(file.absolutePath)
-                    messenger.show("Diagramma salvato: ${file.name}")
-                },
+                onSuccess = { messenger.show("Diagramma salvato: ${file.name}") },
                 onFailure = { messenger.show("Errore nel salvataggio: ${it.message}") },
             )
     }
@@ -100,10 +148,11 @@ fun <T> DiagramEditorScaffold(
         state.currentFile?.let { saveTo(File(it)) } ?: run { showSaveAsDialog = true }
     }
     fun requestOpenDiagram() {
-        if (state.isModified) showOpenDiagramConfirmDialog = true else showOpenDialog = true
+        if (!flushAutoSave() || state.isModified) showOpenDiagramConfirmDialog = true
+        else showOpenDialog = true
     }
     fun requestNewDiagram() {
-        if (state.isModified) showNewDiagramConfirmDialog = true
+        if (!flushAutoSave() || state.isModified) showNewDiagramConfirmDialog = true
         else {
             state.newDiagram()
             messenger.show("Nuovo diagramma creato")
@@ -112,6 +161,40 @@ fun <T> DiagramEditorScaffold(
     fun requestExport() {
         if (state.isEmpty) messenger.show("Il diagramma è vuoto: non c'è nulla da esportare")
         else showExportDialog = true
+    }
+    fun exportTo(file: File) {
+        val key = currentImageKey()
+        val result =
+            try {
+                val image = renderExportImage()
+                synchronized(imageExportLock) {
+                    ImageExporter().exportToPNG(image, file).onSuccess {
+                        state.markAsExported(file.absolutePath, key)
+                    }
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        result.fold(
+            onSuccess = { messenger.show("Immagine salvata: ${file.name}") },
+            onFailure = { messenger.show("Errore nell'esportazione: ${it.message}") },
+        )
+    }
+    fun toggleAutoSave() {
+        val file = File(state.currentFile ?: return)
+        state.isAutoSaveEnabled = !state.isAutoSaveEnabled
+        messenger.show(
+            if (state.isAutoSaveEnabled) "Salvataggio automatico attivato: ${file.name}"
+            else "Salvataggio automatico disattivato"
+        )
+    }
+    fun toggleAutoExport() {
+        val file = File(state.imageFile ?: return)
+        state.isAutoExportEnabled = !state.isAutoExportEnabled
+        messenger.show(
+            if (state.isAutoExportEnabled) "Esportazione automatica attivata: ${file.name}"
+            else "Esportazione automatica disattivata"
+        )
     }
     fun undo() {
         if (state.canUndo()) {
@@ -128,6 +211,40 @@ fun <T> DiagramEditorScaffold(
     fun deleteSelected() {
         state.deleteSelection()?.let { messenger.show(it) }
     }
+    LaunchedEffect(state) {
+        snapshotFlow {
+                listOf(state.isAutoSaveEnabled, state.isModified, state.currentFile, state.diagram)
+            }
+            .collectLatest {
+                delay(autoSaveDelay)
+                autoSaveFile()?.let(::autoSave)
+            }
+    }
+    LaunchedEffect(state) {
+        snapshotFlow { Triple(state.isAutoExportEnabled, state.imageFile, currentImageKey()) }
+            .collectLatest {
+                delay(autoSaveDelay)
+                val key = currentImageKey()
+                val file = autoExportFile(key) ?: return@collectLatest
+                val image =
+                    try {
+                        renderExportImage()
+                    } catch (e: Exception) {
+                        reportAutoExport(Result.failure(e))
+                        return@collectLatest
+                    }
+                state.exportedImageKey = null
+                val result =
+                    withContext(Dispatchers.IO) {
+                        synchronized(imageExportLock) {
+                            ensureActive()
+                            writeAutoExport(file, key) { image }
+                        }
+                    }
+                reportAutoExport(result)
+            }
+    }
+    DisposableEffect(state) { onDispose { flushAutoSave() } }
     val menuHost = LocalDiagramMenuHost.current
     val currentTools by rememberUpdatedState(tools)
     val currentSelectionMenu by rememberUpdatedState(selectionMenu)
@@ -140,10 +257,13 @@ fun <T> DiagramEditorScaffold(
                     onOpenDiagram = { requestOpenDiagram() },
                     onSaveDiagram = { saveDiagram() },
                     onSaveAsDiagram = { showSaveAsDialog = true },
+                    onToggleAutoSave = { toggleAutoSave() },
                     onExportPNG = { requestExport() },
+                    onToggleAutoExport = { toggleAutoExport() },
                     onUndo = { undo() },
                     onRedo = { redo() },
                     onDeleteSelected = { deleteSelected() },
+                    flushAutoSave = { flushAutoSave() },
                     tools = { currentTools },
                     selectionMenu = { currentSelectionMenu() },
                 )
@@ -214,7 +334,9 @@ fun <T> DiagramEditorScaffold(
                 onOpenDiagram = ::requestOpenDiagram,
                 onSaveDiagram = ::saveDiagram,
                 onSaveAsDiagram = { showSaveAsDialog = true },
+                onToggleAutoSave = ::toggleAutoSave,
                 onExportPNG = ::requestExport,
+                onToggleAutoExport = ::toggleAutoExport,
                 onUndo = ::undo,
                 onRedo = ::redo,
                 onDeleteSelected = ::deleteSelected,
@@ -311,21 +433,7 @@ fun <T> DiagramEditorScaffold(
             onDismiss = { showExportDialog = false },
             onFileSelected = { file ->
                 showExportDialog = false
-                try {
-                    ImageExporter()
-                        .exportToPNG(
-                            renderImage(themeState.selectedPalette.lightScheme.toExportPalette()),
-                            file,
-                        )
-                        .fold(
-                            onSuccess = { messenger.show("Immagine salvata: ${file.name}") },
-                            onFailure = {
-                                messenger.show("Errore nell'esportazione: ${it.message}")
-                            },
-                        )
-                } catch (e: Exception) {
-                    messenger.show("Errore nell'esportazione: ${e.message}")
-                }
+                exportTo(file)
             },
         )
     }

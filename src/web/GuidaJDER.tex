@@ -255,6 +255,31 @@ All'avvio \jder{} controlla l'ultima versione pubblicata su GitHub: se il \textt
 pubblicato è diverso da quello in uso, la finestra \uielement{Aggiornamento disponibile} propone
 di scaricarlo (\uielement{Scarica}) oppure di rimandare (\uielement{Più tardi}).
 
+\subsubsection{Opzioni da riga di comando}
+\label{sec:cli}
+
+Avviando \jder{} da terminale si possono aggiungere alcune opzioni:
+
+\begin{itemize}
+  \item \texttt{-{}-json <file>} --- apre il diagramma salvato nel file JSON indicato, direttamente
+        nella scheda del suo tipo. Il file si può indicare anche da solo, senza
+        \texttt{-{}-json}.
+  \item \texttt{-{}-png <file>} --- esporta il diagramma nell'immagine indicata (con estensione
+        \texttt{.png}) e la aggiorna automaticamente a ogni modifica (richiede il file JSON).
+  \item \texttt{-h}, \texttt{-{}-help} --- mostra l'elenco delle opzioni ed esce.
+\end{itemize}
+
+Per esempio, per modificare un diagramma tenendo sempre aggiornata la sua immagine:
+
+\begin{center}
+  \texttt{java -jar JDER.jar -{}-json diagramma.json -{}-png diagramma.png}
+\end{center}
+
+Con \texttt{-{}-png} l'esportazione automatica (vedi sezione~\ref{sec:autoexport}) parte già
+attiva e si può disattivare dal menu \menu{File}. Il file JSON invece non viene salvato da solo:
+si salva come al solito oppure attivando il salvataggio automatico. Se un'opzione non è valida o
+il file non si può aprire, il motivo viene scritto nel terminale e l'applicazione non si apre.
+
 % =============================================================
 \section{Interfaccia Principale}
 \label{sec:interfaccia}
@@ -302,8 +327,8 @@ segnate con un pallino (\textbullet) accanto al nome.
 La barra dei menu contiene i comandi di tutta l'applicazione, con le relative scorciatoie:
 
 \begin{itemize}
-  \item \menu{File} --- Nuovo Diagramma, Apri Diagramma, Salva, Salva con nome, Esporta come PNG
-        (e Esci su Windows e Linux).
+  \item \menu{File} --- Nuovo Diagramma, Apri Diagramma, Salva, Salva con nome, Salvataggio
+        Automatico, Esporta come PNG, Esportazione Automatica (e Esci su Windows e Linux).
   \item \menu{Modifica} --- Annulla, Ripristina, Elimina Elemento Selezionato.
   \item \menu{Vista} --- zoom, scelta del tipo di diagramma, Tema Scuro, Palette Colori (e Schermo
         Intero su Windows e Linux).
@@ -325,8 +350,9 @@ La barra degli strumenti principale contiene, da sinistra a destra:
   \item \textbf{Titolo} --- mostra il nome del file aperto e un asterisco (\texttt{*}) se ci sono
         modifiche non salvate.
   \item Solo su macOS, i pulsanti \uielement{File} (nuovo, apri, salva, salva con nome,
-        esporta, elimina), \uielement{Vista} (Zoom In, Zoom Out, Reimposta Zoom) ed
-        \uielement{Esporta} (esportazione come immagine PNG).
+        salvataggio automatico, esporta, esportazione automatica, elimina), \uielement{Vista}
+        (Zoom In, Zoom Out, Reimposta Zoom) ed \uielement{Esporta} (esportazione come immagine
+        PNG ed esportazione automatica).
   \item \textbf{Selettore palette} --- un cerchio colorato che apre un selettore per scegliere
         tra le 20 palette di colori Material disponibili.
   \item \textbf{Interruttore tema} --- alterna tra modalità chiara e modalità scura.
@@ -1244,6 +1270,17 @@ indipendentemente dal tipo di diagramma.
   per indicare la presenza di modifiche non salvate.
 \end{tcolorbox}
 
+\subsubsection{Salvataggio automatico}
+
+Dopo aver salvato il diagramma almeno una volta si può attivare \menu{File} $\to$
+\menu{Salvataggio Automatico}: da quel momento ogni modifica viene salvata da sola nello stesso
+file, mezzo secondo dopo averla fatta (durante un trascinamento si aspetta che l'elemento sia
+fermo), e l'asterisco nel titolo scompare. La voce resta disattivata finché il diagramma non ha
+un file; si spegne creando un nuovo diagramma o aprendone un altro, mentre con \menu{Salva con
+nome\ldots} continua sul nuovo file. Le modifiche ancora in attesa vengono salvate anche prima di
+creare o aprire un diagramma, cambiando scheda e chiudendo \jder{}, che quindi non chiede
+conferma per quelle modifiche.
+
 \subsection{Il Gestore File}
 \label{sec:filemanager}
 
@@ -1282,6 +1319,22 @@ vuoto non può essere esportato.
   Per ottenere un'immagine di dimensioni adeguate, assicurarsi che tutti gli elementi del
   diagramma siano posizionati in modo ordinato prima di esportare.
 \end{tcolorbox}
+
+\subsubsection{Esportazione automatica}
+\label{sec:autoexport}
+
+Dopo la prima esportazione si può attivare \menu{File} $\to$ \menu{Esportazione Automatica} (su
+macOS anche dal pulsante \uielement{Esporta}): da quel momento l'immagine viene riesportata nello
+stesso file PNG a ogni modifica del diagramma, e anche cambiando la palette di colori, così resta
+sempre allineata, per esempio in un documento o in una presentazione che la include. Il file viene
+sostituito solo quando la nuova immagine è completa, quindi chi lo sta leggendo non ne vede mai
+una a metà. A differenza dell'esportazione manuale, se il diagramma viene svuotato anche
+l'immagine diventa vuota.
+
+La voce resta disattivata finché il diagramma non è stato esportato; si spegne creando un nuovo
+diagramma o aprendone un altro, e un'esportazione manuale in un altro file sposta l'esportazione
+automatica sul nuovo file. Si può attivare già all'avvio con l'opzione \texttt{-{}-png} (vedi
+sezione~\ref{sec:cli}).
 
 \subsection{Annulla e Ripristina}
 

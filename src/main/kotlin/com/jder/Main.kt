@@ -47,6 +47,7 @@ import com.jder.ui.components.LocalDiagramMenuHost
 import com.jder.ui.components.WindowMenuBar
 import com.jder.ui.components.appMenus
 import com.jder.ui.components.diagramTypeKeys
+import com.jder.ui.components.lastUsedDirectory
 import com.jder.ui.components.toggleFullscreen
 import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.dialogs.UpdateAvailableDialog
@@ -57,28 +58,55 @@ import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.setDockIcon
 import java.awt.Dimension
 
-fun main() {
+fun main(args: Array<String>) {
+    val options =
+        try {
+            parseCommandLine(args)
+        } catch (e: CommandLineException) {
+            exitWithError(e.message, showUsageHint = true)
+        }
+    if (options.showHelp) {
+        println(COMMAND_LINE_USAGE)
+        return
+    }
+    val erState = ERDiagramState()
+    val relationalState = RelationalDiagramState()
+    val useCaseState = UseCaseDiagramState()
+    val sequenceState = SequenceDiagramState()
+    val classState = ClassDiagramState()
+    val logicState = LogicDiagramState()
+    val erRepository = ERDiagramRepository()
+    val relationalRepository = RelationalDiagramRepository()
+    val useCaseRepository = UseCaseDiagramRepository()
+    val sequenceRepository = SequenceDiagramRepository()
+    val classRepository = ClassDiagramRepository()
+    val logicRepository = LogicDiagramRepository()
+    val startupType =
+        options.jsonFile?.let { file ->
+            val type = readDiagramType(file)
+            when (type) {
+                DiagramType.ER -> openStartupDiagram(erState, erRepository, options)
+                DiagramType.RELATIONAL ->
+                    openStartupDiagram(relationalState, relationalRepository, options)
+                DiagramType.CLASS_DIAGRAM ->
+                    openStartupDiagram(classState, classRepository, options)
+                DiagramType.USE_CASE -> openStartupDiagram(useCaseState, useCaseRepository, options)
+                DiagramType.SEQUENCE ->
+                    openStartupDiagram(sequenceState, sequenceRepository, options)
+                DiagramType.LOGIC -> openStartupDiagram(logicState, logicRepository, options)
+            }
+            file.parentFile?.let { lastUsedDirectory = it }
+            type
+        }
     System.setProperty("apple.awt.application.name", "JDER")
     System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS")
     System.setProperty("compose.application.configure.swing.globals", "true")
     setDockIcon("jder_icon.png")
     application {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
-        val erState = remember { ERDiagramState() }
-        val relationalState = remember { RelationalDiagramState() }
-        val useCaseState = remember { UseCaseDiagramState() }
-        val sequenceState = remember { SequenceDiagramState() }
-        val classState = remember { ClassDiagramState() }
-        val logicState = remember { LogicDiagramState() }
         val themeState = remember { ThemeState() }
-        val erRepository = remember { ERDiagramRepository() }
-        val relationalRepository = remember { RelationalDiagramRepository() }
-        val useCaseRepository = remember { UseCaseDiagramRepository() }
-        val sequenceRepository = remember { SequenceDiagramRepository() }
-        val classRepository = remember { ClassDiagramRepository() }
-        val logicRepository = remember { LogicDiagramRepository() }
         val menuHost = remember { DiagramMenuHost() }
-        var currentType by remember { mutableStateOf(DiagramType.ER) }
+        var currentType by remember { mutableStateOf(startupType ?: DiagramType.ER) }
         var pendingNewDiagram by remember { mutableStateOf<DiagramType?>(null) }
         var showExitDialog by remember { mutableStateOf(false) }
         var showAboutDialog by remember { mutableStateOf(false) }
@@ -102,7 +130,8 @@ fun main() {
                 DiagramType.LOGIC -> logicState
             }
         fun requestExit() {
-            if (hasUnsavedChanges()) {
+            val isFlushed = menuHost.commands?.flushAutoSave?.invoke() != false
+            if (!isFlushed || hasUnsavedChanges()) {
                 showExitDialog = true
             } else {
                 exitApplication()

@@ -57,7 +57,7 @@ enum class FileManagerMode {
     OPEN,
 }
 
-private var lastUsedDirectory = File(System.getProperty("user.home"))
+var lastUsedDirectory = File(System.getProperty("user.home"))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

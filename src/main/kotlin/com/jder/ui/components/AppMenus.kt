@@ -27,10 +27,13 @@ class DiagramMenuCommands(
     val onOpenDiagram: () -> Unit,
     val onSaveDiagram: () -> Unit,
     val onSaveAsDiagram: () -> Unit,
+    val onToggleAutoSave: () -> Unit,
     val onExportPNG: () -> Unit,
+    val onToggleAutoExport: () -> Unit,
     val onUndo: () -> Unit,
     val onRedo: () -> Unit,
     val onDeleteSelected: () -> Unit,
+    val flushAutoSave: () -> Boolean,
     val tools: () -> List<DiagramTool>,
     val selectionMenu: () -> DiagramSelectionMenu?,
 )
@@ -64,6 +67,7 @@ sealed class AppMenuEntry {
         val label: String,
         val isChecked: Boolean,
         val shortcut: MenuShortcut? = null,
+        val isEnabled: Boolean = true,
         val onToggle: () -> Unit,
     ) : AppMenuEntry()
 
@@ -103,6 +107,22 @@ fun appMenus(
     if (isMacOS) add(AppMenu("Finestra") { windowEntries(windowState) })
     add(AppMenu("Aiuto") { helpEntries(uriHandler, onAbout) })
 }
+
+fun autoSaveToggle(state: DiagramEditorState<*>, onToggle: () -> Unit) =
+    AppMenuEntry.Toggle(
+        "Salvataggio Automatico",
+        isChecked = state.isAutoSaveEnabled,
+        isEnabled = state.currentFile != null,
+        onToggle = onToggle,
+    )
+
+fun autoExportToggle(state: DiagramEditorState<*>, onToggle: () -> Unit) =
+    AppMenuEntry.Toggle(
+        "Esportazione Automatica",
+        isChecked = state.isAutoExportEnabled,
+        isEnabled = state.imageFile != null,
+        onToggle = onToggle,
+    )
 
 fun toggleFullscreen(windowState: WindowState) {
     windowState.placement =
@@ -144,6 +164,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
                 onClick = commands.onSaveAsDiagram,
             )
         )
+        add(autoSaveToggle(commands.state, commands.onToggleAutoSave))
         add(AppMenuEntry.Separator)
         add(
             AppMenuEntry.Action(
@@ -153,6 +174,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
                 onClick = commands.onExportPNG,
             )
         )
+        add(autoExportToggle(commands.state, commands.onToggleAutoExport))
         if (!isMacOS) {
             add(AppMenuEntry.Separator)
             add(

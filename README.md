@@ -153,8 +153,10 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 ### 💾 Salvataggio & Esportazione
 
 - Salva i diagrammi in formato **JSON** (`.json`)
+- **Salvataggio automatico**: dopo il primo salvataggio si può attivare **File → Salvataggio Automatico** e ogni modifica viene salvata da sola nello stesso file
 - Apri e ricarica diagrammi salvati in precedenza (un file di un altro tipo di diagramma viene riconosciuto e non sovrascritto per errore)
 - Esporta qualsiasi diagramma come **immagine PNG** ad alta risoluzione, identica a quanto mostrato sulla lavagna e ritagliata sul contenuto
+- **Esportazione automatica**: dopo la prima esportazione si può attivare **File → Esportazione Automatica** e l'immagine PNG viene aggiornata a ogni modifica (comodo per tenerla sempre allineata in documenti e presentazioni)
 - Finestra di dialogo per modifiche non salvate alla chiusura o all'apertura di un nuovo diagramma
 - Cronologia annulla/ripeti per ogni diagramma (fino a 50 stati)
 
@@ -200,6 +202,24 @@ java -jar JDER.jar
 
 All'avvio JDER controlla l'ultima release su GitHub: se il `JDER.jar` pubblicato è un file diverso da quello in uso (anche se ha lo stesso nome), propone di scaricare l'aggiornamento.
 
+### Riga di comando
+
+`JDER.jar` accetta anche alcune opzioni:
+
+| Opzione         | Descrizione                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `--json <file>` | Apre il diagramma salvato nel file JSON, direttamente nella scheda del suo tipo                                                           |
+| `--png <file>`  | Esporta il diagramma nell'immagine indicata (con estensione `.png`) e la aggiorna automaticamente a ogni modifica (richiede il file JSON) |
+| `-h`, `--help`  | Mostra l'elenco delle opzioni ed esce                                                                                                     |
+
+Per esempio, per modificare un diagramma tenendo sempre aggiornata la sua immagine:
+
+```bash
+java -jar JDER.jar --json diagramma.json --png diagramma.png
+```
+
+Con `--png` l'esportazione automatica parte già attiva e si può disattivare dal menu **File**. Il file JSON invece non viene salvato da solo: si salva come al solito oppure attivando **File → Salvataggio Automatico**. Se un'opzione non è valida o il file non si può aprire, JDER scrive il motivo nel terminale ed esce senza aprire la finestra.
+
 ### Diagrammi di esempio
 
 La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito, in versione chiara e scura, sono generati da questi file.
@@ -229,6 +249,7 @@ src/
 └── main/
     ├── kotlin/com/jder/
     │   ├── Main.kt                    # Punto di ingresso dell'app
+    │   ├── CommandLine.kt             # Opzioni da riga di comando (--json, --png)
     │   ├── data/
     │   │   ├── DiagramFileRepository.kt       # Persistenza JSON generica con riconoscimento del tipo
     │   │   ├── ERDiagramRepository.kt         # Persistenza JSON E/R

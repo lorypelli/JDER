@@ -9,11 +9,12 @@ import org.jetbrains.skia.Image
 class ImageExporter {
     fun exportToPNG(imageBitmap: ImageBitmap, file: File): Result<Unit> =
         try {
-            val skiaBitmap = imageBitmap.asSkiaBitmap()
-            val image = Image.makeFromBitmap(skiaBitmap)
-            val data = image.encodeToData(EncodedImageFormat.PNG)
-            data?.let {
-                file.writeBytes(it.bytes)
+            val data =
+                Image.makeFromBitmap(imageBitmap.asSkiaBitmap()).use {
+                    it.encodeToData(EncodedImageFormat.PNG)
+                }
+            data?.use {
+                file.writeBytesAtomically(it.bytes)
                 Result.success(Unit)
             } ?: Result.failure(Exception("Impossibile codificare l'immagine"))
         } catch (e: Exception) {

@@ -112,7 +112,13 @@ private fun WindowMenuEntries(entries: List<AppMenuEntry>, onAction: (() -> Unit
                     onAction(entry.onClick)
                 }
             is AppMenuEntry.Toggle ->
-                WindowMenuItem(entry.label, entry.shortcut, hasChecks, entry.isChecked) {
+                WindowMenuItem(
+                    entry.label,
+                    entry.shortcut,
+                    hasChecks,
+                    entry.isChecked,
+                    isEnabled = entry.isEnabled,
+                ) {
                     onAction(entry.onToggle)
                 }
             is AppMenuEntry.Choice ->
