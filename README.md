@@ -100,6 +100,7 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - **Modalità Chiara & Scura** con transizione animata fluida
 - **20 palette di colori Material ufficiali** selezionabili a runtime:
   - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero
+- **Scelta del tipo di diagramma** all'avvio, con l'anteprima di ogni tipo in versione chiara o scura secondo il tema (clic sull'anteprima oppure `Ctrl` + `1` … `6`)
 - **Navigazione a schede** tra i sei tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
 - **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
 - **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
@@ -222,7 +223,7 @@ Con `--png` l'esportazione automatica parte già attiva e si può disattivare da
 
 ### Diagrammi di esempio
 
-La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito, in versione chiara e scura, sono generati da questi file.
+La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza e logico), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito, in versione chiara e scura, sono generati da questi file e la build li include anche in `JDER.jar`, come anteprime nella scelta del tipo di diagramma.
 
 ### Compilare dal sorgente
 

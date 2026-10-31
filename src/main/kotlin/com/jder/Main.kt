@@ -106,7 +106,7 @@ fun main(args: Array<String>) {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
         val themeState = remember { ThemeState() }
         val menuHost = remember { DiagramMenuHost() }
-        var currentType by remember { mutableStateOf(startupType ?: DiagramType.ER) }
+        var currentType by remember { mutableStateOf(startupType) }
         var pendingNewDiagram by remember { mutableStateOf<DiagramType?>(null) }
         var showExitDialog by remember { mutableStateOf(false) }
         var showAboutDialog by remember { mutableStateOf(false) }

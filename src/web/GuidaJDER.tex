@@ -251,6 +251,12 @@ Per avviare l'applicazione:
   e che la variabile di ambiente \texttt{JAVA\_HOME} sia configurata correttamente.
 \end{tcolorbox}
 
+Se non si indica un file da aprire (vedi sezione~\ref{sec:cli}), \jder{} si apre mostrando la
+finestra \uielement{Scegli il tipo di diagramma}, con un'anteprima di ogni tipo nella versione
+chiara o scura secondo il tema attivo (tema e palette si possono cambiare anche da qui). Facendo
+clic su un'anteprima, oppure con \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{6}, si apre la
+scheda del tipo scelto; gli altri tipi restano raggiungibili dalla barra delle schede.
+
 All'avvio \jder{} controlla l'ultima versione pubblicata su GitHub: se il \texttt{JDER.jar}
 pubblicato è diverso da quello in uso, la finestra \uielement{Aggiornamento disponibile} propone
 di scaricarlo (\uielement{Scarica}) oppure di rimandare (\uielement{Più tardi}).
@@ -284,7 +290,8 @@ il file non si può aprire, il motivo viene scritto nel terminale e l'applicazio
 \section{Interfaccia Principale}
 \label{sec:interfaccia}
 
-All'avvio, \jder{} mostra una finestra massimizzata con i seguenti componenti principali:
+Scelto il tipo di diagramma, \jder{} mostra una finestra massimizzata con i seguenti componenti
+principali:
 
 \begin{enumerate}
   \item \textbf{Barra dei menu} --- su macOS è la barra dei menu del sistema, su Windows e Linux si

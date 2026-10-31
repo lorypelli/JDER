@@ -87,7 +87,7 @@ fun appMenus(
     commands: DiagramMenuCommands?,
     themeState: ThemeState,
     windowState: WindowState,
-    currentType: DiagramType,
+    currentType: DiagramType?,
     onTypeChange: (DiagramType) -> Unit,
     onAbout: () -> Unit,
     onExit: () -> Unit,
@@ -217,7 +217,7 @@ private fun viewEntries(
     state: DiagramEditorState<*>,
     themeState: ThemeState,
     windowState: WindowState,
-    currentType: DiagramType,
+    currentType: DiagramType?,
     onTypeChange: (DiagramType) -> Unit,
 ): List<AppMenuEntry> = buildList {
     add(AppMenuEntry.Action("Zoom In", commandShortcut(Key.Plus, "+"), onClick = state::zoomIn))
