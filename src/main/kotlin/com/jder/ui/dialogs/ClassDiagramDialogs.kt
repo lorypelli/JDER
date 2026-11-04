@@ -97,15 +97,17 @@ fun ClassMemberDialog(
     isMethod: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (member: ClassMember) -> Unit,
+    initialMember: ClassMember? = null,
 ) {
-    var memberName by remember { mutableStateOf("") }
-    var memberType by remember { mutableStateOf("") }
-    var visibility by remember { mutableStateOf(Visibility.PUBLIC) }
-    var isStatic by remember { mutableStateOf(false) }
-    var isAbstract by remember { mutableStateOf(false) }
+    var memberName by remember { mutableStateOf(initialMember?.name.orEmpty()) }
+    var memberType by remember { mutableStateOf(initialMember?.type.orEmpty()) }
+    var visibility by remember { mutableStateOf(initialMember?.visibility ?: Visibility.PUBLIC) }
+    var isStatic by remember { mutableStateOf(initialMember?.isStatic ?: false) }
+    var isAbstract by remember { mutableStateOf(initialMember?.isAbstract ?: false) }
+    val noun = if (isMethod) "Metodo" else "Attributo"
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (isMethod) "Aggiungi Metodo" else "Aggiungi Attributo") },
+        title = { Text(if (initialMember == null) "Aggiungi $noun" else "Modifica $noun") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(
@@ -156,7 +158,7 @@ fun ClassMemberDialog(
                 onClick = {
                     onConfirm(
                         ClassMember(
-                            id = UUID.randomUUID().toString(),
+                            id = initialMember?.id ?: UUID.randomUUID().toString(),
                             name = memberName,
                             type = memberType,
                             visibility = visibility,
@@ -168,7 +170,7 @@ fun ClassMemberDialog(
                 },
                 enabled = memberName.isNotBlank(),
             ) {
-                Text("Aggiungi")
+                Text(if (initialMember == null) "Aggiungi" else "Conferma")
             }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },

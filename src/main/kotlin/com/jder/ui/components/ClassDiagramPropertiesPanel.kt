@@ -27,6 +27,7 @@ fun ClassDiagramPropertiesPanel(
     onEditNote: () -> Unit,
     onAddAttribute: () -> Unit,
     onAddMethod: () -> Unit,
+    onEditMember: (ClassMember) -> Unit,
     onDeleteMember: (memberId: String) -> Unit,
     onClose: () -> Unit,
 ) {
@@ -45,6 +46,7 @@ fun ClassDiagramPropertiesPanel(
                         onEditClass,
                         onAddAttribute,
                         onAddMethod,
+                        onEditMember,
                         onDeleteMember,
                     )
                 }
@@ -68,6 +70,7 @@ private fun ClassEntityPropertiesContent(
     onEdit: () -> Unit,
     onAddAttribute: () -> Unit,
     onAddMethod: () -> Unit,
+    onEditMember: (ClassMember) -> Unit,
     onDeleteMember: (memberId: String) -> Unit,
 ) {
     PropertyCard("Classe: ${entity.name}") {
@@ -78,8 +81,8 @@ private fun ClassEntityPropertiesContent(
     PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
     PropertyOutlinedButton("Aggiungi Attributo", Icons.Default.Add, onAddAttribute)
     PropertyOutlinedButton("Aggiungi Metodo", Icons.Default.Add, onAddMethod)
-    MemberList("Attributi:", entity.attributes, onDeleteMember)
-    MemberList("Metodi:", entity.methods, onDeleteMember)
+    MemberList("Attributi:", entity.attributes, onEditMember, onDeleteMember)
+    MemberList("Metodi:", entity.methods, onEditMember, onDeleteMember)
     DocumentationCard(entity.documentation)
 }
 
@@ -87,6 +90,7 @@ private fun ClassEntityPropertiesContent(
 private fun MemberList(
     title: String,
     members: List<ClassMember>,
+    onEdit: (ClassMember) -> Unit,
     onDelete: (memberId: String) -> Unit,
 ) {
     if (members.isEmpty()) return
@@ -97,6 +101,8 @@ private fun MemberList(
             subtitle = memberDetails(it),
             deleteDescription = "Elimina membro",
             onDelete = { onDelete(it.id) },
+            editDescription = "Modifica membro",
+            onEdit = { onEdit(it) },
         )
     }
 }

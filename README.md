@@ -52,6 +52,7 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
   - Modificatori di visibilità: Pubblico (`+`), Privato (`-`), Protetto (`#`), Package (`~`)
   - Flag per membri statici e astratti
   - Annotazione del tipo per ogni membro
+  - Modifica dei membri già creati dal pannello Proprietà
 - Disegna **Relazioni** tra classi:
   - Associazione, Aggregazione, Composizione, Ereditarietà, Realizzazione, Dipendenza
   - Etichette di molteplicità sorgente e destinazione su ogni relazione

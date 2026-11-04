@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import com.jder.data.ClassDiagramRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassDiagramToolMode
+import com.jder.domain.model.ClassMember
 import com.jder.ui.components.ClassDiagramCanvas
 import com.jder.ui.components.ClassDiagramContextMenuType
 import com.jder.ui.components.ClassDiagramPropertiesPanel
@@ -45,6 +46,7 @@ fun ClassDiagramScreen(
     var showRelationDialog by remember { mutableStateOf(false) }
     var showNoteDialog by remember { mutableStateOf(false) }
     var showAddAttributeDialog by remember { mutableStateOf(false) }
+    var memberToEdit by remember { mutableStateOf<ClassMember?>(null) }
     var showAddMethodDialog by remember { mutableStateOf(false) }
     var pendingRelation by remember { mutableStateOf<PendingRelation?>(null) }
     var contextMenu by remember {
@@ -161,6 +163,7 @@ fun ClassDiagramScreen(
                 onEditNote = { showNoteDialog = true },
                 onAddAttribute = { showAddAttributeDialog = true },
                 onAddMethod = { showAddMethodDialog = true },
+                onEditMember = { memberToEdit = it },
                 onDeleteMember = { memberId ->
                     state.selectedClassId?.let {
                         state.deleteMemberFromClass(it, memberId)
@@ -253,6 +256,20 @@ fun ClassDiagramScreen(
                     },
                 )
             }
+    }
+    memberToEdit?.let { member ->
+        state.selectedClassId?.let { classId ->
+            ClassMemberDialog(
+                isMethod = state.diagram.classes.any { c -> c.methods.any { it.id == member.id } },
+                initialMember = member,
+                onDismiss = { memberToEdit = null },
+                onConfirm = { updated ->
+                    state.updateMemberInClass(classId, updated)
+                    memberToEdit = null
+                    Toasts.success("Membro modificato")
+                },
+            )
+        }
     }
     if (showAddAttributeDialog) {
         state.selectedClassId?.let { classId ->

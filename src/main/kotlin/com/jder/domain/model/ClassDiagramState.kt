@@ -148,6 +148,15 @@ class ClassDiagramState :
         }
     }
 
+    fun updateMemberInClass(classId: String, member: ClassMember) {
+        updateClass(classId) {
+            it.copy(
+                attributes = it.attributes.map { old -> if (old.id == member.id) member else old },
+                methods = it.methods.map { old -> if (old.id == member.id) member else old },
+            )
+        }
+    }
+
     fun deleteMemberFromClass(classId: String, memberId: String) {
         updateClass(classId) {
             it.copy(
