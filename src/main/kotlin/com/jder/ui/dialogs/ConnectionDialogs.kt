@@ -25,12 +25,14 @@ import com.jder.domain.model.Entity
 @Composable
 fun CreateConnectionDialog(
     entities: List<Entity>,
+    emptyMessage: String,
     onDismiss: () -> Unit,
     onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
     ConnectionDialog(
         title = "Crea Connessione",
         entities = entities,
+        emptyMessage = emptyMessage,
         initialEntityId = null,
         initialCardinality = Cardinality.ONE,
         onDismiss = onDismiss,
@@ -49,6 +51,7 @@ fun EditConnectionDialog(
     ConnectionDialog(
         title = "Modifica Connessione",
         entities = entities,
+        emptyMessage = "Nessuna entità disponibile.",
         initialEntityId = currentEntityId,
         initialCardinality = currentCardinality,
         onDismiss = onDismiss,
@@ -61,6 +64,7 @@ fun EditConnectionDialog(
 private fun ConnectionDialog(
     title: String,
     entities: List<Entity>,
+    emptyMessage: String,
     initialEntityId: String?,
     initialCardinality: Cardinality,
     onDismiss: () -> Unit,
@@ -79,11 +83,7 @@ private fun ConnectionDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 if (entities.isEmpty()) {
-                    Text(
-                        text =
-                            "Nessuna entità disponibile. Tutte le entità sono già connesse a questa relazione.",
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                    Text(text = emptyMessage, modifier = Modifier.fillMaxWidth())
                 } else {
                     ExposedDropdownMenuBox(
                         expanded = expandedEntity,

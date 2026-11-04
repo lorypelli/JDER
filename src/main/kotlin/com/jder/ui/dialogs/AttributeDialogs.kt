@@ -269,9 +269,15 @@ private fun AttributeDialog(
                 onClick = {
                     if (name.isNotBlank()) {
                         val finalIsPrimaryKey = attributeType == AttributeType.KEY || isPrimaryKey
+                        val base =
+                            initialAttribute
+                                ?: Attribute(
+                                    id = UUID.randomUUID().toString(),
+                                    name = name,
+                                    type = attributeType,
+                                )
                         val newAttribute =
-                            Attribute(
-                                id = initialAttribute?.id ?: UUID.randomUUID().toString(),
+                            base.copy(
                                 name = name,
                                 type = attributeType,
                                 isPrimaryKey = finalIsPrimaryKey,

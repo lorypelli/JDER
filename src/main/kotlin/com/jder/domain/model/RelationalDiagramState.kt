@@ -128,7 +128,7 @@ class RelationalDiagramState :
                             }
                         }
                 )
-                .withoutReferences { it.columnId == columnId }
+                .withoutReferences { it.tableId == tableId && it.columnId == columnId }
         }
         pruneSelection()
     }

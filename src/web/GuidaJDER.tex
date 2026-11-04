@@ -588,8 +588,10 @@ Quando una relazione coinvolge due entità con cardinalità N-a-N (entrambe N, (
 \end{enumerate}
 
 Il risultato è un'entità con lo stesso nome della relazione, collegata alle due entità originali
-con le cardinalità appropriate. Questa operazione è disponibile solo per relazioni con esattamente
-due connessioni entrambe di tipo ``molti''.
+da due nuove relazioni: la nuova entità partecipa a ciascuna con cardinalità (1,1), mentre le
+entità originali mantengono la cardinalità che avevano nella relazione di partenza. Questa
+operazione è disponibile solo per relazioni con esattamente due connessioni entrambe di tipo
+``molti''.
 
 \subsection{Attributi}
 

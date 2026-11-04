@@ -128,8 +128,9 @@ fun ERDiagramScreen(
         themeState = themeState,
         renderImage = { renderERDiagramToBitmap(state.diagram, it) },
         emptyHint =
-            "Scegli Entità, Relazione o Nota dalla barra degli strumenti e clicca sulla lavagna.\n" +
-                "Per collegare due entità, scegli Relazione e clicca prima sulla prima entità e poi sulla seconda.",
+            "Scegli Entità, Relazione o Nota dalla barra degli strumenti e clicca sulla " +
+                "lavagna.\nPer collegare una relazione alle entità, selezionala e usa " +
+                "Aggiungi Connessione nel pannello Proprietà o nel menu contestuale.",
         tools =
             listOf(
                 DiagramTool.Mode(
@@ -309,6 +310,13 @@ fun ERDiagramScreen(
                     ?.toSet() ?: emptySet()
             CreateConnectionDialog(
                 entities = state.diagram.entities.filter { it.id !in connectedIds },
+                emptyMessage =
+                    if (state.diagram.entities.isEmpty()) {
+                        "Il diagramma non ha ancora entità: creane una prima di aggiungere " +
+                            "connessioni."
+                    } else {
+                        "Tutte le entità sono già connesse a questa relazione."
+                    },
                 onDismiss = { showCreateConnectionDialog = false },
                 onConfirm = { entityId, cardinality ->
                     state.addConnection(relId, entityId, cardinality)

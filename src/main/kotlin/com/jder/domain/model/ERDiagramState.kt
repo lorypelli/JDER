@@ -310,8 +310,8 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo D
                     y = rel1Y,
                     connections =
                         listOf(
-                            Connection(entityId = newEntity.id, cardinality = conn1.cardinality),
-                            Connection(entityId = conn1.entityId, cardinality = Cardinality.ONE_ONE),
+                            Connection(entityId = newEntity.id, cardinality = Cardinality.ONE_ONE),
+                            Connection(entityId = conn1.entityId, cardinality = conn1.cardinality),
                         ),
                 ),
                 Relationship(
@@ -321,8 +321,8 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo D
                     y = rel2Y,
                     connections =
                         listOf(
-                            Connection(entityId = newEntity.id, cardinality = conn2.cardinality),
-                            Connection(entityId = conn2.entityId, cardinality = Cardinality.ONE_ONE),
+                            Connection(entityId = newEntity.id, cardinality = Cardinality.ONE_ONE),
+                            Connection(entityId = conn2.entityId, cardinality = conn2.cardinality),
                         ),
                 ),
             )
