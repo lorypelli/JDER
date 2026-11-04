@@ -22,4 +22,6 @@ enum class DiagramType(
         setOf("lifelines", "messages"),
     ),
     LOGIC("logic", "Diagramma Logico", "un diagramma logico", setOf("components", "wires")),
+    MEALY("mealy", "Macchina di Mealy", "una macchina di Mealy", setOf("states", "transitions")),
+    MOORE("moore", "Macchina di Moore", "una macchina di Moore", setOf("states", "transitions")),
 }

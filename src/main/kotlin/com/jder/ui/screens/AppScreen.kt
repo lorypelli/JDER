@@ -13,6 +13,7 @@ import com.jder.data.ERDiagramRepository
 import com.jder.data.LogicDiagramRepository
 import com.jder.data.RelationalDiagramRepository
 import com.jder.data.SequenceDiagramRepository
+import com.jder.data.StateMachineDiagramRepository
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.DiagramType
@@ -20,6 +21,7 @@ import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.RelationalDiagramState
 import com.jder.domain.model.SequenceDiagramState
+import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.components.DiagramTabRow
 import com.jder.ui.dialogs.DiagramTypeDialog
@@ -33,12 +35,16 @@ fun AppScreen(
     sequenceState: SequenceDiagramState,
     classState: ClassDiagramState,
     logicState: LogicDiagramState,
+    mealyState: StateMachineDiagramState,
+    mooreState: StateMachineDiagramState,
     erRepository: ERDiagramRepository,
     relationalRepository: RelationalDiagramRepository,
     useCaseRepository: UseCaseDiagramRepository,
     sequenceRepository: SequenceDiagramRepository,
     classRepository: ClassDiagramRepository,
     logicRepository: LogicDiagramRepository,
+    mealyRepository: StateMachineDiagramRepository,
+    mooreRepository: StateMachineDiagramRepository,
     themeState: ThemeState,
     currentType: DiagramType?,
     onTypeChange: (DiagramType) -> Unit,
@@ -60,6 +66,8 @@ fun AppScreen(
                     DiagramType.USE_CASE -> useCaseState.isModified
                     DiagramType.SEQUENCE -> sequenceState.isModified
                     DiagramType.LOGIC -> logicState.isModified
+                    DiagramType.MEALY -> mealyState.isModified
+                    DiagramType.MOORE -> mooreState.isModified
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -100,6 +108,18 @@ fun AppScreen(
                     LogicDiagramScreen(
                         state = logicState,
                         repository = logicRepository,
+                        themeState = themeState,
+                    )
+                DiagramType.MEALY ->
+                    StateMachineDiagramScreen(
+                        state = mealyState,
+                        repository = mealyRepository,
+                        themeState = themeState,
+                    )
+                DiagramType.MOORE ->
+                    StateMachineDiagramScreen(
+                        state = mooreState,
+                        repository = mooreRepository,
                         themeState = themeState,
                     )
             }

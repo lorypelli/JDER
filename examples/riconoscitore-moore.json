@@ -1,0 +1,95 @@
+{
+    "diagramType": "moore",
+    "name": "riconoscitore-moore",
+    "initialStateId": "s0",
+    "states": [
+        {
+            "id": "s0",
+            "name": "S0",
+            "x": 120.0,
+            "y": 240.0,
+            "output": "0"
+        },
+        {
+            "id": "s1",
+            "name": "S1",
+            "x": 350.0,
+            "y": 120.0,
+            "output": "0"
+        },
+        {
+            "id": "s2",
+            "name": "S2",
+            "x": 350.0,
+            "y": 360.0,
+            "output": "0"
+        },
+        {
+            "id": "s3",
+            "name": "S3",
+            "x": 580.0,
+            "y": 240.0,
+            "output": "1"
+        }
+    ],
+    "transitions": [
+        {
+            "id": "s0-0",
+            "sourceId": "s0",
+            "targetId": "s0",
+            "input": "0"
+        },
+        {
+            "id": "s0-1",
+            "sourceId": "s0",
+            "targetId": "s1",
+            "input": "1"
+        },
+        {
+            "id": "s1-1",
+            "sourceId": "s1",
+            "targetId": "s1",
+            "input": "1"
+        },
+        {
+            "id": "s1-0",
+            "sourceId": "s1",
+            "targetId": "s2",
+            "input": "0"
+        },
+        {
+            "id": "s2-1",
+            "sourceId": "s2",
+            "targetId": "s3",
+            "input": "1"
+        },
+        {
+            "id": "s2-0",
+            "sourceId": "s2",
+            "targetId": "s0",
+            "input": "0"
+        },
+        {
+            "id": "s3-1",
+            "sourceId": "s3",
+            "targetId": "s1",
+            "input": "1"
+        },
+        {
+            "id": "s3-0",
+            "sourceId": "s3",
+            "targetId": "s2",
+            "input": "0"
+        }
+    ],
+    "notes": [
+        {
+            "id": "nota",
+            "text": "Riconoscitore della sequenza 101 (Moore)\nL'uscita vale 1 nello stato S3, raggiunto dopo 1, 0, 1: serve uno stato in più rispetto a Mealy.",
+            "x": 560.0,
+            "y": 30.0,
+            "width": 220.0,
+            "height": 100.0
+        }
+    ]
+}

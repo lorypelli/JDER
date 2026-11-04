@@ -51,4 +51,6 @@ private val DiagramType.newDiagramLabel: String
             DiagramType.USE_CASE -> "Nuovo Diagramma dei Casi d'Uso"
             DiagramType.SEQUENCE -> "Nuovo Diagramma di Sequenza"
             DiagramType.LOGIC -> "Nuovo Diagramma Logico"
+            DiagramType.MEALY -> "Nuova Macchina di Mealy"
+            DiagramType.MOORE -> "Nuova Macchina di Moore"
         }

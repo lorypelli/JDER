@@ -5,23 +5,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta name="keywords"
-        content="JDER, Entity-Relationship, ER diagram, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, Sequence diagram, diagramma di sequenza, diagrammi logici, porte logiche, logic gates, tabella di verità, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
+        content="JDER, Entity-Relationship, ER diagram, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, Sequence diagram, diagramma di sequenza, diagrammi logici, porte logiche, logic gates, tabella di verità, macchina a stati finiti, automa a stati finiti, macchina di Mealy, macchina di Moore, finite state machine, tabella di transizione, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
     <meta name="author" content="LoryPelli" />
     <meta name="robots" content="index, follow" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
     <meta property="og:site_name" content="JDER" />
-    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici" />
+    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati" />
     <meta property="og:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta property="og:url" content="https://jder.it/" />
     <meta property="og:image" content="https://jder.it/favicon.ico" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici" />
+    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati" />
     <meta name="twitter:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici con porte logiche. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
+        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
     <meta name="twitter:image" content="https://jder.it/favicon.ico" />
     <link rel="icon" href="favicon.ico" />
     <link rel="canonical" href="https://jder.it/" />
@@ -32,9 +32,9 @@
         "@context": "https://schema.org",
         "@type": "WebPage",
         "url": "https://jder.it/",
-        "name": "JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici",
+        "name": "JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati",
         "inLanguage": "it-IT",
-        "description": "Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici. Scritto in Kotlin e Compose Multiplatform, gira su Windows, macOS e Linux.",
+        "description": "Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici e macchine a stati finiti di Mealy e di Moore. Scritto in Kotlin e Compose Multiplatform, gira su Windows, macOS e Linux.",
         "author": {
             "@type": "Person",
             "name": "LoryPelli",
@@ -66,14 +66,14 @@
         }
     }
     </script>
-    <title>JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici</title>
+    <title>JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati</title>
 </head>
 
 <body>
     <header>
         <div class="header-content">
             <h1>JDER</h1>
-            <p>Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici</p>
+            <p>Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati</p>
         </div>
         <button class="theme-toggle">
             <span class="theme-toggle-label">Tema scuro</span>
@@ -130,6 +130,18 @@
                     <h3>Diagramma Logico</h3>
                     <p>Porte logiche AND, OR, NOT, NAND, NOR, XOR e XNOR con simulazione in tempo reale, tabella di
                         verità ed espressioni booleane</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔁</div>
+                    <h3>Macchina di Mealy</h3>
+                    <p>Stati e transizioni con ingresso/uscita, stato iniziale e autoanelli, con tabella di transizione e
+                        simulazione di una sequenza di ingressi</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚦</div>
+                    <h3>Macchina di Moore</h3>
+                    <p>Stati con nome e uscita, controlli su determinismo e transizioni mancanti e simulazione passo per
+                        passo della sequenza di uscita</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
@@ -239,6 +251,32 @@
                             width="1600" height="900" loading="lazy" decoding="async" />
                     </a>
                     <figcaption>Diagramma Logico</figcaption>
+                </figure>
+                <figure class="screenshot-card">
+                    <a href="/screenshots/mealy-light.png" class="screenshot-light" target="_blank">
+                        <img src="/screenshots/mealy-light.png"
+                            alt="Macchina di Mealy in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
+                            width="1600" height="900" loading="lazy" decoding="async" />
+                    </a>
+                    <a href="/screenshots/mealy-dark.png" class="screenshot-dark" target="_blank">
+                        <img src="/screenshots/mealy-dark.png"
+                            alt="Macchina di Mealy in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
+                            width="1600" height="900" loading="lazy" decoding="async" />
+                    </a>
+                    <figcaption>Macchina di Mealy</figcaption>
+                </figure>
+                <figure class="screenshot-card">
+                    <a href="/screenshots/moore-light.png" class="screenshot-light" target="_blank">
+                        <img src="/screenshots/moore-light.png"
+                            alt="Macchina di Moore in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite negli stati"
+                            width="1600" height="900" loading="lazy" decoding="async" />
+                    </a>
+                    <a href="/screenshots/moore-dark.png" class="screenshot-dark" target="_blank">
+                        <img src="/screenshots/moore-dark.png"
+                            alt="Macchina di Moore in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite negli stati"
+                            width="1600" height="900" loading="lazy" decoding="async" />
+                    </a>
+                    <figcaption>Macchina di Moore</figcaption>
                 </figure>
             </div>
         </section>

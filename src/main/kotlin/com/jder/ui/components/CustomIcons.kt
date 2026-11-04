@@ -211,6 +211,38 @@ object CustomIcons {
         }
     }
 
+    val MachineState: ImageVector by lazy { outlineIcon("MachineState") { circle(12f, 12f, 8.5f) } }
+
+    val InitialState: ImageVector by lazy {
+        outlineIcon("InitialState", 1.8f) {
+            circle(15.5f, 12f, 6.5f)
+            moveTo(2f, 12f)
+            horizontalLineTo(9f)
+            moveTo(6.2f, 9.4f)
+            lineTo(9f, 12f)
+            lineTo(6.2f, 14.6f)
+        }
+    }
+
+    val FinalState: ImageVector by lazy {
+        outlineIcon("FinalState", 1.6f) {
+            circle(12f, 12f, 8.5f)
+            circle(12f, 12f, 5f)
+        }
+    }
+
+    val Transition: ImageVector by lazy {
+        outlineIcon("Transition", 1.6f) {
+            circle(5f, 16.5f, 3f)
+            circle(19f, 16.5f, 3f)
+            moveTo(6.5f, 13.9f)
+            quadTo(12f, 4f, 17.5f, 13.9f)
+            moveTo(14.3f, 12.3f)
+            lineTo(17.5f, 13.9f)
+            lineTo(17.7f, 10.3f)
+        }
+    }
+
     val AndGate: ImageVector by lazy {
         outlineIcon("AndGate", 1.6f) {
             moveTo(6f, 6f)

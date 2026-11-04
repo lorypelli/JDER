@@ -1,0 +1,80 @@
+{
+    "diagramType": "mealy",
+    "name": "riconoscitore-mealy",
+    "initialStateId": "s0",
+    "states": [
+        {
+            "id": "s0",
+            "name": "S0",
+            "x": 140.0,
+            "y": 260.0
+        },
+        {
+            "id": "s1",
+            "name": "S1",
+            "x": 400.0,
+            "y": 140.0
+        },
+        {
+            "id": "s2",
+            "name": "S2",
+            "x": 660.0,
+            "y": 260.0
+        }
+    ],
+    "transitions": [
+        {
+            "id": "s0-0",
+            "sourceId": "s0",
+            "targetId": "s0",
+            "input": "0",
+            "output": "0"
+        },
+        {
+            "id": "s0-1",
+            "sourceId": "s0",
+            "targetId": "s1",
+            "input": "1",
+            "output": "0"
+        },
+        {
+            "id": "s1-1",
+            "sourceId": "s1",
+            "targetId": "s1",
+            "input": "1",
+            "output": "0"
+        },
+        {
+            "id": "s1-0",
+            "sourceId": "s1",
+            "targetId": "s2",
+            "input": "0",
+            "output": "0"
+        },
+        {
+            "id": "s2-1",
+            "sourceId": "s2",
+            "targetId": "s1",
+            "input": "1",
+            "output": "1"
+        },
+        {
+            "id": "s2-0",
+            "sourceId": "s2",
+            "targetId": "s0",
+            "input": "0",
+            "output": "0",
+            "bend": -0.3
+        }
+    ],
+    "notes": [
+        {
+            "id": "nota",
+            "text": "Riconoscitore della sequenza 101 (Mealy)\nL'uscita vale 1 sulla transizione che completa 1, 0, 1: bastano tre stati.",
+            "x": 250.0,
+            "y": 385.0,
+            "width": 300.0,
+            "height": 64.0
+        }
+    ]
+}

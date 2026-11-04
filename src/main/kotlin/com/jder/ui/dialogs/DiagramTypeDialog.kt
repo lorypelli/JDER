@@ -7,8 +7,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,7 +58,10 @@ import com.jder.ui.utils.shortcutLabel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-private const val TYPES_PER_ROW = 3
+private const val WIDE_COLUMNS = 4
+private const val NARROW_COLUMNS = 3
+private val dialogMaxWidth = 1100.dp
+private val wideLayoutMinWidth = 1040.dp
 private const val NO_BREAK_SPACE = '\u00A0'
 
 @Composable
@@ -75,7 +80,7 @@ fun DiagramTypeDialog(themeState: ThemeState, onTypeSelected: (DiagramType) -> U
         Surface(
             modifier =
                 Modifier.padding(24.dp)
-                    .widthIn(max = 1000.dp)
+                    .widthIn(max = dialogMaxWidth)
                     .focusRequester(focusRequester)
                     .focusTarget()
                     .onPreviewKeyEvent { event ->
@@ -91,31 +96,44 @@ fun DiagramTypeDialog(themeState: ThemeState, onTypeSelected: (DiagramType) -> U
             color = MaterialTheme.colorScheme.surface,
             tonalElevation = 6.dp,
         ) {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()).padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Scegli il tipo di diagramma",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+            BoxWithConstraints {
+                val columns = if (maxWidth >= wideLayoutMinWidth) WIDE_COLUMNS else NARROW_COLUMNS
+                DiagramTypeGrid(themeState, columns, onTypeSelected)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiagramTypeGrid(
+    themeState: ThemeState,
+    columns: Int,
+    onTypeSelected: (DiagramType) -> Unit,
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()).padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Scegli il tipo di diagramma",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f),
+            )
+            ToolbarPaletteTheme(themeState)
+        }
+        DiagramType.entries.chunked(columns).forEach { rowTypes ->
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                rowTypes.forEach { type ->
+                    DiagramTypeCard(
+                        type = type,
+                        isDarkTheme = themeState.isDarkTheme,
+                        onClick = { onTypeSelected(type) },
                         modifier = Modifier.weight(1f),
                     )
-                    ToolbarPaletteTheme(themeState)
                 }
-                DiagramType.entries.chunked(TYPES_PER_ROW).forEach { rowTypes ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        rowTypes.forEach { type ->
-                            DiagramTypeCard(
-                                type = type,
-                                isDarkTheme = themeState.isDarkTheme,
-                                onClick = { onTypeSelected(type) },
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                    }
-                }
+                repeat(columns - rowTypes.size) { Spacer(Modifier.weight(1f)) }
             }
         }
     }

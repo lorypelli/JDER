@@ -16,6 +16,8 @@ import com.jder.domain.model.LogicDiagram
 import com.jder.domain.model.LogicSimulation
 import com.jder.domain.model.RelationalDiagram
 import com.jder.domain.model.SequenceDiagram
+import com.jder.domain.model.StateMachineDiagram
+import com.jder.domain.model.StateMachineKind
 import com.jder.domain.model.UseCaseDiagram
 import com.jder.ui.components.DiagramPalette
 import com.jder.ui.components.classDiagramBounds
@@ -25,11 +27,14 @@ import com.jder.ui.components.drawERDiagram
 import com.jder.ui.components.drawLogicDiagram
 import com.jder.ui.components.drawRelationalDiagram
 import com.jder.ui.components.drawSequenceDiagram
+import com.jder.ui.components.drawStateMachineDiagram
 import com.jder.ui.components.drawUseCaseDiagram
 import com.jder.ui.components.erDiagramBounds
 import com.jder.ui.components.logicDiagramBounds
 import com.jder.ui.components.relationalDiagramBounds
 import com.jder.ui.components.sequenceDiagramBounds
+import com.jder.ui.components.stateMachineDiagramBounds
+import com.jder.ui.components.stateMachineLayout
 import com.jder.ui.components.useCaseDiagramBounds
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -77,6 +82,21 @@ fun renderLogicDiagramToBitmap(
 ): ImageBitmap =
     renderDiagramImage(logicDiagramBounds(diagram, exportTextMeasurer), palette) {
         drawLogicDiagram(diagram, palette, exportTextMeasurer, simulation, showSignals)
+    }
+
+fun renderStateMachineDiagramToBitmap(
+    diagram: StateMachineDiagram,
+    kind: StateMachineKind,
+    palette: DiagramPalette,
+): ImageBitmap =
+    renderDiagramImage(stateMachineDiagramBounds(diagram, kind, exportTextMeasurer), palette) {
+        drawStateMachineDiagram(
+            diagram = diagram,
+            kind = kind,
+            layout = stateMachineLayout(diagram, kind, exportTextMeasurer),
+            palette = palette,
+            textMeasurer = exportTextMeasurer,
+        )
     }
 
 private fun renderDiagramImage(

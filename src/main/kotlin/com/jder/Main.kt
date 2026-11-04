@@ -30,6 +30,7 @@ import com.jder.data.ERDiagramRepository
 import com.jder.data.LogicDiagramRepository
 import com.jder.data.RelationalDiagramRepository
 import com.jder.data.SequenceDiagramRepository
+import com.jder.data.StateMachineDiagramRepository
 import com.jder.data.UpdateChecker
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.ClassDiagramState
@@ -39,6 +40,8 @@ import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.RelationalDiagramState
 import com.jder.domain.model.SequenceDiagramState
+import com.jder.domain.model.StateMachineDiagramState
+import com.jder.domain.model.StateMachineKind
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.ui.components.AppMenuBar
 import com.jder.ui.components.DiagramMenuHost
@@ -74,12 +77,16 @@ fun main(args: Array<String>) {
     val sequenceState = SequenceDiagramState()
     val classState = ClassDiagramState()
     val logicState = LogicDiagramState()
+    val mealyState = StateMachineDiagramState(StateMachineKind.MEALY)
+    val mooreState = StateMachineDiagramState(StateMachineKind.MOORE)
     val erRepository = ERDiagramRepository()
     val relationalRepository = RelationalDiagramRepository()
     val useCaseRepository = UseCaseDiagramRepository()
     val sequenceRepository = SequenceDiagramRepository()
     val classRepository = ClassDiagramRepository()
     val logicRepository = LogicDiagramRepository()
+    val mealyRepository = StateMachineDiagramRepository(StateMachineKind.MEALY)
+    val mooreRepository = StateMachineDiagramRepository(StateMachineKind.MOORE)
     fun openStartupDiagramAs(type: DiagramType, startupOptions: CommandLineOptions) =
         when (type) {
             DiagramType.ER -> openStartupDiagram(erState, erRepository, startupOptions)
@@ -92,6 +99,8 @@ fun main(args: Array<String>) {
             DiagramType.SEQUENCE ->
                 openStartupDiagram(sequenceState, sequenceRepository, startupOptions)
             DiagramType.LOGIC -> openStartupDiagram(logicState, logicRepository, startupOptions)
+            DiagramType.MEALY -> openStartupDiagram(mealyState, mealyRepository, startupOptions)
+            DiagramType.MOORE -> openStartupDiagram(mooreState, mooreRepository, startupOptions)
         }
     val startup = prepareStartupDiagram(options, ::openStartupDiagramAs)
     (options.jsonFile ?: options.pngFile)?.parentFile?.let { lastUsedDirectory = it }
@@ -121,7 +130,9 @@ fun main(args: Array<String>) {
                 useCaseState.isModified ||
                 sequenceState.isModified ||
                 classState.isModified ||
-                logicState.isModified
+                logicState.isModified ||
+                mealyState.isModified ||
+                mooreState.isModified
         fun diagramState(type: DiagramType): DiagramEditorState<*> =
             when (type) {
                 DiagramType.ER -> erState
@@ -130,6 +141,8 @@ fun main(args: Array<String>) {
                 DiagramType.USE_CASE -> useCaseState
                 DiagramType.SEQUENCE -> sequenceState
                 DiagramType.LOGIC -> logicState
+                DiagramType.MEALY -> mealyState
+                DiagramType.MOORE -> mooreState
             }
         fun selectType(type: DiagramType) {
             if (currentType == null) startup.pendingOptions?.let { openStartupDiagramAs(type, it) }
@@ -218,12 +231,16 @@ fun main(args: Array<String>) {
                             sequenceState = sequenceState,
                             classState = classState,
                             logicState = logicState,
+                            mealyState = mealyState,
+                            mooreState = mooreState,
                             erRepository = erRepository,
                             relationalRepository = relationalRepository,
                             useCaseRepository = useCaseRepository,
                             sequenceRepository = sequenceRepository,
                             classRepository = classRepository,
                             logicRepository = logicRepository,
+                            mealyRepository = mealyRepository,
+                            mooreRepository = mooreRepository,
                             themeState = themeState,
                             currentType = currentType,
                             onTypeChange = { selectType(it) },

@@ -115,7 +115,7 @@
   urlcolor=jderorange,
   pdfauthor={JDER Project},
   pdftitle={Guida Utente JDER},
-  pdfsubject={Editor di Diagrammi E/R, Schemi Logici, UML e Logici}
+  pdfsubject={Editor di Diagrammi E/R, Schemi Logici, UML, Logici e Macchine a Stati}
 ]{hyperref}
 
 % --- Comandi personalizzati -----------------------------------
@@ -165,8 +165,8 @@
   {\normalsize\color{white!85!coverbgA}
     Editor moderno e multipiattaforma per\\
     \textbf{Diagrammi Entità-Relazione} e \textbf{Schemi Logici},\\
-    \textbf{Diagrammi delle Classi}, \textbf{dei Casi d'Uso}, \textbf{di Sequenza}\\
-    e \textbf{Diagrammi Logici}
+    \textbf{Diagrammi delle Classi}, \textbf{dei Casi d'Uso}, \textbf{di Sequenza},\\
+    \textbf{Diagrammi Logici} e \textbf{Macchine di Mealy} e \textbf{di Moore}
   }
 
   \vspace{1.5cm}
@@ -199,13 +199,13 @@
 \label{sec:intro}
 
 \jder{} (\textit{Java Diagrammi E/R}) è un editor grafico open-source per la creazione di diagrammi
-di modellazione software, di basi di dati e di circuiti logici. L'applicazione è una riscrittura completa in \textbf{Kotlin}
+di modellazione software, di basi di dati, di circuiti logici e di macchine a stati finiti. L'applicazione è una riscrittura completa in \textbf{Kotlin}
 con \textbf{Jetpack Compose Multiplatform}, che sostituisce e migliora le versioni precedenti
 sviluppate da Alessandro Ballini e successivamente mantenute da Gianvito Pio.
 
 \subsection{Cosa si può fare con JDER}
 
-\jder{} supporta sei tipologie di diagramma distinte, ognuna accessibile tramite una scheda
+\jder{} supporta otto tipologie di diagramma distinte, ognuna accessibile tramite una scheda
 dedicata nell'interfaccia principale:
 
 \begin{itemize}
@@ -221,6 +221,9 @@ dedicata nell'interfaccia principale:
         tra gli attori e gli oggetti di uno scenario.
   \item \textbf{Diagramma Logico} --- per disegnare e simulare circuiti digitali con porte
         logiche, con tabella di verità ed espressioni booleane.
+  \item \textbf{Macchina di Mealy} e \textbf{Macchina di Moore} --- per disegnare e simulare
+        macchine a stati finiti, con l'uscita sulle transizioni (Mealy) o negli stati (Moore) e la
+        tabella di transizione.
 \end{itemize}
 
 \begin{tcolorbox}[tipbox, title={Diagrammi di esempio}]
@@ -261,7 +264,7 @@ Se non si indica un file da aprire, oppure se il file indicato non esiste, non s
 tipo o non si può aprire (vedi sezione~\ref{sec:cli}), \jder{} si apre mostrando la finestra
 \uielement{Scegli il tipo di diagramma}, con un'anteprima di ogni tipo nella versione chiara o
 scura secondo il tema attivo (tema e palette si possono cambiare anche da qui). Facendo clic su
-un'anteprima, oppure con \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{6}, si apre la scheda
+un'anteprima, oppure con \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{8}, si apre la scheda
 del tipo scelto; gli altri tipi restano raggiungibili dalla barra delle schede.
 
 All'avvio \jder{} controlla l'ultima versione pubblicata su GitHub: se il \texttt{JDER.jar}
@@ -315,7 +318,7 @@ principali:
 \begin{enumerate}
   \item \textbf{Barra dei menu} --- su macOS è la barra dei menu del sistema, su Windows e Linux si
         trova in cima alla finestra.
-  \item \textbf{Barra delle schede} --- permette di passare tra i sei tipi di diagramma.
+  \item \textbf{Barra delle schede} --- permette di passare tra gli otto tipi di diagramma.
   \item \textbf{Barra degli strumenti} --- mostra il nome del diagramma, la palette e il tema.
   \item \textbf{Barra degli strumenti di disegno} --- sotto la barra principale, contiene gli
         strumenti di creazione degli elementi.
@@ -326,8 +329,8 @@ principali:
 
 \subsection{Barra delle schede}
 
-La barra delle schede presenta sei schede, raggiungibili anche con \key{Ctrl} + \key{1}
-\ldots{} \key{Ctrl} + \key{6}:
+La barra delle schede presenta otto schede, raggiungibili anche con \key{Ctrl} + \key{1}
+\ldots{} \key{Ctrl} + \key{8}:
 
 \begin{itemize}
   \item \uielement{Diagramma E/R} --- Diagramma Entità-Relazione
@@ -336,6 +339,8 @@ La barra delle schede presenta sei schede, raggiungibili anche con \key{Ctrl} + 
   \item \uielement{Casi d'Uso} --- Diagramma dei Casi d'Uso
   \item \uielement{Diagramma Sequenza} --- Diagramma di Sequenza
   \item \uielement{Diagramma Logico} --- Circuiti con porte logiche
+  \item \uielement{Macchina di Mealy} --- Macchina a stati finiti con l'uscita sulle transizioni
+  \item \uielement{Macchina di Moore} --- Macchina a stati finiti con l'uscita negli stati
 \end{itemize}
 
 Ogni scheda mantiene il proprio stato indipendente: è possibile lavorare su un diagramma E/R e
@@ -440,7 +445,7 @@ un elemento. Mostra le informazioni dell'elemento selezionato e permette di:
   \item Aggiungere o modificare connessioni (nel diagramma E/R) e chiavi esterne (nello schema
         logico).
   \item Eseguire operazioni speciali (es.\@ conversione in entità associativa, commutazione di un
-        ingresso, inversione di un messaggio).
+        ingresso, inversione di un messaggio, scelta dello stato iniziale e degli stati finali).
 \end{itemize}
 
 Il pannello si chiude tramite il pulsante \textbf{X} in alto a destra o deselezionando
@@ -1264,6 +1269,163 @@ colonne separate da tabulazioni, pronta da incollare in un foglio di calcolo.
 \end{itemize}
 
 % =============================================================
+\Needspace{14cm}
+\section{Macchine a Stati Finiti (Mealy e Moore)}
+\label{sec:fsm}
+
+Le schede \uielement{Macchina di Mealy} e \uielement{Macchina di Moore} permettono di disegnare
+macchine a stati finiti, cioè automi che leggono una sequenza di ingressi e producono una sequenza
+di uscite. Le due schede funzionano allo stesso modo e cambiano solo nel punto in cui si scrive
+l'uscita:
+
+\begin{itemize}
+  \item nella \textbf{macchina di Mealy} l'uscita dipende dallo stato e dall'ingresso, quindi si
+        scrive sulle transizioni, nella forma \texttt{ingresso/uscita};
+  \item nella \textbf{macchina di Moore} l'uscita dipende solo dallo stato, quindi si scrive negli
+        stati: il cerchio è diviso in due, con il nome sopra e l'uscita sotto.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{screenshots/mealy-light.png}
+  \caption{La macchina di Mealy dell'esempio \texttt{riconoscitore-mealy.json}, che riconosce la
+  sequenza 101: l'uscita vale 1 sulla transizione che la completa.}
+\end{figure}
+
+\subsection{Strumenti disponibili}
+
+\begin{itemize}
+  \item \uielement{Seleziona e Sposta} --- seleziona e sposta elementi.
+  \item \uielement{Crea Stato} (icona cerchio) --- crea uno stato.
+  \item \uielement{Crea Transizione} (icona freccia tra due cerchi) --- collega due stati.
+  \item \uielement{Crea Nota} (icona foglietto) --- crea una nota testuale.
+  \item \uielement{Tabella di transizione} --- apre la tabella di transizione della macchina.
+  \item \uielement{Simula una sequenza di ingressi} --- esegue la macchina su una sequenza di
+        ingressi.
+\end{itemize}
+
+\subsection{Stati}
+
+Per creare uno stato si seleziona \uielement{Crea Stato} e si fa clic sulla lavagna. Gli stati
+ricevono in automatico i nomi S0, S1, S2\ldots{} (nella macchina di Moore anche l'uscita 0) e il
+primo stato creato diventa lo \textbf{stato iniziale}, indicato da una freccia entrante senza
+origine.
+
+\textbf{Proprietà:} il nome, che deve essere diverso da quello degli altri stati, l'uscita (solo
+nella macchina di Moore) e gli interruttori \uielement{Stato iniziale} e \uielement{Stato finale}.
+Lo stato iniziale si cambia anche con \uielement{Imposta come Stato Iniziale}, dal pannello
+Proprietà o dal menu contestuale. Il pannello Proprietà elenca inoltre le transizioni che escono
+dallo stato, con i pulsanti per modificarle o eliminarle.
+
+Uno o più stati possono essere segnati come \textbf{stati finali}, disegnati con un doppio
+cerchio, con l'interruttore \uielement{Stato finale} oppure con \uielement{Imposta come Stato
+Finale}, dal pannello Proprietà o dal menu contestuale; su uno stato finale la stessa voce diventa
+\uielement{Rimuovi dagli Stati Finali}.
+
+\begin{tcolorbox}[notebox, title={Stati finali}]
+  Gli stati finali non fanno parte della definizione classica delle macchine di Mealy e di Moore,
+  in cui il risultato è la sequenza di uscita: per riconoscere una sequenza basta un'uscita che
+  vale 1, come quella dello stato S3 nell'esempio di Moore. Sono quindi facoltativi e servono per
+  la notazione degli automi riconoscitori, in cui una sequenza è accettata se, letti tutti gli
+  ingressi, la macchina si trova in uno stato finale.
+\end{tcolorbox}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{screenshots/moore-light.png}
+  \caption{La macchina di Moore dell'esempio \texttt{riconoscitore-moore.json}, che riconosce la
+  stessa sequenza: l'uscita vale 1 nello stato S3, quindi serve uno stato in più.}
+\end{figure}
+
+\subsection{Transizioni}
+
+\begin{itemize}
+  \item Trascinare dal bordo di uno stato (il puntatore diventa un mirino e il bordo si evidenzia)
+        fino allo stato di arrivo; per un \textbf{autoanello} si esce dallo stato e si rilascia di
+        nuovo sopra di esso.
+  \item Oppure selezionare lo strumento \uielement{Crea Transizione} e fare clic sullo stato di
+        partenza e poi su quello di arrivo: due clic sullo stesso stato creano un autoanello. Con
+        questo strumento si può anche trascinare da un punto qualsiasi dello stato.
+  \item Si apre la finestra \uielement{Nuova Transizione}, con un ingresso già proposto (e, nella
+        macchina di Mealy, anche un'uscita): per esempio, se dallo stato esce già una transizione
+        con ingresso 0, viene proposto 1.
+\end{itemize}
+
+Più ingressi con lo stesso effetto si scrivono nella stessa transizione, separati da una virgola
+(es.\@ \texttt{0,1}). Se dallo stato esce già una transizione con uno degli ingressi indicati, la
+finestra avvisa che la macchina non sarà deterministica. Le transizioni tra gli stessi due stati
+condividono la freccia, con le etichette una sotto l'altra; \uielement{Inverti Direzione} scambia
+lo stato di partenza con quello di arrivo.
+
+\subsection{Forma delle transizioni}
+
+\Needspace{4\baselineskip}
+\jder{} sceglie da solo la forma delle frecce:
+\begin{itemize}
+  \item tra due stati collegati in entrambi i versi le due frecce si curvano, una per lato;
+  \item una freccia che attraverserebbe un altro stato si curva per aggirarlo;
+  \item gli autoanelli e la freccia dello stato iniziale si dispongono dove non ci sono altre frecce.
+\end{itemize}
+
+Per cambiare la forma basta trascinare la transizione o la sua etichetta: la freccia si curva fino
+al punto indicato e, vicino alla linea retta, si raddrizza; un autoanello invece ruota attorno allo
+stato a scatti di 15°. \uielement{Ripristina Forma}, dal pannello Proprietà o dal menu contestuale,
+torna alla forma automatica.
+
+\subsection{Tabella di transizione}
+
+Lo strumento \uielement{Tabella di transizione} mostra una riga per ogni stato (lo stato iniziale è
+segnato con una freccia e gli stati finali con un asterisco) e una colonna per ogni ingresso: ogni
+cella indica lo stato successivo e,
+nella macchina di Mealy, anche l'uscita (\texttt{stato/uscita}); nella macchina di Moore l'uscita
+di ogni stato si trova nell'ultima colonna.
+
+\Needspace{4\baselineskip}
+Sotto la tabella sono elencati gli eventuali problemi da controllare:
+\begin{itemize}
+  \item lo stato iniziale manca;
+  \item dallo stesso stato escono più transizioni con lo stesso ingresso, quindi la macchina non è
+        deterministica (la cella è in rosso);
+  \item alcune transizioni non sono definite (la cella contiene un trattino);
+  \item alcuni stati, o transizioni, non hanno l'uscita;
+  \item alcuni stati non sono raggiungibili dallo stato iniziale.
+\end{itemize}
+
+Il pulsante \uielement{Copia} copia la tabella negli appunti con le colonne separate da
+tabulazioni, pronta da incollare in un foglio di calcolo.
+
+\subsection{Simulazione}
+
+Lo strumento \uielement{Simula una sequenza di ingressi} esegue la macchina a partire dallo stato
+iniziale. Se tutti gli ingressi sono formati da un solo carattere, la sequenza si scrive di seguito
+(es.\@ \texttt{0110}); altrimenti i simboli si separano con spazi o virgole. Per ogni istante $t$
+la tabella mostra lo stato, l'ingresso, l'uscita e lo stato successivo; sotto compaiono la sequenza
+di uscita e lo stato raggiunto. Se la macchina ha stati finali compare anche l'esito: la sequenza è
+\textbf{accettata} se la macchina si ferma in uno stato finale, \textbf{rifiutata} se si ferma in
+un altro stato o se manca una transizione.
+
+\begin{tcolorbox}[notebox, title={Mealy e Moore a confronto}]
+  Nella macchina di Mealy ogni ingresso produce subito un'uscita, quindi la sequenza di uscita ha
+  tanti valori quanti sono gli ingressi. Nella macchina di Moore l'uscita dipende dallo stato in cui
+  si trova la macchina: c'è un valore anche per lo stato iniziale, prima di leggere il primo
+  ingresso, quindi la sequenza di uscita ha un valore in più.
+\end{tcolorbox}
+
+Se in un istante non c'è nessuna transizione per l'ingresso letto, o ce n'è più di una, la
+simulazione si ferma e ne indica il motivo. La sequenza scritta resta disponibile alla riapertura
+della finestra e \uielement{Copia} copia negli appunti la tabella della simulazione.
+
+\subsection{Menu contestuale nelle macchine a stati}
+
+\begin{itemize}
+  \item \textbf{Su uno stato:} Modifica Proprietà, Imposta come Stato Iniziale, Imposta come Stato
+        Finale (o Rimuovi dagli Stati Finali), Elimina.
+  \item \textbf{Su una transizione:} Modifica Proprietà, Inverti Direzione, Ripristina Forma,
+        Elimina.
+  \item \textbf{Su una nota:} Modifica Testo, Elimina.
+\end{itemize}
+
+% =============================================================
 \section{Operazioni Comuni}
 \label{sec:comuni}
 
@@ -1411,9 +1573,10 @@ Per eliminare un elemento selezionato:
   Tuttavia, eliminando un elemento si eliminano anche i collegamenti che lo coinvolgono: le
   connessioni di un'entità nel diagramma E/R, le chiavi esterne verso una tabella nello schema
   logico, le relazioni di una classe, di un attore o di un caso d'uso, i messaggi di una linea di
-  vita e i fili di un componente del diagramma logico.
+  vita, i fili di un componente del diagramma logico e le transizioni di uno stato.
 \end{tcolorbox}
 
+\Needspace{10\baselineskip}
 \subsection{Zoom e navigazione}
 
 I controlli di zoom sono disponibili tramite diversi metodi:
@@ -1486,7 +1649,7 @@ Su macOS si usa \key{Cmd} al posto di \key{Ctrl}.
   \key{Ctrl} + \key{+}           & Zoom In \\
   \key{Ctrl} + \key{-}           & Zoom Out \\
   \key{Ctrl} + \key{0}           & Reimposta Zoom (100\%) \\
-  \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{6} & Diagramma E/R, Schema Logico, Classi, Casi d'Uso, Sequenza, Logico \\
+  \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{8} & Diagramma E/R, Schema Logico, Classi, Casi d'Uso, Sequenza, Logico, Mealy, Moore \\
   \key{Delete} / \key{Backspace} & Elimina elemento selezionato \\
   \key{Esc}                      & Deseleziona / Passa alla modalità Seleziona \\
   \key{F11}                      & Schermo intero (Windows e Linux) \\
@@ -1520,6 +1683,8 @@ consigliata.
   Casi d'Uso          & \texttt{.json} & attori, casi d'uso, relazioni, sistemi, note \\
   Diagramma Sequenza  & \texttt{.json} & linee di vita, messaggi, frammenti, note \\
   Diagramma Logico    & \texttt{.json} & componenti, collegamenti, note \\
+  Macchina di Mealy   & \texttt{.json} & stati, transizioni con ingresso e uscita, note \\
+  Macchina di Moore   & \texttt{.json} & stati con uscita, transizioni, note \\
   \bottomrule
 \end{tabular}
 \end{center}

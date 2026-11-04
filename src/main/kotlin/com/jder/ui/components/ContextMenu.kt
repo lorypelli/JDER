@@ -70,6 +70,12 @@ enum class LogicContextMenuType {
     NOTE,
 }
 
+enum class StateMachineContextMenuType {
+    STATE,
+    TRANSITION,
+    NOTE,
+}
+
 class ContextMenuRequest<T>(val position: Offset, val type: T)
 
 class ContextMenuItem(

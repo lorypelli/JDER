@@ -1,14 +1,14 @@
 ---
 
-title: JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici
-description: Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza e diagrammi logici. Scritto in Kotlin e Compose Multiplatform con interfaccia Material 3, gira su Windows, macOS e Linux.
-keywords: JDER, editor diagrammi ER, Entity-Relationship, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, diagramma delle classi, Sequence diagram, diagramma di sequenza, diagramma logico, porte logiche, tabella di verità, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux
+title: JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati
+description: Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici e macchine a stati finiti di Mealy e di Moore. Scritto in Kotlin e Compose Multiplatform con interfaccia Material 3, gira su Windows, macOS e Linux.
+keywords: JDER, editor diagrammi ER, Entity-Relationship, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, diagramma delle classi, Sequence diagram, diagramma di sequenza, diagramma logico, porte logiche, tabella di verità, macchina a stati finiti, macchina di Mealy, macchina di Moore, tabella di transizione, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux
 url: https://jder.it/
 ---
 
-# JDER — Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza e Logici
+# JDER — Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati
 
-**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **schemi logici relazionali**, **Use Case**, **Class Diagram**, **diagrammi di sequenza** e **diagrammi logici**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR.
+**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **schemi logici relazionali**, **Use Case**, **Class Diagram**, **diagrammi di sequenza**, **diagrammi logici** e **macchine a stati finiti di Mealy e di Moore**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR.
 
 ## Il Tuo Editor di Diagrammi Moderno
 
@@ -41,6 +41,14 @@ Crea linee di vita (attori, oggetti, boundary, control, entity) e messaggi sincr
 ### Diagramma Logico
 
 Crea circuiti con porte logiche (AND, OR, NOT, NAND, NOR, XOR, XNOR), ingressi e uscite collegati da fili instradati automaticamente, con simulazione in tempo reale, tabella di verità ed espressioni booleane.
+
+### Macchina di Mealy
+
+Crea macchine a stati finiti in cui l'uscita dipende dallo stato e dall'ingresso: stati, stato iniziale e transizioni etichettate `ingresso/uscita` (anche autoanelli), con tabella di transizione e simulazione di una sequenza di ingressi.
+
+### Macchina di Moore
+
+Crea macchine a stati finiti in cui l'uscita dipende solo dallo stato: ogni stato mostra nome e uscita, con controlli su determinismo e transizioni mancanti, tabella di transizione e simulazione passo per passo della sequenza di uscita.
 
 ## Caratteristiche Principali
 
@@ -89,6 +97,14 @@ Scritto in Kotlin con Compose Multiplatform per massime prestazioni su Windows, 
 ![Diagramma Logico in JDER (tema chiaro): sommatore completo con porte XOR, AND e OR e valori simulati](/screenshots/logic-light.png)
 
 ![Diagramma Logico in JDER (tema scuro): sommatore completo con porte XOR, AND e OR e valori simulati](/screenshots/logic-dark.png)
+
+![Macchina di Mealy in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite sulle transizioni](/screenshots/mealy-light.png)
+
+![Macchina di Mealy in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite sulle transizioni](/screenshots/mealy-dark.png)
+
+![Macchina di Moore in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite negli stati](/screenshots/moore-light.png)
+
+![Macchina di Moore in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite negli stati](/screenshots/moore-dark.png)
 
 ## Tecnologie
 

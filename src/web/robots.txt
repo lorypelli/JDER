@@ -17,4 +17,8 @@ Allow: /screenshots/sequence-light.png
 Allow: /screenshots/sequence-dark.png
 Allow: /screenshots/logic-light.png
 Allow: /screenshots/logic-dark.png
+Allow: /screenshots/mealy-light.png
+Allow: /screenshots/mealy-dark.png
+Allow: /screenshots/moore-light.png
+Allow: /screenshots/moore-dark.png
 Sitemap: https://jder.it/sitemap.xml
