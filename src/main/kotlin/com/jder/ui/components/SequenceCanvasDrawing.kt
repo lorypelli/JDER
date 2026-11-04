@@ -35,7 +35,7 @@ internal fun DrawScope.drawSequenceDiagram(
     hoveredId: String? = null,
     pendingSource: SequenceAnchor? = null,
 ) {
-    val layout = sequenceLayout(diagram)
+    val (lifelines, activations, messageRoutes) = sequenceLayout(diagram)
     diagram.fragments.forEach {
         drawSequenceFragment(
             fragment = it,
@@ -45,15 +45,15 @@ internal fun DrawScope.drawSequenceDiagram(
         )
     }
     diagram.lifelines.forEach { lifeline ->
-        layout.lifelines[lifeline.id]?.let {
+        lifelines[lifeline.id]?.let {
             drawLifelineLine(layout = it, isSelected = lifeline.id == selectedId, palette = palette)
         }
     }
-    layout.activations.forEach {
+    activations.forEach {
         drawActivation(activation = it, isSelected = it.lifelineId == selectedId, palette = palette)
     }
     diagram.lifelines.forEach { lifeline ->
-        layout.lifelines[lifeline.id]?.let {
+        lifelines[lifeline.id]?.let {
             drawLifelineHead(
                 layout = it,
                 isSelected = lifeline.id == selectedId,
@@ -73,7 +73,7 @@ internal fun DrawScope.drawSequenceDiagram(
         )
     }
     diagram.messages.forEach { message ->
-        layout.messageRoutes[message.id]?.let {
+        messageRoutes[message.id]?.let {
             drawSequenceMessage(
                 message = message,
                 points = it,
@@ -84,9 +84,9 @@ internal fun DrawScope.drawSequenceDiagram(
             )
         }
     }
-    pendingSource?.let { anchor ->
-        layout.lifelines[anchor.lifelineId]?.let {
-            val center = Offset(it.centerX, anchor.y)
+    pendingSource?.let { (lifelineId, y) ->
+        lifelines[lifelineId]?.let {
+            val center = Offset(it.centerX, y)
             drawCircle(color = palette.selected.copy(alpha = 0.2f), radius = 8f, center = center)
             drawCircle(
                 color = palette.selected,
@@ -119,15 +119,15 @@ internal fun DrawScope.drawSequenceMessagePreview(
 }
 
 internal fun sequenceDiagramBounds(diagram: SequenceDiagram, textMeasurer: TextMeasurer): Rect? {
-    val layout = sequenceLayout(diagram)
+    val (lifelines, activations, messageRoutes) = sequenceLayout(diagram)
     val bounds = BoundsBuilder()
-    layout.lifelines.values.forEach {
+    lifelines.values.forEach {
         bounds.include(it.head)
         bounds.include(Offset(it.centerX, it.lineBottom + if (it.isDestroyed) 10f else 0f))
     }
-    layout.activations.forEach { bounds.include(it.bounds) }
+    activations.forEach { bounds.include(it.bounds) }
     diagram.messages.forEach { message ->
-        val points = layout.messageRoutes[message.id] ?: return@forEach
+        val points = messageRoutes[message.id] ?: return@forEach
         points.forEach(bounds::include)
         messageLabel(message, points, textMeasurer, Color.Black)?.let { bounds.include(it.bounds) }
     }
@@ -454,8 +454,8 @@ private fun DrawScope.drawSequenceFragment(
         style = Stroke(width = strokeWidth),
     )
     if (fragment.type.hasOperands) {
-        fragment.operands.forEach { operand ->
-            val y = fragment.operandY(operand)
+        fragment.operands.forEach {
+            val y = fragment.operandY(it)
             drawLine(
                 color = color,
                 start = Offset(fragment.x, y),
@@ -537,14 +537,14 @@ private fun DrawScope.drawSequenceFragmentLabels(
     if (fragment.type.hasOperands) {
         fragment.operands
             .filter { it.condition.isNotBlank() }
-            .forEach { operand ->
+            .forEach {
                 val guard =
                     textMeasurer.measureLine(
-                        text = "[${operand.condition}]",
+                        text = "[${it.condition}]",
                         style = guardStyle,
                         maxWidth = fragment.width - 16f,
                     )
-                drawLabel(guard, Offset(fragment.x + 8f, fragment.operandY(operand) + 4f), palette)
+                drawLabel(guard, Offset(fragment.x + 8f, fragment.operandY(it) + 4f), palette)
             }
     }
 }

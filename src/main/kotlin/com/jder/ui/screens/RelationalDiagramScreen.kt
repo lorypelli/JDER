@@ -156,8 +156,8 @@ fun RelationalDiagramScreen(
                     state.deleteColumn(tableId, columnId)
                     Toasts.success(UiStrings.deleted("Colonna"))
                 },
-                onDeleteForeignKey = { columnId ->
-                    state.deleteForeignKey(columnId)
+                onDeleteForeignKey = {
+                    state.deleteForeignKey(it)
                     Toasts.success("Chiave esterna eliminata")
                 },
                 onClose = { state.clearSelection() },
@@ -184,25 +184,25 @@ fun RelationalDiagramScreen(
                 }
             },
         )
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
     }
     if (showTableDialog) {
-        state.table(state.selectedTableId)?.let { table ->
+        state.table(state.selectedTableId)?.let { (id, name, _, _, width, _, documentation) ->
             TablePropertiesDialog(
-                tableId = table.id,
-                tableName = table.name,
-                tableWidth = table.width,
-                tableDocumentation = table.documentation,
+                tableId = id,
+                tableName = name,
+                tableWidth = width,
+                tableDocumentation = documentation,
                 onDismiss = { showTableDialog = false },
                 onConfirm = { newName, newWidth, newDoc ->
-                    state.updateTable(table.id) {
+                    state.updateTable(id) {
                         it.copy(name = newName, width = newWidth, documentation = newDoc)
                     }
                     showTableDialog = false
@@ -214,13 +214,13 @@ fun RelationalDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },
@@ -232,8 +232,8 @@ fun RelationalDiagramScreen(
             AddColumnDialog(
                 tables = state.diagram.tables,
                 onDismiss = { showAddColumnDialog = false },
-                onConfirm = { column ->
-                    state.addColumns(tableId, listOf(column))
+                onConfirm = {
+                    state.addColumns(tableId, listOf(it))
                     showAddColumnDialog = false
                     Toasts.success("Colonna aggiunta")
                 },
@@ -245,22 +245,22 @@ fun RelationalDiagramScreen(
             column = edit.column,
             tables = state.diagram.tables,
             onDismiss = { columnToEdit = null },
-            onConfirm = { column ->
-                state.updateColumn(edit.tableId, column)
+            onConfirm = {
+                state.updateColumn(edit.tableId, it)
                 columnToEdit = null
                 Toasts.success("Colonna modificata")
             },
         )
     }
-    foreignKeyRequest?.let { request ->
-        state.table(request.sourceId)?.let { source ->
+    foreignKeyRequest?.let { (sourceId, targetId) ->
+        state.table(sourceId)?.let { source ->
             ForeignKeyDialog(
                 sourceTable = source,
                 tables = state.diagram.tables,
-                initialTargetId = request.targetId,
+                initialTargetId = targetId,
                 onDismiss = { foreignKeyRequest = null },
-                onConfirm = { columns ->
-                    state.addColumns(source.id, columns)
+                onConfirm = {
+                    state.addColumns(source.id, it)
                     foreignKeyRequest = null
                     Toasts.success("Chiave esterna creata")
                 },
@@ -271,4 +271,4 @@ fun RelationalDiagramScreen(
 
 private class ColumnEdit(val tableId: String, val column: RelationalColumn)
 
-private class ForeignKeyRequest(val sourceId: String, val targetId: String?)
+private data class ForeignKeyRequest(val sourceId: String, val targetId: String?)

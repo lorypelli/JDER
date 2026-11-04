@@ -225,10 +225,10 @@ internal fun DrawScope.drawConnectionsForRelationship(
     val centerX = relationship.x + relationship.width / 2
     val centerY = relationship.y + relationship.height / 2
     val cardinalityColor = palette.tertiary
-    relationship.connections.forEach { connection ->
-        val entity = entitiesById[connection.entityId] ?: return@forEach
-        val entityCenterX = entity.x + entity.width / 2
-        val entityCenterY = entity.y + entity.height / 2
+    relationship.connections.forEach {
+        val (_, _, x, y, width, height) = entitiesById[it.entityId] ?: return@forEach
+        val entityCenterX = x + width / 2
+        val entityCenterY = y + height / 2
         drawLine(
             color = palette.outline,
             start = Offset(centerX, centerY),
@@ -237,7 +237,7 @@ internal fun DrawScope.drawConnectionsForRelationship(
         )
         val textLayoutResult =
             textMeasurer.measure(
-                text = connection.cardinality.display,
+                text = it.cardinality.display,
                 style =
                     TextStyle(
                         color = cardinalityColor,

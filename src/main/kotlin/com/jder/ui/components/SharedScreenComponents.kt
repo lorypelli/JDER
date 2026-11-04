@@ -20,7 +20,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.jder.ui.strings.UiStrings
 
-class PendingRelation(val sourceId: String, val targetId: String)
+data class PendingRelation(val sourceId: String, val targetId: String)
 
 @Composable
 fun <T> RadioOptionList(

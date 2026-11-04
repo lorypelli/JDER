@@ -37,7 +37,7 @@ internal class SequenceLifelineLayout(
 
 internal class SequenceActivation(val lifelineId: String, val bounds: Rect)
 
-internal class SequenceLayout(
+internal data class SequenceLayout(
     val lifelines: Map<String, SequenceLifelineLayout>,
     val activations: List<SequenceActivation>,
     val messageRoutes: Map<String, List<Offset>>,
@@ -74,10 +74,10 @@ internal fun sequenceLayout(diagram: SequenceDiagram): SequenceLayout {
             }
         }
     val heads =
-        diagram.lifelines.associate { lifeline ->
-            val height = lifeline.type.headHeight
-            val top = createdAt[lifeline.id]?.minus(height / 2) ?: lifeline.y
-            lifeline.id to Rect(lifeline.x, top, lifeline.x + lifeline.width, top + height)
+        diagram.lifelines.associate { (id, _, x, y, type, width) ->
+            val height = type.headHeight
+            val top = createdAt[id]?.minus(height / 2) ?: y
+            id to Rect(x, top, x + width, top + height)
         }
     val spans = activationSpans(messages).filter { it.lifelineId in heads }
     val activations =
@@ -118,25 +118,22 @@ internal fun sequenceLayout(diagram: SequenceDiagram): SequenceLayout {
         }
     val layout = SequenceLayout(lifelines, activations, emptyMap())
     val routes = LinkedHashMap<String, List<Offset>>()
-    messages.forEach { message ->
-        val source = lifelines[message.sourceId] ?: return@forEach
-        val target = lifelines[message.targetId] ?: return@forEach
-        routes[message.id] =
-            if (message.isSelfMessage) {
-                selfMessageRoute(layout, message)
+    messages.forEach {
+        val source = lifelines[it.sourceId] ?: return@forEach
+        val target = lifelines[it.targetId] ?: return@forEach
+        routes[it.id] =
+            if (it.isSelfMessage) {
+                selfMessageRoute(layout, it)
             } else {
                 val isRightward = target.centerX >= source.centerX
-                val startX = layout.edgeX(source.lifeline.id, message.y, isRightward)
+                val startX = layout.edgeX(source.lifeline.id, it.y, isRightward)
                 val endX =
-                    if (message.type == SequenceMessageType.CREATE) {
+                    if (it.type == SequenceMessageType.CREATE) {
                         if (isRightward) target.head.left else target.head.right
                     } else {
-                        layout.edgeX(target.lifeline.id, message.y, !isRightward)
+                        layout.edgeX(target.lifeline.id, it.y, !isRightward)
                     }
-                listOf(
-                    Offset(startX ?: source.centerX, message.y),
-                    Offset(endX ?: target.centerX, message.y),
-                )
+                listOf(Offset(startX ?: source.centerX, it.y), Offset(endX ?: target.centerX, it.y))
             }
     }
     return SequenceLayout(lifelines, activations, routes)

@@ -184,11 +184,11 @@ class RelationalDiagramState :
                 tables.map { table ->
                     table.copy(
                         columns =
-                            table.columns.map { column ->
-                                if (column.reference?.let(isRemoved) == true) {
-                                    column.copy(reference = null)
+                            table.columns.map {
+                                if (it.reference?.let(isRemoved) == true) {
+                                    it.copy(reference = null)
                                 } else {
-                                    column
+                                    it
                                 }
                             }
                     )

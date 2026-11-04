@@ -69,10 +69,10 @@ internal fun logicPinAt(diagram: LogicDiagram, point: Offset): LogicElement.PinR
                 bestDistance = distance
             }
         }
-        repeat(component.inputPinCount) { index ->
-            val distance = (component.inputPinPosition(index) - point).getDistance()
+        repeat(component.inputPinCount) {
+            val distance = (component.inputPinPosition(it) - point).getDistance()
             if (distance <= bestDistance) {
-                best = LogicElement.PinRef(component.id, LogicPin.Input(index))
+                best = LogicElement.PinRef(component.id, LogicPin.Input(it))
                 bestDistance = distance
             }
         }
@@ -130,9 +130,9 @@ internal fun resolveLogicWire(
     if (first.componentId == second.componentId) return null
     val componentsById = diagram.components.associateBy { it.id }
     fun orient(sourceEndpoint: LogicEndpoint, targetEndpoint: LogicEndpoint): ResolvedWire? {
-        val source = componentsById[sourceEndpoint.componentId] ?: return null
+        val (id, type) = componentsById[sourceEndpoint.componentId] ?: return null
         val target = componentsById[targetEndpoint.componentId] ?: return null
-        if (!source.type.hasOutput || sourceEndpoint.pin is LogicPin.Input) return null
+        if (!type.hasOutput || sourceEndpoint.pin is LogicPin.Input) return null
         if (target.inputPinCount == 0 || targetEndpoint.pin == LogicPin.Output) return null
         val pin =
             (targetEndpoint.pin as? LogicPin.Input)?.index
@@ -148,7 +148,7 @@ internal fun resolveLogicWire(
                             .ifEmpty { (0 until target.inputPinCount).toList() }
                     candidates.minByOrNull { abs(target.inputPinPosition(it).y - point.y) } ?: 0
                 }
-        return ResolvedWire(source.id, target.id, pin)
+        return ResolvedWire(id, target.id, pin)
     }
     val firstIsSource =
         when {

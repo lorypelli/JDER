@@ -218,7 +218,7 @@ private fun AttributeDialog(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
-                                components.forEach { component ->
+                                components.forEach { (id, name) ->
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
                                         colors =
@@ -232,14 +232,10 @@ private fun AttributeDialog(
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically,
                                         ) {
-                                            Text(
-                                                component.name,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                            )
+                                            Text(name, style = MaterialTheme.typography.bodyMedium)
                                             IconButton(
                                                 onClick = {
-                                                    components =
-                                                        components.filter { it.id != component.id }
+                                                    components = components.filter { it.id != id }
                                                 }
                                             ) {
                                                 Icon(

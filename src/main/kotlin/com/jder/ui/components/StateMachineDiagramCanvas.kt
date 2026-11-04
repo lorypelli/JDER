@@ -19,7 +19,7 @@ import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.StateMachineKind
 import com.jder.domain.model.StateMachineToolMode
 
-private class TransitionDragPreview(
+private data class TransitionDragPreview(
     val sourceId: String,
     val targetId: String?,
     val cursor: Offset,
@@ -145,10 +145,8 @@ fun StateMachineDiagramCanvas(
                 }
 
                 override fun onDragEnd(position: Offset) {
-                    dragPreview?.let { preview ->
-                        preview.targetId?.let {
-                            currentOnTransitionCreateRequest(preview.sourceId, it)
-                        }
+                    dragPreview?.let { (sourceId, targetId) ->
+                        targetId?.let { currentOnTransitionCreateRequest(sourceId, it) }
                     }
                     dragged = null
                     draggedEdge = null

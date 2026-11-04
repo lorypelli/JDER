@@ -380,11 +380,11 @@ internal fun useCaseElementBoundaryPoint(
 ): Offset? {
     diagram.actors
         .find { it.id == id }
-        ?.let { actor ->
-            val cx = actor.x + actor.width / 2
-            val cy = actor.y + actor.height / 2
-            val hw = actor.width / 2
-            val hh = actor.height / 2
+        ?.let { (_, _, x, y, width, height) ->
+            val cx = x + width / 2
+            val cy = y + height / 2
+            val hw = width / 2
+            val hh = height / 2
             val scaleX = if (dirFromCenter.x != 0f) hw / abs(dirFromCenter.x) else Float.MAX_VALUE
             val scaleY = if (dirFromCenter.y != 0f) hh / abs(dirFromCenter.y) else Float.MAX_VALUE
             return Offset(
@@ -394,11 +394,11 @@ internal fun useCaseElementBoundaryPoint(
         }
     diagram.useCases
         .find { it.id == id }
-        ?.let { useCase ->
-            val cx = useCase.x + useCase.width / 2
-            val cy = useCase.y + useCase.height / 2
-            val rx = useCase.width / 2
-            val ry = useCase.height / 2
+        ?.let { (_, _, x, y, width, height) ->
+            val cx = x + width / 2
+            val cy = y + height / 2
+            val rx = width / 2
+            val ry = height / 2
             val dxr = dirFromCenter.x / rx
             val dyr = dirFromCenter.y / ry
             val denom = sqrt(dxr * dxr + dyr * dyr)

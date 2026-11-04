@@ -186,13 +186,13 @@ private fun LogicTruthTable.toClipboardText(): String = buildString {
             }
             .joinToString("\t")
     )
-    rows.forEach { row ->
+    rows.forEach { (inputs, outputs) ->
         append('\n')
         append(
             buildList {
-                    addAll(row.inputs.map(::bit))
+                    addAll(inputs.map(::bit))
                     add("|")
-                    addAll(row.outputs.map(::bit))
+                    addAll(outputs.map(::bit))
                 }
                 .joinToString("\t")
         )

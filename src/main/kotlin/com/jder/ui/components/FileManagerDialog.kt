@@ -143,8 +143,7 @@ fun FileManagerDialog(
                         onValueChange = { pathInput = it },
                         modifier =
                             Modifier.weight(1f).focusRequester(pathFocusRequester).onKeyEvent {
-                                keyEvent ->
-                                if (keyEvent.key == Key.Enter) {
+                                if (it.key == Key.Enter) {
                                     val newPath = File(pathInput.text)
                                     when {
                                         !newPath.exists() -> {
@@ -325,9 +324,9 @@ fun FileManagerDialog(
                         },
                         isError = errorMessage != null,
                     )
-                    errorMessage?.let { message ->
+                    errorMessage?.let {
                         Text(
-                            text = message,
+                            text = it,
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = 16.dp, top = 4.dp),

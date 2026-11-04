@@ -59,10 +59,10 @@ internal fun hitTestSequenceDiagram(diagram: SequenceDiagram, point: Offset): Se
         ?.let {
             return SequenceElement.NoteRef(it.id)
         }
-    val layout = sequenceLayout(diagram)
+    val (lifelines, activations, messageRoutes) = sequenceLayout(diagram)
     diagram.messages
         .lastOrNull { message ->
-            layout.messageRoutes[message.id]
+            messageRoutes[message.id]
                 ?.zipWithNext { start, end -> distanceToSegment(point, start, end) }
                 ?.any { it <= MESSAGE_HIT_DISTANCE } == true
         }
@@ -90,19 +90,19 @@ internal fun hitTestSequenceDiagram(diagram: SequenceDiagram, point: Offset): Se
         }
     }
     diagram.lifelines
-        .lastOrNull { layout.lifelines[it.id]?.head?.contains(point) == true }
+        .lastOrNull { lifelines[it.id]?.head?.contains(point) == true }
         ?.let {
             return SequenceElement.LifelineRef(it.id)
         }
     diagram.lifelines
         .lastOrNull { lifeline ->
-            val lifelineLayout = layout.lifelines[lifeline.id] ?: return@lastOrNull false
+            val lifelineLayout = lifelines[lifeline.id] ?: return@lastOrNull false
             val isOnLine =
                 abs(point.x - lifelineLayout.centerX) <= LIFELINE_HIT_DISTANCE &&
                     point.y > lifelineLayout.head.bottom &&
                     point.y <= lifelineLayout.lineBottom
             isOnLine ||
-                layout.activations.any {
+                activations.any {
                     it.lifelineId == lifeline.id && it.bounds.inflate(2f).contains(point)
                 }
         }

@@ -216,11 +216,11 @@ fun ERDiagramScreen(
                 }
             },
         )
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
@@ -243,12 +243,12 @@ fun ERDiagramScreen(
     if (showRelationshipDialog) {
         state.diagram.relationships
             .find { it.id == state.selectedRelationshipId }
-            ?.let { rel ->
+            ?.let {
                 RelationshipPropertiesDialog(
-                    relationship = rel,
+                    relationship = it,
                     onDismiss = { showRelationshipDialog = false },
                     onConfirm = { updated ->
-                        state.updateRelationship(rel.id) { updated }
+                        state.updateRelationship(it.id) { updated }
                         showRelationshipDialog = false
                         Toasts.success("Relazione modificata")
                     },
@@ -258,13 +258,13 @@ fun ERDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },
@@ -326,22 +326,22 @@ fun ERDiagramScreen(
             )
         }
     }
-    connectionToEdit?.let { edit ->
+    connectionToEdit?.let { (entityId, connection) ->
         state.selectedRelationshipId?.let { relId ->
             val connectedIds =
                 state.diagram.relationships
                     .find { it.id == relId }
                     ?.connections
                     ?.map { it.entityId }
-                    ?.filter { it != edit.entityId }
+                    ?.filter { it != entityId }
                     ?.toSet() ?: emptySet()
             EditConnectionDialog(
                 entities = state.diagram.entities.filter { it.id !in connectedIds },
-                currentEntityId = edit.entityId,
-                currentCardinality = edit.connection.cardinality,
+                currentEntityId = entityId,
+                currentCardinality = connection.cardinality,
                 onDismiss = { connectionToEdit = null },
                 onConfirm = { newEntityId, newCardinality ->
-                    state.updateConnection(relId, edit.entityId, newEntityId, newCardinality)
+                    state.updateConnection(relId, entityId, newEntityId, newCardinality)
                     connectionToEdit = null
                     Toasts.success("Connessione modificata")
                 },
@@ -350,4 +350,4 @@ fun ERDiagramScreen(
     }
 }
 
-private class ConnectionEdit(val entityId: String, val connection: Connection)
+private data class ConnectionEdit(val entityId: String, val connection: Connection)

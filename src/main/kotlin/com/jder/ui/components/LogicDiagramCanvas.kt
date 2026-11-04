@@ -80,11 +80,11 @@ fun LogicDiagramCanvas(
                         }
                         is LogicElement.ToggleRef,
                         is LogicElement.ComponentRef -> {
-                            val component = state.component(element.id) ?: return false
-                            state.selectComponent(component.id)
+                            val (id, _, x, y) = state.component(element.id) ?: return false
+                            state.selectComponent(id)
                             state.saveDragStartState()
-                            movedComponentId = component.id
-                            moveOrigin = Offset(component.x, component.y)
+                            movedComponentId = id
+                            moveOrigin = Offset(x, y)
                             moveDistance = Offset.Zero
                         }
                         is LogicElement.NoteRef -> {
@@ -125,9 +125,8 @@ fun LogicDiagramCanvas(
                             LogicWirePreview(
                                 anchor = it.anchor,
                                 cursor =
-                                    candidate?.let { pin ->
-                                        state.component(pin.id)?.pinPosition(pin.pin)
-                                    } ?: position,
+                                    candidate?.let { state.component(it.id)?.pinPosition(it.pin) }
+                                        ?: position,
                                 isFromOutput = it.isFromOutput,
                                 target = candidate,
                             )

@@ -181,11 +181,11 @@ fun ClassDiagramScreen(
             },
             onEditRequest = { openEditor(it.contextMenuType) },
         )
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
@@ -241,13 +241,13 @@ fun ClassDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },
@@ -280,11 +280,11 @@ fun ClassDiagramScreen(
             )
         }
     }
-    pendingRelation?.let { relation ->
+    pendingRelation?.let { (sourceId, targetId) ->
         SelectClassRelationTypeDialog(
             onDismiss = { pendingRelation = null },
-            onConfirm = { type ->
-                state.addRelation(relation.sourceId, relation.targetId, type)
+            onConfirm = {
+                state.addRelation(sourceId, targetId, it)
                 Toasts.success("Relazione creata")
                 pendingRelation = null
             },

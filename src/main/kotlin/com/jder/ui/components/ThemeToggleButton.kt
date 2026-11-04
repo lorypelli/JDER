@@ -34,8 +34,8 @@ fun ThemeToggleButton(isDarkTheme: Boolean, onToggle: () -> Unit, modifier: Modi
                 )
             },
             label = "rotation",
-        ) { dark ->
-            if (dark) 180f else 0f
+        ) {
+            if (it) 180f else 0f
         }
     val iconColor by
         animateColorAsState(
@@ -52,8 +52,8 @@ fun ThemeToggleButton(isDarkTheme: Boolean, onToggle: () -> Unit, modifier: Modi
         transition.animateFloat(
             transitionSpec = { tween(durationMillis = 200) },
             label = "raysAlpha",
-        ) { dark ->
-            if (dark) 0f else 1f
+        ) {
+            if (it) 0f else 1f
         }
     IconButton(onClick = onToggle, modifier = modifier) {
         Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {

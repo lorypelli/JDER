@@ -172,8 +172,7 @@ class StateMachineDiagramState(val kind: StateMachineKind) :
             it.copy(
                 sourceId = it.targetId,
                 targetId = it.sourceId,
-                bend =
-                    if (reverseArrow != null) reverseArrow.bend else it.bend?.let { bend -> -bend },
+                bend = if (reverseArrow != null) reverseArrow.bend else it.bend?.let { -it },
             )
         }
     }

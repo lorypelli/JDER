@@ -170,11 +170,11 @@ fun UseCaseDiagramScreen(
             },
             onEditRequest = { openEditor(it.contextMenuType) },
         )
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
@@ -182,13 +182,13 @@ fun UseCaseDiagramScreen(
     if (showActorDialog) {
         state.diagram.actors
             .find { it.id == state.selectedActorId }
-            ?.let { actor ->
+            ?.let { (id, name) ->
                 ActorPropertiesDialog(
-                    actorId = actor.id,
-                    actorName = actor.name,
+                    actorId = id,
+                    actorName = name,
                     onDismiss = { showActorDialog = false },
                     onConfirm = { newName ->
-                        state.updateActor(actor.id) { it.copy(name = newName) }
+                        state.updateActor(id) { it.copy(name = newName) }
                         showActorDialog = false
                         Toasts.success("Attore modificato")
                     },
@@ -232,13 +232,13 @@ fun UseCaseDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },
@@ -248,15 +248,15 @@ fun UseCaseDiagramScreen(
     if (showSystemBoundaryDialog) {
         state.diagram.systemBoundaries
             .find { it.id == state.selectedSystemBoundaryId }
-            ?.let { boundary ->
+            ?.let { (id, name, _, _, width, height) ->
                 SystemBoundaryDialog(
-                    boundaryId = boundary.id,
-                    boundaryName = boundary.name,
-                    boundaryWidth = boundary.width,
-                    boundaryHeight = boundary.height,
+                    boundaryId = id,
+                    boundaryName = name,
+                    boundaryWidth = width,
+                    boundaryHeight = height,
                     onDismiss = { showSystemBoundaryDialog = false },
                     onConfirm = { newName, newWidth, newHeight ->
-                        state.updateSystemBoundary(boundary.id) {
+                        state.updateSystemBoundary(id) {
                             it.copy(name = newName, width = newWidth, height = newHeight)
                         }
                         showSystemBoundaryDialog = false
@@ -265,11 +265,11 @@ fun UseCaseDiagramScreen(
                 )
             }
     }
-    pendingRelation?.let { relation ->
+    pendingRelation?.let { (sourceId, targetId) ->
         SelectRelationTypeDialog(
             onDismiss = { pendingRelation = null },
-            onConfirm = { type ->
-                state.addRelation(relation.sourceId, relation.targetId, type)
+            onConfirm = {
+                state.addRelation(sourceId, targetId, it)
                 Toasts.success("Relazione creata")
                 pendingRelation = null
             },

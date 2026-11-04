@@ -58,8 +58,8 @@ fun AppScreen(
         DiagramTabRow(
             currentType = currentType,
             onTypeChange = onTypeChange,
-            isModified = { type ->
-                when (type) {
+            isModified = {
+                when (it) {
                     DiagramType.ER -> erState.isModified
                     DiagramType.RELATIONAL -> relationalState.isModified
                     DiagramType.CLASS_DIAGRAM -> classState.isModified

@@ -201,10 +201,10 @@ fun TransitionTableDialog(
         if (cell.isEmpty()) MISSING
         else
             cell
-                .map { transition ->
-                    val target = names[transition.targetId].orEmpty()
+                .map { (_, _, targetId, _, output) ->
+                    val target = names[targetId].orEmpty()
                     if (kind.hasTransitionOutputs) {
-                        "$target/${transition.output.trim().ifEmpty { "?" }}"
+                        "$target/${output.trim().ifEmpty { "?" }}"
                     } else {
                         target
                     }
@@ -259,12 +259,12 @@ fun TransitionTableDialog(
                                 if (kind.hasStateOutputs) add("Uscita")
                             }
                             val rows =
-                                table.rows.map { row ->
+                                table.rows.map { (state, cells) ->
                                     buildList {
-                                        add(stateLabel(row.state))
-                                        addAll(row.cells.map(::cellText))
+                                        add(stateLabel(state))
+                                        addAll(cells.map(::cellText))
                                         if (kind.hasStateOutputs) {
-                                            add(row.state.output.trim().ifEmpty { MISSING })
+                                            add(state.output.trim().ifEmpty { MISSING })
                                         }
                                     }
                                 }
@@ -468,8 +468,8 @@ private fun simulationRows(run: StateMachineRun, kind: StateMachineKind): List<L
             }
         }
     if (!kind.hasStateOutputs) return rows.map { row -> row.map { it.ifEmpty { "?" } } }
-    val current = run.reachedState ?: initial
-    val last = listOf("${run.steps.size}", current.name, current.output.trim(), MISSING, MISSING)
+    val (_, name, _, _, output) = run.reachedState ?: initial
+    val last = listOf("${run.steps.size}", name, output.trim(), MISSING, MISSING)
     return (rows + listOf(last)).map { row -> row.map { it.ifEmpty { "?" } } }
 }
 

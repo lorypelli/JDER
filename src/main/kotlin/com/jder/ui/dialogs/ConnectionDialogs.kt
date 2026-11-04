@@ -151,9 +151,7 @@ private fun ConnectionDialog(
         confirmButton = {
             if (entities.isNotEmpty()) {
                 Button(
-                    onClick = {
-                        selectedEntity?.let { entity -> onConfirm(entity.id, selectedCardinality) }
-                    },
+                    onClick = { selectedEntity?.let { onConfirm(it.id, selectedCardinality) } },
                     enabled = selectedEntity != null,
                 ) {
                     Text("Conferma")

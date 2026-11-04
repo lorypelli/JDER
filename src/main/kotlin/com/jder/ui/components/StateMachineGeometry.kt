@@ -93,7 +93,7 @@ internal class TransitionEdge(
 
 internal class InitialArrow(val start: Offset, val tip: Offset, val direction: Offset)
 
-internal class StateMachineLayout(
+internal data class StateMachineLayout(
     val edges: List<TransitionEdge>,
     val initialArrow: InitialArrow?,
 ) {
@@ -155,8 +155,8 @@ internal fun stateMachineLayout(
             listOfNotNull(diagram.initialStateId)
     automaticIds.distinct().mapNotNull(statesById::get).forEach { state ->
         edges.forEach { edge ->
-            edge.points.forEach { point ->
-                val vector = point - state.center
+            edge.points.forEach {
+                val vector = it - state.center
                 if (vector.getDistance() <= NEARBY_EDGE_DISTANCE) {
                     angles(state.id) += angleOf(vector)
                 }
@@ -176,17 +176,13 @@ internal fun stateMachineLayout(
             edges += loopEdge(state, angle, transitions, kind, textMeasurer)
         }
     val initialArrow =
-        statesById[diagram.initialStateId]?.let { state ->
+        statesById[diagram.initialStateId]?.let {
             val angle =
-                freeDirection(
-                    occupied[state.id].orEmpty(),
-                    PREFERRED_INITIAL_ANGLE,
-                    INITIAL_CLEARANCE,
-                )
+                freeDirection(occupied[it.id].orEmpty(), PREFERRED_INITIAL_ANGLE, INITIAL_CLEARANCE)
             val direction = unitVector(angle)
             InitialArrow(
-                start = state.center + direction * (MACHINE_STATE_RADIUS + INITIAL_ARROW_LENGTH),
-                tip = state.center + direction * MACHINE_STATE_RADIUS,
+                start = it.center + direction * (MACHINE_STATE_RADIUS + INITIAL_ARROW_LENGTH),
+                tip = it.center + direction * MACHINE_STATE_RADIUS,
                 direction = -direction,
             )
         }

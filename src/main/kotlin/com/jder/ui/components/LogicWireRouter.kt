@@ -55,13 +55,12 @@ private fun computeRoutes(diagram: LogicDiagram): Map<String, List<Offset>> {
     val obstacles = diagram.components.map { it.bounds().inflate(OBSTACLE_MARGIN) }
     val placed = mutableListOf<RouteSegment>()
     val routes = LinkedHashMap<String, List<Offset>>()
-    diagram.wires.forEach { wire ->
-        val source = componentsById[wire.sourceId] ?: return@forEach
-        val target = componentsById[wire.targetId] ?: return@forEach
-        if (!source.type.hasOutput || wire.targetPin !in 0 until target.inputPinCount)
-            return@forEach
+    diagram.wires.forEach { (id, sourceId, targetId, targetPin) ->
+        val source = componentsById[sourceId] ?: return@forEach
+        val target = componentsById[targetId] ?: return@forEach
+        if (!source.type.hasOutput || targetPin !in 0 until target.inputPinCount) return@forEach
         val start = source.outputPinPosition()
-        val end = target.inputPinPosition(wire.targetPin)
+        val end = target.inputPinPosition(targetPin)
         val sourceBounds = source.bounds()
         val targetBounds = target.bounds()
         val area =
@@ -74,7 +73,7 @@ private fun computeRoutes(diagram: LogicDiagram): Map<String, List<Offset>> {
         val nearObstacles = obstacles.filter { it.overlaps(area) }
         val nearSegments =
             placed.filter {
-                it.net != wire.sourceId &&
+                it.net != sourceId &&
                     it.maxX >= area.left &&
                     it.minX <= area.right &&
                     it.maxY >= area.top &&
@@ -94,10 +93,10 @@ private fun computeRoutes(diagram: LogicDiagram): Map<String, List<Offset>> {
             val detour = cheapest(detourCandidates(start, end, sourceBounds, targetBounds))
             if (detour.cost < best.cost) best = detour
         }
-        routes[wire.id] = best.points
+        routes[id] = best.points
         placed +=
             best.points
-                .zipWithNext { a, b -> RouteSegment(a, b, wire.sourceId) }
+                .zipWithNext { a, b -> RouteSegment(a, b, sourceId) }
                 .filter { it.start != it.end }
     }
     return routes
@@ -140,18 +139,18 @@ private fun routeCandidates(
         for (inStep in 2..4) {
             val outX = start.x + outStep * ROUTE_STEP
             val inX = end.x - inStep * ROUTE_STEP
-            levels.forEach { level ->
+            levels.forEach {
                 candidates +=
                     RouteCandidate(
                         listOf(
                             start,
                             Offset(outX, start.y),
-                            Offset(outX, level),
-                            Offset(inX, level),
+                            Offset(outX, it),
+                            Offset(inX, it),
                             Offset(inX, end.y),
                             end,
                         ),
-                        (outStep + inStep) * 2f + abs(level - (start.y + end.y) / 2) * 0.3f,
+                        (outStep + inStep) * 2f + abs(it - (start.y + end.y) / 2) * 0.3f,
                     )
             }
         }
@@ -263,7 +262,7 @@ private fun crosses(a: Offset, b: Offset, segment: RouteSegment): Boolean {
     }
 }
 
-internal class LogicJunction(val net: String, val point: Offset)
+internal data class LogicJunction(val net: String, val point: Offset)
 
 internal fun logicJunctions(routesByNet: Map<String, List<List<Offset>>>): List<LogicJunction> {
     val junctions = mutableListOf<LogicJunction>()
@@ -272,7 +271,7 @@ internal fun logicJunctions(routesByNet: Map<String, List<List<Offset>>>): List<
         if (netRoutes.size < 2) continue
         val segments =
             netRoutes
-                .flatMap { points -> points.zipWithNext { a, b -> RouteSegment(a, b, net) } }
+                .flatMap { it.zipWithNext { a, b -> RouteSegment(a, b, net) } }
                 .filter { it.start != it.end }
         netRoutes
             .flatMap { it.subList(1, it.size - 1) }

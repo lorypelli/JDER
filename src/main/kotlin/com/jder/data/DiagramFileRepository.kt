@@ -85,5 +85,5 @@ private fun detectDiagramType(content: JsonObject): DiagramType? {
         ?.let {
             return it
         }
-    return DiagramType.entries.find { it.markerKeys.any { entry -> entry in content } }
+    return DiagramType.entries.find { it.markerKeys.any { it in content } }
 }

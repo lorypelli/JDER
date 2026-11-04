@@ -185,25 +185,25 @@ fun SequenceDiagramScreen(
             },
             onEditRequest = { openEditor(it.contextMenuType) },
         )
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
     }
     if (showLifelineDialog) {
-        state.lifeline(state.selectedLifelineId)?.let { lifeline ->
+        state.lifeline(state.selectedLifelineId)?.let { (id, name, _, _, type, _, documentation) ->
             LifelinePropertiesDialog(
-                lifelineId = lifeline.id,
-                lifelineName = lifeline.name,
-                lifelineType = lifeline.type,
-                lifelineDocumentation = lifeline.documentation,
+                lifelineId = id,
+                lifelineName = name,
+                lifelineType = type,
+                lifelineDocumentation = documentation,
                 onDismiss = { showLifelineDialog = false },
                 onConfirm = { newName, newType, newDoc ->
-                    state.updateLifeline(lifeline.id) {
+                    state.updateLifeline(id) {
                         it.copy(name = newName, type = newType, documentation = newDoc)
                     }
                     showLifelineDialog = false
@@ -249,31 +249,25 @@ fun SequenceDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },
                 )
             }
     }
-    pendingMessage?.let { request ->
+    pendingMessage?.let { (source, targetId) ->
         CreateSequenceMessageDialog(
-            isSelfMessage = request.source.lifelineId == request.targetId,
+            isSelfMessage = source.lifelineId == targetId,
             onDismiss = { pendingMessage = null },
             onConfirm = { label, type ->
-                state.addMessage(
-                    request.source.lifelineId,
-                    request.targetId,
-                    request.source.y,
-                    label,
-                    type,
-                )
+                state.addMessage(source.lifelineId, targetId, source.y, label, type)
                 Toasts.success("Messaggio creato")
                 pendingMessage = null
             },
@@ -281,4 +275,4 @@ fun SequenceDiagramScreen(
     }
 }
 
-private class PendingMessage(val source: SequenceAnchor, val targetId: String)
+private data class PendingMessage(val source: SequenceAnchor, val targetId: String)

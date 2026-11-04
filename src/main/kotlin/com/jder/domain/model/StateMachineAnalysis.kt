@@ -10,9 +10,9 @@ private val symbolOrder =
         { it },
     )
 
-class TransitionTableRow(val state: MachineState, val cells: List<List<MachineTransition>>)
+data class TransitionTableRow(val state: MachineState, val cells: List<List<MachineTransition>>)
 
-class TransitionTable(val symbols: List<String>, val rows: List<TransitionTableRow>)
+data class TransitionTable(val symbols: List<String>, val rows: List<TransitionTableRow>)
 
 class SimulationStep(
     val state: MachineState,
@@ -62,12 +62,12 @@ object StateMachineAnalyzer {
         if (initial == null) {
             add("Manca lo stato iniziale: selezionane uno e usa «Imposta come Stato Iniziale».")
         }
-        val table = transitionTable(diagram)
+        val (symbols, rows) = transitionTable(diagram)
         val conflicts = mutableListOf<String>()
         val missing = mutableListOf<String>()
-        table.rows.forEach { row ->
-            row.cells.forEachIndexed { index, cell ->
-                val case = "${row.state.name} con ingresso ${table.symbols[index]}"
+        rows.forEach { (state, cells) ->
+            cells.forEachIndexed { index, cell ->
+                val case = "${state.name} con ingresso ${symbols[index]}"
                 when {
                     cell.isEmpty() -> missing += case
                     isConflict(cell, kind) -> conflicts += case

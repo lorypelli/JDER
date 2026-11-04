@@ -304,15 +304,9 @@ private fun selectionEntries(selection: DiagramSelectionMenu?): List<AppMenuEntr
         buildList {
             add(AppMenuEntry.Action(selection.title, isEnabled = false, onClick = {}))
             add(AppMenuEntry.Separator)
-            selection.items.forEach { item ->
-                if (item.isDestructive) add(AppMenuEntry.Separator)
-                add(
-                    AppMenuEntry.Action(
-                        item.label,
-                        isEnabled = item.enabled,
-                        onClick = item.onClick,
-                    )
-                )
+            selection.items.forEach { (label, _, enabled, isDestructive, onClick) ->
+                if (isDestructive) add(AppMenuEntry.Separator)
+                add(AppMenuEntry.Action(label, isEnabled = enabled, onClick = onClick))
             }
         }
     }

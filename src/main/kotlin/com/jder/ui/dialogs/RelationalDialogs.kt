@@ -28,7 +28,7 @@ import com.jder.domain.model.RelationalReference
 import com.jder.domain.model.RelationalTable
 import java.util.UUID
 
-private class ReferenceOption(val reference: RelationalReference, val label: String)
+private data class ReferenceOption(val reference: RelationalReference, val label: String)
 
 @Composable
 fun TablePropertiesDialog(
@@ -138,20 +138,15 @@ private fun ColumnDialog(
     var reference by remember(columnId) { mutableStateOf(initialColumn?.reference) }
     var expanded by remember { mutableStateOf(false) }
     val options =
-        tables.flatMap { table ->
-            table.columns
+        tables.flatMap { (id, name, _, _, _, columns) ->
+            columns
                 .filter {
                     it.id != initialColumn?.id &&
                         (it.isPrimaryKey ||
                             it.isUnique ||
-                            RelationalReference(table.id, it.id) == initialColumn?.reference)
+                            RelationalReference(id, it.id) == initialColumn?.reference)
                 }
-                .map {
-                    ReferenceOption(
-                        RelationalReference(table.id, it.id),
-                        "${table.name}.${it.name}",
-                    )
-                }
+                .map { ReferenceOption(RelationalReference(id, it.id), "${name}.${it.name}") }
         }
     val selectedOption = options.find { it.reference == reference }
     AlertDialog(
@@ -208,11 +203,11 @@ private fun ColumnDialog(
                                 expanded = false
                             },
                         )
-                        options.forEach { option ->
+                        options.forEach { (optionReference, label) ->
                             DropdownMenuItem(
-                                text = { Text(option.label) },
+                                text = { Text(label) },
                                 onClick = {
-                                    reference = option.reference
+                                    reference = optionReference
                                     expanded = false
                                 },
                             )
@@ -302,11 +297,11 @@ fun ForeignKeyDialog(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                     ) {
-                        tables.forEach { table ->
+                        tables.forEach { (id, name) ->
                             DropdownMenuItem(
-                                text = { Text(table.name) },
+                                text = { Text(name) },
                                 onClick = {
-                                    targetId = table.id
+                                    targetId = id
                                     expanded = false
                                 },
                             )
@@ -322,11 +317,11 @@ fun ForeignKeyDialog(
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
-                    keyColumns.forEach { keyColumn ->
+                    keyColumns.forEach { (id, name) ->
                         OutlinedTextField(
-                            value = columnNames[keyColumn.id].orEmpty(),
-                            onValueChange = { columnNames = columnNames + (keyColumn.id to it) },
-                            label = { Text("Colonna per ${referenced.name}.${keyColumn.name}") },
+                            value = columnNames[id].orEmpty(),
+                            onValueChange = { columnNames = columnNames + (id to it) },
+                            label = { Text("Colonna per ${referenced.name}.${name}") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                         )

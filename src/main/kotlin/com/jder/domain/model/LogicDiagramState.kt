@@ -64,14 +64,14 @@ class LogicDiagramState :
     }
 
     override fun deleteSelection(): String? {
-        selectedComponentId?.let { id ->
+        selectedComponentId?.let {
             val message =
-                when (component(id)?.type) {
+                when (component(it)?.type) {
                     LogicComponentType.INPUT -> "Ingresso eliminato"
                     LogicComponentType.OUTPUT -> "Uscita eliminata"
                     else -> "Porta eliminata"
                 }
-            deleteComponent(id)
+            deleteComponent(it)
             return message
         }
         selectedWireId?.let {
@@ -237,13 +237,13 @@ class LogicDiagramState :
         val byId = components.associateBy { it.id }
         return copy(
             wires =
-                wires.filter { wire ->
-                    val source = byId[wire.sourceId]
-                    val target = byId[wire.targetId]
+                wires.filter { (_, sourceId, targetId, targetPin) ->
+                    val source = byId[sourceId]
+                    val target = byId[targetId]
                     source != null &&
                         target != null &&
                         source.type.hasOutput &&
-                        wire.targetPin in 0 until target.inputPinCount
+                        targetPin in 0 until target.inputPinCount
                 }
         )
     }

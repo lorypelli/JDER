@@ -85,13 +85,12 @@ data class SequenceDiagram(
 fun SequenceDiagram.validateMessageEndpoints() {
     val lifelineIds = lifelines.mapTo(mutableSetOf()) { it.id }
     val errors = mutableListOf<String>()
-    messages.forEach { message ->
-        if (message.sourceId !in lifelineIds) {
-            errors += "Il messaggio ${message.id} ha una sorgente inesistente: ${message.sourceId}"
+    messages.forEach { (id, sourceId, targetId) ->
+        if (sourceId !in lifelineIds) {
+            errors += "Il messaggio ${id} ha una sorgente inesistente: ${sourceId}"
         }
-        if (message.targetId !in lifelineIds) {
-            errors +=
-                "Il messaggio ${message.id} ha una destinazione inesistente: ${message.targetId}"
+        if (targetId !in lifelineIds) {
+            errors += "Il messaggio ${id} ha una destinazione inesistente: ${targetId}"
         }
     }
     if (errors.isNotEmpty()) throw DiagramValidationException(errors)

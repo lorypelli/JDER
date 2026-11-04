@@ -64,8 +64,8 @@ internal fun DrawScope.drawStateMachineDiagram(
             textMeasurer = textMeasurer,
         )
     }
-    layout.edges.forEach { edge ->
-        edge.labels.forEach { line ->
+    layout.edges.forEach {
+        it.labels.forEach { line ->
             drawTransitionLabel(line, line.transitionId == selectedId, palette)
         }
     }
@@ -79,15 +79,15 @@ internal fun stateMachineDiagramBounds(
     kind: StateMachineKind,
     textMeasurer: TextMeasurer,
 ): Rect? {
-    val layout = stateMachineLayout(diagram, kind, textMeasurer)
+    val (edges, initialArrow) = stateMachineLayout(diagram, kind, textMeasurer)
     val bounds = BoundsBuilder()
     diagram.states.forEach { bounds.include(Rect(it.center, MACHINE_STATE_RADIUS + 4f)) }
-    layout.edges.forEach { edge ->
+    edges.forEach { edge ->
         edge.points.forEach(bounds::include)
         bounds.include(Rect(edge.tip, TRANSITION_ARROW_SIZE / 2))
         edge.labels.forEach { bounds.include(it.rect.inflate(3f)) }
     }
-    layout.initialArrow?.let {
+    initialArrow?.let {
         bounds.include(it.start)
         bounds.include(it.tip)
     }

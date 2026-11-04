@@ -55,8 +55,8 @@ fun ClassEntityDialog(
                     singleLine = true,
                 )
                 Text("Tipo:", style = MaterialTheme.typography.labelMedium)
-                RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) { t ->
-                    t.display
+                RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) {
+                    it.display
                 }
                 if (entityType == ClassEntityType.CLASS) {
                     Row(
@@ -128,8 +128,8 @@ fun ClassMemberDialog(
                     )
                 }
                 Text("Visibilità:", style = MaterialTheme.typography.labelMedium)
-                RadioOptionList(Visibility.entries, visibility, { visibility = it }) { v ->
-                    "${v.symbol}  ${v.display}"
+                RadioOptionList(Visibility.entries, visibility, { visibility = it }) {
+                    "${it.symbol}  ${it.display}"
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),

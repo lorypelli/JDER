@@ -83,11 +83,11 @@ fun DiagramTypeDialog(themeState: ThemeState, onTypeSelected: (DiagramType) -> U
                     .widthIn(max = dialogMaxWidth)
                     .focusRequester(focusRequester)
                     .focusTarget()
-                    .onPreviewKeyEvent { event ->
-                        val typeIndex = diagramTypeKeys.indexOf(event.key)
+                    .onPreviewKeyEvent {
+                        val typeIndex = diagramTypeKeys.indexOf(it.key)
                         val isShortcut =
-                            event.type == KeyEventType.KeyDown &&
-                                (event.isCtrlPressed || event.isMetaPressed) &&
+                            it.type == KeyEventType.KeyDown &&
+                                (it.isCtrlPressed || it.isMetaPressed) &&
                                 typeIndex >= 0
                         if (isShortcut) onTypeSelected(DiagramType.entries[typeIndex])
                         isShortcut

@@ -192,9 +192,9 @@ fun main(args: Array<String>) {
             if (isMacOS) {
                 AppMenuBar(menus = menus, onAbout = { showAboutDialog = true })
                 DockMenu(
-                    onNewDiagram = { type ->
-                        if (currentType != null) pendingNewDiagram = type
-                        selectType(type)
+                    onNewDiagram = {
+                        if (currentType != null) pendingNewDiagram = it
+                        selectType(it)
                     }
                 )
             }
@@ -204,15 +204,15 @@ fun main(args: Array<String>) {
             ) {
                 Column(
                     modifier =
-                        Modifier.fillMaxSize().onPreviewKeyEvent { event ->
-                            val typeIndex = diagramTypeKeys.indexOf(event.key)
+                        Modifier.fillMaxSize().onPreviewKeyEvent {
+                            val typeIndex = diagramTypeKeys.indexOf(it.key)
                             when {
-                                event.type != KeyEventType.KeyDown -> false
-                                (event.isCtrlPressed || event.isMetaPressed) && typeIndex >= 0 -> {
+                                it.type != KeyEventType.KeyDown -> false
+                                (it.isCtrlPressed || it.isMetaPressed) && typeIndex >= 0 -> {
                                     selectType(DiagramType.entries[typeIndex])
                                     true
                                 }
-                                !isMacOS && event.key == Key.F11 -> {
+                                !isMacOS && it.key == Key.F11 -> {
                                     toggleFullscreen(windowState)
                                     true
                                 }

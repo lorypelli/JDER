@@ -234,28 +234,25 @@ fun SequenceFragmentDialog(
                             Icon(Icons.Default.Add, "Aggiungi operando")
                         }
                     }
-                    operands.forEach { operand ->
+                    operands.forEach { (id, _, condition) ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             OutlinedTextField(
-                                value = operand.condition,
+                                value = condition,
                                 onValueChange = { value ->
                                     operands =
                                         operands.map {
-                                            if (it.id == operand.id) it.copy(condition = value)
-                                            else it
+                                            if (it.id == id) it.copy(condition = value) else it
                                         }
                                 },
                                 label = { Text("Condizione") },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
                             )
-                            IconButton(
-                                onClick = { operands = operands.filter { it.id != operand.id } }
-                            ) {
+                            IconButton(onClick = { operands = operands.filter { it.id != id } }) {
                                 Icon(
                                     Icons.Default.Delete,
                                     "Rimuovi operando",

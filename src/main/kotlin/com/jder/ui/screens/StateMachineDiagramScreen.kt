@@ -230,11 +230,11 @@ fun StateMachineDiagramScreen(
             },
             onEditRequest = { openEditor(it.contextMenuType) },
         )
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
@@ -279,18 +279,18 @@ fun StateMachineDiagramScreen(
             )
         }
     }
-    pendingTransition?.let { pending ->
+    pendingTransition?.let { (sourceId, targetId) ->
         MachineTransitionDialog(
             title = "Nuova Transizione",
             kind = kind,
-            sourceName = stateName(pending.sourceId),
-            targetName = stateName(pending.targetId),
-            initialInput = state.suggestedInput(pending.sourceId),
+            sourceName = stateName(sourceId),
+            targetName = stateName(targetId),
+            initialInput = state.suggestedInput(sourceId),
             initialOutput = state.suggestedOutput(),
-            usedSymbols = usedSymbols(pending.sourceId, null),
+            usedSymbols = usedSymbols(sourceId, null),
             onDismiss = { pendingTransition = null },
             onConfirm = { input, output ->
-                state.addTransition(pending.sourceId, pending.targetId, input, output)
+                state.addTransition(sourceId, targetId, input, output)
                 pendingTransition = null
                 Toasts.success("Transizione creata")
             },
@@ -299,13 +299,13 @@ fun StateMachineDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },

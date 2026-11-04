@@ -162,13 +162,11 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo D
     }
 
     fun addAttributeToEntity(entityId: String, attribute: Attribute) {
-        updateEntity(entityId) { entity -> entity.copy(attributes = entity.attributes + attribute) }
+        updateEntity(entityId) { it.copy(attributes = it.attributes + attribute) }
     }
 
     fun addAttributeToRelationship(relationshipId: String, attribute: Attribute) {
-        updateRelationship(relationshipId) { relationship ->
-            relationship.copy(attributes = relationship.attributes + attribute)
-        }
+        updateRelationship(relationshipId) { it.copy(attributes = it.attributes + attribute) }
     }
 
     fun deleteAttributeFromEntity(entityId: String, attributeId: String) {

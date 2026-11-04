@@ -76,16 +76,12 @@ fun StateMachineDiagram.validateReferences() {
     if (initialStateId != null && initialStateId !in stateIds) {
         errors += "Lo stato iniziale non esiste: $initialStateId"
     }
-    transitions.forEach { transition ->
-        if (transition.sourceId !in stateIds) {
-            errors +=
-                "La transizione ${transition.id} parte da uno stato inesistente: " +
-                    transition.sourceId
+    transitions.forEach { (id, sourceId, targetId) ->
+        if (sourceId !in stateIds) {
+            errors += "La transizione ${id} parte da uno stato inesistente: " + sourceId
         }
-        if (transition.targetId !in stateIds) {
-            errors +=
-                "La transizione ${transition.id} arriva a uno stato inesistente: " +
-                    transition.targetId
+        if (targetId !in stateIds) {
+            errors += "La transizione ${id} arriva a uno stato inesistente: " + targetId
         }
     }
     if (errors.isNotEmpty()) throw DiagramValidationException(errors)

@@ -92,10 +92,10 @@ internal fun foreignKeyRoute(
             else -> {
                 val right = maxOf(sourceRight, targetRight) + FOREIGN_KEY_STUB
                 val left = minOf(source.x, target.x) - FOREIGN_KEY_STUB
-                (0..MAX_DETOUR_STEPS).asSequence().flatMap { step ->
+                (0..MAX_DETOUR_STEPS).asSequence().flatMap {
                     sequenceOf(
-                        route(sourceRight, right + step * ROUTE_STEP, targetRight),
-                        route(source.x, left - step * ROUTE_STEP, target.x),
+                        route(sourceRight, right + it * ROUTE_STEP, targetRight),
+                        route(source.x, left - it * ROUTE_STEP, target.x),
                     )
                 }
             }

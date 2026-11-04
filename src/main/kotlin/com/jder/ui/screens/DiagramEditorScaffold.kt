@@ -269,51 +269,51 @@ fun <T> DiagramEditorScaffold(
     }
     Scaffold(
         modifier =
-            Modifier.focusRequester(focusRequester).focusTarget().onPreviewKeyEvent { event ->
-                if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
-                val isCommand = event.isCtrlPressed || event.isMetaPressed
+            Modifier.focusRequester(focusRequester).focusTarget().onPreviewKeyEvent {
+                if (it.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
+                val isCommand = it.isCtrlPressed || it.isMetaPressed
                 when {
-                    isCommand && event.key == Key.Z -> {
-                        if (event.isShiftPressed) redo() else undo()
+                    isCommand && it.key == Key.Z -> {
+                        if (it.isShiftPressed) redo() else undo()
                         true
                     }
-                    isCommand && event.key == Key.Y -> {
+                    isCommand && it.key == Key.Y -> {
                         redo()
                         true
                     }
-                    isCommand && event.key == Key.N -> {
+                    isCommand && it.key == Key.N -> {
                         requestNewDiagram()
                         true
                     }
-                    isCommand && event.key == Key.O -> {
+                    isCommand && it.key == Key.O -> {
                         requestOpenDiagram()
                         true
                     }
-                    isCommand && event.key == Key.S -> {
-                        if (event.isShiftPressed) showSaveAsDialog = true else saveDiagram()
+                    isCommand && it.key == Key.S -> {
+                        if (it.isShiftPressed) showSaveAsDialog = true else saveDiagram()
                         true
                     }
-                    isCommand && event.key == Key.E -> {
+                    isCommand && it.key == Key.E -> {
                         requestExport()
                         true
                     }
-                    isCommand && event.key in zoomInKeys -> {
+                    isCommand && it.key in zoomInKeys -> {
                         state.zoomIn()
                         true
                     }
-                    isCommand && event.key in zoomOutKeys -> {
+                    isCommand && it.key in zoomOutKeys -> {
                         state.zoomOut()
                         true
                     }
-                    isCommand && event.key in resetZoomKeys -> {
+                    isCommand && it.key in resetZoomKeys -> {
                         state.resetView()
                         true
                     }
-                    event.key == Key.Delete || event.key == Key.Backspace -> {
+                    it.key == Key.Delete || it.key == Key.Backspace -> {
                         deleteSelected()
                         true
                     }
-                    event.key == Key.Escape -> {
+                    it.key == Key.Escape -> {
                         state.clearSelection()
                         state.resetToolMode()
                         true
@@ -338,8 +338,8 @@ fun <T> DiagramEditorScaffold(
                 tools = tools,
             )
         },
-    ) { values ->
-        Row(modifier = Modifier.fillMaxSize().padding(values)) {
+    ) {
+        Row(modifier = Modifier.fillMaxSize().padding(it)) {
             Box(
                 modifier =
                     Modifier.weight(1f).fillMaxHeight().onPointerEvent(
@@ -413,9 +413,9 @@ fun <T> DiagramEditorScaffold(
             title = "Salva Diagramma",
             defaultFileName = state.diagramName,
             onDismiss = { showSaveAsDialog = false },
-            onFileSelected = { file ->
+            onFileSelected = {
                 showSaveAsDialog = false
-                saveTo(file)
+                saveTo(it)
             },
         )
     }
@@ -426,9 +426,9 @@ fun <T> DiagramEditorScaffold(
             title = "Esporta come PNG",
             defaultFileName = state.diagramName,
             onDismiss = { showExportDialog = false },
-            onFileSelected = { file ->
+            onFileSelected = {
                 showExportDialog = false
-                exportTo(file)
+                exportTo(it)
             },
         )
     }

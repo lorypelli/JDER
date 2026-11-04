@@ -103,29 +103,20 @@ internal fun hitTestERDiagram(diagram: ERDiagram, point: Offset): ERElement? {
         ?.let {
             return ERElement.NoteRef(it.id)
         }
-    diagram.relationships.asReversed().forEach { relationship ->
-        attributeAt(
-                relationship.attributes,
-                relationship.x,
-                relationship.y,
-                relationship.width,
-                relationship.height,
-                point,
-            )
-            ?.let {
-                return ERElement.AttributeRef(it.id, relationship.id, isEntityAttribute = false)
-            }
+    diagram.relationships.asReversed().forEach { (id, _, x, y, width, height, attributes) ->
+        attributeAt(attributes, x, y, width, height, point)?.let {
+            return ERElement.AttributeRef(it.id, id, isEntityAttribute = false)
+        }
     }
     diagram.relationships
         .lastOrNull { isPointInDiamond(point, it.x, it.y, it.width, it.height) }
         ?.let {
             return ERElement.RelationshipRef(it.id)
         }
-    diagram.entities.asReversed().forEach { entity ->
-        attributeAt(entity.attributes, entity.x, entity.y, entity.width, entity.height, point)
-            ?.let {
-                return ERElement.AttributeRef(it.id, entity.id, isEntityAttribute = true)
-            }
+    diagram.entities.asReversed().forEach { (id, _, x, y, width, height, attributes) ->
+        attributeAt(attributes, x, y, width, height, point)?.let {
+            return ERElement.AttributeRef(it.id, id, isEntityAttribute = true)
+        }
     }
     diagram.entities
         .lastOrNull { it.contains(point) }
@@ -189,31 +180,31 @@ internal fun handleERDrag(state: ERDiagramState, element: ERElement, delta: Offs
             }
         is ERElement.AttributeRef ->
             if (element.isEntityAttribute) {
-                state.updateEntityWithoutSave(element.id) { entity ->
-                    entity.copy(
+                state.updateEntityWithoutSave(element.id) {
+                    it.copy(
                         attributes =
                             orbitAttribute(
-                                entity.attributes,
+                                it.attributes,
                                 element.attributeId,
-                                entity.x,
-                                entity.y,
-                                entity.width,
-                                entity.height,
+                                it.x,
+                                it.y,
+                                it.width,
+                                it.height,
                                 delta,
                             )
                     )
                 }
             } else {
-                state.updateRelationshipWithoutSave(element.id) { relationship ->
-                    relationship.copy(
+                state.updateRelationshipWithoutSave(element.id) {
+                    it.copy(
                         attributes =
                             orbitAttribute(
-                                relationship.attributes,
+                                it.attributes,
                                 element.attributeId,
-                                relationship.x,
-                                relationship.y,
-                                relationship.width,
-                                relationship.height,
+                                it.x,
+                                it.y,
+                                it.width,
+                                it.height,
                                 delta,
                             )
                     )

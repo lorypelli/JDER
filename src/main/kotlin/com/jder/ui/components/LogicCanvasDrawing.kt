@@ -54,9 +54,9 @@ internal fun DrawScope.drawLogicDiagram(
     val routesById = logicWireRoutes(diagram)
     val routes =
         diagram.wires.mapNotNull { wire -> routesById[wire.id]?.let { WireRoute(wire, it) } }
-    routes.forEach { route ->
-        val value = simulation.outputOf(route.wire.sourceId)
-        val isSelected = route.wire.id == selectedId
+    routes.forEach { (wire, points) ->
+        val value = simulation.outputOf(wire.sourceId)
+        val isSelected = wire.id == selectedId
         val color =
             when {
                 isSelected -> palette.selected
@@ -66,21 +66,16 @@ internal fun DrawScope.drawLogicDiagram(
         val width =
             when {
                 isSelected -> 3f
-                route.wire.id == hoveredId -> 2.75f
+                wire.id == hoveredId -> 2.75f
                 else -> 2f
             }
-        drawWirePath(
-            route.points,
-            color,
-            width,
-            isDashed = showSignals && value == null && !isSelected,
-        )
+        drawWirePath(points, color, width, isDashed = showSignals && value == null && !isSelected)
     }
-    logicJunctions(routes.groupBy({ it.wire.sourceId }, { it.points })).forEach { junction ->
+    logicJunctions(routes.groupBy({ it.wire.sourceId }, { it.points })).forEach { (net, point) ->
         val color =
-            if (showSignals) palette.signalColor(simulation.outputOf(junction.net))
+            if (showSignals) palette.signalColor(simulation.outputOf(net))
             else palette.neutralWire()
-        drawCircle(color = color, radius = 3.5f, center = junction.point)
+        drawCircle(color = color, radius = 3.5f, center = point)
     }
     diagram.components.forEach {
         drawLogicComponent(
@@ -98,11 +93,11 @@ internal fun DrawScope.drawLogicDiagram(
         drawNoteShape(it, it.id == selectedId, textMeasurer, palette.selected, it.id == hoveredId)
     }
     val pendingPin =
-        pendingSource?.let { source ->
-            source.pin?.let { LogicElement.PinRef(source.componentId, it) }
+        pendingSource?.let { (componentId, pin) ->
+            pin?.let { LogicElement.PinRef(componentId, it) }
         }
-    (highlightedPins + listOfNotNull(pendingPin)).forEach { pinRef ->
-        val center = componentsById[pinRef.id]?.pinPosition(pinRef.pin) ?: return@forEach
+    (highlightedPins + listOfNotNull(pendingPin)).forEach { (id, pin) ->
+        val center = componentsById[id]?.pinPosition(pin) ?: return@forEach
         drawCircle(color = palette.selected.copy(alpha = 0.2f), radius = 8f, center = center)
         drawCircle(
             color = palette.selected,
@@ -141,7 +136,7 @@ internal fun logicDiagramBounds(diagram: LogicDiagram, textMeasurer: TextMeasure
             )
         }
     }
-    logicWireRoutes(diagram).values.forEach { points -> points.forEach(bounds::include) }
+    logicWireRoutes(diagram).values.forEach { it.forEach(bounds::include) }
     diagram.notes.forEach { bounds.include(it.bounds()) }
     return bounds.build()
 }
@@ -217,15 +212,15 @@ private fun DrawScope.drawLogicComponent(
             drawLogicOutput(component, palette, textMeasurer, simulation, showSignals, style)
         else -> drawLogicGate(component, palette, textMeasurer, style)
     }
-    repeat(component.inputPinCount) { index ->
-        val isConnected = simulation.isConnected(component.id, index)
+    repeat(component.inputPinCount) {
+        val isConnected = simulation.isConnected(component.id, it)
         val color =
             when {
                 !isConnected -> palette.outline
-                showSignals -> palette.signalColor(simulation.inputOf(component.id, index))
+                showSignals -> palette.signalColor(simulation.inputOf(component.id, it))
                 else -> style.stroke
             }
-        drawPinDot(component.inputPinPosition(index), color, isOpen = !isConnected, palette)
+        drawPinDot(component.inputPinPosition(it), color, isOpen = !isConnected, palette)
     }
     if (component.type.hasOutput) {
         val color =
@@ -426,8 +421,8 @@ private fun DrawScope.drawLogicGate(
             else -> left
         }
     val backDepth = (right - bodyLeft) * OR_BACK_DEPTH
-    repeat(component.inputPinCount) { index ->
-        val pin = component.inputPinPosition(index)
+    repeat(component.inputPinCount) {
+        val pin = component.inputPinPosition(it)
         val endX =
             when (type) {
                 LogicComponentType.OR,
@@ -544,4 +539,4 @@ private fun gateBodyPath(
     }
 }
 
-private class WireRoute(val wire: LogicWire, val points: List<Offset>)
+private data class WireRoute(val wire: LogicWire, val points: List<Offset>)

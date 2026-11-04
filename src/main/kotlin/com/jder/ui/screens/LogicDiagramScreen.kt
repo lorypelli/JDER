@@ -161,11 +161,11 @@ fun LogicDiagramScreen(
                     LogicToolMode.entries.mapNotNull { mode ->
                         mode.componentType
                             ?.takeIf { it.isGate }
-                            ?.let { type ->
+                            ?.let {
                                 DiagramTool.Mode(
-                                    CustomIcons.gate(type),
-                                    "Porta ${type.display}",
-                                    type.display,
+                                    CustomIcons.gate(it),
+                                    "Porta ${it.display}",
+                                    it.display,
                                     state.toolMode == mode,
                                 ) {
                                     state.toolMode = mode
@@ -226,8 +226,8 @@ fun LogicDiagramScreen(
             onContextMenuRequest = { position, type ->
                 contextMenu = ContextMenuRequest(position, type)
             },
-            onEditRequest = { element ->
-                if (element is LogicElement.NoteRef) showNoteDialog = true
+            onEditRequest = {
+                if (it is LogicElement.NoteRef) showNoteDialog = true
                 else showComponentDialog = true
             },
         )
@@ -245,11 +245,11 @@ fun LogicDiagramScreen(
                 )
             }
         }
-        contextMenu?.let { menu ->
+        contextMenu?.let {
             DiagramContextMenu(
-                position = menu.position,
-                title = actionsTitle(menu.type),
-                items = actions(menu.type),
+                position = it.position,
+                title = actionsTitle(it.type),
+                items = actions(it.type),
                 onDismiss = { contextMenu = null },
             )
         }
@@ -272,13 +272,13 @@ fun LogicDiagramScreen(
     if (showNoteDialog) {
         state.diagram.notes
             .find { it.id == state.selectedNoteId }
-            ?.let { note ->
+            ?.let { (id, text) ->
                 NotePropertiesDialog(
-                    noteId = note.id,
-                    noteText = note.text,
+                    noteId = id,
+                    noteText = text,
                     onDismiss = { showNoteDialog = false },
                     onConfirm = { newText ->
-                        state.updateNote(note.id) { it.copy(text = newText) }
+                        state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
                         Toasts.success("Nota modificata")
                     },

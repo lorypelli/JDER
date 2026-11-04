@@ -155,7 +155,7 @@ fun ToastHost(isDarkTheme: Boolean) {
     }
 }
 
-private class ToastColors(val container: Color, val content: Color, val icon: Color)
+private data class ToastColors(val container: Color, val content: Color, val icon: Color)
 
 @Composable
 private fun ToastType.colors(isDarkTheme: Boolean): ToastColors =
@@ -184,7 +184,7 @@ private fun ToastCard(shown: ShownToast, isDarkTheme: Boolean) {
         delay(toast.type.duration)
         shown.dismiss()
     }
-    val colors = toast.type.colors(isDarkTheme)
+    val (container, content, icon) = toast.type.colors(isDarkTheme)
     AnimatedVisibility(visibleState = shown.visibility, enter = toastEnter, exit = toastExit) {
         Snackbar(
             modifier =
@@ -197,15 +197,15 @@ private fun ToastCard(shown: ShownToast, isDarkTheme: Boolean) {
                 }
             },
             shape = MaterialTheme.shapes.medium,
-            containerColor = colors.container,
-            contentColor = colors.content,
-            dismissActionContentColor = colors.content,
+            containerColor = container,
+            contentColor = content,
+            dismissActionContentColor = content,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Icon(toast.type.icon, contentDescription = null, tint = colors.icon)
+                Icon(toast.type.icon, contentDescription = null, tint = icon)
                 Text(toast.message)
             }
         }

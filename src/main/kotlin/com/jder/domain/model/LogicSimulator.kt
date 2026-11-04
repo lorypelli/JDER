@@ -17,9 +17,9 @@ class LogicSimulation(
     }
 }
 
-class LogicTruthTableRow(val inputs: List<Boolean>, val outputs: List<Boolean?>)
+data class LogicTruthTableRow(val inputs: List<Boolean>, val outputs: List<Boolean?>)
 
-class LogicTruthTable(
+data class LogicTruthTable(
     val inputs: List<LogicComponent>,
     val outputs: List<LogicComponent>,
     val rows: List<LogicTruthTableRow>,
@@ -83,9 +83,7 @@ object LogicSimulator {
         val rows =
             (0 until (1 shl inputs.size)).map { combination ->
                 val inputValues =
-                    inputs.indices.map { index ->
-                        (combination shr (inputs.size - 1 - index)) and 1 == 1
-                    }
+                    inputs.indices.map { (combination shr (inputs.size - 1 - it)) and 1 == 1 }
                 val simulation =
                     simulate(
                         diagram,
