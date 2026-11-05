@@ -44,6 +44,7 @@ import com.jder.domain.model.StateMachineKind
 import com.jder.domain.model.StateMachineRun
 import com.jder.domain.model.TransitionTable
 import com.jder.domain.model.parseInputSymbols
+import com.jder.ui.strings.UiStrings
 
 private val stateColumnWidth = 132.dp
 private val valueColumnWidth = 88.dp
@@ -51,7 +52,7 @@ private val stepColumnWidth = 44.dp
 private const val MISSING = "—"
 
 @Composable
-fun MachineStateDialog(
+fun MachineStatePropertiesDialog(
     machineState: MachineState,
     kind: StateMachineKind,
     isInitial: Boolean,
@@ -72,7 +73,7 @@ fun MachineStateDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     isError = isDuplicate,
@@ -105,15 +106,15 @@ fun MachineStateDialog(
                 },
                 enabled = name.isNotBlank() && !isDuplicate,
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
 @Composable
-fun MachineTransitionDialog(
+fun MachineTransitionPropertiesDialog(
     title: String,
     kind: StateMachineKind,
     sourceName: String,
@@ -179,10 +180,10 @@ fun MachineTransitionDialog(
                 },
                 enabled = parseInputSymbols(input).isNotEmpty(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -247,7 +248,7 @@ fun TransitionTableDialog(
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Chiudi") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
         dismissButton =
             if (hasStates) {
                 {
@@ -309,12 +310,12 @@ private fun TransitionTableContent(
                     ) {
                         TableCell(stateLabel(row.state), stateColumnWidth, isHeader = true)
                         TableSeparator()
-                        row.cells.forEach { cell ->
+                        row.cells.forEach {
                             TableCell(
-                                cellText(cell),
+                                cellText(it),
                                 valueColumnWidth,
-                                isError = StateMachineAnalyzer.isConflict(cell, kind),
-                                isOutput = kind.hasTransitionOutputs && cell.isNotEmpty(),
+                                isError = StateMachineAnalyzer.isConflict(it, kind),
+                                isOutput = kind.hasTransitionOutputs && it.isNotEmpty(),
                             )
                         }
                         if (kind.hasStateOutputs) {
@@ -429,7 +430,7 @@ fun StateMachineSimulationDialog(
                 run.error?.let { ErrorText(it) }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Chiudi") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
         dismissButton =
             if (rows.isNotEmpty() && inputs.isNotEmpty()) {
                 {

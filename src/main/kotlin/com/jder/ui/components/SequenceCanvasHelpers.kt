@@ -169,9 +169,9 @@ internal fun handleSequenceTap(
             state.toolMode = SequenceToolMode.SELECT
         }
         else ->
-            mode.lifelineType?.let { type ->
-                val y = state.diagram.lifelines.firstOrNull()?.y ?: (point.y - type.headHeight / 2)
-                state.addLifeline(type, point.x - 60f, y, defaultLifelineName(type))
+            mode.lifelineType?.let {
+                val y = state.diagram.lifelines.firstOrNull()?.y ?: (point.y - it.headHeight / 2)
+                state.addLifeline(it, point.x - 60f, y, defaultLifelineName(it))
                 state.toolMode = SequenceToolMode.SELECT
             }
     }

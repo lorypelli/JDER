@@ -82,16 +82,16 @@ private fun attributeAt(
 ): Attribute? =
     attributes.indices
         .reversed()
-        .firstOrNull { index ->
+        .firstOrNull {
             val position =
                 calculateAttributePosition(
                     ownerX,
                     ownerY,
                     ownerWidth,
                     ownerHeight,
-                    index,
+                    it,
                     attributes.size,
-                    attributes[index],
+                    attributes[it],
                 )
             (position - point).getDistance() <= ATTRIBUTE_HIT_RADIUS
         }

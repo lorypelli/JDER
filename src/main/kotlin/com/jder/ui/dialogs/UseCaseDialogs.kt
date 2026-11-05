@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.jder.domain.model.UseCaseRelation
 import com.jder.domain.model.UseCaseRelationType
 import com.jder.ui.components.RadioOptionList
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun ActorPropertiesDialog(
@@ -34,7 +35,7 @@ fun ActorPropertiesDialog(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Nome") },
+                label = { Text(UiStrings.NAME) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
             )
@@ -47,10 +48,10 @@ fun ActorPropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -72,7 +73,7 @@ fun UseCasePropertiesDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -93,10 +94,10 @@ fun UseCasePropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -115,7 +116,7 @@ fun SelectRelationTypeDialog(
 }
 
 @Composable
-fun RelationEditDialog(
+fun EditRelationTypeDialog(
     relation: UseCaseRelation,
     onDismiss: () -> Unit,
     onConfirm: (type: UseCaseRelationType) -> Unit,
@@ -151,15 +152,15 @@ private fun RelationTypeDialog(
                     onDismiss()
                 }
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
 @Composable
-fun SystemBoundaryDialog(
+fun SystemBoundaryPropertiesDialog(
     boundaryId: String,
     boundaryName: String,
     boundaryWidth: Float,
@@ -178,7 +179,7 @@ fun SystemBoundaryDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -210,9 +211,9 @@ fun SystemBoundaryDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }

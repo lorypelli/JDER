@@ -32,6 +32,7 @@ import com.jder.domain.model.SequenceMessage
 import com.jder.domain.model.SequenceMessageType
 import com.jder.domain.model.SequenceOperand
 import com.jder.ui.components.RadioOptionList
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 @Composable
@@ -54,7 +55,7 @@ fun LifelinePropertiesDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     placeholder = { Text("es. c : Carrello") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -78,10 +79,10 @@ fun LifelinePropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -160,15 +161,15 @@ private fun SequenceMessageDialog(
                     onDismiss()
                 }
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
 @Composable
-fun SequenceFragmentDialog(
+fun SequenceFragmentPropertiesDialog(
     fragment: SequenceFragment,
     onDismiss: () -> Unit,
     onConfirm:
@@ -297,9 +298,9 @@ fun SequenceFragmentDialog(
                     onDismiss()
                 }
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }

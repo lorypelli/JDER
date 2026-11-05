@@ -13,11 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.jder.data.ClassDiagramRepository
 import com.jder.domain.model.ClassDiagramState
-import com.jder.domain.model.ClassDiagramToolMode
 import com.jder.domain.model.ClassMember
+import com.jder.domain.model.ClassToolMode
+import com.jder.ui.components.ClassContextMenuType
 import com.jder.ui.components.ClassDiagramCanvas
-import com.jder.ui.components.ClassDiagramContextMenuType
-import com.jder.ui.components.ClassDiagramPropertiesPanel
+import com.jder.ui.components.ClassPropertiesPanel
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -27,9 +27,9 @@ import com.jder.ui.components.DiagramTool
 import com.jder.ui.components.PendingRelation
 import com.jder.ui.components.Toasts
 import com.jder.ui.components.contextMenuType
-import com.jder.ui.dialogs.ClassEntityDialog
 import com.jder.ui.dialogs.ClassMemberDialog
-import com.jder.ui.dialogs.ClassRelationDialog
+import com.jder.ui.dialogs.ClassPropertiesDialog
+import com.jder.ui.dialogs.ClassRelationPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.SelectClassRelationTypeDialog
 import com.jder.ui.strings.UiStrings
@@ -49,54 +49,54 @@ fun ClassDiagramScreen(
     var memberToEdit by remember { mutableStateOf<ClassMember?>(null) }
     var showAddMethodDialog by remember { mutableStateOf(false) }
     var pendingRelation by remember { mutableStateOf<PendingRelation?>(null) }
-    var contextMenu by remember {
-        mutableStateOf<ContextMenuRequest<ClassDiagramContextMenuType>?>(null)
-    }
-    fun openEditor(type: ClassDiagramContextMenuType) {
+    var contextMenu by remember { mutableStateOf<ContextMenuRequest<ClassContextMenuType>?>(null) }
+    fun openEditor(type: ClassContextMenuType) {
         when (type) {
-            ClassDiagramContextMenuType.CLASS -> showClassDialog = true
-            ClassDiagramContextMenuType.RELATION -> showRelationDialog = true
-            ClassDiagramContextMenuType.NOTE -> showNoteDialog = true
+            ClassContextMenuType.CLASS -> showClassDialog = true
+            ClassContextMenuType.RELATION -> showRelationDialog = true
+            ClassContextMenuType.NOTE -> showNoteDialog = true
         }
     }
-    fun selectedType(): ClassDiagramContextMenuType? =
+    fun selectedType(): ClassContextMenuType? =
         when {
-            state.selectedClassId != null -> ClassDiagramContextMenuType.CLASS
-            state.selectedRelationId != null -> ClassDiagramContextMenuType.RELATION
-            state.selectedNoteId != null -> ClassDiagramContextMenuType.NOTE
+            state.selectedClassId != null -> ClassContextMenuType.CLASS
+            state.selectedRelationId != null -> ClassContextMenuType.RELATION
+            state.selectedNoteId != null -> ClassContextMenuType.NOTE
             else -> null
         }
-    fun actionsTitle(type: ClassDiagramContextMenuType): String =
+    fun actionsTitle(type: ClassContextMenuType): String =
         when (type) {
-            ClassDiagramContextMenuType.CLASS -> "Azioni Classe"
-            ClassDiagramContextMenuType.RELATION -> "Azioni Relazione"
-            ClassDiagramContextMenuType.NOTE -> "Azioni Nota"
+            ClassContextMenuType.CLASS -> "Azioni Classe"
+            ClassContextMenuType.RELATION -> "Azioni Relazione"
+            ClassContextMenuType.NOTE -> "Azioni Nota"
         }
-    fun actions(type: ClassDiagramContextMenuType): List<ContextMenuItem> = buildList {
+    fun actions(type: ClassContextMenuType): List<ContextMenuItem> = buildList {
         add(
             ContextMenuItem(
                 when (type) {
-                    ClassDiagramContextMenuType.CLASS -> "Modifica Proprietà"
-                    ClassDiagramContextMenuType.RELATION -> "Modifica Relazione"
-                    ClassDiagramContextMenuType.NOTE -> "Modifica Testo"
+                    ClassContextMenuType.CLASS -> UiStrings.EDIT_PROPERTIES
+                    ClassContextMenuType.RELATION -> "Modifica Relazione"
+                    ClassContextMenuType.NOTE -> UiStrings.EDIT_TEXT
                 },
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
             }
         )
-        if (type == ClassDiagramContextMenuType.CLASS) {
+        if (type == ClassContextMenuType.CLASS) {
             add(
-                ContextMenuItem("Aggiungi Attributo", Icons.Default.Add) {
+                ContextMenuItem(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add) {
                     showAddAttributeDialog = true
                 }
             )
             add(
-                ContextMenuItem("Aggiungi Metodo", Icons.Default.Add) { showAddMethodDialog = true }
+                ContextMenuItem(UiStrings.ADD_METHOD, Icons.Default.Add) {
+                    showAddMethodDialog = true
+                }
             )
         }
         add(
-            ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -114,49 +114,49 @@ fun ClassDiagramScreen(
                     CustomIcons.Rectangle,
                     "Crea Classe",
                     "Classe",
-                    state.toolMode == ClassDiagramToolMode.CLASS,
+                    state.toolMode == ClassToolMode.CLASS,
                 ) {
-                    state.toolMode = ClassDiagramToolMode.CLASS
+                    state.toolMode = ClassToolMode.CLASS
                 },
                 DiagramTool.Mode(
                     CustomIcons.Interface,
                     "Crea Interfaccia",
                     "Interfaccia",
-                    state.toolMode == ClassDiagramToolMode.INTERFACE,
+                    state.toolMode == ClassToolMode.INTERFACE,
                 ) {
-                    state.toolMode = ClassDiagramToolMode.INTERFACE
+                    state.toolMode = ClassToolMode.INTERFACE
                 },
                 DiagramTool.Mode(
                     Icons.Default.FormatListNumbered,
                     "Crea Enum",
                     "Enum",
-                    state.toolMode == ClassDiagramToolMode.ENUM,
+                    state.toolMode == ClassToolMode.ENUM,
                 ) {
-                    state.toolMode = ClassDiagramToolMode.ENUM
+                    state.toolMode = ClassToolMode.ENUM
                 },
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
                     "Crea Relazione (clicca la classe sorgente e poi la destinazione)",
                     UiStrings.RELATION,
-                    state.toolMode == ClassDiagramToolMode.RELATION,
+                    state.toolMode == ClassToolMode.RELATION,
                 ) {
-                    state.toolMode = ClassDiagramToolMode.RELATION
+                    state.toolMode = ClassToolMode.RELATION
                     state.pendingRelationSourceId = null
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    "Crea Nota",
+                    UiStrings.CREATE_NOTE,
                     UiStrings.NOTE,
-                    state.toolMode == ClassDiagramToolMode.NOTE,
+                    state.toolMode == ClassToolMode.NOTE,
                 ) {
-                    state.toolMode = ClassDiagramToolMode.NOTE
+                    state.toolMode = ClassToolMode.NOTE
                 },
             ),
         selectionMenu = {
             selectedType()?.let { DiagramSelectionMenu(actionsTitle(it), actions(it)) }
         },
         properties = {
-            ClassDiagramPropertiesPanel(
+            ClassPropertiesPanel(
                 state = state,
                 onEditClass = { showClassDialog = true },
                 onEditRelation = { showRelationDialog = true },
@@ -194,52 +194,48 @@ fun ClassDiagramScreen(
         }
     }
     if (showClassDialog) {
-        state.diagram.classes
-            .find { it.id == state.selectedClassId }
-            ?.let { entity ->
-                ClassEntityDialog(
-                    entityId = entity.id,
-                    name = entity.name,
-                    type = entity.type,
-                    isAbstract = entity.isAbstract,
-                    documentation = entity.documentation,
-                    onDismiss = { showClassDialog = false },
-                    onConfirm = { newName, newType, newAbstract, newDoc ->
-                        state.updateClass(entity.id) {
-                            it.copy(
-                                name = newName,
-                                type = newType,
-                                isAbstract = newAbstract,
-                                documentation = newDoc,
-                            )
-                        }
-                        showClassDialog = false
-                        Toasts.success("Classe modificata")
-                    },
-                )
-            }
+        state.classEntity(state.selectedClassId)?.let { entity ->
+            ClassPropertiesDialog(
+                entityId = entity.id,
+                name = entity.name,
+                type = entity.type,
+                isAbstract = entity.isAbstract,
+                documentation = entity.documentation,
+                onDismiss = { showClassDialog = false },
+                onConfirm = { newName, newType, newAbstract, newDoc ->
+                    state.updateClass(entity.id) {
+                        it.copy(
+                            name = newName,
+                            type = newType,
+                            isAbstract = newAbstract,
+                            documentation = newDoc,
+                        )
+                    }
+                    showClassDialog = false
+                    Toasts.success("Classe modificata")
+                },
+            )
+        }
     }
     if (showRelationDialog) {
-        state.diagram.relations
-            .find { it.id == state.selectedRelationId }
-            ?.let { relation ->
-                ClassRelationDialog(
-                    relation = relation,
-                    onDismiss = { showRelationDialog = false },
-                    onConfirm = { newType, srcMulti, tgtMulti, lbl ->
-                        state.updateRelation(relation.id) {
-                            it.copy(
-                                type = newType,
-                                sourceMultiplicity = srcMulti,
-                                targetMultiplicity = tgtMulti,
-                                label = lbl,
-                            )
-                        }
-                        showRelationDialog = false
-                        Toasts.success("Relazione modificata")
-                    },
-                )
-            }
+        state.relation(state.selectedRelationId)?.let { relation ->
+            ClassRelationPropertiesDialog(
+                relation = relation,
+                onDismiss = { showRelationDialog = false },
+                onConfirm = { newType, srcMulti, tgtMulti, lbl ->
+                    state.updateRelation(relation.id) {
+                        it.copy(
+                            type = newType,
+                            sourceMultiplicity = srcMulti,
+                            targetMultiplicity = tgtMulti,
+                            label = lbl,
+                        )
+                    }
+                    showRelationDialog = false
+                    Toasts.success("Relazione modificata")
+                },
+            )
+        }
     }
     if (showNoteDialog) {
         state.diagram.notes
@@ -263,8 +259,8 @@ fun ClassDiagramScreen(
                 isMethod = state.diagram.classes.any { c -> c.methods.any { it.id == member.id } },
                 initialMember = member,
                 onDismiss = { memberToEdit = null },
-                onConfirm = { updated ->
-                    state.updateMemberInClass(classId, updated)
+                onConfirm = {
+                    state.updateMemberInClass(classId, it)
                     memberToEdit = null
                     Toasts.success("Membro modificato")
                 },
@@ -276,8 +272,8 @@ fun ClassDiagramScreen(
             ClassMemberDialog(
                 isMethod = false,
                 onDismiss = { showAddAttributeDialog = false },
-                onConfirm = { member ->
-                    state.addMemberToClass(classId, member, isMethod = false)
+                onConfirm = {
+                    state.addMemberToClass(classId, it, isMethod = false)
                     showAddAttributeDialog = false
                     Toasts.success("Attributo aggiunto")
                 },
@@ -289,8 +285,8 @@ fun ClassDiagramScreen(
             ClassMemberDialog(
                 isMethod = true,
                 onDismiss = { showAddMethodDialog = false },
-                onConfirm = { member ->
-                    state.addMemberToClass(classId, member, isMethod = true)
+                onConfirm = {
+                    state.addMemberToClass(classId, it, isMethod = true)
                     showAddMethodDialog = false
                     Toasts.success("Metodo aggiunto")
                 },

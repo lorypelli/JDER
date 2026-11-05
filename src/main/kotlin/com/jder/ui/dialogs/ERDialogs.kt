@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -39,12 +40,118 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.Attribute
 import com.jder.domain.model.AttributeType
+import com.jder.domain.model.Cardinality
+import com.jder.domain.model.Entity
+import com.jder.domain.model.Relationship
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
+
+@Composable
+fun EntityPropertiesDialog(
+    entity: Entity,
+    onDismiss: () -> Unit,
+    onConfirm: (entity: Entity) -> Unit,
+) {
+    var name by remember(entity.id) { mutableStateOf(entity.name) }
+    var isWeak by remember(entity.id) { mutableStateOf(entity.isWeak) }
+    var documentation by remember(entity.id) { mutableStateOf(entity.documentation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Entità") },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(UiStrings.NAME) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text("Entità Debole")
+                    Switch(checked = isWeak, onCheckedChange = { isWeak = it })
+                }
+                OutlinedTextField(
+                    value = documentation,
+                    onValueChange = { documentation = it },
+                    label = { Text("Documentazione") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    maxLines = 5,
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(
+                        entity.copy(name = name, isWeak = isWeak, documentation = documentation)
+                    )
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text(UiStrings.CONFIRM)
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+    )
+}
+
+@Composable
+fun RelationshipPropertiesDialog(
+    relationship: Relationship,
+    onDismiss: () -> Unit,
+    onConfirm: (relationship: Relationship) -> Unit,
+) {
+    var name by remember(relationship.id) { mutableStateOf(relationship.name) }
+    var documentation by remember(relationship.id) { mutableStateOf(relationship.documentation) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Proprietà Relazione") },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(UiStrings.NAME) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = documentation,
+                    onValueChange = { documentation = it },
+                    label = { Text("Documentazione") },
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    maxLines = 5,
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(relationship.copy(name = name, documentation = documentation))
+                },
+                enabled = name.isNotBlank(),
+            ) {
+                Text(UiStrings.CONFIRM)
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+    )
+}
 
 @Composable
 fun AddAttributeDialog(onDismiss: () -> Unit, onConfirm: (attribute: Attribute) -> Unit) {
     AttributeDialog(
-        title = "Aggiungi Attributo",
+        title = UiStrings.ADD_ATTRIBUTE,
         initialAttribute = null,
         onDismiss = onDismiss,
         onConfirm = onConfirm,
@@ -96,7 +203,7 @@ private fun AttributeDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -291,10 +398,10 @@ private fun AttributeDialog(
                     name.isNotBlank() &&
                         (attributeType != AttributeType.COMPOSITE || components.isNotEmpty()),
             ) {
-                Text(if (initialAttribute != null) "Conferma" else "Aggiungi")
+                Text(if (initialAttribute != null) UiStrings.CONFIRM else UiStrings.ADD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
     if (showAddComponentDialog) {
         var componentName by remember { mutableStateOf("") }
@@ -328,12 +435,156 @@ private fun AttributeDialog(
                     },
                     enabled = componentName.isNotBlank(),
                 ) {
-                    Text("Aggiungi")
+                    Text(UiStrings.ADD)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showAddComponentDialog = false }) { Text("Annulla") }
+                TextButton(onClick = { showAddComponentDialog = false }) { Text(UiStrings.CANCEL) }
             },
         )
     }
+}
+
+@Composable
+fun CreateConnectionDialog(
+    entities: List<Entity>,
+    emptyMessage: String,
+    onDismiss: () -> Unit,
+    onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
+) {
+    ConnectionDialog(
+        title = "Crea Connessione",
+        entities = entities,
+        emptyMessage = emptyMessage,
+        initialEntityId = null,
+        initialCardinality = Cardinality.ONE,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    )
+}
+
+@Composable
+fun EditConnectionDialog(
+    entities: List<Entity>,
+    currentEntityId: String,
+    currentCardinality: Cardinality,
+    onDismiss: () -> Unit,
+    onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
+) {
+    ConnectionDialog(
+        title = "Modifica Connessione",
+        entities = entities,
+        emptyMessage = "Nessuna entità disponibile.",
+        initialEntityId = currentEntityId,
+        initialCardinality = currentCardinality,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ConnectionDialog(
+    title: String,
+    entities: List<Entity>,
+    emptyMessage: String,
+    initialEntityId: String?,
+    initialCardinality: Cardinality,
+    onDismiss: () -> Unit,
+    onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
+) {
+    var selectedEntity by remember { mutableStateOf(entities.find { it.id == initialEntityId }) }
+    var selectedCardinality by remember { mutableStateOf(initialCardinality) }
+    var expandedEntity by remember { mutableStateOf(false) }
+    var expandedCardinality by remember { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                if (entities.isEmpty()) {
+                    Text(text = emptyMessage, modifier = Modifier.fillMaxWidth())
+                } else {
+                    ExposedDropdownMenuBox(
+                        expanded = expandedEntity,
+                        onExpandedChange = { expandedEntity = it },
+                    ) {
+                        OutlinedTextField(
+                            value = selectedEntity?.name ?: "",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Entità") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedEntity)
+                            },
+                            modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedEntity,
+                            onDismissRequest = { expandedEntity = false },
+                        ) {
+                            entities.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.name) },
+                                    onClick = {
+                                        selectedEntity = it
+                                        expandedEntity = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    ExposedDropdownMenuBox(
+                        expanded = expandedCardinality,
+                        onExpandedChange = { expandedCardinality = it },
+                    ) {
+                        OutlinedTextField(
+                            value = selectedCardinality.display,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Cardinalità") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(
+                                    expanded = expandedCardinality
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedCardinality,
+                            onDismissRequest = { expandedCardinality = false },
+                        ) {
+                            Cardinality.entries.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.display) },
+                                    onClick = {
+                                        selectedCardinality = it
+                                        expandedCardinality = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            if (entities.isNotEmpty()) {
+                Button(
+                    onClick = { selectedEntity?.let { onConfirm(it.id, selectedCardinality) } },
+                    enabled = selectedEntity != null,
+                ) {
+                    Text(UiStrings.CONFIRM)
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(if (entities.isEmpty()) UiStrings.CLOSE else UiStrings.CANCEL)
+            }
+        },
+    )
 }

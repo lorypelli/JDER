@@ -62,7 +62,7 @@ fun AppScreen(
                 when (it) {
                     DiagramType.ER -> erState.isModified
                     DiagramType.RELATIONAL -> relationalState.isModified
-                    DiagramType.CLASS_DIAGRAM -> classState.isModified
+                    DiagramType.CLASS -> classState.isModified
                     DiagramType.USE_CASE -> useCaseState.isModified
                     DiagramType.SEQUENCE -> sequenceState.isModified
                     DiagramType.LOGIC -> logicState.isModified
@@ -86,7 +86,7 @@ fun AppScreen(
                         repository = relationalRepository,
                         themeState = themeState,
                     )
-                DiagramType.CLASS_DIAGRAM ->
+                DiagramType.CLASS ->
                     ClassDiagramScreen(
                         state = classState,
                         repository = classRepository,

@@ -58,6 +58,7 @@ import com.jder.ui.components.toggleFullscreen
 import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isMacOS
@@ -92,8 +93,7 @@ fun main(args: Array<String>) {
             DiagramType.ER -> openStartupDiagram(erState, erRepository, startupOptions)
             DiagramType.RELATIONAL ->
                 openStartupDiagram(relationalState, relationalRepository, startupOptions)
-            DiagramType.CLASS_DIAGRAM ->
-                openStartupDiagram(classState, classRepository, startupOptions)
+            DiagramType.CLASS -> openStartupDiagram(classState, classRepository, startupOptions)
             DiagramType.USE_CASE ->
                 openStartupDiagram(useCaseState, useCaseRepository, startupOptions)
             DiagramType.SEQUENCE ->
@@ -137,7 +137,7 @@ fun main(args: Array<String>) {
             when (type) {
                 DiagramType.ER -> erState
                 DiagramType.RELATIONAL -> relationalState
-                DiagramType.CLASS_DIAGRAM -> classState
+                DiagramType.CLASS -> classState
                 DiagramType.USE_CASE -> useCaseState
                 DiagramType.SEQUENCE -> sequenceState
                 DiagramType.LOGIC -> logicState
@@ -266,11 +266,11 @@ fun main(args: Array<String>) {
                                     shouldExit = true
                                 }
                             ) {
-                                Text("Sì")
+                                Text(UiStrings.YES)
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showExitDialog = false }) { Text("No") }
+                            TextButton(onClick = { showExitDialog = false }) { Text(UiStrings.NO) }
                         },
                     )
                 }

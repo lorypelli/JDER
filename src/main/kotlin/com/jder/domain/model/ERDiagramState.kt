@@ -67,6 +67,10 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "Nuovo D
         return null
     }
 
+    fun entity(id: String?): Entity? = diagram.entities.find { it.id == id }
+
+    fun relationship(id: String?): Relationship? = diagram.relationships.find { it.id == id }
+
     fun addEntity(x: Float, y: Float, name: String) {
         val newEntity = Entity(id = UUID.randomUUID().toString(), name = name, x = x, y = y)
         edit { it.copy(entities = it.entities + newEntity) }

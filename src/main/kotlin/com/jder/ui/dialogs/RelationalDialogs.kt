@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.jder.domain.model.RelationalColumn
 import com.jder.domain.model.RelationalReference
 import com.jder.domain.model.RelationalTable
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 private data class ReferenceOption(val reference: RelationalReference, val label: String)
@@ -50,7 +51,7 @@ fun TablePropertiesDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -82,10 +83,10 @@ fun TablePropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -96,7 +97,7 @@ fun AddColumnDialog(
     onConfirm: (column: RelationalColumn) -> Unit,
 ) {
     ColumnDialog(
-        title = "Aggiungi Colonna",
+        title = UiStrings.ADD_COLUMN,
         initialColumn = null,
         tables = tables,
         onDismiss = onDismiss,
@@ -161,7 +162,7 @@ private fun ColumnDialog(
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Nome") },
+                        label = { Text(UiStrings.NAME) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
@@ -242,10 +243,10 @@ private fun ColumnDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(if (initialColumn != null) "Conferma" else "Aggiungi")
+                Text(if (initialColumn != null) UiStrings.CONFIRM else UiStrings.ADD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -364,10 +365,10 @@ fun ForeignKeyDialog(
                     keyColumns.isNotEmpty() &&
                         keyColumns.all { columnNames[it.id].orEmpty().isNotBlank() },
             ) {
-                Text("Aggiungi")
+                Text(UiStrings.ADD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 

@@ -3,10 +3,10 @@ package com.jder.ui.components
 import androidx.compose.ui.geometry.Offset
 import com.jder.domain.model.ClassDiagram
 import com.jder.domain.model.ClassDiagramState
-import com.jder.domain.model.ClassDiagramToolMode
 import com.jder.domain.model.ClassEntity
 import com.jder.domain.model.ClassEntityType
 import com.jder.domain.model.ClassRelation
+import com.jder.domain.model.ClassToolMode
 import kotlin.math.abs
 
 sealed interface ClassElement {
@@ -19,12 +19,12 @@ sealed interface ClassElement {
     data class NoteRef(override val id: String) : ClassElement
 }
 
-internal val ClassElement.contextMenuType: ClassDiagramContextMenuType
+internal val ClassElement.contextMenuType: ClassContextMenuType
     get() =
         when (this) {
-            is ClassElement.ClassRef -> ClassDiagramContextMenuType.CLASS
-            is ClassElement.RelationRef -> ClassDiagramContextMenuType.RELATION
-            is ClassElement.NoteRef -> ClassDiagramContextMenuType.NOTE
+            is ClassElement.ClassRef -> ClassContextMenuType.CLASS
+            is ClassElement.RelationRef -> ClassContextMenuType.RELATION
+            is ClassElement.NoteRef -> ClassContextMenuType.NOTE
         }
 
 internal fun classEntityHeight(entity: ClassEntity): Float {
@@ -116,27 +116,27 @@ internal fun handleClassDiagramTap(
     onRelationCreateRequest: (String, String) -> Unit,
 ) {
     when (state.toolMode) {
-        ClassDiagramToolMode.SELECT ->
+        ClassToolMode.SELECT ->
             hitTestClassDiagram(state.diagram, offset)?.let { selectClassElement(state, it) }
                 ?: state.clearSelection()
-        ClassDiagramToolMode.CLASS -> {
+        ClassToolMode.CLASS -> {
             state.addClass(offset.x - 100f, offset.y - 40f, "NuovaClasse")
-            state.toolMode = ClassDiagramToolMode.SELECT
+            state.toolMode = ClassToolMode.SELECT
         }
-        ClassDiagramToolMode.INTERFACE -> {
+        ClassToolMode.INTERFACE -> {
             state.addClass(
                 offset.x - 100f,
                 offset.y - 40f,
                 "NuovaInterfaccia",
                 ClassEntityType.INTERFACE,
             )
-            state.toolMode = ClassDiagramToolMode.SELECT
+            state.toolMode = ClassToolMode.SELECT
         }
-        ClassDiagramToolMode.ENUM -> {
+        ClassToolMode.ENUM -> {
             state.addClass(offset.x - 100f, offset.y - 40f, "NuovoEnum", ClassEntityType.ENUM)
-            state.toolMode = ClassDiagramToolMode.SELECT
+            state.toolMode = ClassToolMode.SELECT
         }
-        ClassDiagramToolMode.RELATION -> {
+        ClassToolMode.RELATION -> {
             val clicked = state.diagram.classes.lastOrNull { isPointInClassEntity(offset, it) }?.id
             if (clicked != null) {
                 val pending = state.pendingRelationSourceId
@@ -152,9 +152,9 @@ internal fun handleClassDiagramTap(
                 state.pendingRelationSourceId = null
             }
         }
-        ClassDiagramToolMode.NOTE -> {
+        ClassToolMode.NOTE -> {
             state.addNote(offset.x - 120f, offset.y - 90f, "Nuova Nota")
-            state.toolMode = ClassDiagramToolMode.SELECT
+            state.toolMode = ClassToolMode.SELECT
         }
     }
 }

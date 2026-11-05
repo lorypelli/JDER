@@ -51,10 +51,11 @@ import com.jder.domain.model.LogicTruthTable
 import com.jder.domain.model.MAX_GATE_INPUTS
 import com.jder.domain.model.MIN_GATE_INPUTS
 import com.jder.ui.components.CustomIcons
+import com.jder.ui.strings.UiStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LogicComponentDialog(
+fun LogicComponentPropertiesDialog(
     component: LogicComponent,
     onDismiss: () -> Unit,
     onConfirm: (label: String, type: LogicComponentType, inputCount: Int, value: Boolean) -> Unit,
@@ -160,10 +161,10 @@ fun LogicComponentDialog(
                     onDismiss()
                 }
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -222,7 +223,7 @@ fun TruthTableDialog(diagram: LogicDiagram, onDismiss: () -> Unit) {
                 else -> TruthTableContent(table, diagram)
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Chiudi") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
         dismissButton =
             if (hasRows) {
                 {

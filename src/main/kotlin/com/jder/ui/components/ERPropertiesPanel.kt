@@ -22,6 +22,7 @@ import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.Entity
 import com.jder.domain.model.Relationship
 import com.jder.domain.model.isManyToMany
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun ERPropertiesPanel(
@@ -93,8 +94,8 @@ private fun EntityPropertiesContent(
         PropertyDetail("Attributi: ${entity.attributes.size}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEditEntity)
-    PropertyOutlinedButton("Aggiungi Attributo", Icons.Default.Add, onAddAttribute)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditEntity)
+    PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
     AttributeList(entity.attributes, onEditAttribute, onDeleteAttribute)
     DocumentationCard(entity.documentation)
 }
@@ -117,8 +118,8 @@ private fun RelationshipPropertiesContent(
         PropertyDetail("Attributi: ${relationship.attributes.size}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEditRelationship)
-    PropertyOutlinedButton("Aggiungi Attributo", Icons.Default.Add, onAddAttribute)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditRelationship)
+    PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
     PropertyOutlinedButton("Aggiungi Connessione", Icons.Default.Link, onAddConnection)
     PropertyOutlinedButton(
         "Converti in Entità Associativa",

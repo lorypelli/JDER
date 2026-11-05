@@ -293,7 +293,7 @@ src/
     │   │   ├── RelationalModels.kt              # Data class RelationalTable, RelationalColumn, chiavi esterne
     │   │   ├── UseCaseModels.kt                 # Data class Actor, UseCase, SystemBoundary
     │   │   ├── SequenceModels.kt                # Data class SequenceLifeline, SequenceMessage, SequenceFragment
-    │   │   ├── ClassDiagramModels.kt            # Data class ClassEntity, ClassMember, ClassRelation
+    │   │   ├── ClassModels.kt                   # Data class ClassEntity, ClassMember, ClassRelation
     │   │   ├── LogicModels.kt                   # Data class LogicComponent, LogicWire, LogicDiagram
     │   │   ├── LogicSimulator.kt                # Simulazione, tabella di verità, espressioni booleane
     │   │   ├── StateMachineModels.kt            # Data class MachineState, MachineTransition, StateMachineDiagram

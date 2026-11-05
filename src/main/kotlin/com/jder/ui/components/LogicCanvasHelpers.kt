@@ -208,9 +208,9 @@ internal fun handleLogicTap(state: LogicDiagramState, point: Offset) {
             state.toolMode = LogicToolMode.SELECT
         }
         else ->
-            mode.componentType?.let { type ->
-                val size = logicComponentSize(type)
-                state.addComponent(type, point.x - size.width / 2, point.y - size.height / 2)
+            mode.componentType?.let {
+                val size = logicComponentSize(it)
+                state.addComponent(it, point.x - size.width / 2, point.y - size.height / 2)
                 state.toolMode = LogicToolMode.SELECT
             }
     }

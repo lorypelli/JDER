@@ -16,7 +16,7 @@ class ClassDiagramState :
     var selectedNoteId by mutableStateOf<String?>(null)
         private set
 
-    var toolMode by mutableStateOf(ClassDiagramToolMode.SELECT)
+    var toolMode by mutableStateOf(ClassToolMode.SELECT)
     var pendingRelationSourceId by mutableStateOf<String?>(null)
 
     override val diagramName: String
@@ -29,7 +29,7 @@ class ClassDiagramState :
         get() = selectedClassId != null || selectedRelationId != null || selectedNoteId != null
 
     override val isSelectTool: Boolean
-        get() = toolMode == ClassDiagramToolMode.SELECT
+        get() = toolMode == ClassToolMode.SELECT
 
     override fun withName(diagram: ClassDiagram, name: String) = diagram.copy(name = name)
 
@@ -43,7 +43,7 @@ class ClassDiagramState :
     }
 
     override fun resetToolMode() {
-        toolMode = ClassDiagramToolMode.SELECT
+        toolMode = ClassToolMode.SELECT
         pendingRelationSourceId = null
     }
 
@@ -62,6 +62,10 @@ class ClassDiagramState :
         }
         return null
     }
+
+    fun classEntity(id: String?): ClassEntity? = diagram.classes.find { it.id == id }
+
+    fun relation(id: String?): ClassRelation? = diagram.relations.find { it.id == id }
 
     fun addClass(x: Float, y: Float, name: String, type: ClassEntityType = ClassEntityType.CLASS) {
         val newClass =

@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.Note
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun PropertiesPanelHeader(onClose: () -> Unit) {
@@ -207,7 +208,7 @@ fun DocumentationCard(documentation: String) {
 @Composable
 fun NotePropertiesContent(note: Note, onEdit: () -> Unit) {
     val preview = if (note.text.length > 50) "${note.text.take(50)}..." else note.text
-    PropertyCard("Nota") { PropertyDetail(preview) }
+    PropertyCard(UiStrings.NOTE) { PropertyDetail(preview) }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Testo", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_TEXT, Icons.Default.Edit, onEdit)
 }

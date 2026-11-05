@@ -51,6 +51,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.jder.ui.strings.UiStrings
 import java.io.File
 
 enum class FileManagerMode {
@@ -338,7 +339,7 @@ fun FileManagerDialog(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(onClick = onDismiss) { Text("Annulla") }
+                    TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = {
@@ -389,7 +390,7 @@ fun FileManagerDialog(
                             modifier = Modifier.size(18.dp),
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(if (mode == FileManagerMode.SAVE) "Salva" else "Apri")
+                        Text(if (mode == FileManagerMode.SAVE) UiStrings.SAVE else "Apri")
                     }
                 }
             }
@@ -466,7 +467,7 @@ fun FileManagerDialog(
                         fileToOverwrite = null
                     }
                 ) {
-                    Text("Annulla")
+                    Text(UiStrings.CANCEL)
                 }
             },
             shape = RoundedCornerShape(28.dp),

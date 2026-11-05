@@ -25,10 +25,11 @@ import com.jder.domain.model.ClassRelation
 import com.jder.domain.model.ClassRelationType
 import com.jder.domain.model.Visibility
 import com.jder.ui.components.RadioOptionList
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 @Composable
-fun ClassEntityDialog(
+fun ClassPropertiesDialog(
     entityId: String,
     name: String,
     type: ClassEntityType,
@@ -50,7 +51,7 @@ fun ClassEntityDialog(
                 OutlinedTextField(
                     value = entityName,
                     onValueChange = { entityName = it },
-                    label = { Text("Nome") },
+                    label = { Text(UiStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -85,10 +86,10 @@ fun ClassEntityDialog(
                 },
                 enabled = entityName.isNotBlank(),
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -117,7 +118,7 @@ fun ClassMemberDialog(
                     OutlinedTextField(
                         value = memberName,
                         onValueChange = { memberName = it },
-                        label = { Text("Nome") },
+                        label = { Text(UiStrings.NAME) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
@@ -170,15 +171,15 @@ fun ClassMemberDialog(
                 },
                 enabled = memberName.isNotBlank(),
             ) {
-                Text(if (initialMember == null) "Aggiungi" else "Conferma")
+                Text(if (initialMember == null) UiStrings.ADD else UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
 @Composable
-fun ClassRelationDialog(
+fun ClassRelationPropertiesDialog(
     relation: ClassRelation,
     onDismiss: () -> Unit,
     onConfirm:
@@ -232,10 +233,10 @@ fun ClassRelationDialog(
                     onDismiss()
                 }
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }
 
@@ -258,9 +259,9 @@ fun SelectClassRelationTypeDialog(
                     onDismiss()
                 }
             ) {
-                Text("Conferma")
+                Text(UiStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annulla") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
     )
 }

@@ -31,7 +31,7 @@ import com.jder.ui.dialogs.CreateSequenceMessageDialog
 import com.jder.ui.dialogs.EditSequenceMessageDialog
 import com.jder.ui.dialogs.LifelinePropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
-import com.jder.ui.dialogs.SequenceFragmentDialog
+import com.jder.ui.dialogs.SequenceFragmentPropertiesDialog
 import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderSequenceDiagramToBitmap
@@ -76,8 +76,8 @@ fun SequenceDiagramScreen(
     fun actions(type: SequenceContextMenuType): List<ContextMenuItem> = buildList {
         add(
             ContextMenuItem(
-                if (type == SequenceContextMenuType.NOTE) "Modifica Testo"
-                else "Modifica Proprietà",
+                if (type == SequenceContextMenuType.NOTE) UiStrings.EDIT_TEXT
+                else UiStrings.EDIT_PROPERTIES,
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
@@ -96,7 +96,7 @@ fun SequenceDiagramScreen(
             )
         }
         add(
-            ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -154,7 +154,7 @@ fun SequenceDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    "Crea Nota",
+                    UiStrings.CREATE_NOTE,
                     UiStrings.NOTE,
                     state.toolMode == SequenceToolMode.NOTE,
                 ) {
@@ -227,7 +227,7 @@ fun SequenceDiagramScreen(
     }
     if (showFragmentDialog) {
         state.fragment(state.selectedFragmentId)?.let { fragment ->
-            SequenceFragmentDialog(
+            SequenceFragmentPropertiesDialog(
                 fragment = fragment,
                 onDismiss = { showFragmentDialog = false },
                 onConfirm = { newType, newCondition, newOperands, newWidth, newHeight ->

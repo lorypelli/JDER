@@ -18,9 +18,10 @@ import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassEntity
 import com.jder.domain.model.ClassMember
 import com.jder.domain.model.ClassRelation
+import com.jder.ui.strings.UiStrings
 
 @Composable
-fun ClassDiagramPropertiesPanel(
+fun ClassPropertiesPanel(
     state: ClassDiagramState,
     onEditClass: () -> Unit,
     onEditRelation: () -> Unit,
@@ -78,9 +79,9 @@ private fun ClassEntityPropertiesContent(
         if (entity.isAbstract) PropertyDetail("Astratta: sì")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
-    PropertyOutlinedButton("Aggiungi Attributo", Icons.Default.Add, onAddAttribute)
-    PropertyOutlinedButton("Aggiungi Metodo", Icons.Default.Add, onAddMethod)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
+    PropertyOutlinedButton(UiStrings.ADD_METHOD, Icons.Default.Add, onAddMethod)
     MemberList("Attributi:", entity.attributes, onEditMember, onDeleteMember)
     MemberList("Metodi:", entity.methods, onEditMember, onDeleteMember)
     DocumentationCard(entity.documentation)
@@ -123,7 +124,7 @@ private fun ClassRelationPropertiesContent(
 ) {
     val sourceName = state.diagram.classes.find { it.id == relation.sourceId }?.name ?: "?"
     val targetName = state.diagram.classes.find { it.id == relation.targetId }?.name ?: "?"
-    PropertyCard("Relazione") {
+    PropertyCard(UiStrings.RELATION) {
         PropertyDetail("Tipo: ${relation.type.display}")
         PropertyDetail("Da: $sourceName")
         PropertyDetail("A: $targetName")
@@ -136,5 +137,5 @@ private fun ClassRelationPropertiesContent(
         if (relation.label.isNotEmpty()) PropertyDetail("Etichetta: ${relation.label}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }

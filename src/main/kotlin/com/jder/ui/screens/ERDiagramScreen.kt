@@ -80,14 +80,12 @@ fun ERDiagramScreen(
             ERContextMenuType.NOTE -> "Azioni Nota"
         }
     fun actions(type: ERContextMenuType): List<ContextMenuItem> {
-        val isManyToMany =
-            state.diagram.relationships
-                .find { it.id == state.selectedRelationshipId }
-                ?.isManyToMany() == true
+        val isManyToMany = state.relationship(state.selectedRelationshipId)?.isManyToMany() == true
         return buildList {
             add(
                 ContextMenuItem(
-                    if (type == ERContextMenuType.NOTE) "Modifica Testo" else "Modifica Proprietà",
+                    if (type == ERContextMenuType.NOTE) UiStrings.EDIT_TEXT
+                    else UiStrings.EDIT_PROPERTIES,
                     Icons.Default.Edit,
                 ) {
                     openEditor(type)
@@ -95,7 +93,7 @@ fun ERDiagramScreen(
             )
             if (type != ERContextMenuType.NOTE) {
                 add(
-                    ContextMenuItem("Aggiungi Attributo", Icons.Default.Add) {
+                    ContextMenuItem(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add) {
                         showAddAttributeDialog = true
                     }
                 )
@@ -116,7 +114,7 @@ fun ERDiagramScreen(
                 )
             }
             add(
-                ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+                ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                     state.deleteSelection()?.let(Toasts::success)
                 }
             )
@@ -151,7 +149,7 @@ fun ERDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    "Crea Nota",
+                    UiStrings.CREATE_NOTE,
                     UiStrings.NOTE,
                     state.toolMode == ERToolMode.NOTE,
                 ) {
@@ -175,7 +173,7 @@ fun ERDiagramScreen(
                     state.selectedRelationshipId?.let {
                         state.deleteAttributeFromRelationship(it, attributeId)
                     }
-                    Toasts.success(UiStrings.deleted("Attributo"))
+                    Toasts.success("Attributo eliminato")
                 },
                 onEditConnection = { entityId, connection ->
                     connectionToEdit = ConnectionEdit(entityId, connection)
@@ -183,7 +181,7 @@ fun ERDiagramScreen(
                 onDeleteConnection = { entityId ->
                     state.selectedRelationshipId?.let {
                         state.deleteConnection(it, entityId)
-                        Toasts.success(UiStrings.deleted("Connessione"))
+                        Toasts.success("Connessione eliminata")
                     }
                 },
                 onConvertToAssociativeEntity = ::convertSelectedRelationship,
@@ -226,34 +224,30 @@ fun ERDiagramScreen(
         }
     }
     if (showEntityDialog) {
-        state.diagram.entities
-            .find { it.id == state.selectedEntityId }
-            ?.let { entity ->
-                EntityPropertiesDialog(
-                    entity = entity,
-                    onDismiss = { showEntityDialog = false },
-                    onConfirm = { updated ->
-                        state.updateEntity(entity.id) { updated }
-                        showEntityDialog = false
-                        Toasts.success("Entità modificata")
-                    },
-                )
-            }
+        state.entity(state.selectedEntityId)?.let { entity ->
+            EntityPropertiesDialog(
+                entity = entity,
+                onDismiss = { showEntityDialog = false },
+                onConfirm = { updated ->
+                    state.updateEntity(entity.id) { updated }
+                    showEntityDialog = false
+                    Toasts.success("Entità modificata")
+                },
+            )
+        }
     }
     if (showRelationshipDialog) {
-        state.diagram.relationships
-            .find { it.id == state.selectedRelationshipId }
-            ?.let {
-                RelationshipPropertiesDialog(
-                    relationship = it,
-                    onDismiss = { showRelationshipDialog = false },
-                    onConfirm = { updated ->
-                        state.updateRelationship(it.id) { updated }
-                        showRelationshipDialog = false
-                        Toasts.success("Relazione modificata")
-                    },
-                )
-            }
+        state.relationship(state.selectedRelationshipId)?.let {
+            RelationshipPropertiesDialog(
+                relationship = it,
+                onDismiss = { showRelationshipDialog = false },
+                onConfirm = { updated ->
+                    state.updateRelationship(it.id) { updated }
+                    showRelationshipDialog = false
+                    Toasts.success("Relazione modificata")
+                },
+            )
+        }
     }
     if (showNoteDialog) {
         state.diagram.notes

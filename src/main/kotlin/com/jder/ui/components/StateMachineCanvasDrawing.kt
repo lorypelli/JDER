@@ -44,10 +44,10 @@ internal fun DrawScope.drawStateMachineDiagram(
     pendingSourceId: String? = null,
 ) {
     val selectedEdge = layout.edgeOf(selectedId)
-    layout.edges.forEach { edge ->
-        if (edge !== selectedEdge) {
-            val isHovered = hoveredId in edge.transitionIds
-            drawTransitionEdge(edge, palette.outline, if (isHovered) 2.2f else 1.6f)
+    layout.edges.forEach {
+        if (it !== selectedEdge) {
+            val isHovered = hoveredId in it.transitionIds
+            drawTransitionEdge(it, palette.outline, if (isHovered) 2.2f else 1.6f)
         }
     }
     selectedEdge?.let { drawTransitionEdge(it, palette.selected, 3f) }

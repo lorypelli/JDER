@@ -27,10 +27,10 @@ import com.jder.ui.components.UseCaseDiagramCanvas
 import com.jder.ui.components.UseCasePropertiesPanel
 import com.jder.ui.components.contextMenuType
 import com.jder.ui.dialogs.ActorPropertiesDialog
+import com.jder.ui.dialogs.EditRelationTypeDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
-import com.jder.ui.dialogs.RelationEditDialog
 import com.jder.ui.dialogs.SelectRelationTypeDialog
-import com.jder.ui.dialogs.SystemBoundaryDialog
+import com.jder.ui.dialogs.SystemBoundaryPropertiesDialog
 import com.jder.ui.dialogs.UseCasePropertiesDialog
 import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
@@ -83,14 +83,14 @@ fun UseCaseDiagramScreen(
                 when (type) {
                     UseCaseContextMenuType.ACTOR -> "Modifica Nome"
                     UseCaseContextMenuType.RELATION -> "Modifica Tipo"
-                    UseCaseContextMenuType.NOTE -> "Modifica Testo"
-                    else -> "Modifica Proprietà"
+                    UseCaseContextMenuType.NOTE -> UiStrings.EDIT_TEXT
+                    else -> UiStrings.EDIT_PROPERTIES
                 },
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
             },
-            ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             },
         )
@@ -130,7 +130,7 @@ fun UseCaseDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    "Crea Nota",
+                    UiStrings.CREATE_NOTE,
                     UiStrings.NOTE,
                     state.toolMode == UseCaseToolMode.NOTE,
                 ) {
@@ -180,54 +180,48 @@ fun UseCaseDiagramScreen(
         }
     }
     if (showActorDialog) {
-        state.diagram.actors
-            .find { it.id == state.selectedActorId }
-            ?.let { (id, name) ->
-                ActorPropertiesDialog(
-                    actorId = id,
-                    actorName = name,
-                    onDismiss = { showActorDialog = false },
-                    onConfirm = { newName ->
-                        state.updateActor(id) { it.copy(name = newName) }
-                        showActorDialog = false
-                        Toasts.success("Attore modificato")
-                    },
-                )
-            }
+        state.actor(state.selectedActorId)?.let { (id, name) ->
+            ActorPropertiesDialog(
+                actorId = id,
+                actorName = name,
+                onDismiss = { showActorDialog = false },
+                onConfirm = { newName ->
+                    state.updateActor(id) { it.copy(name = newName) }
+                    showActorDialog = false
+                    Toasts.success("Attore modificato")
+                },
+            )
+        }
     }
     if (showUseCaseDialog) {
-        state.diagram.useCases
-            .find { it.id == state.selectedUseCaseId }
-            ?.let { useCase ->
-                UseCasePropertiesDialog(
-                    useCaseId = useCase.id,
-                    useCaseName = useCase.name,
-                    useCaseDocumentation = useCase.documentation,
-                    onDismiss = { showUseCaseDialog = false },
-                    onConfirm = { newName, newDoc ->
-                        state.updateUseCase(useCase.id) {
-                            it.copy(name = newName, documentation = newDoc)
-                        }
-                        showUseCaseDialog = false
-                        Toasts.success("Caso d'uso modificato")
-                    },
-                )
-            }
+        state.useCase(state.selectedUseCaseId)?.let { useCase ->
+            UseCasePropertiesDialog(
+                useCaseId = useCase.id,
+                useCaseName = useCase.name,
+                useCaseDocumentation = useCase.documentation,
+                onDismiss = { showUseCaseDialog = false },
+                onConfirm = { newName, newDoc ->
+                    state.updateUseCase(useCase.id) {
+                        it.copy(name = newName, documentation = newDoc)
+                    }
+                    showUseCaseDialog = false
+                    Toasts.success("Caso d'uso modificato")
+                },
+            )
+        }
     }
     if (showRelationDialog) {
-        state.diagram.relations
-            .find { it.id == state.selectedRelationId }
-            ?.let { relation ->
-                RelationEditDialog(
-                    relation = relation,
-                    onDismiss = { showRelationDialog = false },
-                    onConfirm = { newType ->
-                        state.updateRelation(relation.id) { it.copy(type = newType) }
-                        showRelationDialog = false
-                        Toasts.success("Relazione modificata")
-                    },
-                )
-            }
+        state.relation(state.selectedRelationId)?.let { relation ->
+            EditRelationTypeDialog(
+                relation = relation,
+                onDismiss = { showRelationDialog = false },
+                onConfirm = { newType ->
+                    state.updateRelation(relation.id) { it.copy(type = newType) }
+                    showRelationDialog = false
+                    Toasts.success("Relazione modificata")
+                },
+            )
+        }
     }
     if (showNoteDialog) {
         state.diagram.notes
@@ -246,24 +240,23 @@ fun UseCaseDiagramScreen(
             }
     }
     if (showSystemBoundaryDialog) {
-        state.diagram.systemBoundaries
-            .find { it.id == state.selectedSystemBoundaryId }
-            ?.let { (id, name, _, _, width, height) ->
-                SystemBoundaryDialog(
-                    boundaryId = id,
-                    boundaryName = name,
-                    boundaryWidth = width,
-                    boundaryHeight = height,
-                    onDismiss = { showSystemBoundaryDialog = false },
-                    onConfirm = { newName, newWidth, newHeight ->
-                        state.updateSystemBoundary(id) {
-                            it.copy(name = newName, width = newWidth, height = newHeight)
-                        }
-                        showSystemBoundaryDialog = false
-                        Toasts.success("Sistema modificato")
-                    },
-                )
-            }
+        state.systemBoundary(state.selectedSystemBoundaryId)?.let { (id, name, _, _, width, height)
+            ->
+            SystemBoundaryPropertiesDialog(
+                boundaryId = id,
+                boundaryName = name,
+                boundaryWidth = width,
+                boundaryHeight = height,
+                onDismiss = { showSystemBoundaryDialog = false },
+                onConfirm = { newName, newWidth, newHeight ->
+                    state.updateSystemBoundary(id) {
+                        it.copy(name = newName, width = newWidth, height = newHeight)
+                    }
+                    showSystemBoundaryDialog = false
+                    Toasts.success("Sistema modificato")
+                },
+            )
+        }
     }
     pendingRelation?.let { (sourceId, targetId) ->
         SelectRelationTypeDialog(

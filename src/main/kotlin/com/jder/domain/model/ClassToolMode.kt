@@ -1,5 +1,5 @@
 package com.jder.domain.model
-enum class ClassDiagramToolMode {
+enum class ClassToolMode {
     SELECT,
     CLASS,
     INTERFACE,

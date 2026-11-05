@@ -18,6 +18,7 @@ import com.jder.domain.model.SystemBoundary
 import com.jder.domain.model.UseCase
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseRelation
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun UseCasePropertiesPanel(
@@ -88,14 +89,14 @@ private fun findElementName(id: String, state: UseCaseDiagramState): String {
 private fun ActorPropertiesContent(actor: Actor, onEdit: () -> Unit) {
     PropertyCard("Attore: ${actor.name}")
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }
 
 @Composable
 private fun UseCasePropertiesContent(useCase: UseCase, onEdit: () -> Unit) {
     PropertyCard("Caso d'Uso: ${useCase.name}")
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     DocumentationCard(useCase.documentation)
 }
 
@@ -106,13 +107,13 @@ private fun RelationPropertiesContent(
     targetName: String,
     onEdit: () -> Unit,
 ) {
-    PropertyCard("Relazione") {
+    PropertyCard(UiStrings.RELATION) {
         PropertyDetail("Tipo: ${relation.type.display}")
         PropertyDetail("Da: $sourceName")
         PropertyDetail("A: $targetName")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }
 
 @Composable
@@ -121,5 +122,5 @@ private fun SystemBoundaryPropertiesContent(boundary: SystemBoundary, onEdit: ()
         PropertyDetail("Dimensioni: ${boundary.width.toInt()} × ${boundary.height.toInt()} px")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }

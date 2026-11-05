@@ -20,6 +20,7 @@ import com.jder.domain.model.SequenceFragment
 import com.jder.domain.model.SequenceFragmentType
 import com.jder.domain.model.SequenceLifeline
 import com.jder.domain.model.SequenceMessage
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun SequencePropertiesPanel(
@@ -73,7 +74,7 @@ private fun LifelinePropertiesContent(
         )
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     DocumentationCard(lifeline.documentation)
 }
 
@@ -91,7 +92,7 @@ private fun MessagePropertiesContent(
         PropertyDetail("A: $targetName")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
         "Inverti Direzione",
         Icons.Default.SwapHoriz,
@@ -114,5 +115,5 @@ private fun FragmentPropertiesContent(fragment: SequenceFragment, onEdit: () -> 
         PropertyDetail("Dimensioni: ${fragment.width.toInt()} × ${fragment.height.toInt()} px")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }

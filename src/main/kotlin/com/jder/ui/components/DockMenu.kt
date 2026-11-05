@@ -47,7 +47,7 @@ private val DiagramType.newDiagramLabel: String
         when (this) {
             DiagramType.ER -> "Nuovo Diagramma E/R"
             DiagramType.RELATIONAL -> "Nuovo Schema Logico"
-            DiagramType.CLASS_DIAGRAM -> "Nuovo Diagramma delle Classi"
+            DiagramType.CLASS -> "Nuovo Diagramma delle Classi"
             DiagramType.USE_CASE -> "Nuovo Diagramma dei Casi d'Uso"
             DiagramType.SEQUENCE -> "Nuovo Diagramma di Sequenza"
             DiagramType.LOGIC -> "Nuovo Diagramma Logico"

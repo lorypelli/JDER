@@ -18,7 +18,7 @@ import com.jder.domain.model.ClassDiagramState
 @Composable
 fun ClassDiagramCanvas(
     state: ClassDiagramState,
-    onContextMenuRequest: (Offset, ClassDiagramContextMenuType) -> Unit,
+    onContextMenuRequest: (Offset, ClassContextMenuType) -> Unit,
     onRelationCreateRequest: (String, String) -> Unit,
     onEditRequest: (ClassElement) -> Unit,
     modifier: Modifier = Modifier,

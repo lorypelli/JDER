@@ -58,7 +58,7 @@ enum class SequenceContextMenuType {
     NOTE,
 }
 
-enum class ClassDiagramContextMenuType {
+enum class ClassContextMenuType {
     CLASS,
     RELATION,
     NOTE,

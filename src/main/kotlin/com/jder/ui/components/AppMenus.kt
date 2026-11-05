@@ -10,6 +10,7 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import com.jder.domain.model.DiagramEditorState
 import com.jder.domain.model.DiagramType
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ColorPalettes
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isMacOS
@@ -154,7 +155,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
         add(AppMenuEntry.Separator)
         add(
             AppMenuEntry.Action(
-                "Salva",
+                UiStrings.SAVE,
                 commandShortcut(Key.S, "S"),
                 onClick = commands.onSaveDiagram,
             )
@@ -193,7 +194,7 @@ private fun editEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
     val state = commands.state
     return listOf(
         AppMenuEntry.Action(
-            "Annulla",
+            UiStrings.CANCEL,
             commandShortcut(Key.Z, "Z"),
             isEnabled = state.canUndo(),
             onClick = commands.onUndo,

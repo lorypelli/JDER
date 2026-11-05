@@ -39,7 +39,7 @@ import com.jder.ui.components.LogicDiagramCanvas
 import com.jder.ui.components.LogicElement
 import com.jder.ui.components.LogicPropertiesPanel
 import com.jder.ui.components.Toasts
-import com.jder.ui.dialogs.LogicComponentDialog
+import com.jder.ui.dialogs.LogicComponentPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.TruthTableDialog
 import com.jder.ui.strings.UiStrings
@@ -80,7 +80,7 @@ fun LogicDiagramScreen(
             when (type) {
                 LogicContextMenuType.COMPONENT -> {
                     add(
-                        ContextMenuItem("Modifica Proprietà", Icons.Default.Edit) {
+                        ContextMenuItem(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
                             showComponentDialog = true
                         }
                     )
@@ -114,14 +114,14 @@ fun LogicDiagramScreen(
                 }
                 LogicContextMenuType.NOTE ->
                     add(
-                        ContextMenuItem("Modifica Testo", Icons.Default.Edit) {
+                        ContextMenuItem(UiStrings.EDIT_TEXT, Icons.Default.Edit) {
                             showNoteDialog = true
                         }
                     )
                 LogicContextMenuType.WIRE -> {}
             }
             add(
-                ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+                ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                     state.deleteSelection()?.let(Toasts::success)
                 }
             )
@@ -185,7 +185,7 @@ fun LogicDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    "Crea Nota",
+                    UiStrings.CREATE_NOTE,
                     UiStrings.NOTE,
                     state.toolMode == LogicToolMode.NOTE,
                 ) {
@@ -256,7 +256,7 @@ fun LogicDiagramScreen(
     }
     if (showComponentDialog) {
         state.component(state.selectedComponentId)?.let { component ->
-            LogicComponentDialog(
+            LogicComponentPropertiesDialog(
                 component = component,
                 onDismiss = { showComponentDialog = false },
                 onConfirm = { label, type, inputCount, value ->

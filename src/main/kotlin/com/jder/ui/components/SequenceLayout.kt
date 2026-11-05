@@ -105,12 +105,12 @@ internal fun sequenceLayout(diagram: SequenceDiagram): SequenceLayout {
             )
             .maxOrNull() ?: 0f
     val lifelines =
-        diagram.lifelines.associate { lifeline ->
-            val head = heads.getValue(lifeline.id)
-            val destroyY = destroyedAt[lifeline.id]
-            lifeline.id to
+        diagram.lifelines.associate {
+            val head = heads.getValue(it.id)
+            val destroyY = destroyedAt[it.id]
+            it.id to
                 SequenceLifelineLayout(
-                    lifeline = lifeline,
+                    lifeline = it,
                     head = head,
                     lineBottom = maxOf(destroyY ?: bottom, head.bottom),
                     isDestroyed = destroyY != null,

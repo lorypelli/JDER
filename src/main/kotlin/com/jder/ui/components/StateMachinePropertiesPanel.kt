@@ -19,6 +19,7 @@ import com.jder.domain.model.MachineState
 import com.jder.domain.model.MachineTransition
 import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.label
+import com.jder.ui.strings.UiStrings
 
 fun finalStateActionLabel(isFinal: Boolean): String =
     if (isFinal) "Rimuovi dagli Stati Finali" else "Imposta come Stato Finale"
@@ -70,7 +71,7 @@ private fun MachineStateContent(
         PropertyDetail("Transizioni uscenti: ${outgoing.size}, entranti: $incoming")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
         "Imposta come Stato Iniziale",
         CustomIcons.InitialState,
@@ -112,7 +113,7 @@ private fun MachineTransitionContent(
         }
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit) { onEdit(transition.id) }
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) { onEdit(transition.id) }
     PropertyOutlinedButton(
         "Inverti Direzione",
         Icons.Default.SwapHoriz,

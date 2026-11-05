@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun AboutDialog(onDismiss: () -> Unit) {
@@ -35,6 +36,6 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 textAlign = TextAlign.Center,
             )
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Chiudi") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
     )
 }

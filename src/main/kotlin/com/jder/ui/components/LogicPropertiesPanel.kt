@@ -32,6 +32,7 @@ import com.jder.domain.model.LogicSimulator
 import com.jder.domain.model.LogicWire
 import com.jder.domain.model.MAX_GATE_INPUTS
 import com.jder.domain.model.MIN_GATE_INPUTS
+import com.jder.ui.strings.UiStrings
 
 fun logicValueLabel(value: Boolean?): String =
     when (value) {
@@ -93,7 +94,7 @@ private fun LogicComponentContent(
         PropertyDetail("$valueLabel: ${logicValueLabel(value)}", isEmphasized = true)
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     if (type == LogicComponentType.INPUT) {
         PropertyOutlinedButton(
             "Commuta Valore",

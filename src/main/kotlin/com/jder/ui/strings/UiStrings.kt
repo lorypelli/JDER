@@ -19,12 +19,4 @@ object UiStrings {
     const val ADD_METHOD = "Aggiungi Metodo"
     const val CREATE_NOTE = "Crea Nota"
     const val RELATION = "Relazione"
-
-    fun deleted(item: String): String = "$item eliminato"
-
-    fun added(item: String): String = "$item aggiunto"
-
-    fun modified(item: String): String = "$item modificato"
-
-    fun created(item: String): String = "$item creato"
 }

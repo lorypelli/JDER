@@ -121,17 +121,17 @@ internal fun DrawScope.drawLogicWirePreview(
 
 internal fun logicDiagramBounds(diagram: LogicDiagram, textMeasurer: TextMeasurer): Rect? {
     val bounds = BoundsBuilder()
-    diagram.components.forEach { component ->
-        bounds.include(component.bounds())
-        if (component.type.isGate && component.label.isNotBlank()) {
-            val label = gateLabel(component, textMeasurer, Color.Black)
-            val centerX = component.x + component.width / 2
+    diagram.components.forEach {
+        bounds.include(it.bounds())
+        if (it.type.isGate && it.label.isNotBlank()) {
+            val label = gateLabel(it, textMeasurer, Color.Black)
+            val centerX = it.x + it.width / 2
             bounds.include(
                 Rect(
                     centerX - label.size.width / 2f,
-                    component.y - 4f - label.size.height,
+                    it.y - 4f - label.size.height,
                     centerX + label.size.width / 2f,
-                    component.y,
+                    it.y,
                 )
             )
         }

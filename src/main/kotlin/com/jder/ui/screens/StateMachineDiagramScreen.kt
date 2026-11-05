@@ -28,8 +28,8 @@ import com.jder.ui.components.StateMachinePropertiesPanel
 import com.jder.ui.components.Toasts
 import com.jder.ui.components.contextMenuType
 import com.jder.ui.components.finalStateActionLabel
-import com.jder.ui.dialogs.MachineStateDialog
-import com.jder.ui.dialogs.MachineTransitionDialog
+import com.jder.ui.dialogs.MachineStatePropertiesDialog
+import com.jder.ui.dialogs.MachineTransitionPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.StateMachineSimulationDialog
 import com.jder.ui.dialogs.TransitionTableDialog
@@ -86,7 +86,11 @@ fun StateMachineDiagramScreen(
     fun actions(type: StateMachineContextMenuType): List<ContextMenuItem> = buildList {
         when (type) {
             StateMachineContextMenuType.STATE -> {
-                add(ContextMenuItem("Modifica Proprietà", Icons.Default.Edit) { openEditor(type) })
+                add(
+                    ContextMenuItem(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
+                        openEditor(type)
+                    }
+                )
                 val stateId = state.selectedStateId
                 add(
                     ContextMenuItem(
@@ -118,7 +122,11 @@ fun StateMachineDiagramScreen(
                 )
             }
             StateMachineContextMenuType.TRANSITION -> {
-                add(ContextMenuItem("Modifica Proprietà", Icons.Default.Edit) { openEditor(type) })
+                add(
+                    ContextMenuItem(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
+                        openEditor(type)
+                    }
+                )
                 val transition = state.transition(state.selectedTransitionId)
                 add(
                     ContextMenuItem(
@@ -140,10 +148,10 @@ fun StateMachineDiagramScreen(
                 )
             }
             StateMachineContextMenuType.NOTE ->
-                add(ContextMenuItem("Modifica Testo", Icons.Default.Edit) { openEditor(type) })
+                add(ContextMenuItem(UiStrings.EDIT_TEXT, Icons.Default.Edit) { openEditor(type) })
         }
         add(
-            ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -185,7 +193,7 @@ fun StateMachineDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    "Crea Nota",
+                    UiStrings.CREATE_NOTE,
                     UiStrings.NOTE,
                     state.toolMode == StateMachineToolMode.NOTE,
                 ) {
@@ -241,7 +249,7 @@ fun StateMachineDiagramScreen(
     }
     if (showStateDialog) {
         state.machineState(state.selectedStateId)?.let { machineState ->
-            MachineStateDialog(
+            MachineStatePropertiesDialog(
                 machineState = machineState,
                 kind = kind,
                 isInitial = state.isInitial(machineState.id),
@@ -260,7 +268,7 @@ fun StateMachineDiagramScreen(
     }
     editedTransitionId?.let { transitionId ->
         state.transition(transitionId)?.let { transition ->
-            MachineTransitionDialog(
+            MachineTransitionPropertiesDialog(
                 title = "Proprietà Transizione",
                 kind = kind,
                 sourceName = stateName(transition.sourceId),
@@ -280,7 +288,7 @@ fun StateMachineDiagramScreen(
         }
     }
     pendingTransition?.let { (sourceId, targetId) ->
-        MachineTransitionDialog(
+        MachineTransitionPropertiesDialog(
             title = "Nuova Transizione",
             kind = kind,
             sourceName = stateName(sourceId),

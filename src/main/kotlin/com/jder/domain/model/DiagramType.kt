@@ -8,7 +8,7 @@ enum class DiagramType(
 ) {
     ER("er", "Diagramma E/R", "un diagramma E/R", setOf("entities", "relationships")),
     RELATIONAL("relational", "Schema Logico", "uno schema logico", setOf("tables")),
-    CLASS_DIAGRAM("class", "Diagramma Classi", "un diagramma delle classi", setOf("classes")),
+    CLASS("class", "Diagramma Classi", "un diagramma delle classi", setOf("classes")),
     USE_CASE(
         "usecase",
         "Casi d'Uso",

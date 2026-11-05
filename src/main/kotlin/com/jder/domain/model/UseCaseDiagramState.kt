@@ -96,6 +96,14 @@ class UseCaseDiagramState :
         return null
     }
 
+    fun actor(id: String?): Actor? = diagram.actors.find { it.id == id }
+
+    fun useCase(id: String?): UseCase? = diagram.useCases.find { it.id == id }
+
+    fun relation(id: String?): UseCaseRelation? = diagram.relations.find { it.id == id }
+
+    fun systemBoundary(id: String?): SystemBoundary? = diagram.systemBoundaries.find { it.id == id }
+
     fun addActor(x: Float, y: Float, name: String) {
         val actor = Actor(id = UUID.randomUUID().toString(), name = name, x = x, y = y)
         edit { it.copy(actors = it.actors + actor) }

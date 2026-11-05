@@ -79,8 +79,8 @@ fun RelationalDiagramScreen(
     fun actions(type: RelationalContextMenuType): List<ContextMenuItem> = buildList {
         add(
             ContextMenuItem(
-                if (type == RelationalContextMenuType.NOTE) "Modifica Testo"
-                else "Modifica Proprietà",
+                if (type == RelationalContextMenuType.NOTE) UiStrings.EDIT_TEXT
+                else UiStrings.EDIT_PROPERTIES,
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
@@ -88,7 +88,7 @@ fun RelationalDiagramScreen(
         )
         if (type == RelationalContextMenuType.TABLE) {
             add(
-                ContextMenuItem("Aggiungi Colonna", Icons.Default.Add) {
+                ContextMenuItem(UiStrings.ADD_COLUMN, Icons.Default.Add) {
                     showAddColumnDialog = true
                 }
             )
@@ -99,7 +99,7 @@ fun RelationalDiagramScreen(
             )
         }
         add(
-            ContextMenuItem("Elimina", Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -154,7 +154,7 @@ fun RelationalDiagramScreen(
                 onEditColumn = { tableId, column -> columnToEdit = ColumnEdit(tableId, column) },
                 onDeleteColumn = { tableId, columnId ->
                     state.deleteColumn(tableId, columnId)
-                    Toasts.success(UiStrings.deleted("Colonna"))
+                    Toasts.success("Colonna eliminata")
                 },
                 onDeleteForeignKey = {
                     state.deleteForeignKey(it)

@@ -170,16 +170,8 @@ internal fun DrawScope.drawClassEntity(
     if (entity.attributes.isEmpty()) {
         currentY += 20f
     } else {
-        entity.attributes.forEach { member ->
-            drawMemberText(
-                member,
-                entity.x,
-                currentY,
-                entity.width,
-                textMeasurer,
-                palette.text,
-                false,
-            )
+        entity.attributes.forEach {
+            drawMemberText(it, entity.x, currentY, entity.width, textMeasurer, palette.text, false)
             currentY += 20f
         }
     }
@@ -190,8 +182,8 @@ internal fun DrawScope.drawClassEntity(
         end = Offset(entity.x + entity.width, currentY),
         strokeWidth = strokeWidth,
     )
-    entity.methods.forEach { member ->
-        drawMemberText(member, entity.x, currentY, entity.width, textMeasurer, palette.text, true)
+    entity.methods.forEach {
+        drawMemberText(it, entity.x, currentY, entity.width, textMeasurer, palette.text, true)
         currentY += 20f
     }
 }

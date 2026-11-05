@@ -23,6 +23,7 @@ import com.jder.domain.model.RelationalForeignKey
 import com.jder.domain.model.RelationalTable
 import com.jder.domain.model.foreignKey
 import com.jder.domain.model.qualifiedColumnName
+import com.jder.ui.strings.UiStrings
 
 @Composable
 fun RelationalPropertiesPanel(
@@ -85,8 +86,8 @@ private fun TablePropertiesContent(
         PropertyDetail("Chiavi esterne: ${table.columns.count { it.reference != null }}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEditTable)
-    PropertyOutlinedButton("Aggiungi Colonna", Icons.Default.Add, onAddColumn)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditTable)
+    PropertyOutlinedButton(UiStrings.ADD_COLUMN, Icons.Default.Add, onAddColumn)
     PropertyOutlinedButton("Aggiungi Chiave Esterna", Icons.Default.Key, onAddForeignKey)
     if (table.columns.isNotEmpty()) {
         PropertyListTitle("Colonne:")
@@ -127,7 +128,7 @@ private fun ForeignKeyPropertiesContent(
         PropertyDetail("Opzionale: ${if (foreignKey.column.isNullable) "sì" else "no"}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton("Modifica Proprietà", Icons.Default.Edit, onEdit)
+    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
         "Elimina Chiave Esterna",
         Icons.Default.Delete,
