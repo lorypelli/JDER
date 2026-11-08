@@ -30,7 +30,7 @@ fun ActorPropertiesDialog(
     var name by remember(actorId) { mutableStateOf(actorName) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Attore") },
+        title = { Text(UiStrings.ACTOR_PROPERTIES) },
         text = {
             OutlinedTextField(
                 value = name,
@@ -67,7 +67,7 @@ fun UseCasePropertiesDialog(
     var documentation by remember(useCaseId) { mutableStateOf(useCaseDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Caso d'Uso") },
+        title = { Text(UiStrings.USE_CASE_PROPERTIES) },
         text = {
             Column {
                 OutlinedTextField(
@@ -80,7 +80,7 @@ fun UseCasePropertiesDialog(
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text("Documentazione") },
+                    label = { Text(UiStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(120.dp).padding(top = 8.dp),
                     maxLines = 5,
                 )
@@ -107,7 +107,7 @@ fun SelectRelationTypeDialog(
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
     RelationTypeDialog(
-        title = "Tipo di Relazione",
+        title = UiStrings.RELATION_TYPE,
         relationId = null,
         initialType = UseCaseRelationType.ASSOCIATION,
         onDismiss = onDismiss,
@@ -122,7 +122,7 @@ fun EditRelationTypeDialog(
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
     RelationTypeDialog(
-        title = "Modifica Tipo Relazione",
+        title = UiStrings.EDIT_RELATION_TYPE,
         relationId = relation.id,
         initialType = relation.type,
         onDismiss = onDismiss,
@@ -173,7 +173,7 @@ fun SystemBoundaryPropertiesDialog(
     var height by remember(boundaryId) { mutableStateOf(boundaryHeight.toInt().toString()) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Sistema") },
+        title = { Text(UiStrings.SYSTEM_PROPERTIES) },
         text = {
             Column {
                 OutlinedTextField(
@@ -186,14 +186,14 @@ fun SystemBoundaryPropertiesDialog(
                 OutlinedTextField(
                     value = width,
                     onValueChange = { width = it.filter { it.isDigit() } },
-                    label = { Text("Larghezza") },
+                    label = { Text(UiStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = height,
                     onValueChange = { height = it.filter { it.isDigit() } },
-                    label = { Text("Altezza") },
+                    label = { Text(UiStrings.HEIGHT) },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
                 )

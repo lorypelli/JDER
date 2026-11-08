@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalUriHandler
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.utils.openSafely
 
 @Composable
@@ -12,12 +13,8 @@ fun UpdateAvailableDialog(downloadUrl: String, onDismiss: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Aggiornamento disponibile") },
-        text = {
-            Text(
-                "È disponibile una nuova versione di JDER. Scarica il nuovo JDER.jar e usalo al posto di quello attuale."
-            )
-        },
+        title = { Text(UiStrings.UPDATE_AVAILABLE) },
+        text = { Text(UiStrings.UPDATE_AVAILABLE_MESSAGE) },
         confirmButton = {
             TextButton(
                 onClick = {
@@ -25,9 +22,9 @@ fun UpdateAvailableDialog(downloadUrl: String, onDismiss: () -> Unit) {
                     onDismiss()
                 }
             ) {
-                Text("Scarica")
+                Text(UiStrings.DOWNLOAD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Più tardi") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.LATER) } },
     )
 }

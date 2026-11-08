@@ -1,5 +1,6 @@
 package com.jder.domain.model
 
+import com.jder.ui.strings.UiStrings
 import kotlin.math.roundToInt
 import kotlinx.serialization.Serializable
 
@@ -18,16 +19,24 @@ sealed interface LogicPin {
 data class LogicEndpoint(val componentId: String, val pin: LogicPin?)
 
 @Serializable
-enum class LogicComponentType(val display: String) {
-    INPUT("Ingresso"),
-    OUTPUT("Uscita"),
-    AND("AND"),
-    OR("OR"),
-    NOT("NOT"),
-    NAND("NAND"),
-    NOR("NOR"),
-    XOR("XOR"),
-    XNOR("XNOR");
+enum class LogicComponentType {
+    INPUT,
+    OUTPUT,
+    AND,
+    OR,
+    NOT,
+    NAND,
+    NOR,
+    XOR,
+    XNOR;
+
+    val display: String
+        get() =
+            when (this) {
+                INPUT -> UiStrings.INPUT
+                OUTPUT -> UiStrings.OUTPUT
+                else -> name
+            }
 
     val isGate: Boolean
         get() = this != INPUT && this != OUTPUT

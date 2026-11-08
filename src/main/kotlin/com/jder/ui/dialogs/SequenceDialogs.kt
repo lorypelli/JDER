@@ -49,23 +49,23 @@ fun LifelinePropertiesDialog(
     var documentation by remember(lifelineId) { mutableStateOf(lifelineDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Linea di Vita") },
+        title = { Text(UiStrings.LIFELINE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(UiStrings.NAME) },
-                    placeholder = { Text("es. c : Carrello") },
+                    placeholder = { Text(UiStrings.LIFELINE_NAME_EXAMPLE) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(SequenceLifelineType.entries, type, { type = it }) { it.display }
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text("Documentazione") },
+                    label = { Text(UiStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 4,
                 )
@@ -93,7 +93,7 @@ fun CreateSequenceMessageDialog(
     onConfirm: (label: String, type: SequenceMessageType) -> Unit,
 ) {
     SequenceMessageDialog(
-        title = "Nuovo Messaggio",
+        title = UiStrings.NEW_MESSAGE,
         messageId = null,
         initialLabel = "",
         initialType = SequenceMessageType.SYNC,
@@ -110,7 +110,7 @@ fun EditSequenceMessageDialog(
     onConfirm: (label: String, type: SequenceMessageType) -> Unit,
 ) {
     SequenceMessageDialog(
-        title = "Modifica Messaggio",
+        title = UiStrings.EDIT_MESSAGE,
         messageId = message.id,
         initialLabel = message.label,
         initialType = message.type,
@@ -145,12 +145,12 @@ private fun SequenceMessageDialog(
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text("Etichetta") },
-                    placeholder = { Text("es. login(utente, password)") },
+                    label = { Text(UiStrings.LABEL) },
+                    placeholder = { Text(UiStrings.MESSAGE_LABEL_EXAMPLE) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(types, type, { type = it }) { it.display }
             }
         },
@@ -189,22 +189,30 @@ fun SequenceFragmentPropertiesDialog(
     val isReference = type == SequenceFragmentType.REF
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Frammento") },
+        title = { Text(UiStrings.FRAGMENT_PROPERTIES) },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(SequenceFragmentType.entries, type, { type = it }) {
                     "${it.keyword} (${it.display})"
                 }
                 OutlinedTextField(
                     value = condition,
                     onValueChange = { condition = it },
-                    label = { Text(if (isReference) "Interazione riferita" else "Condizione") },
+                    label = {
+                        Text(
+                            if (isReference) UiStrings.REFERENCED_INTERACTION
+                            else UiStrings.CONDITION
+                        )
+                    },
                     placeholder = {
-                        Text(if (isReference) "es. Effettuare Login" else "es. utente registrato")
+                        Text(
+                            if (isReference) UiStrings.REFERENCE_EXAMPLE
+                            else UiStrings.CONDITION_EXAMPLE
+                        )
                     },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -216,7 +224,7 @@ fun SequenceFragmentPropertiesDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "Operandi aggiuntivi (${operands.size})",
+                            "${UiStrings.ADDITIONAL_OPERANDS} (${operands.size})",
                             style = MaterialTheme.typography.titleSmall,
                         )
                         IconButton(
@@ -232,7 +240,7 @@ fun SequenceFragmentPropertiesDialog(
                                         )
                             }
                         ) {
-                            Icon(Icons.Default.Add, "Aggiungi operando")
+                            Icon(Icons.Default.Add, UiStrings.ADD_OPERAND)
                         }
                     }
                     operands.forEach { (id, _, condition) ->
@@ -249,14 +257,14 @@ fun SequenceFragmentPropertiesDialog(
                                             if (it.id == id) it.copy(condition = value) else it
                                         }
                                 },
-                                label = { Text("Condizione") },
+                                label = { Text(UiStrings.CONDITION) },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
                             )
                             IconButton(onClick = { operands = operands.filter { it.id != id } }) {
                                 Icon(
                                     Icons.Default.Delete,
-                                    "Rimuovi operando",
+                                    UiStrings.REMOVE_OPERAND,
                                     tint = MaterialTheme.colorScheme.error,
                                 )
                             }
@@ -267,14 +275,14 @@ fun SequenceFragmentPropertiesDialog(
                     OutlinedTextField(
                         value = width,
                         onValueChange = { width = it.filter { it.isDigit() } },
-                        label = { Text("Larghezza") },
+                        label = { Text(UiStrings.WIDTH) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                     OutlinedTextField(
                         value = height,
                         onValueChange = { height = it.filter { it.isDigit() } },
-                        label = { Text("Altezza") },
+                        label = { Text(UiStrings.HEIGHT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )

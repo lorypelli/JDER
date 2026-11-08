@@ -3,10 +3,11 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 class RelationalDiagramState :
-    DiagramEditorState<RelationalDiagram>({ RelationalDiagram(name = "Nuovo Schema Logico") }) {
+    DiagramEditorState<RelationalDiagram>({ RelationalDiagram(name = "") }) {
     var selectedTableId by mutableStateOf<String?>(null)
         private set
 
@@ -20,7 +21,7 @@ class RelationalDiagramState :
     var pendingForeignKeySourceId by mutableStateOf<String?>(null)
 
     override val diagramName: String
-        get() = diagram.name
+        get() = diagram.name.ifEmpty { UiStrings.NEW_RELATIONAL_SCHEMA }
 
     override val isEmpty: Boolean
         get() = diagram.tables.isEmpty() && diagram.notes.isEmpty()
@@ -50,15 +51,15 @@ class RelationalDiagramState :
     override fun deleteSelection(): String? {
         selectedTableId?.let {
             deleteTable(it)
-            return "Tabella eliminata"
+            return UiStrings.TABLE_DELETED
         }
         selectedForeignKeyId?.let {
             deleteForeignKey(it)
-            return "Chiave esterna eliminata"
+            return UiStrings.FOREIGN_KEY_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return "Nota eliminata"
+            return UiStrings.NOTE_DELETED
         }
         return null
     }

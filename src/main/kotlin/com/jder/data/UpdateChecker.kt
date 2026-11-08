@@ -1,5 +1,6 @@
 package com.jder.data
 
+import com.jder.ui.strings.UiStrings
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
@@ -64,7 +65,7 @@ object UpdateChecker {
                 .build()
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
         if (response.statusCode() !in 200..299) {
-            throw IOException("GitHub ha risposto con il codice ${response.statusCode()}")
+            throw IOException(UiStrings.gitHubStatus(response.statusCode()))
         }
         val body = response.body()
         return releaseJson.decodeFromString(GitHubRelease.serializer(), body).assets.firstOrNull {

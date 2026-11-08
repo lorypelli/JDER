@@ -79,9 +79,9 @@ fun StateMachineDiagramScreen(
         }
     fun actionsTitle(type: StateMachineContextMenuType): String =
         when (type) {
-            StateMachineContextMenuType.STATE -> "Azioni Stato"
-            StateMachineContextMenuType.TRANSITION -> "Azioni Transizione"
-            StateMachineContextMenuType.NOTE -> "Azioni Nota"
+            StateMachineContextMenuType.STATE -> UiStrings.STATE_ACTIONS
+            StateMachineContextMenuType.TRANSITION -> UiStrings.TRANSITION_ACTIONS
+            StateMachineContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
         }
     fun actions(type: StateMachineContextMenuType): List<ContextMenuItem> = buildList {
         when (type) {
@@ -94,13 +94,13 @@ fun StateMachineDiagramScreen(
                 val stateId = state.selectedStateId
                 add(
                     ContextMenuItem(
-                        "Imposta come Stato Iniziale",
+                        UiStrings.SET_INITIAL_STATE,
                         CustomIcons.InitialState,
                         enabled = stateId != null && !state.isInitial(stateId),
                     ) {
                         stateId?.let {
                             state.setInitialState(it)
-                            Toasts.success("Stato iniziale impostato")
+                            Toasts.success(UiStrings.INITIAL_STATE_SET)
                         }
                     }
                 )
@@ -114,8 +114,8 @@ fun StateMachineDiagramScreen(
                         machineState?.let {
                             state.setFinalState(it.id, !it.isFinal)
                             Toasts.success(
-                                if (it.isFinal) "Stato rimosso dagli stati finali"
-                                else "Stato finale impostato"
+                                if (it.isFinal) UiStrings.STATE_REMOVED_FROM_FINAL
+                                else UiStrings.FINAL_STATE_SET
                             )
                         }
                     }
@@ -130,7 +130,7 @@ fun StateMachineDiagramScreen(
                 val transition = state.transition(state.selectedTransitionId)
                 add(
                     ContextMenuItem(
-                        "Inverti Direzione",
+                        UiStrings.REVERSE_DIRECTION,
                         Icons.Default.SwapHoriz,
                         enabled = transition != null && !transition.isLoop,
                     ) {
@@ -139,7 +139,7 @@ fun StateMachineDiagramScreen(
                 )
                 add(
                     ContextMenuItem(
-                        "Ripristina Forma",
+                        UiStrings.RESET_SHAPE,
                         Icons.Default.AutoFixHigh,
                         enabled = transition?.hasCustomShape == true,
                     ) {
@@ -162,30 +162,23 @@ fun StateMachineDiagramScreen(
         themeState = themeState,
         renderImage = { renderStateMachineDiagramToBitmap(state.diagram, kind, it) },
         emptyHint =
-            "Scegli Stato dalla barra degli strumenti e clicca sulla lavagna.\n" +
-                "Per creare una transizione trascina dal bordo di uno stato fino allo stato di " +
-                "arrivo (anche lo stesso).\n" +
-                if (kind.hasTransitionOutputs) {
-                    "Nella macchina di Mealy l'uscita si scrive sulle transizioni, come " +
-                        "ingresso/uscita."
-                } else {
-                    "Nella macchina di Moore l'uscita si scrive negli stati, sotto il nome."
-                },
+            "${UiStrings.STATE_MACHINE_EMPTY_HINT}\n" +
+                if (kind.hasTransitionOutputs) UiStrings.MEALY_EMPTY_HINT
+                else UiStrings.MOORE_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.MachineState,
-                    "Crea Stato",
-                    "Stato",
+                    UiStrings.CREATE_STATE,
+                    UiStrings.STATE,
                     state.toolMode == StateMachineToolMode.STATE,
                 ) {
                     state.toolMode = StateMachineToolMode.STATE
                 },
                 DiagramTool.Mode(
                     CustomIcons.Transition,
-                    "Crea Transizione (clicca lo stato di partenza e poi quello di arrivo, " +
-                        "oppure trascina dal bordo di uno stato)",
-                    "Transizione",
+                    UiStrings.CREATE_TRANSITION,
+                    UiStrings.TRANSITION,
                     state.toolMode == StateMachineToolMode.TRANSITION,
                 ) {
                     state.toolMode = StateMachineToolMode.TRANSITION
@@ -202,15 +195,15 @@ fun StateMachineDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Action(
                     Icons.Default.TableChart,
-                    "Tabella di transizione",
-                    "Tabella di Transizione...",
+                    UiStrings.TRANSITION_TABLE,
+                    UiStrings.TRANSITION_TABLE_ELLIPSIS,
                 ) {
                     showTransitionTable = true
                 },
                 DiagramTool.Action(
                     Icons.Default.PlayArrow,
-                    "Simula una sequenza di ingressi",
-                    "Simula una Sequenza...",
+                    UiStrings.SIMULATE_SEQUENCE,
+                    UiStrings.SIMULATE_SEQUENCE_ELLIPSIS,
                 ) {
                     showSimulation = true
                 },
@@ -261,7 +254,7 @@ fun StateMachineDiagramScreen(
                 onConfirm = { name, output, isInitial, isFinal ->
                     state.updateState(machineState.id, name, output, isInitial, isFinal)
                     showStateDialog = false
-                    Toasts.success("Stato modificato")
+                    Toasts.success(UiStrings.STATE_UPDATED)
                 },
             )
         }
@@ -269,7 +262,7 @@ fun StateMachineDiagramScreen(
     editedTransitionId?.let { transitionId ->
         state.transition(transitionId)?.let { transition ->
             MachineTransitionPropertiesDialog(
-                title = "Proprietà Transizione",
+                title = UiStrings.TRANSITION_PROPERTIES,
                 kind = kind,
                 sourceName = stateName(transition.sourceId),
                 targetName = stateName(transition.targetId),
@@ -282,14 +275,14 @@ fun StateMachineDiagramScreen(
                         it.copy(input = input, output = output)
                     }
                     editedTransitionId = null
-                    Toasts.success("Transizione modificata")
+                    Toasts.success(UiStrings.TRANSITION_UPDATED)
                 },
             )
         }
     }
     pendingTransition?.let { (sourceId, targetId) ->
         MachineTransitionPropertiesDialog(
-            title = "Nuova Transizione",
+            title = UiStrings.NEW_TRANSITION,
             kind = kind,
             sourceName = stateName(sourceId),
             targetName = stateName(targetId),
@@ -300,7 +293,7 @@ fun StateMachineDiagramScreen(
             onConfirm = { input, output ->
                 state.addTransition(sourceId, targetId, input, output)
                 pendingTransition = null
-                Toasts.success("Transizione creata")
+                Toasts.success(UiStrings.TRANSITION_CREATED)
             },
         )
     }
@@ -315,7 +308,7 @@ fun StateMachineDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success("Nota modificata")
+                        Toasts.success(UiStrings.NOTE_UPDATED)
                     },
                 )
             }

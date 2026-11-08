@@ -63,7 +63,7 @@ fun ERDiagramScreen(
     fun convertSelectedRelationship() {
         state.selectedRelationshipId?.let {
             state.convertToAssociativeEntity(it)
-            Toasts.success("Relazione convertita in entità associativa")
+            Toasts.success(UiStrings.RELATIONSHIP_CONVERTED)
         }
     }
     fun selectedType(): ERContextMenuType? =
@@ -75,9 +75,9 @@ fun ERDiagramScreen(
         }
     fun actionsTitle(type: ERContextMenuType): String =
         when (type) {
-            ERContextMenuType.ENTITY -> "Azioni Entità"
-            ERContextMenuType.RELATIONSHIP -> "Azioni Relazione"
-            ERContextMenuType.NOTE -> "Azioni Nota"
+            ERContextMenuType.ENTITY -> UiStrings.ENTITY_ACTIONS
+            ERContextMenuType.RELATIONSHIP -> UiStrings.RELATION_ACTIONS
+            ERContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
         }
     fun actions(type: ERContextMenuType): List<ContextMenuItem> {
         val isManyToMany = state.relationship(state.selectedRelationshipId)?.isManyToMany() == true
@@ -100,13 +100,13 @@ fun ERDiagramScreen(
             }
             if (type == ERContextMenuType.RELATIONSHIP) {
                 add(
-                    ContextMenuItem("Aggiungi Connessione", Icons.Default.Link) {
+                    ContextMenuItem(UiStrings.ADD_CONNECTION, Icons.Default.Link) {
                         showCreateConnectionDialog = true
                     }
                 )
                 add(
                     ContextMenuItem(
-                        "Converti in Entità Associativa",
+                        UiStrings.CONVERT_TO_ASSOCIATIVE_ENTITY,
                         Icons.Default.AutoFixHigh,
                         enabled = isManyToMany,
                         onClick = { convertSelectedRelationship() },
@@ -125,23 +125,20 @@ fun ERDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderERDiagramToBitmap(state.diagram, it) },
-        emptyHint =
-            "Scegli Entità, Relazione o Nota dalla barra degli strumenti e clicca sulla " +
-                "lavagna.\nPer collegare una relazione alle entità, selezionala e usa " +
-                "Aggiungi Connessione nel pannello Proprietà o nel menu contestuale.",
+        emptyHint = UiStrings.ER_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.Rectangle,
-                    "Crea Entità",
-                    "Entità",
+                    UiStrings.CREATE_ENTITY,
+                    UiStrings.ENTITY,
                     state.toolMode == ERToolMode.ENTITY,
                 ) {
                     state.toolMode = ERToolMode.ENTITY
                 },
                 DiagramTool.Mode(
                     CustomIcons.Diamond,
-                    "Crea Relazione",
+                    UiStrings.CREATE_RELATIONSHIP,
                     UiStrings.RELATION,
                     state.toolMode == ERToolMode.RELATIONSHIP,
                 ) {
@@ -173,7 +170,7 @@ fun ERDiagramScreen(
                     state.selectedRelationshipId?.let {
                         state.deleteAttributeFromRelationship(it, attributeId)
                     }
-                    Toasts.success("Attributo eliminato")
+                    Toasts.success(UiStrings.ATTRIBUTE_DELETED)
                 },
                 onEditConnection = { entityId, connection ->
                     connectionToEdit = ConnectionEdit(entityId, connection)
@@ -181,7 +178,7 @@ fun ERDiagramScreen(
                 onDeleteConnection = { entityId ->
                     state.selectedRelationshipId?.let {
                         state.deleteConnection(it, entityId)
-                        Toasts.success("Connessione eliminata")
+                        Toasts.success(UiStrings.CONNECTION_DELETED)
                     }
                 },
                 onConvertToAssociativeEntity = ::convertSelectedRelationship,
@@ -231,7 +228,7 @@ fun ERDiagramScreen(
                 onConfirm = { updated ->
                     state.updateEntity(entity.id) { updated }
                     showEntityDialog = false
-                    Toasts.success("Entità modificata")
+                    Toasts.success(UiStrings.ENTITY_UPDATED)
                 },
             )
         }
@@ -244,7 +241,7 @@ fun ERDiagramScreen(
                 onConfirm = { updated ->
                     state.updateRelationship(it.id) { updated }
                     showRelationshipDialog = false
-                    Toasts.success("Relazione modificata")
+                    Toasts.success(UiStrings.RELATION_UPDATED)
                 },
             )
         }
@@ -260,7 +257,7 @@ fun ERDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success("Nota modificata")
+                        Toasts.success(UiStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -274,7 +271,7 @@ fun ERDiagramScreen(
                     state.addAttributeToRelationship(it, attribute)
                 }
                 showAddAttributeDialog = false
-                Toasts.success("Attributo aggiunto")
+                Toasts.success(UiStrings.ATTRIBUTE_ADDED)
             },
         )
     }
@@ -290,7 +287,7 @@ fun ERDiagramScreen(
                     state.updateAttributeInRelationship(it, attribute.id, updated)
                 }
                 attributeToEdit = null
-                Toasts.success("Attributo modificato")
+                Toasts.success(UiStrings.ATTRIBUTE_UPDATED)
             },
         )
     }
@@ -305,17 +302,13 @@ fun ERDiagramScreen(
             CreateConnectionDialog(
                 entities = state.diagram.entities.filter { it.id !in connectedIds },
                 emptyMessage =
-                    if (state.diagram.entities.isEmpty()) {
-                        "Il diagramma non ha ancora entità: creane una prima di aggiungere " +
-                            "connessioni."
-                    } else {
-                        "Tutte le entità sono già connesse a questa relazione."
-                    },
+                    if (state.diagram.entities.isEmpty()) UiStrings.NO_ENTITIES_YET
+                    else UiStrings.ALL_ENTITIES_CONNECTED,
                 onDismiss = { showCreateConnectionDialog = false },
                 onConfirm = { entityId, cardinality ->
                     state.addConnection(relId, entityId, cardinality)
                     showCreateConnectionDialog = false
-                    Toasts.success("Connessione creata")
+                    Toasts.success(UiStrings.CONNECTION_CREATED)
                 },
             )
         }
@@ -337,7 +330,7 @@ fun ERDiagramScreen(
                 onConfirm = { newEntityId, newCardinality ->
                     state.updateConnection(relId, entityId, newEntityId, newCardinality)
                     connectionToEdit = null
-                    Toasts.success("Connessione modificata")
+                    Toasts.success(UiStrings.CONNECTION_UPDATED)
                 },
             )
         }

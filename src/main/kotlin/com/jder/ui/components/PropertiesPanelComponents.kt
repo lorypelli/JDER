@@ -38,7 +38,7 @@ import com.jder.ui.strings.UiStrings
 fun PropertiesPanelHeader(onClose: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Proprietà",
+            text = UiStrings.PROPERTIES,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.align(Alignment.CenterStart),
@@ -46,7 +46,7 @@ fun PropertiesPanelHeader(onClose: () -> Unit) {
         IconButton(onClick = onClose, modifier = Modifier.align(Alignment.CenterEnd).size(32.dp)) {
             Icon(
                 Icons.Default.Close,
-                contentDescription = "Chiudi pannello proprietà",
+                contentDescription = UiStrings.CLOSE_PROPERTIES_PANEL,
                 tint = MaterialTheme.colorScheme.onSurface,
             )
         }
@@ -202,7 +202,7 @@ fun PropertyDetailCard(label: String, text: String) {
 fun DocumentationCard(documentation: String) {
     if (documentation.isBlank()) return
     Spacer(Modifier.height(8.dp))
-    PropertyDetailCard("Documentazione:", documentation)
+    PropertyDetailCard("${UiStrings.DOCUMENTATION}:", documentation)
 }
 
 @Composable

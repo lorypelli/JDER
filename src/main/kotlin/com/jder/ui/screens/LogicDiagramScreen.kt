@@ -67,12 +67,12 @@ fun LogicDiagramScreen(
         when (type) {
             LogicContextMenuType.COMPONENT ->
                 when (state.component(state.selectedComponentId)?.type) {
-                    LogicComponentType.INPUT -> "Azioni Ingresso"
-                    LogicComponentType.OUTPUT -> "Azioni Uscita"
-                    else -> "Azioni Porta Logica"
+                    LogicComponentType.INPUT -> UiStrings.INPUT_ACTIONS
+                    LogicComponentType.OUTPUT -> UiStrings.OUTPUT_ACTIONS
+                    else -> UiStrings.GATE_ACTIONS
                 }
-            LogicContextMenuType.WIRE -> "Azioni Collegamento"
-            LogicContextMenuType.NOTE -> "Azioni Nota"
+            LogicContextMenuType.WIRE -> UiStrings.WIRE_ACTIONS
+            LogicContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
         }
     fun actions(type: LogicContextMenuType): List<ContextMenuItem> {
         val component = state.component(state.selectedComponentId)
@@ -86,7 +86,7 @@ fun LogicDiagramScreen(
                     )
                     if (component?.type == LogicComponentType.INPUT) {
                         add(
-                            ContextMenuItem("Commuta Valore", Icons.Default.ToggleOn) {
+                            ContextMenuItem(UiStrings.TOGGLE_VALUE, Icons.Default.ToggleOn) {
                                 state.toggleInput(component.id)
                             }
                         )
@@ -94,7 +94,7 @@ fun LogicDiagramScreen(
                     if (component != null && component.type.supportsMultipleInputs) {
                         add(
                             ContextMenuItem(
-                                "Aggiungi Ingresso",
+                                UiStrings.ADD_INPUT,
                                 Icons.Default.Add,
                                 enabled = component.inputPinCount < MAX_GATE_INPUTS,
                             ) {
@@ -103,7 +103,7 @@ fun LogicDiagramScreen(
                         )
                         add(
                             ContextMenuItem(
-                                "Rimuovi Ingresso",
+                                UiStrings.REMOVE_INPUT,
                                 Icons.Default.Remove,
                                 enabled = component.inputPinCount > MIN_GATE_INPUTS,
                             ) {
@@ -134,37 +134,35 @@ fun LogicDiagramScreen(
         renderImage = {
             renderLogicDiagramToBitmap(state.diagram, state.simulation, state.showSimulation, it)
         },
-        emptyHint =
-            "Scegli un ingresso, un'uscita o una porta logica dalla barra degli strumenti e clicca " +
-                "sulla lavagna.\nPer collegare due elementi trascina da un pin all'altro.",
+        emptyHint = UiStrings.LOGIC_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     Icons.Default.ToggleOn,
-                    "Ingresso (clicca sul valore per commutarlo)",
-                    "Ingresso",
+                    UiStrings.INPUT_TOOL,
+                    UiStrings.INPUT,
                     state.toolMode == LogicToolMode.INPUT,
                 ) {
                     state.toolMode = LogicToolMode.INPUT
                 },
                 DiagramTool.Mode(
                     Icons.Default.Lightbulb,
-                    "Uscita",
-                    "Uscita",
+                    UiStrings.OUTPUT,
+                    UiStrings.OUTPUT,
                     state.toolMode == LogicToolMode.OUTPUT,
                 ) {
                     state.toolMode = LogicToolMode.OUTPUT
                 },
                 DiagramTool.Divider,
                 DiagramTool.Group(
-                    "Porte Logiche",
+                    UiStrings.LOGIC_GATES,
                     LogicToolMode.entries.mapNotNull { mode ->
                         mode.componentType
                             ?.takeIf { it.isGate }
                             ?.let {
                                 DiagramTool.Mode(
                                     CustomIcons.gate(it),
-                                    "Porta ${it.display}",
+                                    UiStrings.gate(it.display),
                                     it.display,
                                     state.toolMode == mode,
                                 ) {
@@ -176,8 +174,8 @@ fun LogicDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Mode(
                     CustomIcons.Wire,
-                    "Collegamento (clicca la sorgente e poi la destinazione, oppure trascina da un pin)",
-                    "Collegamento",
+                    UiStrings.WIRE_TOOL,
+                    UiStrings.WIRE,
                     state.toolMode == LogicToolMode.WIRE,
                 ) {
                     state.toolMode = LogicToolMode.WIRE
@@ -194,16 +192,16 @@ fun LogicDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Action(
                     Icons.Default.TableChart,
-                    "Tabella di verità",
-                    "Tabella di Verità...",
+                    UiStrings.TRUTH_TABLE,
+                    UiStrings.TRUTH_TABLE_ELLIPSIS,
                 ) {
                     showTruthTable = true
                 },
                 DiagramTool.Toggle(
                     if (state.showSimulation) Icons.Default.FlashOn else Icons.Default.FlashOff,
-                    if (state.showSimulation) "Nascondi i valori della simulazione"
-                    else "Mostra i valori della simulazione",
-                    "Mostra Valori della Simulazione",
+                    if (state.showSimulation) UiStrings.HIDE_SIMULATION
+                    else UiStrings.SHOW_SIMULATION,
+                    UiStrings.SHOW_SIMULATION_MENU,
                     state.showSimulation,
                 ) {
                     state.showSimulation = !state.showSimulation
@@ -238,7 +236,7 @@ fun LogicDiagramScreen(
                 modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
             ) {
                 Text(
-                    "Il circuito oscilla: alcuni valori non sono determinabili",
+                    UiStrings.CIRCUIT_OSCILLATES,
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -264,7 +262,7 @@ fun LogicDiagramScreen(
                         it.copy(label = label, type = type, inputCount = inputCount, value = value)
                     }
                     showComponentDialog = false
-                    Toasts.success("Componente modificato")
+                    Toasts.success(UiStrings.COMPONENT_UPDATED)
                 },
             )
         }
@@ -280,7 +278,7 @@ fun LogicDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success("Nota modificata")
+                        Toasts.success(UiStrings.NOTE_UPDATED)
                     },
                 )
             }

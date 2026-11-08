@@ -5,18 +5,22 @@ import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CenterFocusWeak
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material.icons.filled.ZoomOut
@@ -43,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.jder.ui.strings.Language
 import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.shortcutLabel
@@ -183,12 +188,16 @@ fun ToolbarFileMenu(
         }
     }
     Box {
-        TextButton(onClick = { showFileMenu = true }) { Text("File") }
+        TextButton(onClick = { showFileMenu = true }) { Text(UiStrings.FILE) }
         DropdownMenu(expanded = showFileMenu, onDismissRequest = { showFileMenu = false }) {
-            ToolbarMenuItem("Nuovo Diagramma", Icons.Default.Add, shortcutLabel("N")) {
+            ToolbarMenuItem(UiStrings.NEW_DIAGRAM, Icons.Default.Add, shortcutLabel("N")) {
                 runAction(onNewDiagram)
             }
-            ToolbarMenuItem("Apri Diagramma...", Icons.Default.FolderOpen, shortcutLabel("O")) {
+            ToolbarMenuItem(
+                UiStrings.OPEN_DIAGRAM_ELLIPSIS,
+                Icons.Default.FolderOpen,
+                shortcutLabel("O"),
+            ) {
                 runAction(onOpenDiagram)
             }
             Divider()
@@ -196,20 +205,24 @@ fun ToolbarFileMenu(
                 runAction(onSaveDiagram)
             }
             ToolbarMenuItem(
-                "Salva con nome...",
+                UiStrings.SAVE_AS_ELLIPSIS,
                 Icons.Default.Save,
                 shortcutLabel("S", hasShift = true),
             ) {
                 runAction(onSaveAsDiagram)
             }
             ToolbarMenuToggleItem(autoSave) { runAction(autoSave.onToggle) }
-            ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {
+            ToolbarMenuItem(
+                UiStrings.EXPORT_PNG_ELLIPSIS,
+                Icons.Default.Image,
+                shortcutLabel("E"),
+            ) {
                 runAction(onExportPNG)
             }
             ToolbarMenuToggleItem(autoExport) { runAction(autoExport.onToggle) }
             Divider()
             ToolbarMenuItem(
-                "Elimina Elemento Selezionato",
+                UiStrings.DELETE_SELECTED,
                 Icons.Default.Delete,
                 enabled = hasSelection,
             ) {
@@ -231,9 +244,13 @@ fun ToolbarExportMenu(onExportPNG: () -> Unit, autoExport: AppMenuEntry.Toggle) 
         }
     }
     Box {
-        TextButton(onClick = { showExportMenu = true }) { Text("Esporta") }
+        TextButton(onClick = { showExportMenu = true }) { Text(UiStrings.EXPORT) }
         DropdownMenu(expanded = showExportMenu, onDismissRequest = { showExportMenu = false }) {
-            ToolbarMenuItem("Esporta come PNG...", Icons.Default.Image, shortcutLabel("E")) {
+            ToolbarMenuItem(
+                UiStrings.EXPORT_PNG_ELLIPSIS,
+                Icons.Default.Image,
+                shortcutLabel("E"),
+            ) {
                 runAction(onExportPNG)
             }
             ToolbarMenuToggleItem(autoExport) { runAction(autoExport.onToggle) }
@@ -253,15 +270,19 @@ fun ToolbarViewMenuBox(onZoomIn: () -> Unit, onZoomOut: () -> Unit, onResetZoom:
         }
     }
     Box {
-        TextButton(onClick = { showViewMenu = true }) { Text("Vista") }
+        TextButton(onClick = { showViewMenu = true }) { Text(UiStrings.VIEW) }
         DropdownMenu(expanded = showViewMenu, onDismissRequest = { showViewMenu = false }) {
-            ToolbarMenuItem("Zoom In", Icons.Default.ZoomIn, shortcutLabel("+")) {
+            ToolbarMenuItem(UiStrings.ZOOM_IN, Icons.Default.ZoomIn, shortcutLabel("+")) {
                 runAction(onZoomIn)
             }
-            ToolbarMenuItem("Zoom Out", Icons.Default.ZoomOut, shortcutLabel("-")) {
+            ToolbarMenuItem(UiStrings.ZOOM_OUT, Icons.Default.ZoomOut, shortcutLabel("-")) {
                 runAction(onZoomOut)
             }
-            ToolbarMenuItem("Reimposta Zoom", Icons.Default.CenterFocusWeak, shortcutLabel("0")) {
+            ToolbarMenuItem(
+                UiStrings.RESET_ZOOM,
+                Icons.Default.CenterFocusWeak,
+                shortcutLabel("0"),
+            ) {
                 runAction(onResetZoom)
             }
         }
@@ -270,6 +291,7 @@ fun ToolbarViewMenuBox(onZoomIn: () -> Unit, onZoomOut: () -> Unit, onResetZoom:
 
 @Composable
 fun ToolbarPaletteTheme(themeState: ThemeState) {
+    LanguageSelector(modifier = Modifier.padding(horizontal = 4.dp))
     PaletteSelector(
         selectedPalette = themeState.selectedPalette,
         onPaletteSelected = themeState::selectPalette,
@@ -294,13 +316,21 @@ fun ToolbarZoomControls(
         style = MaterialTheme.typography.bodyMedium,
         modifier = Modifier.padding(horizontal = 8.dp),
     )
-    ToolbarIconButton(Icons.Default.ZoomOut, "Zoom Out (${shortcutLabel("-")})", onZoomOut)
+    ToolbarIconButton(
+        Icons.Default.ZoomOut,
+        "${UiStrings.ZOOM_OUT} (${shortcutLabel("-")})",
+        onZoomOut,
+    )
     ToolbarIconButton(
         Icons.Default.CenterFocusWeak,
-        "Reimposta Zoom (${shortcutLabel("0")})",
+        "${UiStrings.RESET_ZOOM} (${shortcutLabel("0")})",
         onResetZoom,
     )
-    ToolbarIconButton(Icons.Default.ZoomIn, "Zoom In (${shortcutLabel("+")})", onZoomIn)
+    ToolbarIconButton(
+        Icons.Default.ZoomIn,
+        "${UiStrings.ZOOM_IN} (${shortcutLabel("+")})",
+        onZoomIn,
+    )
 }
 
 @Composable
@@ -309,4 +339,34 @@ fun ToolbarVerticalDivider() {
         modifier =
             Modifier.height(32.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant)
     )
+}
+
+@Composable
+private fun LanguageSelector(modifier: Modifier = Modifier) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        WithTooltip(UiStrings.LANGUAGE) {
+            IconButton(onClick = { expanded = true }) {
+                Icon(Icons.Default.Language, UiStrings.LANGUAGE)
+            }
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            Language.entries.forEach {
+                DropdownMenuItem(
+                    text = { Text(it.displayName) },
+                    onClick = {
+                        expanded = false
+                        UiStrings.selectLanguage(it)
+                    },
+                    leadingIcon = {
+                        if (it == UiStrings.language) {
+                            Icon(Icons.Default.Check, contentDescription = null)
+                        } else {
+                            Spacer(modifier = Modifier.size(24.dp))
+                        }
+                    },
+                )
+            }
+        }
+    }
 }

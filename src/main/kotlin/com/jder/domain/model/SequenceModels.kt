@@ -1,14 +1,25 @@
 package com.jder.domain.model
 
+import com.jder.ui.strings.UiStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class SequenceLifelineType(val display: String) {
-    ACTOR("Attore"),
-    OBJECT("Oggetto"),
-    BOUNDARY("Boundary"),
-    CONTROL("Control"),
-    ENTITY("Entity"),
+enum class SequenceLifelineType {
+    ACTOR,
+    OBJECT,
+    BOUNDARY,
+    CONTROL,
+    ENTITY;
+
+    val display: String
+        get() =
+            when (this) {
+                ACTOR -> UiStrings.ACTOR
+                OBJECT -> UiStrings.OBJECT
+                BOUNDARY -> "Boundary"
+                CONTROL -> "Control"
+                ENTITY -> "Entity"
+            }
 }
 
 @Serializable
@@ -23,12 +34,22 @@ data class SequenceLifeline(
 )
 
 @Serializable
-enum class SequenceMessageType(val display: String) {
-    SYNC("Sincrono"),
-    ASYNC("Asincrono"),
-    REPLY("Risposta"),
-    CREATE("Creazione"),
-    DESTROY("Distruzione"),
+enum class SequenceMessageType {
+    SYNC,
+    ASYNC,
+    REPLY,
+    CREATE,
+    DESTROY;
+
+    val display: String
+        get() =
+            when (this) {
+                SYNC -> UiStrings.SYNCHRONOUS
+                ASYNC -> UiStrings.ASYNCHRONOUS
+                REPLY -> UiStrings.REPLY
+                CREATE -> UiStrings.CREATION
+                DESTROY -> UiStrings.DESTRUCTION
+            }
 }
 
 @Serializable
@@ -45,14 +66,26 @@ data class SequenceMessage(
 }
 
 @Serializable
-enum class SequenceFragmentType(val keyword: String, val display: String) {
-    ALT("alt", "Alternativa"),
-    OPT("opt", "Opzionale"),
-    LOOP("loop", "Ciclo"),
-    PAR("par", "Parallelo"),
-    BREAK("break", "Interruzione"),
-    CRITICAL("critical", "Regione critica"),
-    REF("ref", "Riferimento");
+enum class SequenceFragmentType(val keyword: String) {
+    ALT("alt"),
+    OPT("opt"),
+    LOOP("loop"),
+    PAR("par"),
+    BREAK("break"),
+    CRITICAL("critical"),
+    REF("ref");
+
+    val display: String
+        get() =
+            when (this) {
+                ALT -> UiStrings.ALTERNATIVE
+                OPT -> UiStrings.OPTION
+                LOOP -> UiStrings.LOOP
+                PAR -> UiStrings.PARALLEL
+                BREAK -> UiStrings.BREAK
+                CRITICAL -> UiStrings.CRITICAL_REGION
+                REF -> UiStrings.REFERENCE
+            }
 
     val hasOperands: Boolean
         get() = this == ALT || this == PAR
@@ -87,10 +120,10 @@ fun SequenceDiagram.validateMessageEndpoints() {
     val errors = mutableListOf<String>()
     messages.forEach { (id, sourceId, targetId) ->
         if (sourceId !in lifelineIds) {
-            errors += "Il messaggio ${id} ha una sorgente inesistente: ${sourceId}"
+            errors += UiStrings.messageMissingSource(id, sourceId)
         }
         if (targetId !in lifelineIds) {
-            errors += "Il messaggio ${id} ha una destinazione inesistente: ${targetId}"
+            errors += UiStrings.messageMissingTarget(id, targetId)
         }
     }
     if (errors.isNotEmpty()) throw DiagramValidationException(errors)

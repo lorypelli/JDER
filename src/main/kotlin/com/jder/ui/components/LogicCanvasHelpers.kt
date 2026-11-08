@@ -10,6 +10,7 @@ import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.LogicEndpoint
 import com.jder.domain.model.LogicPin
 import com.jder.domain.model.LogicToolMode
+import com.jder.ui.strings.UiStrings
 import kotlin.math.abs
 
 internal const val LOGIC_GATE_WIDTH = 80f
@@ -168,9 +169,9 @@ internal fun connectLogic(
 ) {
     val wire = resolveLogicWire(state.diagram, first, second, point)
     if (wire != null && state.addWire(wire.sourceId, wire.targetId, wire.targetPin)) {
-        Toasts.success("Collegamento creato")
+        Toasts.success(UiStrings.WIRE_CREATED)
     } else {
-        Toasts.warning("Collegamento non valido")
+        Toasts.warning(UiStrings.INVALID_WIRE)
     }
 }
 
@@ -204,7 +205,7 @@ internal fun handleLogicTap(state: LogicDiagramState, point: Offset) {
             }
         }
         LogicToolMode.NOTE -> {
-            state.addNote(point.x - 120f, point.y - 90f, "Nuova Nota")
+            state.addNote(point.x - 120f, point.y - 90f, UiStrings.NEW_NOTE)
             state.toolMode = LogicToolMode.SELECT
         }
         else ->

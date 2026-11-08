@@ -67,7 +67,7 @@ fun MachineStatePropertiesDialog(
     val isDuplicate = name.trim() in otherNames
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Stato") },
+        title = { Text(UiStrings.STATE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -78,24 +78,21 @@ fun MachineStatePropertiesDialog(
                     singleLine = true,
                     isError = isDuplicate,
                 )
-                if (isDuplicate) ErrorText("Esiste già uno stato con questo nome")
+                if (isDuplicate) ErrorText(UiStrings.DUPLICATE_STATE_NAME)
                 if (kind.hasStateOutputs) {
                     OutlinedTextField(
                         value = output,
                         onValueChange = { output = it },
-                        label = { Text("Uscita") },
-                        placeholder = { Text("es. 0") },
+                        label = { Text(UiStrings.OUTPUT) },
+                        placeholder = { Text(UiStrings.example("0")) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                     )
-                    HintText("Nella macchina di Moore l'uscita dipende solo dallo stato.")
+                    HintText(UiStrings.MOORE_STATE_OUTPUT_HINT)
                 }
-                SwitchRow("Stato iniziale", initial) { initial = it }
-                SwitchRow("Stato finale", final) { final = it }
-                HintText(
-                    "Facoltativo: nella definizione classica le macchine di Mealy e di Moore " +
-                        "non hanno stati finali."
-                )
+                SwitchRow(UiStrings.INITIAL_STATE, initial) { initial = it }
+                SwitchRow(UiStrings.FINAL_STATE, final) { final = it }
+                HintText(UiStrings.FINAL_STATES_HINT)
             }
         },
         confirmButton = {
@@ -134,41 +131,33 @@ fun MachineTransitionPropertiesDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    if (sourceName == targetName) "Da $sourceName a sé stesso"
-                    else "Da $sourceName a $targetName",
+                    if (sourceName == targetName) UiStrings.selfTransition(sourceName)
+                    else UiStrings.transitionBetween(sourceName, targetName),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 OutlinedTextField(
                     value = input,
                     onValueChange = { input = it },
-                    label = { Text("Ingresso") },
-                    placeholder = { Text("es. 1") },
+                    label = { Text(UiStrings.INPUT) },
+                    placeholder = { Text(UiStrings.example("1")) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 if (repeated.isEmpty()) {
-                    HintText(
-                        "Più ingressi con lo stesso effetto si separano con una virgola, es. 0,1"
-                    )
+                    HintText(UiStrings.MULTIPLE_INPUTS_HINT)
                 } else {
-                    ErrorText(
-                        "$sourceName ha già una transizione con ingresso " +
-                            "${repeated.joinToString(", ")}: la macchina non sarà deterministica"
-                    )
+                    ErrorText(UiStrings.repeatedInputs(sourceName, repeated.joinToString(", ")))
                 }
                 if (kind.hasTransitionOutputs) {
                     OutlinedTextField(
                         value = output,
                         onValueChange = { output = it },
-                        label = { Text("Uscita") },
-                        placeholder = { Text("es. 0") },
+                        label = { Text(UiStrings.OUTPUT) },
+                        placeholder = { Text(UiStrings.example("0")) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                     )
-                    HintText(
-                        "Nella macchina di Mealy l'uscita dipende dallo stato e dall'ingresso: " +
-                            "si scrive come ingresso/uscita."
-                    )
+                    HintText(UiStrings.MEALY_TRANSITION_OUTPUT_HINT)
                 }
             }
         },
@@ -194,7 +183,8 @@ fun TransitionTableDialog(
     onDismiss: () -> Unit,
 ) {
     val table = remember(diagram) { StateMachineAnalyzer.transitionTable(diagram) }
-    val issues = remember(diagram, kind) { StateMachineAnalyzer.issues(diagram, kind) }
+    val issues =
+        remember(diagram, kind, UiStrings.language) { StateMachineAnalyzer.issues(diagram, kind) }
     val names = remember(diagram) { diagram.states.associate { it.id to it.name } }
     val clipboardManager = LocalClipboardManager.current
     val hasStates = diagram.states.isNotEmpty()
@@ -220,28 +210,26 @@ fun TransitionTableDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Tabella di Transizione") },
+        title = { Text(UiStrings.TRANSITION_TABLE_TITLE) },
         text = {
             if (!hasStates) {
-                Text("Aggiungi almeno uno stato per costruire la tabella di transizione.")
+                Text(UiStrings.NO_STATES_FOR_TABLE)
             } else {
                 val cellHint =
-                    if (kind.hasTransitionOutputs) {
-                        "Ogni cella indica lo stato successivo e l'uscita (stato/uscita) per lo " +
-                            "stato della riga e l'ingresso della colonna."
-                    } else {
-                        "Ogni cella indica lo stato successivo per lo stato della riga e " +
-                            "l'ingresso della colonna; l'uscita dipende solo dallo stato."
-                    }
+                    if (kind.hasTransitionOutputs) UiStrings.MEALY_TABLE_HINT
+                    else UiStrings.MOORE_TABLE_HINT
                 val markHint =
-                    if (hasFinalStates) "Lo stato iniziale è segnato con →, quelli finali con *."
-                    else "Lo stato iniziale è segnato con →."
+                    if (hasFinalStates) UiStrings.INITIAL_AND_FINAL_MARKS_HINT
+                    else UiStrings.INITIAL_MARK_HINT
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     HintText("$cellHint $markHint")
                     TransitionTableContent(table, kind, ::stateLabel, ::cellText)
                     if (issues.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text("Da controllare:", style = MaterialTheme.typography.labelMedium)
+                            Text(
+                                "${UiStrings.TO_CHECK}:",
+                                style = MaterialTheme.typography.labelMedium,
+                            )
                             issues.forEach { ErrorText("• $it") }
                         }
                     }
@@ -255,9 +243,9 @@ fun TransitionTableDialog(
                     TextButton(
                         onClick = {
                             val header = buildList {
-                                add("Stato")
+                                add(UiStrings.STATE)
                                 addAll(table.symbols)
-                                if (kind.hasStateOutputs) add("Uscita")
+                                if (kind.hasStateOutputs) add(UiStrings.OUTPUT)
                             }
                             val rows =
                                 table.rows.map { (state, cells) ->
@@ -274,7 +262,7 @@ fun TransitionTableDialog(
                             clipboardManager.setText(AnnotatedString(text))
                         }
                     ) {
-                        Text("Copia")
+                        Text(UiStrings.COPY)
                     }
                 }
             } else null,
@@ -294,11 +282,11 @@ private fun TransitionTableContent(
     Box(modifier = Modifier.horizontalScroll(rememberScrollState())) {
         Column(modifier = Modifier.width(tableWidth)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TableCell("Stato", stateColumnWidth, isHeader = true)
+                TableCell(UiStrings.STATE, stateColumnWidth, isHeader = true)
                 TableSeparator()
                 table.symbols.forEach { TableCell(it, valueColumnWidth, isHeader = true) }
                 if (kind.hasStateOutputs) {
-                    TableCell("Uscita", valueColumnWidth, isHeader = true, isOutput = true)
+                    TableCell(UiStrings.OUTPUT, valueColumnWidth, isHeader = true, isOutput = true)
                 }
             }
             Divider()
@@ -342,35 +330,40 @@ fun StateMachineSimulationDialog(
 ) {
     val inputs =
         remember(diagram, sequence) { StateMachineAnalyzer.parseInputSequence(diagram, sequence) }
-    val run = remember(diagram, kind, inputs) { StateMachineAnalyzer.run(diagram, kind, inputs) }
+    val run =
+        remember(diagram, kind, inputs, UiStrings.language) {
+            StateMachineAnalyzer.run(diagram, kind, inputs)
+        }
     val alphabet = remember(diagram) { StateMachineAnalyzer.inputAlphabet(diagram) }
     val example = sequenceExample(alphabet)
     val clipboardManager = LocalClipboardManager.current
     val rows = remember(run) { simulationRows(run, kind) }
     val headers =
-        if (kind.hasStateOutputs) listOf("t", "Stato", "Uscita", "Ingresso", "Stato successivo")
-        else listOf("t", "Stato", "Ingresso", "Uscita", "Stato successivo")
-    val outputIndex = headers.indexOf("Uscita")
+        if (kind.hasStateOutputs) {
+            listOf("t", UiStrings.STATE, UiStrings.OUTPUT, UiStrings.INPUT, UiStrings.NEXT_STATE)
+        } else {
+            listOf("t", UiStrings.STATE, UiStrings.INPUT, UiStrings.OUTPUT, UiStrings.NEXT_STATE)
+        }
+    val outputIndex = headers.indexOf(UiStrings.OUTPUT)
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Simula una Sequenza") },
+        title = { Text(UiStrings.SIMULATE_SEQUENCE_TITLE) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     OutlinedTextField(
                         value = sequence,
                         onValueChange = onSequenceChange,
-                        label = { Text("Sequenza di ingressi") },
-                        placeholder = { Text("es. $example") },
+                        label = { Text(UiStrings.INPUT_SEQUENCE) },
+                        placeholder = { Text(UiStrings.example(example)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                     )
                     HintText(
                         if (alphabet.isNotEmpty() && alphabet.all { it.length == 1 }) {
-                            "Scrivi i simboli uno dopo l'altro (es. $example); " +
-                                "spazi e virgole vengono ignorati."
+                            UiStrings.typeSymbolsHint(example)
                         } else {
-                            "Separa i simboli con spazi o virgole."
+                            UiStrings.SEPARATE_SYMBOLS_HINT
                         }
                     )
                 }
@@ -397,25 +390,21 @@ fun StateMachineSimulationDialog(
                         val outputs = run.outputs.joinToString(" ") { it.ifEmpty { "?" } }
                         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(
-                                "Sequenza di uscita: $outputs",
+                                "${UiStrings.OUTPUT_SEQUENCE}: $outputs",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
                             )
                             val reached = run.reachedState?.name.orEmpty()
                             Text(
-                                "Stato raggiunto: $reached",
+                                "${UiStrings.REACHED_STATE}: $reached",
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                             run.isAccepted?.let { isAccepted ->
                                 Text(
                                     when {
-                                        isAccepted ->
-                                            "Sequenza accettata: $reached è uno stato finale"
-                                        run.error != null ->
-                                            "Sequenza rifiutata: la macchina si ferma prima " +
-                                                "della fine"
-                                        else ->
-                                            "Sequenza rifiutata: $reached non è uno stato finale"
+                                        isAccepted -> UiStrings.sequenceAccepted(reached)
+                                        run.error != null -> UiStrings.SEQUENCE_STOPPED
+                                        else -> UiStrings.sequenceRejected(reached)
                                     },
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.SemiBold,
@@ -442,16 +431,17 @@ fun StateMachineSimulationDialog(
                                         it.joinToString("\t")
                                     }
                                 )
-                                append("\n\nSequenza di uscita\t")
+                                append("\n\n${UiStrings.OUTPUT_SEQUENCE}\t")
                                 append(run.outputs.joinToString(" "))
                                 run.isAccepted?.let {
-                                    append(if (it) "\nEsito\taccettata" else "\nEsito\trifiutata")
+                                    append("\n${UiStrings.OUTCOME}\t")
+                                    append(if (it) UiStrings.ACCEPTED else UiStrings.REJECTED)
                                 }
                             }
                             clipboardManager.setText(AnnotatedString(text))
                         }
                     ) {
-                        Text("Copia")
+                        Text(UiStrings.COPY)
                     }
                 }
             } else null,

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.DiagramEditorState
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.shortcutLabel
@@ -95,20 +96,20 @@ fun DiagramToolbar(
                 ) {
                     ToolbarToggleButton(
                         icon = Icons.Default.NearMe,
-                        label = "Seleziona e Sposta (Esc)",
+                        label = "${UiStrings.SELECT_AND_MOVE} (Esc)",
                         checked = state.isSelectTool,
                         onClick = state::resetToolMode,
                     )
                     ToolbarVerticalDivider()
                     ToolbarIconButton(
                         icon = Icons.Default.Undo,
-                        label = "Annulla (${shortcutLabel("Z")})",
+                        label = "${UiStrings.UNDO} (${shortcutLabel("Z")})",
                         onClick = onUndo,
                         enabled = state.canUndo(),
                     )
                     ToolbarIconButton(
                         icon = Icons.Default.Redo,
-                        label = "Ripristina (${shortcutLabel("Y")})",
+                        label = "${UiStrings.REDO} (${shortcutLabel("Y")})",
                         onClick = onRedo,
                         enabled = state.canRedo(),
                     )
@@ -117,12 +118,13 @@ fun DiagramToolbar(
                     ToolbarVerticalDivider()
                     ToolbarIconButton(
                         icon = Icons.Default.Save,
-                        label = "Salva (${shortcutLabel("S")})",
+                        label = "${UiStrings.SAVE} (${shortcutLabel("S")})",
                         onClick = onSaveDiagram,
                     )
                     ToolbarIconButton(
                         icon = Icons.Default.Delete,
-                        label = "Elimina Elemento Selezionato (${if (isMacOS) "⌫" else "Canc"})",
+                        label =
+                            "${UiStrings.DELETE_SELECTED} (${if (isMacOS) "⌫" else UiStrings.DELETE_KEY})",
                         onClick = onDeleteSelected,
                         enabled = hasSelection,
                         tint = MaterialTheme.colorScheme.error,

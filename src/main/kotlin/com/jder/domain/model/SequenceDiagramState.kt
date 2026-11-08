@@ -3,10 +3,10 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
-class SequenceDiagramState :
-    DiagramEditorState<SequenceDiagram>({ SequenceDiagram(name = "Nuovo Diagramma di Sequenza") }) {
+class SequenceDiagramState : DiagramEditorState<SequenceDiagram>({ SequenceDiagram(name = "") }) {
     var selectedLifelineId by mutableStateOf<String?>(null)
         private set
 
@@ -23,7 +23,7 @@ class SequenceDiagramState :
     var pendingMessageSource by mutableStateOf<SequenceAnchor?>(null)
 
     override val diagramName: String
-        get() = diagram.name
+        get() = diagram.name.ifEmpty { UiStrings.NEW_SEQUENCE_DIAGRAM }
 
     override val isEmpty: Boolean
         get() =
@@ -66,19 +66,19 @@ class SequenceDiagramState :
     override fun deleteSelection(): String? {
         selectedLifelineId?.let {
             deleteLifeline(it)
-            return "Linea di vita eliminata"
+            return UiStrings.LIFELINE_DELETED
         }
         selectedMessageId?.let {
             deleteMessage(it)
-            return "Messaggio eliminato"
+            return UiStrings.MESSAGE_DELETED
         }
         selectedFragmentId?.let {
             deleteFragment(it)
-            return "Frammento eliminato"
+            return UiStrings.FRAGMENT_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return "Nota eliminata"
+            return UiStrings.NOTE_DELETED
         }
         return null
     }

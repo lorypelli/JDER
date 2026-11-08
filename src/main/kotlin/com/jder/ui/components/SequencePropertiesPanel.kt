@@ -66,11 +66,13 @@ private fun LifelinePropertiesContent(
     diagram: SequenceDiagram,
     onEdit: () -> Unit,
 ) {
-    PropertyCard("Linea di Vita: ${lifeline.name}") {
-        PropertyDetail("Tipo: ${lifeline.type.display}")
-        PropertyDetail("Messaggi inviati: ${diagram.messages.count { it.sourceId == lifeline.id }}")
+    PropertyCard("${UiStrings.LIFELINE}: ${lifeline.name}") {
+        PropertyDetail("${UiStrings.TYPE}: ${lifeline.type.display}")
         PropertyDetail(
-            "Messaggi ricevuti: ${diagram.messages.count { it.targetId == lifeline.id }}"
+            "${UiStrings.MESSAGES_SENT}: ${diagram.messages.count { it.sourceId == lifeline.id }}"
+        )
+        PropertyDetail(
+            "${UiStrings.MESSAGES_RECEIVED}: ${diagram.messages.count { it.targetId == lifeline.id }}"
         )
     }
     Spacer(Modifier.height(8.dp))
@@ -86,15 +88,17 @@ private fun MessagePropertiesContent(
     onEdit: () -> Unit,
     onReverse: () -> Unit,
 ) {
-    PropertyCard(if (message.label.isBlank()) "Messaggio" else "Messaggio: ${message.label}") {
-        PropertyDetail("Tipo: ${message.type.display}")
-        PropertyDetail("Da: $sourceName")
-        PropertyDetail("A: $targetName")
+    PropertyCard(
+        if (message.label.isBlank()) UiStrings.MESSAGE else "${UiStrings.MESSAGE}: ${message.label}"
+    ) {
+        PropertyDetail("${UiStrings.TYPE}: ${message.type.display}")
+        PropertyDetail("${UiStrings.FROM}: $sourceName")
+        PropertyDetail("${UiStrings.TO}: $targetName")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
-        "Inverti Direzione",
+        UiStrings.REVERSE_DIRECTION,
         Icons.Default.SwapHoriz,
         onReverse,
         enabled = !message.isSelfMessage,
@@ -103,16 +107,23 @@ private fun MessagePropertiesContent(
 
 @Composable
 private fun FragmentPropertiesContent(fragment: SequenceFragment, onEdit: () -> Unit) {
-    PropertyCard("Frammento: ${fragment.type.keyword}") {
-        PropertyDetail("Tipo: ${fragment.type.display}")
+    PropertyCard("${UiStrings.FRAGMENT}: ${fragment.type.keyword}") {
+        PropertyDetail("${UiStrings.TYPE}: ${fragment.type.display}")
         if (fragment.condition.isNotBlank()) {
             PropertyDetail(
-                if (fragment.type == SequenceFragmentType.REF) "Interazione: ${fragment.condition}"
-                else "Condizione: [${fragment.condition}]"
+                if (fragment.type == SequenceFragmentType.REF) {
+                    "${UiStrings.INTERACTION}: ${fragment.condition}"
+                } else {
+                    "${UiStrings.CONDITION}: [${fragment.condition}]"
+                }
             )
         }
-        if (fragment.type.hasOperands) PropertyDetail("Operandi: ${fragment.operands.size + 1}")
-        PropertyDetail("Dimensioni: ${fragment.width.toInt()} × ${fragment.height.toInt()} px")
+        if (fragment.type.hasOperands) {
+            PropertyDetail("${UiStrings.OPERANDS}: ${fragment.operands.size + 1}")
+        }
+        PropertyDetail(
+            "${UiStrings.SIZE}: ${fragment.width.toInt()} × ${fragment.height.toInt()} px"
+        )
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)

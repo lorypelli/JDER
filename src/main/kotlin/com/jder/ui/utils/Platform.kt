@@ -3,6 +3,7 @@ package com.jder.ui.utils
 import androidx.compose.ui.platform.UriHandler
 import com.jder.ui.components.Toasts
 import com.jder.ui.components.logError
+import com.jder.ui.strings.UiStrings
 import java.awt.Taskbar
 import javax.imageio.ImageIO
 
@@ -17,7 +18,7 @@ fun setDockIcon(resourcePath: String) {
     try {
         Taskbar.getTaskbar().iconImage = ImageIO.read(ClassLoader.getSystemResource(resourcePath))
     } catch (e: Exception) {
-        logError("Impossibile impostare l'icona nel Dock", e)
+        logError(UiStrings.DOCK_ICON_FAILED, e)
     }
 }
 
@@ -25,6 +26,6 @@ fun UriHandler.openSafely(url: String) {
     try {
         openUri(url)
     } catch (e: Exception) {
-        Toasts.error("Impossibile aprire $url", e)
+        Toasts.error(UiStrings.cannotOpen(url), e)
     }
 }

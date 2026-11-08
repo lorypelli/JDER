@@ -72,9 +72,9 @@ fun LogicComponentPropertiesDialog(
         title = {
             Text(
                 when (component.type) {
-                    LogicComponentType.INPUT -> "Proprietà Ingresso"
-                    LogicComponentType.OUTPUT -> "Proprietà Uscita"
-                    else -> "Proprietà Porta Logica"
+                    LogicComponentType.INPUT -> UiStrings.INPUT_PROPERTIES
+                    LogicComponentType.OUTPUT -> UiStrings.OUTPUT_PROPERTIES
+                    else -> UiStrings.GATE_PROPERTIES
                 }
             )
         },
@@ -83,13 +83,13 @@ fun LogicComponentPropertiesDialog(
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text("Etichetta") },
-                    placeholder = { if (component.type.isGate) Text("Opzionale, es. U1") },
+                    label = { Text(UiStrings.LABEL) },
+                    placeholder = { if (component.type.isGate) Text(UiStrings.GATE_LABEL_EXAMPLE) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 if (component.type.isGate) {
-                    Text("Tipo di porta:", style = MaterialTheme.typography.labelMedium)
+                    Text("${UiStrings.GATE_TYPE}:", style = MaterialTheme.typography.labelMedium)
                     LogicComponentType.gates.chunked(4).forEach { row ->
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             row.forEach { gate ->
@@ -114,7 +114,7 @@ fun LogicComponentPropertiesDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Text("Numero di ingressi", style = MaterialTheme.typography.bodyMedium)
+                            Text(UiStrings.INPUT_COUNT, style = MaterialTheme.typography.bodyMedium)
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 IconButton(
                                     onClick = { inputCount-- },
@@ -122,7 +122,7 @@ fun LogicComponentPropertiesDialog(
                                 ) {
                                     Icon(
                                         Icons.Default.Remove,
-                                        contentDescription = "Rimuovi ingresso",
+                                        contentDescription = UiStrings.REMOVE_INPUT,
                                     )
                                 }
                                 Text("$inputCount", style = MaterialTheme.typography.titleMedium)
@@ -132,7 +132,7 @@ fun LogicComponentPropertiesDialog(
                                 ) {
                                     Icon(
                                         Icons.Default.Add,
-                                        contentDescription = "Aggiungi ingresso",
+                                        contentDescription = UiStrings.ADD_INPUT,
                                     )
                                 }
                             }
@@ -146,7 +146,7 @@ fun LogicComponentPropertiesDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            "Valore: ${if (value) "1" else "0"}",
+                            "${UiStrings.VALUE}: ${if (value) "1" else "0"}",
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Switch(checked = value, onCheckedChange = { value = it })
@@ -208,18 +208,17 @@ fun TruthTableDialog(diagram: LogicDiagram, onDismiss: () -> Unit) {
     val hasRows = table != null && table.outputs.isNotEmpty()
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Tabella di verità") },
+        title = { Text(UiStrings.TRUTH_TABLE) },
         text = {
             when {
                 table == null ->
                     Text(
-                        "Il circuito ha $inputCount ingressi: la tabella di verità ne supporta al " +
-                            "massimo ${LogicSimulator.MAX_TRUTH_TABLE_INPUTS}."
+                        UiStrings.tooManyTruthTableInputs(
+                            inputCount,
+                            LogicSimulator.MAX_TRUTH_TABLE_INPUTS,
+                        )
                     )
-                table.outputs.isEmpty() ->
-                    Text(
-                        "Aggiungi almeno un'uscita al circuito per calcolare la tabella di verità."
-                    )
+                table.outputs.isEmpty() -> Text(UiStrings.TRUTH_TABLE_NEEDS_OUTPUT)
                 else -> TruthTableContent(table, diagram)
             }
         },
@@ -234,7 +233,7 @@ fun TruthTableDialog(diagram: LogicDiagram, onDismiss: () -> Unit) {
                             }
                         }
                     ) {
-                        Text("Copia")
+                        Text(UiStrings.COPY)
                     }
                 }
             } else null,
@@ -280,7 +279,7 @@ private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
             }
         }
         val expressions =
-            remember(diagram) {
+            remember(diagram, UiStrings.language) {
                 table.outputs.mapNotNull { output ->
                     LogicSimulator.expression(diagram, output.id)?.let {
                         "${columnName(output)} = $it"
@@ -289,7 +288,7 @@ private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
             }
         if (expressions.isNotEmpty()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("Espressioni:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.EXPRESSIONS}:", style = MaterialTheme.typography.labelMedium)
                 expressions.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
             }
         }

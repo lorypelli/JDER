@@ -82,19 +82,19 @@ private fun findElementName(id: String, state: UseCaseDiagramState): String {
         ?.let {
             return it.name
         }
-    return "Elemento sconosciuto"
+    return UiStrings.UNKNOWN_ELEMENT
 }
 
 @Composable
 private fun ActorPropertiesContent(actor: Actor, onEdit: () -> Unit) {
-    PropertyCard("Attore: ${actor.name}")
+    PropertyCard("${UiStrings.ACTOR}: ${actor.name}")
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }
 
 @Composable
 private fun UseCasePropertiesContent(useCase: UseCase, onEdit: () -> Unit) {
-    PropertyCard("Caso d'Uso: ${useCase.name}")
+    PropertyCard("${UiStrings.USE_CASE}: ${useCase.name}")
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     DocumentationCard(useCase.documentation)
@@ -108,9 +108,9 @@ private fun RelationPropertiesContent(
     onEdit: () -> Unit,
 ) {
     PropertyCard(UiStrings.RELATION) {
-        PropertyDetail("Tipo: ${relation.type.display}")
-        PropertyDetail("Da: $sourceName")
-        PropertyDetail("A: $targetName")
+        PropertyDetail("${UiStrings.TYPE}: ${relation.type.display}")
+        PropertyDetail("${UiStrings.FROM}: $sourceName")
+        PropertyDetail("${UiStrings.TO}: $targetName")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
@@ -118,8 +118,10 @@ private fun RelationPropertiesContent(
 
 @Composable
 private fun SystemBoundaryPropertiesContent(boundary: SystemBoundary, onEdit: () -> Unit) {
-    PropertyCard("Sistema: ${boundary.name}") {
-        PropertyDetail("Dimensioni: ${boundary.width.toInt()} × ${boundary.height.toInt()} px")
+    PropertyCard("${UiStrings.SYSTEM}: ${boundary.name}") {
+        PropertyDetail(
+            "${UiStrings.SIZE}: ${boundary.width.toInt()} × ${boundary.height.toInt()} px"
+        )
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)

@@ -3,12 +3,10 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
-class UseCaseDiagramState :
-    DiagramEditorState<UseCaseDiagram>({
-        UseCaseDiagram(name = "Nuovo Diagramma dei Casi d'Uso")
-    }) {
+class UseCaseDiagramState : DiagramEditorState<UseCaseDiagram>({ UseCaseDiagram(name = "") }) {
     var selectedActorId by mutableStateOf<String?>(null)
         private set
 
@@ -28,7 +26,7 @@ class UseCaseDiagramState :
     var pendingRelationSourceId by mutableStateOf<String?>(null)
 
     override val diagramName: String
-        get() = diagram.name
+        get() = diagram.name.ifEmpty { UiStrings.NEW_USE_CASE_DIAGRAM }
 
     override val isEmpty: Boolean
         get() =
@@ -75,23 +73,23 @@ class UseCaseDiagramState :
     override fun deleteSelection(): String? {
         selectedActorId?.let {
             deleteActor(it)
-            return "Attore eliminato"
+            return UiStrings.ACTOR_DELETED
         }
         selectedUseCaseId?.let {
             deleteUseCase(it)
-            return "Caso d'uso eliminato"
+            return UiStrings.USE_CASE_DELETED
         }
         selectedRelationId?.let {
             deleteRelation(it)
-            return "Relazione eliminata"
+            return UiStrings.RELATION_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return "Nota eliminata"
+            return UiStrings.NOTE_DELETED
         }
         selectedSystemBoundaryId?.let {
             deleteSystemBoundary(it)
-            return "Sistema eliminato"
+            return UiStrings.SYSTEM_DELETED
         }
         return null
     }

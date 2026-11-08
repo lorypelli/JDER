@@ -111,13 +111,14 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 
 - Sistema di design **Material 3** in tutta l'applicazione
 - **Modalità Chiara & Scura** con transizione animata fluida
+- **Interfaccia in italiano e in inglese** — al primo avvio JDER usa la lingua del sistema (l'inglese se non è l'italiano); si cambia al volo dal globo accanto alla palette o da Vista → Lingua, e la scelta viene ricordata
 - **20 palette di colori Material ufficiali** selezionabili a runtime:
   - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero
 - **Scelta del tipo di diagramma** all'avvio, con l'anteprima di ogni tipo in versione chiara o scura secondo il tema (clic sull'anteprima oppure `Ctrl` + `1` … `8`)
 - **Navigazione a schede** tra gli otto tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
 - **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
 - **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
-- **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows e Linux sta in cima alla finestra e segue il tema dell'app
+- **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette, la lingua e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows e Linux sta in cima alla finestra e segue il tema dell'app
 - **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, schema logico o diagramma delle classi, dei casi d'uso, di sequenza o logico, oppure una nuova macchina di Mealy o di Moore
 - **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
 - **Messaggi colorati** in basso nella finestra: verdi per le conferme, gialli per gli avvisi e rossi per gli errori; si chiudono da soli (rispettivamente dopo 4, 8 e 12 secondi) o con ✕ e, avviando JDER da terminale, avvisi ed errori vengono scritti anche lì
@@ -310,6 +311,7 @@ src/
     │       ├── components/            # Lavagne, disegno, gesti, barre strumenti, pannelli
     │       ├── dialogs/               # Finestre di dialogo per proprietà e creazione
     │       ├── screens/               # AppScreen, DiagramEditorScaffold e una schermata per diagramma
+    │       ├── strings/               # Testi dell'interfaccia in italiano e in inglese, lingua scelta
     │       ├── theme/                 # Tema, Palette Colori, StatoTema
     │       └── utils/                 # Esportazione PNG e utilità di piattaforma
     └── resources/

@@ -1,21 +1,40 @@
 package com.jder.domain.model
 
+import com.jder.ui.strings.UiStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class ClassEntityType(val stereotype: String, val display: String) {
-    CLASS("", "Classe"),
-    INTERFACE("<<interface>>", "Interfaccia"),
-    ENUM("<<enum>>", "Enumerazione"),
-    ABSTRACT_CLASS("<<abstract>>", "Classe astratta"),
+enum class ClassEntityType(val stereotype: String) {
+    CLASS(""),
+    INTERFACE("<<interface>>"),
+    ENUM("<<enum>>"),
+    ABSTRACT_CLASS("<<abstract>>");
+
+    val display: String
+        get() =
+            when (this) {
+                CLASS -> UiStrings.CLASS
+                INTERFACE -> UiStrings.INTERFACE
+                ENUM -> UiStrings.ENUMERATION
+                ABSTRACT_CLASS -> UiStrings.ABSTRACT_CLASS
+            }
 }
 
 @Serializable
-enum class Visibility(val symbol: String, val display: String) {
-    PUBLIC("+", "Pubblico"),
-    PRIVATE("-", "Privato"),
-    PROTECTED("#", "Protetto"),
-    PACKAGE("~", "Package"),
+enum class Visibility(val symbol: String) {
+    PUBLIC("+"),
+    PRIVATE("-"),
+    PROTECTED("#"),
+    PACKAGE("~");
+
+    val display: String
+        get() =
+            when (this) {
+                PUBLIC -> UiStrings.PUBLIC
+                PRIVATE -> UiStrings.PRIVATE
+                PROTECTED -> UiStrings.PROTECTED
+                PACKAGE -> "Package"
+            }
 }
 
 @Serializable
@@ -29,13 +48,24 @@ data class ClassMember(
 )
 
 @Serializable
-enum class ClassRelationType(val display: String) {
-    ASSOCIATION("Associazione"),
-    AGGREGATION("Aggregazione"),
-    COMPOSITION("Composizione"),
-    INHERITANCE("Ereditarietà"),
-    REALIZATION("Realizzazione"),
-    DEPENDENCY("Dipendenza"),
+enum class ClassRelationType {
+    ASSOCIATION,
+    AGGREGATION,
+    COMPOSITION,
+    INHERITANCE,
+    REALIZATION,
+    DEPENDENCY;
+
+    val display: String
+        get() =
+            when (this) {
+                ASSOCIATION -> UiStrings.ASSOCIATION
+                AGGREGATION -> UiStrings.AGGREGATION
+                COMPOSITION -> UiStrings.COMPOSITION
+                INHERITANCE -> UiStrings.INHERITANCE
+                REALIZATION -> UiStrings.REALIZATION
+                DEPENDENCY -> UiStrings.DEPENDENCY
+            }
 }
 
 @Serializable

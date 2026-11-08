@@ -25,16 +25,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
         },
         title = { Text("JDER") },
         text = {
-            Text(
-                "Java Diagrammi E/R\n\n" +
-                    "Editor di diagrammi Entità-Relazione, schemi logici, diagrammi delle " +
-                    "Classi, dei Casi d'Uso, di Sequenza, Logici e macchine a stati finiti " +
-                    "di Mealy e di Moore.\n\n" +
-                    "Riscrittura completa in Kotlin e Compose del software originale creato da " +
-                    "Alessandro Ballini e successivamente mantenuto da Gianvito Pio.\n\n" +
-                    "Licenza MIT",
-                textAlign = TextAlign.Center,
-            )
+            Text("Java Diagrammi E/R\n\n${UiStrings.ABOUT_TEXT}", textAlign = TextAlign.Center)
         },
         confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
     )

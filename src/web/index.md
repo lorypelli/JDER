@@ -54,7 +54,7 @@ Crea macchine a stati finiti in cui l'uscita dipende solo dallo stato: ogni stat
 
 ### Interfaccia Moderna
 
-Design Material 3 pulito e intuitivo con supporto tema chiaro/scuro e 20 palette di colori selezionabili.
+Design Material 3 pulito e intuitivo con supporto tema chiaro/scuro, 20 palette di colori selezionabili e interfaccia in italiano o in inglese.
 
 ### Esportazione Multipla
 

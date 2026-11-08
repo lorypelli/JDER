@@ -1,5 +1,6 @@
 package com.jder.domain.model
 
+import com.jder.ui.strings.UiStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,11 +25,20 @@ data class UseCase(
 )
 
 @Serializable
-enum class UseCaseRelationType(val display: String) {
-    ASSOCIATION("Associazione"),
-    INCLUDE("<<include>>"),
-    EXTEND("<<extend>>"),
-    GENERALIZATION("Generalizzazione"),
+enum class UseCaseRelationType {
+    ASSOCIATION,
+    INCLUDE,
+    EXTEND,
+    GENERALIZATION;
+
+    val display: String
+        get() =
+            when (this) {
+                ASSOCIATION -> UiStrings.ASSOCIATION
+                INCLUDE -> "<<include>>"
+                EXTEND -> "<<extend>>"
+                GENERALIZATION -> UiStrings.GENERALIZATION
+            }
 }
 
 @Serializable

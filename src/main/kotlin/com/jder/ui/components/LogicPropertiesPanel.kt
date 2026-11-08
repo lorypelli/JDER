@@ -36,9 +36,9 @@ import com.jder.ui.strings.UiStrings
 
 fun logicValueLabel(value: Boolean?): String =
     when (value) {
-        true -> "1 (alto)"
-        false -> "0 (basso)"
-        null -> "indefinito"
+        true -> UiStrings.HIGH_VALUE
+        false -> UiStrings.LOW_VALUE
+        null -> UiStrings.UNDEFINED_VALUE
     }
 
 @Composable
@@ -77,9 +77,9 @@ private fun LogicComponentContent(
     val type = component.type
     val kind =
         when (type) {
-            LogicComponentType.INPUT -> "ingresso"
-            LogicComponentType.OUTPUT -> "uscita"
-            else -> "porta logica ${type.display}"
+            LogicComponentType.INPUT -> UiStrings.INPUT_KIND
+            LogicComponentType.OUTPUT -> UiStrings.OUTPUT_KIND
+            else -> UiStrings.logicGateKind(type.display)
         }
     val value =
         when (type) {
@@ -87,17 +87,18 @@ private fun LogicComponentContent(
             LogicComponentType.OUTPUT -> state.simulation.inputOf(component.id, 0)
             else -> state.simulation.outputOf(component.id)
         }
-    val valueLabel = if (type == LogicComponentType.INPUT) "Valore" else "Valore attuale"
-    PropertyCard("Componente: ${component.displayName}") {
-        PropertyDetail("Tipo: $kind")
-        if (type.isGate) PropertyDetail("Ingressi: ${component.inputPinCount}")
+    val valueLabel =
+        if (type == LogicComponentType.INPUT) UiStrings.VALUE else UiStrings.CURRENT_VALUE
+    PropertyCard("${UiStrings.COMPONENT}: ${component.displayName}") {
+        PropertyDetail("${UiStrings.TYPE}: $kind")
+        if (type.isGate) PropertyDetail("${UiStrings.INPUTS}: ${component.inputPinCount}")
         PropertyDetail("$valueLabel: ${logicValueLabel(value)}", isEmphasized = true)
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     if (type == LogicComponentType.INPUT) {
         PropertyOutlinedButton(
-            "Commuta Valore",
+            UiStrings.TOGGLE_VALUE,
             Icons.Default.ToggleOn,
             { state.toggleInput(component.id) },
         )
@@ -108,20 +109,20 @@ private fun LogicComponentContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("Numero di ingressi", style = MaterialTheme.typography.bodyMedium)
+            Text(UiStrings.INPUT_COUNT, style = MaterialTheme.typography.bodyMedium)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
                     onClick = { state.setInputCount(component.id, component.inputPinCount - 1) },
                     enabled = component.inputPinCount > MIN_GATE_INPUTS,
                 ) {
-                    Icon(Icons.Default.Remove, contentDescription = "Rimuovi ingresso")
+                    Icon(Icons.Default.Remove, contentDescription = UiStrings.REMOVE_INPUT)
                 }
                 Text("${component.inputPinCount}", style = MaterialTheme.typography.titleMedium)
                 IconButton(
                     onClick = { state.setInputCount(component.id, component.inputPinCount + 1) },
                     enabled = component.inputPinCount < MAX_GATE_INPUTS,
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Aggiungi ingresso")
+                    Icon(Icons.Default.Add, contentDescription = UiStrings.ADD_INPUT)
                 }
             }
         }
@@ -133,7 +134,7 @@ private fun LogicComponentContent(
             }
         expression?.let {
             PropertyDetailCard(
-                "Espressione booleana:",
+                "${UiStrings.BOOLEAN_EXPRESSION}:",
                 if (type == LogicComponentType.OUTPUT) "${component.label.ifBlank { "Y" }} = $it"
                 else it,
             )
@@ -145,18 +146,20 @@ private fun LogicComponentContent(
 private fun LogicWireContent(wire: LogicWire, state: LogicDiagramState) {
     val source = state.component(wire.sourceId)
     val target = state.component(wire.targetId)
-    val pin = if ((target?.inputPinCount ?: 0) > 1) " (ingresso ${wire.targetPin + 1})" else ""
-    PropertyCard("Collegamento") {
-        PropertyDetail("Da: ${source?.displayName ?: "?"}")
-        PropertyDetail("A: ${target?.displayName ?: "?"}$pin")
+    val pin =
+        if ((target?.inputPinCount ?: 0) > 1) " (${UiStrings.inputNumber(wire.targetPin + 1)})"
+        else ""
+    PropertyCard(UiStrings.WIRE) {
+        PropertyDetail("${UiStrings.FROM}: ${source?.displayName ?: "?"}")
+        PropertyDetail("${UiStrings.TO}: ${target?.displayName ?: "?"}$pin")
         PropertyDetail(
-            "Valore: ${logicValueLabel(state.simulation.outputOf(wire.sourceId))}",
+            "${UiStrings.VALUE}: ${logicValueLabel(state.simulation.outputOf(wire.sourceId))}",
             isEmphasized = true,
         )
     }
     Spacer(Modifier.height(8.dp))
     PropertyOutlinedButton(
-        "Elimina Collegamento",
+        UiStrings.DELETE_WIRE,
         Icons.Default.Delete,
         { state.deleteWire(wire.id) },
         isDestructive = true,

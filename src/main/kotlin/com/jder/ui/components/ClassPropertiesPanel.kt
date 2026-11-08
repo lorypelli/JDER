@@ -74,16 +74,18 @@ private fun ClassEntityPropertiesContent(
     onEditMember: (ClassMember) -> Unit,
     onDeleteMember: (memberId: String) -> Unit,
 ) {
-    PropertyCard("Classe: ${entity.name}") {
-        PropertyDetail("Tipo: ${entity.type.display}")
-        if (entity.isAbstract) PropertyDetail("Astratta: sì")
+    PropertyCard("${UiStrings.CLASS}: ${entity.name}") {
+        PropertyDetail("${UiStrings.TYPE}: ${entity.type.display}")
+        if (entity.isAbstract) {
+            PropertyDetail("${UiStrings.CLASS_ABSTRACT}: ${UiStrings.yesNo(true)}")
+        }
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
     PropertyOutlinedButton(UiStrings.ADD_METHOD, Icons.Default.Add, onAddMethod)
-    MemberList("Attributi:", entity.attributes, onEditMember, onDeleteMember)
-    MemberList("Metodi:", entity.methods, onEditMember, onDeleteMember)
+    MemberList("${UiStrings.ATTRIBUTES}:", entity.attributes, onEditMember, onDeleteMember)
+    MemberList("${UiStrings.METHODS}:", entity.methods, onEditMember, onDeleteMember)
     DocumentationCard(entity.documentation)
 }
 
@@ -100,9 +102,9 @@ private fun MemberList(
         PropertyItemCard(
             title = "${it.visibility.symbol} ${it.name}",
             subtitle = memberDetails(it),
-            deleteDescription = "Elimina membro",
+            deleteDescription = UiStrings.DELETE_MEMBER,
             onDelete = { onDelete(it.id) },
-            editDescription = "Modifica membro",
+            editDescription = UiStrings.EDIT_MEMBER,
             onEdit = { onEdit(it) },
         )
     }
@@ -125,16 +127,16 @@ private fun ClassRelationPropertiesContent(
     val sourceName = state.diagram.classes.find { it.id == relation.sourceId }?.name ?: "?"
     val targetName = state.diagram.classes.find { it.id == relation.targetId }?.name ?: "?"
     PropertyCard(UiStrings.RELATION) {
-        PropertyDetail("Tipo: ${relation.type.display}")
-        PropertyDetail("Da: $sourceName")
-        PropertyDetail("A: $targetName")
+        PropertyDetail("${UiStrings.TYPE}: ${relation.type.display}")
+        PropertyDetail("${UiStrings.FROM}: $sourceName")
+        PropertyDetail("${UiStrings.TO}: $targetName")
         if (relation.sourceMultiplicity.isNotEmpty()) {
-            PropertyDetail("Molteplicità sorgente: ${relation.sourceMultiplicity}")
+            PropertyDetail("${UiStrings.SOURCE_MULTIPLICITY}: ${relation.sourceMultiplicity}")
         }
         if (relation.targetMultiplicity.isNotEmpty()) {
-            PropertyDetail("Molteplicità destinazione: ${relation.targetMultiplicity}")
+            PropertyDetail("${UiStrings.TARGET_MULTIPLICITY}: ${relation.targetMultiplicity}")
         }
-        if (relation.label.isNotEmpty()) PropertyDetail("Etichetta: ${relation.label}")
+        if (relation.label.isNotEmpty()) PropertyDetail("${UiStrings.LABEL}: ${relation.label}")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)

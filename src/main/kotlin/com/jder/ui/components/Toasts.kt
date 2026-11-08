@@ -80,14 +80,14 @@ object Toasts {
     fun success(message: String) = show(message, ToastType.SUCCESS)
 
     fun warning(message: String) {
-        log("Attenzione", message)
+        log(UiStrings.WARNING, message)
         show(message, ToastType.WARNING)
     }
 
     fun warning(action: String, cause: Throwable) = warning("$action: ${cause.describe()}")
 
     fun error(message: String) {
-        log("Errore", message)
+        log(UiStrings.ERROR, message)
         show(message, ToastType.ERROR)
     }
 
@@ -98,7 +98,8 @@ object Toasts {
     }
 }
 
-fun logError(action: String, cause: Throwable) = log("Errore", "$action: ${cause.describe()}")
+fun logError(action: String, cause: Throwable) =
+    log(UiStrings.ERROR, "$action: ${cause.describe()}")
 
 fun Throwable.describe(): String =
     message?.lineSequence()?.firstOrNull { it.isNotBlank() }?.trim() ?: javaClass.simpleName

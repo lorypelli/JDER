@@ -89,9 +89,11 @@ private fun EntityPropertiesContent(
     onEditAttribute: (attribute: Attribute) -> Unit,
     onDeleteAttribute: (attributeId: String) -> Unit,
 ) {
-    PropertyCard("Entità: ${entity.name}") {
-        PropertyDetail("Tipo: ${if (entity.isWeak) "Debole" else "Forte"}")
-        PropertyDetail("Attributi: ${entity.attributes.size}")
+    PropertyCard("${UiStrings.ENTITY}: ${entity.name}") {
+        PropertyDetail(
+            "${UiStrings.TYPE}: ${if (entity.isWeak) UiStrings.WEAK else UiStrings.STRONG}"
+        )
+        PropertyDetail("${UiStrings.ATTRIBUTES}: ${entity.attributes.size}")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditEntity)
@@ -113,32 +115,32 @@ private fun RelationshipPropertiesContent(
     onDeleteConnection: (entityId: String) -> Unit,
     onConvertToAssociativeEntity: () -> Unit,
 ) {
-    PropertyCard("Relazione: ${relationship.name}") {
-        PropertyDetail("Connessioni: ${relationship.connections.size}")
-        PropertyDetail("Attributi: ${relationship.attributes.size}")
+    PropertyCard("${UiStrings.RELATION}: ${relationship.name}") {
+        PropertyDetail("${UiStrings.CONNECTIONS}: ${relationship.connections.size}")
+        PropertyDetail("${UiStrings.ATTRIBUTES}: ${relationship.attributes.size}")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditRelationship)
     PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
-    PropertyOutlinedButton("Aggiungi Connessione", Icons.Default.Link, onAddConnection)
+    PropertyOutlinedButton(UiStrings.ADD_CONNECTION, Icons.Default.Link, onAddConnection)
     PropertyOutlinedButton(
-        "Converti in Entità Associativa",
+        UiStrings.CONVERT_TO_ASSOCIATIVE_ENTITY,
         Icons.Default.AutoFixHigh,
         onConvertToAssociativeEntity,
         enabled = relationship.isManyToMany(),
     )
     AttributeList(relationship.attributes, onEditAttribute, onDeleteAttribute)
     if (relationship.connections.isNotEmpty()) {
-        PropertyListTitle("Connessioni:")
+        PropertyListTitle("${UiStrings.CONNECTIONS}:")
         relationship.connections.forEach {
             PropertyItemCard(
                 title =
                     entities.find { entity -> entity.id == it.entityId }?.name
-                        ?: "Entità sconosciuta",
-                subtitle = "Cardinalità: ${it.cardinality.display}",
-                editDescription = "Modifica connessione",
+                        ?: UiStrings.UNKNOWN_ENTITY,
+                subtitle = "${UiStrings.CARDINALITY}: ${it.cardinality.display}",
+                editDescription = UiStrings.EDIT_CONNECTION,
                 onEdit = { onEditConnection(it.entityId, it) },
-                deleteDescription = "Elimina connessione",
+                deleteDescription = UiStrings.DELETE_CONNECTION,
                 onDelete = { onDeleteConnection(it.entityId) },
             )
         }
@@ -153,15 +155,15 @@ private fun AttributeList(
     onDelete: (attributeId: String) -> Unit,
 ) {
     if (attributes.isEmpty()) return
-    PropertyListTitle("Attributi:")
+    PropertyListTitle("${UiStrings.ATTRIBUTES}:")
     attributes.forEach {
         PropertyItemCard(
             title = it.name,
             subtitle = it.type.display,
             isEmphasized = it.isPrimaryKey,
-            editDescription = "Modifica attributo",
+            editDescription = UiStrings.EDIT_ATTRIBUTE,
             onEdit = { onEdit(it) },
-            deleteDescription = "Elimina attributo",
+            deleteDescription = UiStrings.DELETE_ATTRIBUTE,
             onDelete = { onDelete(it.id) },
         )
     }

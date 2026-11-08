@@ -22,7 +22,7 @@ import com.jder.domain.model.label
 import com.jder.ui.strings.UiStrings
 
 fun finalStateActionLabel(isFinal: Boolean): String =
-    if (isFinal) "Rimuovi dagli Stati Finali" else "Imposta come Stato Finale"
+    if (isFinal) UiStrings.REMOVE_FROM_FINAL_STATES else UiStrings.SET_FINAL_STATE
 
 @Composable
 fun StateMachinePropertiesPanel(
@@ -62,18 +62,21 @@ private fun MachineStateContent(
     val isInitial = state.isInitial(machineState.id)
     val outgoing = state.diagram.transitions.filter { it.sourceId == machineState.id }
     val incoming = state.diagram.transitions.count { it.targetId == machineState.id }
-    PropertyCard("Stato: ${machineState.name}") {
+    PropertyCard("${UiStrings.STATE}: ${machineState.name}") {
         if (state.kind.hasStateOutputs) {
-            PropertyDetail("Uscita: ${machineState.output.ifBlank { "—" }}", isEmphasized = true)
+            PropertyDetail(
+                "${UiStrings.OUTPUT}: ${machineState.output.ifBlank { "—" }}",
+                isEmphasized = true,
+            )
         }
-        PropertyDetail("Iniziale: ${yesNo(isInitial)}")
-        PropertyDetail("Finale: ${yesNo(machineState.isFinal)}")
-        PropertyDetail("Transizioni uscenti: ${outgoing.size}, entranti: $incoming")
+        PropertyDetail("${UiStrings.INITIAL}: ${UiStrings.yesNo(isInitial)}")
+        PropertyDetail("${UiStrings.FINAL}: ${UiStrings.yesNo(machineState.isFinal)}")
+        PropertyDetail(UiStrings.transitionCounts(outgoing.size, incoming))
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
-        "Imposta come Stato Iniziale",
+        UiStrings.SET_INITIAL_STATE,
         CustomIcons.InitialState,
         { state.setInitialState(machineState.id) },
         enabled = !isInitial,
@@ -84,14 +87,14 @@ private fun MachineStateContent(
         { state.setFinalState(machineState.id, !machineState.isFinal) },
     )
     if (outgoing.isNotEmpty()) {
-        PropertyListTitle("Transizioni uscenti")
+        PropertyListTitle(UiStrings.OUTGOING_TRANSITIONS)
         outgoing.forEach { transition ->
             PropertyItemCard(
                 title = transition.label(state.kind),
-                subtitle = "verso ${stateName(state, transition.targetId)}",
-                deleteDescription = "Elimina transizione",
+                subtitle = UiStrings.towards(stateName(state, transition.targetId)),
+                deleteDescription = UiStrings.DELETE_TRANSITION,
                 onDelete = { state.deleteTransition(transition.id) },
-                editDescription = "Modifica transizione",
+                editDescription = UiStrings.EDIT_TRANSITION,
                 onEdit = { onEditTransition(transition.id) },
             )
         }
@@ -104,31 +107,35 @@ private fun MachineTransitionContent(
     state: StateMachineDiagramState,
     onEdit: (String) -> Unit,
 ) {
-    PropertyCard("Transizione") {
-        PropertyDetail("Da: ${stateName(state, transition.sourceId)}")
-        PropertyDetail("A: ${stateName(state, transition.targetId)}")
-        PropertyDetail("Ingresso: ${transition.input.ifBlank { "—" }}", isEmphasized = true)
+    PropertyCard(UiStrings.TRANSITION) {
+        PropertyDetail("${UiStrings.FROM}: ${stateName(state, transition.sourceId)}")
+        PropertyDetail("${UiStrings.TO}: ${stateName(state, transition.targetId)}")
+        PropertyDetail(
+            "${UiStrings.INPUT}: ${transition.input.ifBlank { "—" }}",
+            isEmphasized = true,
+        )
         if (state.kind.hasTransitionOutputs) {
-            PropertyDetail("Uscita: ${transition.output.ifBlank { "—" }}", isEmphasized = true)
+            PropertyDetail(
+                "${UiStrings.OUTPUT}: ${transition.output.ifBlank { "—" }}",
+                isEmphasized = true,
+            )
         }
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) { onEdit(transition.id) }
     PropertyOutlinedButton(
-        "Inverti Direzione",
+        UiStrings.REVERSE_DIRECTION,
         Icons.Default.SwapHoriz,
         { state.reverseTransition(transition.id) },
         enabled = !transition.isLoop,
     )
     PropertyOutlinedButton(
-        "Ripristina Forma",
+        UiStrings.RESET_SHAPE,
         Icons.Default.AutoFixHigh,
         { state.resetTransitionShape(transition.id) },
         enabled = transition.hasCustomShape,
     )
 }
 
-private fun yesNo(value: Boolean): String = if (value) "sì" else "no"
-
 private fun stateName(state: StateMachineDiagramState, stateId: String): String =
-    state.machineState(stateId)?.name ?: "Stato sconosciuto"
+    state.machineState(stateId)?.name ?: UiStrings.UNKNOWN_STATE

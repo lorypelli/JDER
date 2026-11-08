@@ -3,13 +3,14 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 private const val BINARY_OUTPUT = "0"
 private val binarySymbols = listOf("0", "1")
 
 class StateMachineDiagramState(val kind: StateMachineKind) :
-    DiagramEditorState<StateMachineDiagram>({ StateMachineDiagram(name = kind.defaultName) }) {
+    DiagramEditorState<StateMachineDiagram>({ StateMachineDiagram(name = "") }) {
     var selectedStateId by mutableStateOf<String?>(null)
         private set
 
@@ -24,7 +25,7 @@ class StateMachineDiagramState(val kind: StateMachineKind) :
     var simulationInput by mutableStateOf("")
 
     override val diagramName: String
-        get() = diagram.name
+        get() = diagram.name.ifEmpty { kind.defaultName }
 
     override val isEmpty: Boolean
         get() = diagram.states.isEmpty() && diagram.transitions.isEmpty() && diagram.notes.isEmpty()
@@ -55,15 +56,15 @@ class StateMachineDiagramState(val kind: StateMachineKind) :
     override fun deleteSelection(): String? {
         selectedStateId?.let {
             deleteState(it)
-            return "Stato eliminato"
+            return UiStrings.STATE_DELETED
         }
         selectedTransitionId?.let {
             deleteTransition(it)
-            return "Transizione eliminata"
+            return UiStrings.TRANSITION_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return "Nota eliminata"
+            return UiStrings.NOTE_DELETED
         }
         return null
     }

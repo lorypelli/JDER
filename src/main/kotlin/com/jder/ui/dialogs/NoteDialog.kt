@@ -26,13 +26,13 @@ fun NotePropertiesDialog(
     var text by remember(noteId) { mutableStateOf(noteText) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Nota") },
+        title = { Text(UiStrings.NOTE_PROPERTIES) },
         text = {
             Column {
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
-                    label = { Text("Testo") },
+                    label = { Text(UiStrings.NOTE_TEXT) },
                     modifier = Modifier.fillMaxWidth().height(200.dp),
                     maxLines = 10,
                 )

@@ -1,27 +1,40 @@
 package com.jder.domain.model
 
-enum class DiagramType(
-    val key: String,
-    val tabLabel: String,
-    val displayName: String,
-    val markerKeys: Set<String>,
-) {
-    ER("er", "Diagramma E/R", "un diagramma E/R", setOf("entities", "relationships")),
-    RELATIONAL("relational", "Schema Logico", "uno schema logico", setOf("tables")),
-    CLASS("class", "Diagramma Classi", "un diagramma delle classi", setOf("classes")),
-    USE_CASE(
-        "usecase",
-        "Casi d'Uso",
-        "un diagramma dei casi d'uso",
-        setOf("actors", "useCases", "systemBoundaries"),
-    ),
-    SEQUENCE(
-        "sequence",
-        "Diagramma Sequenza",
-        "un diagramma di sequenza",
-        setOf("lifelines", "messages"),
-    ),
-    LOGIC("logic", "Diagramma Logico", "un diagramma logico", setOf("components", "wires")),
-    MEALY("mealy", "Macchina di Mealy", "una macchina di Mealy", setOf("states", "transitions")),
-    MOORE("moore", "Macchina di Moore", "una macchina di Moore", setOf("states", "transitions")),
+import com.jder.ui.strings.UiStrings
+
+enum class DiagramType(val key: String, val markerKeys: Set<String>) {
+    ER("er", setOf("entities", "relationships")),
+    RELATIONAL("relational", setOf("tables")),
+    CLASS("class", setOf("classes")),
+    USE_CASE("usecase", setOf("actors", "useCases", "systemBoundaries")),
+    SEQUENCE("sequence", setOf("lifelines", "messages")),
+    LOGIC("logic", setOf("components", "wires")),
+    MEALY("mealy", setOf("states", "transitions")),
+    MOORE("moore", setOf("states", "transitions"));
+
+    val tabLabel: String
+        get() =
+            when (this) {
+                ER -> UiStrings.ER_DIAGRAM
+                RELATIONAL -> UiStrings.RELATIONAL_SCHEMA
+                CLASS -> UiStrings.CLASS_DIAGRAM
+                USE_CASE -> UiStrings.USE_CASE_DIAGRAM
+                SEQUENCE -> UiStrings.SEQUENCE_DIAGRAM
+                LOGIC -> UiStrings.LOGIC_DIAGRAM
+                MEALY -> UiStrings.MEALY_MACHINE
+                MOORE -> UiStrings.MOORE_MACHINE
+            }
+
+    val displayName: String
+        get() =
+            when (this) {
+                ER -> UiStrings.AN_ER_DIAGRAM
+                RELATIONAL -> UiStrings.A_RELATIONAL_SCHEMA
+                CLASS -> UiStrings.A_CLASS_DIAGRAM
+                USE_CASE -> UiStrings.A_USE_CASE_DIAGRAM
+                SEQUENCE -> UiStrings.A_SEQUENCE_DIAGRAM
+                LOGIC -> UiStrings.A_LOGIC_DIAGRAM
+                MEALY -> UiStrings.A_MEALY_MACHINE
+                MOORE -> UiStrings.A_MOORE_MACHINE
+            }
 }

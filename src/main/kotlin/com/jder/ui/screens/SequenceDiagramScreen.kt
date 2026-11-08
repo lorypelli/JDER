@@ -68,10 +68,10 @@ fun SequenceDiagramScreen(
         }
     fun actionsTitle(type: SequenceContextMenuType): String =
         when (type) {
-            SequenceContextMenuType.LIFELINE -> "Azioni Linea di Vita"
-            SequenceContextMenuType.MESSAGE -> "Azioni Messaggio"
-            SequenceContextMenuType.FRAGMENT -> "Azioni Frammento"
-            SequenceContextMenuType.NOTE -> "Azioni Nota"
+            SequenceContextMenuType.LIFELINE -> UiStrings.LIFELINE_ACTIONS
+            SequenceContextMenuType.MESSAGE -> UiStrings.MESSAGE_ACTIONS
+            SequenceContextMenuType.FRAGMENT -> UiStrings.FRAGMENT_ACTIONS
+            SequenceContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
         }
     fun actions(type: SequenceContextMenuType): List<ContextMenuItem> = buildList {
         add(
@@ -87,7 +87,7 @@ fun SequenceDiagramScreen(
             val message = state.message(state.selectedMessageId)
             add(
                 ContextMenuItem(
-                    "Inverti Direzione",
+                    UiStrings.REVERSE_DIRECTION,
                     Icons.Default.SwapHoriz,
                     enabled = message?.isSelfMessage == false,
                 ) {
@@ -101,44 +101,56 @@ fun SequenceDiagramScreen(
             }
         )
     }
-    fun lifelineTool(mode: SequenceToolMode, label: String, icon: ImageVector) =
-        DiagramTool.Mode(icon, "Crea $label", label, state.toolMode == mode) {
-            state.toolMode = mode
-        }
+    fun lifelineTool(mode: SequenceToolMode, tooltip: String, label: String, icon: ImageVector) =
+        DiagramTool.Mode(icon, tooltip, label, state.toolMode == mode) { state.toolMode = mode }
     DiagramEditorScaffold(
         state = state,
         repository = repository,
         themeState = themeState,
         renderImage = { renderSequenceDiagramToBitmap(state.diagram, it) },
-        emptyHint =
-            "Scegli Attore, Oggetto o un altro partecipante dalla barra degli strumenti e clicca " +
-                "sulla lavagna.\nPer creare un messaggio, scegli Messaggio e clicca prima sulla linea " +
-                "di vita mittente e poi sulla destinataria, oppure trascina da una linea all'altra.",
+        emptyHint = UiStrings.SEQUENCE_EMPTY_HINT,
         tools =
             listOf(
-                lifelineTool(SequenceToolMode.ACTOR, "Attore", Icons.Default.Person),
-                lifelineTool(SequenceToolMode.OBJECT, "Oggetto", CustomIcons.Lifeline),
+                lifelineTool(
+                    SequenceToolMode.ACTOR,
+                    UiStrings.CREATE_ACTOR,
+                    UiStrings.ACTOR,
+                    Icons.Default.Person,
+                ),
+                lifelineTool(
+                    SequenceToolMode.OBJECT,
+                    UiStrings.CREATE_OBJECT,
+                    UiStrings.OBJECT,
+                    CustomIcons.Lifeline,
+                ),
                 DiagramTool.Group(
-                    "Stereotipi",
+                    UiStrings.STEREOTYPES,
                     listOf(
                         lifelineTool(
                             SequenceToolMode.BOUNDARY,
+                            UiStrings.CREATE_BOUNDARY,
                             "Boundary",
                             CustomIcons.BoundaryLifeline,
                         ),
                         lifelineTool(
                             SequenceToolMode.CONTROL,
+                            UiStrings.CREATE_CONTROL,
                             "Control",
                             CustomIcons.ControlLifeline,
                         ),
-                        lifelineTool(SequenceToolMode.ENTITY, "Entity", CustomIcons.EntityLifeline),
+                        lifelineTool(
+                            SequenceToolMode.ENTITY,
+                            UiStrings.CREATE_ENTITY_LIFELINE,
+                            "Entity",
+                            CustomIcons.EntityLifeline,
+                        ),
                     ),
                 ),
                 DiagramTool.Divider,
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
-                    "Crea Messaggio",
-                    "Messaggio",
+                    UiStrings.CREATE_MESSAGE,
+                    UiStrings.MESSAGE,
                     state.toolMode == SequenceToolMode.MESSAGE,
                 ) {
                     state.toolMode = SequenceToolMode.MESSAGE
@@ -146,8 +158,8 @@ fun SequenceDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.Fragment,
-                    "Crea Frammento Combinato (alt, opt, loop...)",
-                    "Frammento",
+                    UiStrings.CREATE_FRAGMENT,
+                    UiStrings.FRAGMENT,
                     state.toolMode == SequenceToolMode.FRAGMENT,
                 ) {
                     state.toolMode = SequenceToolMode.FRAGMENT
@@ -207,7 +219,7 @@ fun SequenceDiagramScreen(
                         it.copy(name = newName, type = newType, documentation = newDoc)
                     }
                     showLifelineDialog = false
-                    Toasts.success("Linea di vita modificata")
+                    Toasts.success(UiStrings.LIFELINE_UPDATED)
                 },
             )
         }
@@ -220,7 +232,7 @@ fun SequenceDiagramScreen(
                 onConfirm = { newLabel, newType ->
                     state.updateMessage(message.id) { it.copy(label = newLabel, type = newType) }
                     showMessageDialog = false
-                    Toasts.success("Messaggio modificato")
+                    Toasts.success(UiStrings.MESSAGE_UPDATED)
                 },
             )
         }
@@ -241,7 +253,7 @@ fun SequenceDiagramScreen(
                         )
                     }
                     showFragmentDialog = false
-                    Toasts.success("Frammento modificato")
+                    Toasts.success(UiStrings.FRAGMENT_UPDATED)
                 },
             )
         }
@@ -257,7 +269,7 @@ fun SequenceDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success("Nota modificata")
+                        Toasts.success(UiStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -268,7 +280,7 @@ fun SequenceDiagramScreen(
             onDismiss = { pendingMessage = null },
             onConfirm = { label, type ->
                 state.addMessage(source.lifelineId, targetId, source.y, label, type)
-                Toasts.success("Messaggio creato")
+                Toasts.success(UiStrings.MESSAGE_CREATED)
                 pendingMessage = null
             },
         )

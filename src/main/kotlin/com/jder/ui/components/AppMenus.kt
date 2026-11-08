@@ -10,6 +10,7 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import com.jder.domain.model.DiagramEditorState
 import com.jder.domain.model.DiagramType
+import com.jder.ui.strings.Language
 import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ColorPalettes
 import com.jder.ui.theme.ThemeState
@@ -97,23 +98,23 @@ fun appMenus(
     uriHandler: UriHandler,
 ): List<AppMenu> = buildList {
     if (commands != null) {
-        add(AppMenu("File") { fileEntries(commands, onExit) })
-        add(AppMenu("Modifica") { editEntries(commands) })
+        add(AppMenu(UiStrings.FILE) { fileEntries(commands, onExit) })
+        add(AppMenu(UiStrings.EDIT) { editEntries(commands) })
         add(
-            AppMenu("Vista") {
+            AppMenu(UiStrings.VIEW) {
                 viewEntries(commands.state, themeState, windowState, currentType, onTypeChange)
             }
         )
-        add(AppMenu("Strumenti") { toolEntries(commands) })
-        add(AppMenu("Elemento") { selectionEntries(commands.selectionMenu()) })
+        add(AppMenu(UiStrings.TOOLS) { toolEntries(commands) })
+        add(AppMenu(UiStrings.ELEMENT) { selectionEntries(commands.selectionMenu()) })
     }
-    if (isMacOS) add(AppMenu("Finestra") { windowEntries(windowState) })
-    add(AppMenu("Aiuto") { helpEntries(uriHandler, onAbout) })
+    if (isMacOS) add(AppMenu(UiStrings.WINDOW) { windowEntries(windowState) })
+    add(AppMenu(UiStrings.HELP) { helpEntries(uriHandler, onAbout) })
 }
 
 fun autoSaveToggle(state: DiagramEditorState<*>, onToggle: () -> Unit) =
     AppMenuEntry.Toggle(
-        "Salvataggio Automatico",
+        UiStrings.AUTO_SAVE,
         isChecked = state.isAutoSaveEnabled,
         isEnabled = state.currentFile != null,
         onToggle = onToggle,
@@ -121,7 +122,7 @@ fun autoSaveToggle(state: DiagramEditorState<*>, onToggle: () -> Unit) =
 
 fun autoExportToggle(state: DiagramEditorState<*>, onToggle: () -> Unit) =
     AppMenuEntry.Toggle(
-        "Esportazione Automatica",
+        UiStrings.AUTO_EXPORT,
         isChecked = state.isAutoExportEnabled,
         isEnabled = state.imageFile != null,
         onToggle = onToggle,
@@ -140,14 +141,14 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
     buildList {
         add(
             AppMenuEntry.Action(
-                "Nuovo Diagramma",
+                UiStrings.NEW_DIAGRAM,
                 commandShortcut(Key.N, "N"),
                 onClick = commands.onNewDiagram,
             )
         )
         add(
             AppMenuEntry.Action(
-                "Apri Diagramma...",
+                UiStrings.OPEN_DIAGRAM_ELLIPSIS,
                 commandShortcut(Key.O, "O"),
                 onClick = commands.onOpenDiagram,
             )
@@ -162,7 +163,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
         )
         add(
             AppMenuEntry.Action(
-                "Salva con nome...",
+                UiStrings.SAVE_AS_ELLIPSIS,
                 commandShortcut(Key.S, "S", isShift = true),
                 onClick = commands.onSaveAsDiagram,
             )
@@ -171,7 +172,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
         add(AppMenuEntry.Separator)
         add(
             AppMenuEntry.Action(
-                "Esporta come PNG...",
+                UiStrings.EXPORT_PNG_ELLIPSIS,
                 commandShortcut(Key.E, "E"),
                 isEnabled = !commands.state.isEmpty,
                 onClick = commands.onExportPNG,
@@ -182,7 +183,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: () -> Unit): List
             add(AppMenuEntry.Separator)
             add(
                 AppMenuEntry.Action(
-                    "Esci",
+                    UiStrings.EXIT,
                     MenuShortcut(Key.F4, "F4", isAlt = true),
                     onClick = onExit,
                 )
@@ -194,13 +195,13 @@ private fun editEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
     val state = commands.state
     return listOf(
         AppMenuEntry.Action(
-            UiStrings.CANCEL,
+            UiStrings.UNDO,
             commandShortcut(Key.Z, "Z"),
             isEnabled = state.canUndo(),
             onClick = commands.onUndo,
         ),
         AppMenuEntry.Action(
-            "Ripristina",
+            UiStrings.REDO,
             if (isMacOS) commandShortcut(Key.Z, "Z", isShift = true)
             else commandShortcut(Key.Y, "Y"),
             isEnabled = state.canRedo(),
@@ -208,8 +209,9 @@ private fun editEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
         ),
         AppMenuEntry.Separator,
         AppMenuEntry.Action(
-            "Elimina Elemento Selezionato",
-            if (isMacOS) MenuShortcut(Key.Backspace, "⌫") else MenuShortcut(Key.Delete, "Canc"),
+            UiStrings.DELETE_SELECTED,
+            if (isMacOS) MenuShortcut(Key.Backspace, "⌫")
+            else MenuShortcut(Key.Delete, UiStrings.DELETE_KEY),
             isEnabled = state.hasSelection,
             onClick = commands.onDeleteSelected,
         ),
@@ -223,11 +225,23 @@ private fun viewEntries(
     currentType: DiagramType?,
     onTypeChange: (DiagramType) -> Unit,
 ): List<AppMenuEntry> = buildList {
-    add(AppMenuEntry.Action("Zoom In", commandShortcut(Key.Plus, "+"), onClick = state::zoomIn))
-    add(AppMenuEntry.Action("Zoom Out", commandShortcut(Key.Minus, "-"), onClick = state::zoomOut))
     add(
         AppMenuEntry.Action(
-            "Reimposta Zoom",
+            UiStrings.ZOOM_IN,
+            commandShortcut(Key.Plus, "+"),
+            onClick = state::zoomIn,
+        )
+    )
+    add(
+        AppMenuEntry.Action(
+            UiStrings.ZOOM_OUT,
+            commandShortcut(Key.Minus, "-"),
+            onClick = state::zoomOut,
+        )
+    )
+    add(
+        AppMenuEntry.Action(
+            UiStrings.RESET_ZOOM,
             commandShortcut(Key.Zero, "0"),
             onClick = state::resetView,
         )
@@ -245,19 +259,29 @@ private fun viewEntries(
     }
     add(AppMenuEntry.Separator)
     add(
-        AppMenuEntry.Toggle("Tema Scuro", isChecked = themeState.isDarkTheme) {
+        AppMenuEntry.Toggle(UiStrings.DARK_THEME, isChecked = themeState.isDarkTheme) {
             themeState.toggleTheme()
         }
     )
     add(
         AppMenuEntry.Submenu(
-            "Palette Colori",
+            UiStrings.COLOR_PALETTE,
             ColorPalettes.allPalettes.map { palette ->
                 AppMenuEntry.Choice(
-                    palette.name,
+                    palette.name(),
                     isSelected = palette == themeState.selectedPalette,
                 ) {
                     themeState.selectPalette(palette)
+                }
+            },
+        )
+    )
+    add(
+        AppMenuEntry.Submenu(
+            UiStrings.LANGUAGE,
+            Language.entries.map {
+                AppMenuEntry.Choice(it.displayName, isSelected = it == UiStrings.language) {
+                    UiStrings.selectLanguage(it)
                 }
             },
         )
@@ -266,7 +290,7 @@ private fun viewEntries(
         add(AppMenuEntry.Separator)
         add(
             AppMenuEntry.Toggle(
-                "Schermo Intero",
+                UiStrings.FULL_SCREEN,
                 isChecked = windowState.placement == WindowPlacement.Fullscreen,
                 shortcut = MenuShortcut(Key.F11, "F11"),
             ) {
@@ -280,7 +304,7 @@ private fun toolEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
     val state = commands.state
     return listOf(
         AppMenuEntry.Choice(
-            "Seleziona e Sposta",
+            UiStrings.SELECT_AND_MOVE,
             isSelected = state.isSelectTool,
             shortcut = MenuShortcut(Key.Escape, "Esc"),
             onSelect = state::resetToolMode,
@@ -300,7 +324,7 @@ private fun DiagramTool.toMenuEntry(): AppMenuEntry =
 
 private fun selectionEntries(selection: DiagramSelectionMenu?): List<AppMenuEntry> =
     if (selection == null) {
-        listOf(AppMenuEntry.Action("Nessun elemento selezionato", isEnabled = false, onClick = {}))
+        listOf(AppMenuEntry.Action(UiStrings.NO_ELEMENT_SELECTED, isEnabled = false, onClick = {}))
     } else {
         buildList {
             add(AppMenuEntry.Action(selection.title, isEnabled = false, onClick = {}))
@@ -314,17 +338,17 @@ private fun selectionEntries(selection: DiagramSelectionMenu?): List<AppMenuEntr
 
 private fun windowEntries(windowState: WindowState): List<AppMenuEntry> =
     listOf(
-        AppMenuEntry.Action("Riduci a Icona", commandShortcut(Key.M, "M")) {
+        AppMenuEntry.Action(UiStrings.MINIMIZE, commandShortcut(Key.M, "M")) {
             windowState.isMinimized = true
         },
-        AppMenuEntry.Action("Ingrandisci") {
+        AppMenuEntry.Action(UiStrings.ZOOM_WINDOW) {
             windowState.placement =
                 if (windowState.placement == WindowPlacement.Maximized) WindowPlacement.Floating
                 else WindowPlacement.Maximized
         },
         AppMenuEntry.Separator,
         AppMenuEntry.Toggle(
-            "Schermo Intero",
+            UiStrings.FULL_SCREEN,
             isChecked = windowState.placement == WindowPlacement.Fullscreen,
             shortcut = MenuShortcut(Key.F, "F", isCommand = true, isControl = true),
         ) {
@@ -334,13 +358,13 @@ private fun windowEntries(windowState: WindowState): List<AppMenuEntry> =
 
 private fun helpEntries(uriHandler: UriHandler, onAbout: () -> Unit): List<AppMenuEntry> =
     buildList {
-        add(AppMenuEntry.Action("Guida all'Uso") { uriHandler.openSafely(GUIDE_URL) })
-        add(AppMenuEntry.Action("Sito Web di JDER") { uriHandler.openSafely(WEBSITE_URL) })
+        add(AppMenuEntry.Action(UiStrings.USER_GUIDE) { uriHandler.openSafely(GUIDE_URL) })
+        add(AppMenuEntry.Action(UiStrings.WEBSITE) { uriHandler.openSafely(WEBSITE_URL) })
         add(AppMenuEntry.Separator)
-        add(AppMenuEntry.Action("Segnala un Problema") { uriHandler.openSafely(ISSUES_URL) })
-        add(AppMenuEntry.Action("Codice Sorgente") { uriHandler.openSafely(SOURCE_URL) })
+        add(AppMenuEntry.Action(UiStrings.REPORT_ISSUE) { uriHandler.openSafely(ISSUES_URL) })
+        add(AppMenuEntry.Action(UiStrings.SOURCE_CODE) { uriHandler.openSafely(SOURCE_URL) })
         if (!isMacOS) {
             add(AppMenuEntry.Separator)
-            add(AppMenuEntry.Action("Informazioni su JDER", onClick = onAbout))
+            add(AppMenuEntry.Action(UiStrings.ABOUT, onClick = onAbout))
         }
     }

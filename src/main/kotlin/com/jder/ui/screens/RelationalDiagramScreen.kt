@@ -72,9 +72,9 @@ fun RelationalDiagramScreen(
         }
     fun actionsTitle(type: RelationalContextMenuType): String =
         when (type) {
-            RelationalContextMenuType.TABLE -> "Azioni Tabella"
-            RelationalContextMenuType.FOREIGN_KEY -> "Azioni Chiave Esterna"
-            RelationalContextMenuType.NOTE -> "Azioni Nota"
+            RelationalContextMenuType.TABLE -> UiStrings.TABLE_ACTIONS
+            RelationalContextMenuType.FOREIGN_KEY -> UiStrings.FOREIGN_KEY_ACTIONS
+            RelationalContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
         }
     fun actions(type: RelationalContextMenuType): List<ContextMenuItem> = buildList {
         add(
@@ -93,7 +93,7 @@ fun RelationalDiagramScreen(
                 }
             )
             add(
-                ContextMenuItem("Aggiungi Chiave Esterna", Icons.Default.Key) {
+                ContextMenuItem(UiStrings.ADD_FOREIGN_KEY, Icons.Default.Key) {
                     requestForeignKey()
                 }
             )
@@ -109,24 +109,21 @@ fun RelationalDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderRelationalDiagramToBitmap(state.diagram, it) },
-        emptyHint =
-            "Scegli Tabella o Nota dalla barra degli strumenti e clicca sulla lavagna.\n" +
-                "Per collegare due tabelle, scegli Chiave Esterna e clicca prima sulla tabella " +
-                "che riferisce e poi su quella riferita.",
+        emptyHint = UiStrings.RELATIONAL_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.Table,
-                    "Crea Tabella",
-                    "Tabella",
+                    UiStrings.CREATE_TABLE,
+                    UiStrings.TABLE,
                     state.toolMode == RelationalToolMode.TABLE,
                 ) {
                     state.toolMode = RelationalToolMode.TABLE
                 },
                 DiagramTool.Mode(
                     Icons.Default.Key,
-                    "Crea Chiave Esterna",
-                    "Chiave Esterna",
+                    UiStrings.CREATE_FOREIGN_KEY,
+                    UiStrings.FOREIGN_KEY,
                     state.toolMode == RelationalToolMode.FOREIGN_KEY,
                 ) {
                     state.toolMode = RelationalToolMode.FOREIGN_KEY
@@ -154,11 +151,11 @@ fun RelationalDiagramScreen(
                 onEditColumn = { tableId, column -> columnToEdit = ColumnEdit(tableId, column) },
                 onDeleteColumn = { tableId, columnId ->
                     state.deleteColumn(tableId, columnId)
-                    Toasts.success("Colonna eliminata")
+                    Toasts.success(UiStrings.COLUMN_DELETED)
                 },
                 onDeleteForeignKey = {
                     state.deleteForeignKey(it)
-                    Toasts.success("Chiave esterna eliminata")
+                    Toasts.success(UiStrings.FOREIGN_KEY_DELETED)
                 },
                 onClose = { state.clearSelection() },
             )
@@ -206,7 +203,7 @@ fun RelationalDiagramScreen(
                         it.copy(name = newName, width = newWidth, documentation = newDoc)
                     }
                     showTableDialog = false
-                    Toasts.success("Tabella modificata")
+                    Toasts.success(UiStrings.TABLE_UPDATED)
                 },
             )
         }
@@ -222,7 +219,7 @@ fun RelationalDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success("Nota modificata")
+                        Toasts.success(UiStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -235,7 +232,7 @@ fun RelationalDiagramScreen(
                 onConfirm = {
                     state.addColumns(tableId, listOf(it))
                     showAddColumnDialog = false
-                    Toasts.success("Colonna aggiunta")
+                    Toasts.success(UiStrings.COLUMN_ADDED)
                 },
             )
         }
@@ -248,7 +245,7 @@ fun RelationalDiagramScreen(
             onConfirm = {
                 state.updateColumn(edit.tableId, it)
                 columnToEdit = null
-                Toasts.success("Colonna modificata")
+                Toasts.success(UiStrings.COLUMN_UPDATED)
             },
         )
     }
@@ -262,7 +259,7 @@ fun RelationalDiagramScreen(
                 onConfirm = {
                     state.addColumns(source.id, it)
                     foreignKeyRequest = null
-                    Toasts.success("Chiave esterna creata")
+                    Toasts.success(UiStrings.FOREIGN_KEY_CREATED)
                 },
             )
         }

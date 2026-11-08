@@ -10,6 +10,7 @@ import com.jder.domain.model.SequenceFragmentType
 import com.jder.domain.model.SequenceLifelineType
 import com.jder.domain.model.SequenceOperand
 import com.jder.domain.model.SequenceToolMode
+import com.jder.ui.strings.UiStrings
 import kotlin.math.abs
 
 internal const val SEQUENCE_FRAGMENT_LABEL_HEIGHT = 20f
@@ -161,11 +162,16 @@ internal fun handleSequenceTap(
             }
         }
         SequenceToolMode.FRAGMENT -> {
-            state.addFragment(point.x - 160f, point.y - 80f, SequenceFragmentType.OPT, "condizione")
+            state.addFragment(
+                point.x - 160f,
+                point.y - 80f,
+                SequenceFragmentType.OPT,
+                UiStrings.DEFAULT_CONDITION,
+            )
             state.toolMode = SequenceToolMode.SELECT
         }
         SequenceToolMode.NOTE -> {
-            state.addNote(point.x - 120f, point.y - 90f, "Nuova Nota")
+            state.addNote(point.x - 120f, point.y - 90f, UiStrings.NEW_NOTE)
             state.toolMode = SequenceToolMode.SELECT
         }
         else ->
@@ -179,8 +185,8 @@ internal fun handleSequenceTap(
 
 private fun defaultLifelineName(type: SequenceLifelineType): String =
     when (type) {
-        SequenceLifelineType.ACTOR -> "Attore"
-        SequenceLifelineType.OBJECT -> ":Oggetto"
+        SequenceLifelineType.ACTOR -> UiStrings.ACTOR
+        SequenceLifelineType.OBJECT -> ":${UiStrings.OBJECT}"
         else -> ":${type.display}"
     }
 

@@ -8,6 +8,7 @@ import com.jder.domain.model.RelationalForeignKey
 import com.jder.domain.model.RelationalTable
 import com.jder.domain.model.RelationalToolMode
 import com.jder.domain.model.foreignKeys
+import com.jder.ui.strings.UiStrings
 import kotlin.math.abs
 
 internal const val RELATIONAL_HEADER_HEIGHT = 32f
@@ -165,7 +166,7 @@ internal fun handleRelationalTap(
                 selectRelationalElement(state, it)
             } ?: state.clearSelection()
         RelationalToolMode.TABLE -> {
-            state.addTable(offset.x - 110f, offset.y - 30f, "NuovaTabella")
+            state.addTable(offset.x - 110f, offset.y - 30f, UiStrings.NEW_TABLE)
             state.toolMode = RelationalToolMode.SELECT
         }
         RelationalToolMode.FOREIGN_KEY -> {
@@ -185,7 +186,7 @@ internal fun handleRelationalTap(
             }
         }
         RelationalToolMode.NOTE -> {
-            state.addNote(offset.x - 120f, offset.y - 90f, "Nuova Nota")
+            state.addNote(offset.x - 120f, offset.y - 90f, UiStrings.NEW_NOTE)
             state.toolMode = RelationalToolMode.SELECT
         }
     }

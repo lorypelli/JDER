@@ -1,5 +1,6 @@
 package com.jder.domain.model
 
+import com.jder.ui.strings.UiStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -59,12 +60,22 @@ data class Attribute(
 )
 
 @Serializable
-enum class AttributeType(val display: String) {
-    NORMAL("Normale"),
-    KEY("Chiave"),
-    MULTIVALUED("Multivalore"),
-    DERIVED("Derivato"),
-    COMPOSITE("Composto"),
+enum class AttributeType {
+    NORMAL,
+    KEY,
+    MULTIVALUED,
+    DERIVED,
+    COMPOSITE;
+
+    val display: String
+        get() =
+            when (this) {
+                NORMAL -> UiStrings.NORMAL
+                KEY -> UiStrings.KEY
+                MULTIVALUED -> UiStrings.MULTIVALUED
+                DERIVED -> UiStrings.DERIVED
+                COMPOSITE -> UiStrings.COMPOSITE
+            }
 }
 
 @Serializable

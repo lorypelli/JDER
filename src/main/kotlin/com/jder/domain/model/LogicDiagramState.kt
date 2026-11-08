@@ -3,10 +3,10 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
-class LogicDiagramState :
-    DiagramEditorState<LogicDiagram>({ LogicDiagram(name = "Nuovo Diagramma Logico") }) {
+class LogicDiagramState : DiagramEditorState<LogicDiagram>({ LogicDiagram(name = "") }) {
     var selectedComponentId by mutableStateOf<String?>(null)
         private set
 
@@ -23,7 +23,7 @@ class LogicDiagramState :
         private set
 
     override val diagramName: String
-        get() = diagram.name
+        get() = diagram.name.ifEmpty { UiStrings.NEW_LOGIC_DIAGRAM }
 
     override val isEmpty: Boolean
         get() = diagram.components.isEmpty() && diagram.wires.isEmpty() && diagram.notes.isEmpty()
@@ -67,20 +67,20 @@ class LogicDiagramState :
         selectedComponentId?.let {
             val message =
                 when (component(it)?.type) {
-                    LogicComponentType.INPUT -> "Ingresso eliminato"
-                    LogicComponentType.OUTPUT -> "Uscita eliminata"
-                    else -> "Porta eliminata"
+                    LogicComponentType.INPUT -> UiStrings.INPUT_DELETED
+                    LogicComponentType.OUTPUT -> UiStrings.OUTPUT_DELETED
+                    else -> UiStrings.GATE_DELETED
                 }
             deleteComponent(it)
             return message
         }
         selectedWireId?.let {
             deleteWire(it)
-            return "Collegamento eliminato"
+            return UiStrings.WIRE_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return "Nota eliminata"
+            return UiStrings.NOTE_DELETED
         }
         return null
     }

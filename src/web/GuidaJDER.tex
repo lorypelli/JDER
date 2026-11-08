@@ -263,9 +263,9 @@ Per avviare l'applicazione:
 Se non si indica un file da aprire, oppure se il file indicato non esiste, non se ne riconosce il
 tipo o non si può aprire (vedi sezione~\ref{sec:cli}), \jder{} si apre mostrando la finestra
 \uielement{Scegli il tipo di diagramma}, con un'anteprima di ogni tipo nella versione chiara o
-scura secondo il tema attivo (tema e palette si possono cambiare anche da qui). Facendo clic su
-un'anteprima, oppure con \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{8}, si apre la scheda
-del tipo scelto; gli altri tipi restano raggiungibili dalla barra delle schede.
+scura secondo il tema attivo (tema, palette e lingua si possono cambiare anche da qui). Facendo
+clic su un'anteprima, oppure con \key{Ctrl} + \key{1} \ldots{} \key{Ctrl} + \key{8}, si apre la
+scheda del tipo scelto; gli altri tipi restano raggiungibili dalla barra delle schede.
 
 All'avvio \jder{} controlla l'ultima versione pubblicata su GitHub: se il \texttt{JDER.jar}
 pubblicato è diverso da quello in uso, la finestra \uielement{Aggiornamento disponibile} propone
@@ -319,7 +319,8 @@ principali:
   \item \textbf{Barra dei menu} --- su macOS è la barra dei menu del sistema, su Windows e Linux si
         trova in cima alla finestra.
   \item \textbf{Barra delle schede} --- permette di passare tra gli otto tipi di diagramma.
-  \item \textbf{Barra degli strumenti} --- mostra il nome del diagramma, la palette e il tema.
+  \item \textbf{Barra degli strumenti} --- mostra il nome del diagramma, la lingua, la palette e il
+        tema.
   \item \textbf{Barra degli strumenti di disegno} --- sotto la barra principale, contiene gli
         strumenti di creazione degli elementi.
   \item \textbf{Lavagna (Canvas)} --- area centrale dove vengono disegnati i diagrammi.
@@ -361,8 +362,8 @@ La barra dei menu contiene i comandi di tutta l'applicazione, con le relative sc
   \item \menu{File} --- Nuovo Diagramma, Apri Diagramma, Salva, Salva con nome, Salvataggio
         Automatico, Esporta come PNG, Esportazione Automatica (e Esci su Windows e Linux).
   \item \menu{Modifica} --- Annulla, Ripristina, Elimina Elemento Selezionato.
-  \item \menu{Vista} --- zoom, scelta del tipo di diagramma, Tema Scuro, Palette Colori (e Schermo
-        Intero su Windows e Linux).
+  \item \menu{Vista} --- zoom, scelta del tipo di diagramma, Tema Scuro, Palette Colori, Lingua (e
+        Schermo Intero su Windows e Linux).
   \item \menu{Strumenti} --- Seleziona e Sposta e gli strumenti del diagramma attivo.
   \item \menu{Elemento} --- le azioni sull'elemento selezionato, le stesse del menu contestuale.
   \item \menu{Finestra} (solo macOS) --- Riduci a Icona, Ingrandisci, Schermo Intero.
@@ -384,8 +385,9 @@ La barra degli strumenti principale contiene, da sinistra a destra:
         salvataggio automatico, esporta, esportazione automatica, elimina), \uielement{Vista}
         (Zoom In, Zoom Out, Reimposta Zoom) ed \uielement{Esporta} (esportazione come immagine
         PNG ed esportazione automatica).
-  \item \textbf{Selettore palette} --- un cerchio colorato che apre un selettore per scegliere
-        tra le 20 palette di colori Material disponibili.
+  \item \textbf{Selettori lingua e palette} --- un globo per la lingua dell'interfaccia
+        (sezione~\ref{sec:lingua}) e un cerchio colorato per scegliere tra le 20 palette di
+        colori Material.
   \item \textbf{Interruttore tema} --- alterna tra modalità chiara e modalità scura.
 \end{itemize}
 
@@ -1631,6 +1633,23 @@ Le palette disponibili sono:
 
 La palette selezionata determina il colore principale (primary) dell'intera interfaccia,
 inclusi pulsanti, indicatori e accenti.
+
+\subsection{Lingua dell'interfaccia}
+\label{sec:lingua}
+
+L'interfaccia di \jder{} è disponibile in italiano e in inglese. Al primo avvio \jder{} usa la
+lingua del sistema operativo, oppure l'inglese se questa non è l'italiano. Per cambiarla, fare
+clic sul \textbf{globo} nella barra degli strumenti (presente anche nella finestra
+\uielement{Scegli il tipo di diagramma}) oppure usare il menu \menu{Vista} $\to$ \menu{Lingua}:
+menu, finestre, suggerimenti e messaggi passano subito alla nuova lingua, senza riavviare
+l'applicazione. La scelta viene ricordata agli avvii successivi e vale anche per i messaggi delle
+opzioni da riga di comando.
+
+\begin{tcolorbox}[notebox, title={Nota}]
+  Cambiare lingua non modifica i diagrammi: gli elementi già presenti mantengono i nomi inseriti,
+  mentre quelli nuovi ricevono il nome predefinito nella lingua scelta (ad esempio
+  \emph{Nuova Entità} oppure \emph{New Entity}).
+\end{tcolorbox}
 
 % =============================================================
 \section{Scorciatoie da Tastiera}

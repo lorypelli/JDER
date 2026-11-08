@@ -57,7 +57,7 @@ fun EntityPropertiesDialog(
     var documentation by remember(entity.id) { mutableStateOf(entity.documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Entità") },
+        title = { Text(UiStrings.ENTITY_PROPERTIES) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -74,13 +74,13 @@ fun EntityPropertiesDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text("Entità Debole")
+                    Text(UiStrings.WEAK_ENTITY)
                     Switch(checked = isWeak, onCheckedChange = { isWeak = it })
                 }
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text("Documentazione") },
+                    label = { Text(UiStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 5,
                 )
@@ -112,7 +112,7 @@ fun RelationshipPropertiesDialog(
     var documentation by remember(relationship.id) { mutableStateOf(relationship.documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Relazione") },
+        title = { Text(UiStrings.RELATIONSHIP_PROPERTIES) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -128,7 +128,7 @@ fun RelationshipPropertiesDialog(
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text("Documentazione") },
+                    label = { Text(UiStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 5,
                 )
@@ -165,7 +165,7 @@ fun EditAttributeDialog(
     onConfirm: (attribute: Attribute) -> Unit,
 ) {
     AttributeDialog(
-        title = "Modifica Attributo",
+        title = UiStrings.EDIT_ATTRIBUTE,
         initialAttribute = attribute,
         onDismiss = onDismiss,
         onConfirm = onConfirm,
@@ -212,7 +212,7 @@ private fun AttributeDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("Chiave Primaria")
+                    Text(UiStrings.PRIMARY_KEY)
                     Switch(
                         checked = isPrimaryKey,
                         onCheckedChange = { isPrimaryKey = it },
@@ -225,7 +225,7 @@ private fun AttributeDialog(
                     exit = shrinkVertically() + fadeOut(),
                 ) {
                     Text(
-                        text = "Gli attributi di tipo Chiave sono sempre chiavi primarie",
+                        text = UiStrings.KEY_ATTRIBUTES_HINT,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -235,7 +235,7 @@ private fun AttributeDialog(
                         value = attributeType.display,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Tipo") },
+                        label = { Text(UiStrings.TYPE) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
@@ -292,7 +292,7 @@ private fun AttributeDialog(
                     OutlinedTextField(
                         value = multiplicity,
                         onValueChange = { multiplicity = it },
-                        label = { Text("Molteplicità (es: 1..N, 0..N)") },
+                        label = { Text(UiStrings.MULTIPLICITY_EXAMPLE) },
                         placeholder = { Text("1..N") },
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -313,11 +313,11 @@ private fun AttributeDialog(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                "Componenti (${components.size})",
+                                "${UiStrings.COMPONENTS} (${components.size})",
                                 style = MaterialTheme.typography.titleSmall,
                             )
                             IconButton(onClick = { showAddComponentDialog = true }) {
-                                Icon(Icons.Default.Add, "Aggiungi componente")
+                                Icon(Icons.Default.Add, UiStrings.ADD_COMPONENT)
                             }
                         }
                         if (components.isNotEmpty()) {
@@ -347,7 +347,7 @@ private fun AttributeDialog(
                                             ) {
                                                 Icon(
                                                     Icons.Default.Delete,
-                                                    "Rimuovi componente",
+                                                    UiStrings.REMOVE_COMPONENT,
                                                     tint = MaterialTheme.colorScheme.error,
                                                 )
                                             }
@@ -357,7 +357,7 @@ private fun AttributeDialog(
                             }
                         } else {
                             Text(
-                                "Nessun componente. Aggiungi componenti per l'attributo composto.",
+                                UiStrings.NO_COMPONENTS,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(vertical = 8.dp),
@@ -407,12 +407,12 @@ private fun AttributeDialog(
         var componentName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showAddComponentDialog = false },
-            title = { Text("Aggiungi Componente") },
+            title = { Text(UiStrings.ADD_COMPONENT) },
             text = {
                 OutlinedTextField(
                     value = componentName,
                     onValueChange = { componentName = it },
-                    label = { Text("Nome componente") },
+                    label = { Text(UiStrings.COMPONENT_NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -453,7 +453,7 @@ fun CreateConnectionDialog(
     onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
     ConnectionDialog(
-        title = "Crea Connessione",
+        title = UiStrings.CREATE_CONNECTION,
         entities = entities,
         emptyMessage = emptyMessage,
         initialEntityId = null,
@@ -472,9 +472,9 @@ fun EditConnectionDialog(
     onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
     ConnectionDialog(
-        title = "Modifica Connessione",
+        title = UiStrings.EDIT_CONNECTION,
         entities = entities,
-        emptyMessage = "Nessuna entità disponibile.",
+        emptyMessage = UiStrings.NO_ENTITY_AVAILABLE,
         initialEntityId = currentEntityId,
         initialCardinality = currentCardinality,
         onDismiss = onDismiss,
@@ -516,7 +516,7 @@ private fun ConnectionDialog(
                             value = selectedEntity?.name ?: "",
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Entità") },
+                            label = { Text(UiStrings.ENTITY) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedEntity)
                             },
@@ -545,7 +545,7 @@ private fun ConnectionDialog(
                             value = selectedCardinality.display,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Cardinalità") },
+                            label = { Text(UiStrings.CARDINALITY) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(
                                     expanded = expandedCardinality

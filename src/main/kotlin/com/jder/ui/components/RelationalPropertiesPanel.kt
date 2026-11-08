@@ -80,25 +80,27 @@ private fun TablePropertiesContent(
     onDeleteColumn: (columnId: String) -> Unit,
 ) {
     val primaryKey = table.primaryKey.joinToString(", ") { it.name }
-    PropertyCard("Tabella: ${table.name}") {
-        PropertyDetail("Colonne: ${table.columns.size}")
-        PropertyDetail("Chiave primaria: ${primaryKey.ifEmpty { "nessuna" }}")
-        PropertyDetail("Chiavi esterne: ${table.columns.count { it.reference != null }}")
+    PropertyCard("${UiStrings.TABLE}: ${table.name}") {
+        PropertyDetail("${UiStrings.COLUMNS}: ${table.columns.size}")
+        PropertyDetail(
+            "${UiStrings.PRIMARY_KEY_DETAIL}: ${primaryKey.ifEmpty { UiStrings.NO_PRIMARY_KEY }}"
+        )
+        PropertyDetail("${UiStrings.FOREIGN_KEYS}: ${table.columns.count { it.reference != null }}")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditTable)
     PropertyOutlinedButton(UiStrings.ADD_COLUMN, Icons.Default.Add, onAddColumn)
-    PropertyOutlinedButton("Aggiungi Chiave Esterna", Icons.Default.Key, onAddForeignKey)
+    PropertyOutlinedButton(UiStrings.ADD_FOREIGN_KEY, Icons.Default.Key, onAddForeignKey)
     if (table.columns.isNotEmpty()) {
-        PropertyListTitle("Colonne:")
+        PropertyListTitle("${UiStrings.COLUMNS}:")
         table.columns.forEach {
             PropertyItemCard(
                 title = if (it.isNullable) "${it.name}*" else it.name,
                 subtitle = columnDetails(it, diagram),
                 isEmphasized = it.isPrimaryKey,
-                editDescription = "Modifica colonna",
+                editDescription = UiStrings.EDIT_COLUMN,
                 onEdit = { onEditColumn(it) },
-                deleteDescription = "Elimina colonna",
+                deleteDescription = UiStrings.DELETE_COLUMN,
                 onDelete = { onDeleteColumn(it.id) },
             )
         }
@@ -109,10 +111,12 @@ private fun TablePropertiesContent(
 private fun columnDetails(column: RelationalColumn, diagram: RelationalDiagram): String =
     buildList {
             if (column.type.isNotBlank()) add(column.type)
-            if (column.isPrimaryKey) add("chiave primaria")
-            column.reference?.let { add("riferisce ${diagram.qualifiedColumnName(it) ?: "?"}") }
-            if (column.isUnique && !column.isPrimaryKey) add("unica")
-            if (column.isNullable) add("opzionale")
+            if (column.isPrimaryKey) add(UiStrings.PRIMARY_KEY_TAG)
+            column.reference?.let {
+                add(UiStrings.references(diagram.qualifiedColumnName(it) ?: "?"))
+            }
+            if (column.isUnique && !column.isPrimaryKey) add(UiStrings.UNIQUE_TAG)
+            if (column.isNullable) add(UiStrings.OPTIONAL_TAG)
         }
         .joinToString(" · ")
 
@@ -122,15 +126,17 @@ private fun ForeignKeyPropertiesContent(
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    PropertyCard("Chiave Esterna: ${foreignKey.column.name}") {
-        PropertyDetail("Da: ${foreignKey.table.name}.${foreignKey.column.name}")
-        PropertyDetail("A: ${foreignKey.referencedTable.name}.${foreignKey.referencedColumn.name}")
-        PropertyDetail("Opzionale: ${if (foreignKey.column.isNullable) "sì" else "no"}")
+    PropertyCard("${UiStrings.FOREIGN_KEY}: ${foreignKey.column.name}") {
+        PropertyDetail("${UiStrings.FROM}: ${foreignKey.table.name}.${foreignKey.column.name}")
+        PropertyDetail(
+            "${UiStrings.TO}: ${foreignKey.referencedTable.name}.${foreignKey.referencedColumn.name}"
+        )
+        PropertyDetail("${UiStrings.OPTIONAL}: ${UiStrings.yesNo(foreignKey.column.isNullable)}")
     }
     Spacer(Modifier.height(8.dp))
     PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
-        "Elimina Chiave Esterna",
+        UiStrings.DELETE_FOREIGN_KEY,
         Icons.Default.Delete,
         onDelete,
         isDestructive = true,

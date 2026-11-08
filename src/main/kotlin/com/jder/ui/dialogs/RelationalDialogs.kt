@@ -45,7 +45,7 @@ fun TablePropertiesDialog(
     var documentation by remember(tableId) { mutableStateOf(tableDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Tabella") },
+        title = { Text(UiStrings.TABLE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -58,14 +58,14 @@ fun TablePropertiesDialog(
                 OutlinedTextField(
                     value = width,
                     onValueChange = { width = it.filter { it.isDigit() } },
-                    label = { Text("Larghezza") },
+                    label = { Text(UiStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text("Documentazione") },
+                    label = { Text(UiStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 4,
                 )
@@ -113,7 +113,7 @@ fun EditColumnDialog(
     onConfirm: (column: RelationalColumn) -> Unit,
 ) {
     ColumnDialog(
-        title = "Modifica Colonna",
+        title = UiStrings.EDIT_COLUMN,
         initialColumn = column,
         tables = tables,
         onDismiss = onDismiss,
@@ -169,25 +169,25 @@ private fun ColumnDialog(
                     OutlinedTextField(
                         value = type,
                         onValueChange = { type = it },
-                        label = { Text("Tipo") },
-                        placeholder = { Text("es. INT") },
+                        label = { Text(UiStrings.TYPE) },
+                        placeholder = { Text(UiStrings.example("INT")) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                 }
-                SwitchRow("Chiave Primaria", isPrimaryKey) { isPrimaryKey = it }
-                SwitchRow("Opzionale (ammette NULL)", isNullable && !isPrimaryKey, !isPrimaryKey) {
+                SwitchRow(UiStrings.PRIMARY_KEY, isPrimaryKey) { isPrimaryKey = it }
+                SwitchRow(UiStrings.NULLABLE, isNullable && !isPrimaryKey, !isPrimaryKey) {
                     isNullable = it
                 }
-                SwitchRow("Valore Unico", isUnique && !isPrimaryKey, !isPrimaryKey) {
+                SwitchRow(UiStrings.UNIQUE_VALUE, isUnique && !isPrimaryKey, !isPrimaryKey) {
                     isUnique = it
                 }
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
                     OutlinedTextField(
-                        value = selectedOption?.label ?: "Nessuna",
+                        value = selectedOption?.label ?: UiStrings.NO_REFERENCE,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Chiave esterna verso") },
+                        label = { Text(UiStrings.FOREIGN_KEY_TARGET) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
@@ -198,7 +198,7 @@ private fun ColumnDialog(
                         onDismissRequest = { expanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Nessuna") },
+                            text = { Text(UiStrings.NO_REFERENCE) },
                             onClick = {
                                 reference = null
                                 expanded = false
@@ -217,8 +217,7 @@ private fun ColumnDialog(
                 }
                 if (options.isEmpty()) {
                     Text(
-                        "Per creare una chiave esterna serve una colonna chiave primaria o con " +
-                            "valore unico in una tabella",
+                        UiStrings.FOREIGN_KEY_REQUIREMENT,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -279,16 +278,19 @@ fun ForeignKeyDialog(
         }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nuova Chiave Esterna") },
+        title = { Text(UiStrings.NEW_FOREIGN_KEY) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Da: ${sourceTable.name}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "${UiStrings.FROM}: ${sourceTable.name}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
                     OutlinedTextField(
                         value = target?.name ?: "",
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Tabella riferita") },
+                        label = { Text(UiStrings.REFERENCED_TABLE) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
@@ -312,8 +314,7 @@ fun ForeignKeyDialog(
                 target?.let { referenced ->
                     if (keyColumns.isEmpty()) {
                         Text(
-                            "La tabella \"${referenced.name}\" non ha una chiave primaria: " +
-                                "aggiungine una prima di creare la chiave esterna",
+                            UiStrings.tableWithoutPrimaryKey(referenced.name),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
@@ -322,18 +323,18 @@ fun ForeignKeyDialog(
                         OutlinedTextField(
                             value = columnNames[id].orEmpty(),
                             onValueChange = { columnNames = columnNames + (id to it) },
-                            label = { Text("Colonna per ${referenced.name}.${name}") },
+                            label = { Text(UiStrings.columnFor("${referenced.name}.${name}")) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                         )
                     }
                 }
                 if (keyColumns.isNotEmpty()) {
-                    SwitchRow("Parte della chiave primaria", isPartOfPrimaryKey) {
+                    SwitchRow(UiStrings.PART_OF_PRIMARY_KEY, isPartOfPrimaryKey) {
                         isPartOfPrimaryKey = it
                     }
                     SwitchRow(
-                        "Opzionale (ammette NULL)",
+                        UiStrings.NULLABLE,
                         isNullable && !isPartOfPrimaryKey,
                         !isPartOfPrimaryKey,
                     ) {

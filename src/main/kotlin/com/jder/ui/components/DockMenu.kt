@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.window.FrameWindowScope
 import com.jder.domain.model.DiagramType
+import com.jder.ui.strings.UiStrings
 import java.awt.Desktop
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -14,7 +15,7 @@ import java.awt.Taskbar
 @Composable
 fun FrameWindowScope.DockMenu(onNewDiagram: (DiagramType) -> Unit) {
     val currentOnNewDiagram by rememberUpdatedState(onNewDiagram)
-    DisposableEffect(Unit) {
+    DisposableEffect(UiStrings.language) {
         val isSupported =
             Taskbar.isTaskbarSupported() && Taskbar.getTaskbar().isSupported(Taskbar.Feature.MENU)
         val desktop = Desktop.getDesktop()
@@ -45,12 +46,12 @@ fun FrameWindowScope.DockMenu(onNewDiagram: (DiagramType) -> Unit) {
 private val DiagramType.newDiagramLabel: String
     get() =
         when (this) {
-            DiagramType.ER -> "Nuovo Diagramma E/R"
-            DiagramType.RELATIONAL -> "Nuovo Schema Logico"
-            DiagramType.CLASS -> "Nuovo Diagramma delle Classi"
-            DiagramType.USE_CASE -> "Nuovo Diagramma dei Casi d'Uso"
-            DiagramType.SEQUENCE -> "Nuovo Diagramma di Sequenza"
-            DiagramType.LOGIC -> "Nuovo Diagramma Logico"
-            DiagramType.MEALY -> "Nuova Macchina di Mealy"
-            DiagramType.MOORE -> "Nuova Macchina di Moore"
+            DiagramType.ER -> UiStrings.NEW_ER_DIAGRAM
+            DiagramType.RELATIONAL -> UiStrings.NEW_RELATIONAL_SCHEMA
+            DiagramType.CLASS -> UiStrings.NEW_CLASS_DIAGRAM
+            DiagramType.USE_CASE -> UiStrings.NEW_USE_CASE_DIAGRAM
+            DiagramType.SEQUENCE -> UiStrings.NEW_SEQUENCE_DIAGRAM
+            DiagramType.LOGIC -> UiStrings.NEW_LOGIC_DIAGRAM
+            DiagramType.MEALY -> UiStrings.NEW_MEALY_MACHINE
+            DiagramType.MOORE -> UiStrings.NEW_MOORE_MACHINE
         }

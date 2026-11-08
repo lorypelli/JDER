@@ -53,6 +53,7 @@ import com.jder.domain.model.DiagramType
 import com.jder.ui.components.ToolbarPaletteTheme
 import com.jder.ui.components.diagramTypeKeys
 import com.jder.ui.components.logError
+import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.shortcutLabel
 import kotlinx.coroutines.Dispatchers
@@ -116,7 +117,7 @@ private fun DiagramTypeGrid(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Scegli il tipo di diagramma",
+                text = UiStrings.CHOOSE_DIAGRAM_TYPE,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f),
@@ -207,6 +208,6 @@ private fun loadScreenshot(path: String): ImageBitmap? =
     try {
         useResource(path, ::loadImageBitmap)
     } catch (e: Exception) {
-        logError("Impossibile caricare l'anteprima $path", e)
+        logError(UiStrings.previewLoadFailed(path), e)
         null
     }

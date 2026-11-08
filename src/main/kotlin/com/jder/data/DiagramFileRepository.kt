@@ -1,6 +1,7 @@
 package com.jder.data
 
 import com.jder.domain.model.DiagramType
+import com.jder.ui.strings.UiStrings
 import java.io.File
 import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
@@ -15,10 +16,7 @@ import kotlinx.serialization.json.jsonPrimitive
 private const val DIAGRAM_TYPE_KEY = "diagramType"
 
 class WrongDiagramTypeException(found: DiagramType, expected: DiagramType) :
-    Exception(
-        "il file contiene ${found.displayName}: aprilo dalla scheda \"${found.tabLabel}\" " +
-            "invece che da \"${expected.tabLabel}\""
-    )
+    Exception(UiStrings.wrongDiagramType(found.displayName, found.tabLabel, expected.tabLabel))
 
 open class DiagramFileRepository<T>(
     private val serializer: KSerializer<T>,
@@ -55,7 +53,7 @@ fun detectDiagramType(file: File): DiagramType? = detectDiagramType(readJsonObje
 internal fun File.writeBytesAtomically(bytes: ByteArray) {
     val target = toPath()
     if (Files.exists(target) && !Files.isWritable(target)) {
-        throw AccessDeniedException(this, reason = "il file è di sola lettura")
+        throw AccessDeniedException(this, reason = UiStrings.READ_ONLY_FILE)
     }
     val temporary = File.createTempFile(".$name.", ".tmp", absoluteFile.parentFile).toPath()
     try {

@@ -68,8 +68,8 @@ fun <T> RadioOptionList(
 fun ConfirmNewDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Conferma nuovo diagramma") },
-        text = { Text("Ci sono modifiche non salvate. Vuoi creare un nuovo diagramma comunque?") },
+        title = { Text(UiStrings.CONFIRM_NEW_DIAGRAM_TITLE) },
+        text = { Text(UiStrings.CONFIRM_NEW_DIAGRAM_MESSAGE) },
         confirmButton = { TextButton(onClick = onConfirm) { Text(UiStrings.YES) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.NO) } },
     )
@@ -79,8 +79,8 @@ fun ConfirmNewDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
 fun ConfirmOpenDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Conferma apertura diagramma") },
-        text = { Text("Ci sono modifiche non salvate. Vuoi aprire un altro diagramma comunque?") },
+        title = { Text(UiStrings.CONFIRM_OPEN_DIAGRAM_TITLE) },
+        text = { Text(UiStrings.CONFIRM_OPEN_DIAGRAM_MESSAGE) },
         confirmButton = { TextButton(onClick = onConfirm) { Text(UiStrings.YES) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.NO) } },
     )

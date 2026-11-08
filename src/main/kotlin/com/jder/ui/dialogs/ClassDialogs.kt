@@ -45,7 +45,7 @@ fun ClassPropertiesDialog(
     var docs by remember(entityId) { mutableStateOf(documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Proprietà Classe") },
+        title = { Text(UiStrings.CLASS_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -55,7 +55,7 @@ fun ClassPropertiesDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) {
                     it.display
                 }
@@ -65,14 +65,14 @@ fun ClassPropertiesDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text("Astratta", style = MaterialTheme.typography.bodyMedium)
+                        Text(UiStrings.CLASS_ABSTRACT, style = MaterialTheme.typography.bodyMedium)
                         Switch(checked = abstract, onCheckedChange = { abstract = it })
                     }
                 }
                 OutlinedTextField(
                     value = docs,
                     onValueChange = { docs = it },
-                    label = { Text("Documentazione") },
+                    label = { Text(UiStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 4,
                 )
@@ -105,10 +105,16 @@ fun ClassMemberDialog(
     var visibility by remember { mutableStateOf(initialMember?.visibility ?: Visibility.PUBLIC) }
     var isStatic by remember { mutableStateOf(initialMember?.isStatic ?: false) }
     var isAbstract by remember { mutableStateOf(initialMember?.isAbstract ?: false) }
-    val noun = if (isMethod) "Metodo" else "Attributo"
+    val title =
+        when {
+            initialMember == null && isMethod -> UiStrings.ADD_METHOD
+            initialMember == null -> UiStrings.ADD_ATTRIBUTE
+            isMethod -> UiStrings.EDIT_METHOD
+            else -> UiStrings.EDIT_ATTRIBUTE
+        }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (initialMember == null) "Aggiungi $noun" else "Modifica $noun") },
+        title = { Text(title) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(
@@ -125,12 +131,12 @@ fun ClassMemberDialog(
                     OutlinedTextField(
                         value = memberType,
                         onValueChange = { memberType = it },
-                        label = { Text("Tipo") },
+                        label = { Text(UiStrings.TYPE) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                 }
-                Text("Visibilità:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.VISIBILITY}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(Visibility.entries, visibility, { visibility = it }) {
                     "${it.symbol}  ${it.display}"
                 }
@@ -139,7 +145,7 @@ fun ClassMemberDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text("Statico", style = MaterialTheme.typography.bodyMedium)
+                    Text(UiStrings.STATIC, style = MaterialTheme.typography.bodyMedium)
                     Switch(checked = isStatic, onCheckedChange = { isStatic = it })
                 }
                 if (isMethod) {
@@ -148,7 +154,7 @@ fun ClassMemberDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text("Astratto", style = MaterialTheme.typography.bodyMedium)
+                        Text(UiStrings.METHOD_ABSTRACT, style = MaterialTheme.typography.bodyMedium)
                         Switch(checked = isAbstract, onCheckedChange = { isAbstract = it })
                     }
                 }
@@ -196,23 +202,23 @@ fun ClassRelationPropertiesDialog(
     var label by remember(relation.id) { mutableStateOf(relation.label) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Modifica Relazione") },
+        title = { Text(UiStrings.EDIT_RELATION) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(ClassRelationType.entries, relType, { relType = it }) { it.display }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = sourceMulti,
                         onValueChange = { sourceMulti = it },
-                        label = { Text("Moltep. sorgente") },
+                        label = { Text(UiStrings.SOURCE_MULTIPLICITY_SHORT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                     OutlinedTextField(
                         value = targetMulti,
                         onValueChange = { targetMulti = it },
-                        label = { Text("Moltep. destinazione") },
+                        label = { Text(UiStrings.TARGET_MULTIPLICITY_SHORT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
@@ -220,7 +226,7 @@ fun ClassRelationPropertiesDialog(
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text("Etichetta") },
+                    label = { Text(UiStrings.LABEL) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -248,7 +254,7 @@ fun SelectClassRelationTypeDialog(
     var selected by remember { mutableStateOf(ClassRelationType.ASSOCIATION) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Tipo di Relazione") },
+        title = { Text(UiStrings.RELATION_TYPE) },
         text = {
             RadioOptionList(ClassRelationType.entries, selected, { selected = it }) { it.display }
         },

@@ -68,7 +68,7 @@ import java.awt.Dimension
 fun main(args: Array<String>) {
     val options = parseCommandLine(args)
     if (options.showHelp) {
-        println(COMMAND_LINE_USAGE)
+        println(UiStrings.COMMAND_LINE_USAGE)
         return
     }
     options.warnings.forEach(Toasts::warning)
@@ -121,7 +121,7 @@ fun main(args: Array<String>) {
         LaunchedEffect(Unit) {
             updateUrl =
                 UpdateChecker.findUpdate()
-                    .onFailure { logError("Controllo degli aggiornamenti non riuscito", it) }
+                    .onFailure { logError(UiStrings.UPDATE_CHECK_FAILED, it) }
                     .getOrNull()
         }
         fun hasUnsavedChanges() =
@@ -257,8 +257,8 @@ fun main(args: Array<String>) {
                 if (showExitDialog) {
                     AlertDialog(
                         onDismissRequest = { showExitDialog = false },
-                        title = { Text("Conferma chiusura") },
-                        text = { Text("Ci sono modifiche non salvate. Vuoi uscire comunque?") },
+                        title = { Text(UiStrings.CONFIRM_EXIT_TITLE) },
+                        text = { Text(UiStrings.CONFIRM_EXIT_MESSAGE) },
                         confirmButton = {
                             TextButton(
                                 onClick = {

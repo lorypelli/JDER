@@ -8,6 +8,7 @@ import com.jder.domain.model.UseCaseDiagram
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseRelation
 import com.jder.domain.model.UseCaseToolMode
+import com.jder.ui.strings.UiStrings
 
 private const val ACTOR_LABEL_HEIGHT = 20f
 
@@ -117,11 +118,11 @@ internal fun handleUseCaseTap(
             hitTestUseCaseDiagram(state.diagram, offset)?.let { selectUseCaseElement(state, it) }
                 ?: state.clearSelection()
         UseCaseToolMode.ACTOR -> {
-            state.addActor(offset.x - 25f, offset.y - 45f, "Nuovo Attore")
+            state.addActor(offset.x - 25f, offset.y - 45f, UiStrings.NEW_ACTOR)
             state.toolMode = UseCaseToolMode.SELECT
         }
         UseCaseToolMode.USE_CASE -> {
-            state.addUseCase(offset.x - 80f, offset.y - 30f, "Nuovo Caso d'Uso")
+            state.addUseCase(offset.x - 80f, offset.y - 30f, UiStrings.NEW_USE_CASE)
             state.toolMode = UseCaseToolMode.SELECT
         }
         UseCaseToolMode.RELATION -> {
@@ -141,11 +142,11 @@ internal fun handleUseCaseTap(
             }
         }
         UseCaseToolMode.NOTE -> {
-            state.addNote(offset.x - 120f, offset.y - 90f, "Nuova Nota")
+            state.addNote(offset.x - 120f, offset.y - 90f, UiStrings.NEW_NOTE)
             state.toolMode = UseCaseToolMode.SELECT
         }
         UseCaseToolMode.SYSTEM -> {
-            state.addSystemBoundary(offset.x - 200f, offset.y - 150f, "Sistema")
+            state.addSystemBoundary(offset.x - 200f, offset.y - 150f, UiStrings.SYSTEM)
             state.toolMode = UseCaseToolMode.SELECT
         }
     }
