@@ -1,6 +1,6 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.LogicStrings
 import kotlin.math.roundToInt
 import kotlinx.serialization.Serializable
 
@@ -33,8 +33,8 @@ enum class LogicComponentType {
     val display: String
         get() =
             when (this) {
-                INPUT -> UiStrings.INPUT
-                OUTPUT -> UiStrings.OUTPUT
+                INPUT -> LogicStrings.INPUT
+                OUTPUT -> LogicStrings.OUTPUT
                 else -> name
             }
 

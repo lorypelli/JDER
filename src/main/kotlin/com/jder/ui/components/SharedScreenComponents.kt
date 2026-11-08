@@ -18,7 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.FileStrings
 
 data class PendingRelation(val sourceId: String, val targetId: String)
 
@@ -68,10 +69,10 @@ fun <T> RadioOptionList(
 fun ConfirmNewDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.CONFIRM_NEW_DIAGRAM_TITLE) },
-        text = { Text(UiStrings.CONFIRM_NEW_DIAGRAM_MESSAGE) },
-        confirmButton = { TextButton(onClick = onConfirm) { Text(UiStrings.YES) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.NO) } },
+        title = { Text(FileStrings.CONFIRM_NEW_DIAGRAM_TITLE) },
+        text = { Text(FileStrings.CONFIRM_NEW_DIAGRAM_MESSAGE) },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(CommonStrings.YES) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.NO) } },
     )
 }
 
@@ -79,9 +80,9 @@ fun ConfirmNewDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
 fun ConfirmOpenDiagramDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.CONFIRM_OPEN_DIAGRAM_TITLE) },
-        text = { Text(UiStrings.CONFIRM_OPEN_DIAGRAM_MESSAGE) },
-        confirmButton = { TextButton(onClick = onConfirm) { Text(UiStrings.YES) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.NO) } },
+        title = { Text(FileStrings.CONFIRM_OPEN_DIAGRAM_TITLE) },
+        text = { Text(FileStrings.CONFIRM_OPEN_DIAGRAM_MESSAGE) },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(CommonStrings.YES) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.NO) } },
     )
 }

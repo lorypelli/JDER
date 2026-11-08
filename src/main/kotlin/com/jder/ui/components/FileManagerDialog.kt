@@ -51,7 +51,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.FileStrings
 import java.io.File
 
 enum class FileManagerMode {
@@ -137,7 +138,10 @@ fun FileManagerDialog(
                         },
                         enabled = currentDirectory.parentFile != null,
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = UiStrings.PARENT_FOLDER)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = FileStrings.PARENT_FOLDER,
+                        )
                     }
                     OutlinedTextField(
                         value = pathInput,
@@ -148,15 +152,15 @@ fun FileManagerDialog(
                                     val newPath = File(pathInput.text)
                                     when {
                                         !newPath.exists() -> {
-                                            invalidPathError = UiStrings.PATH_NOT_FOUND
+                                            invalidPathError = FileStrings.PATH_NOT_FOUND
                                             showInvalidPathDialog = true
                                         }
                                         !newPath.isDirectory -> {
-                                            invalidPathError = UiStrings.PATH_NOT_FOLDER
+                                            invalidPathError = FileStrings.PATH_NOT_FOLDER
                                             showInvalidPathDialog = true
                                         }
                                         !newPath.canRead() -> {
-                                            invalidPathError = UiStrings.FOLDER_ACCESS_DENIED
+                                            invalidPathError = FileStrings.FOLDER_ACCESS_DENIED
                                             showInvalidPathDialog = true
                                         }
                                         else -> {
@@ -170,7 +174,7 @@ fun FileManagerDialog(
                                 }
                             },
                         singleLine = true,
-                        label = { Text(UiStrings.PATH) },
+                        label = { Text(FileStrings.PATH) },
                         leadingIcon = {
                             Icon(
                                 Icons.Default.Folder,
@@ -186,7 +190,7 @@ fun FileManagerDialog(
                             selectedFile = null
                         }
                     ) {
-                        Icon(Icons.Default.Refresh, contentDescription = UiStrings.RELOAD)
+                        Icon(Icons.Default.Refresh, contentDescription = FileStrings.RELOAD)
                     }
                 }
                 if (mode == FileManagerMode.OPEN && fileExtension == ".json") {
@@ -196,7 +200,7 @@ fun FileManagerDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = UiStrings.SHOW_ONLY_JSON,
+                            text = FileStrings.SHOW_ONLY_JSON,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
@@ -223,7 +227,7 @@ fun FileManagerDialog(
                                     allFiles
                                 }
                             } catch (e: Exception) {
-                                logError(UiStrings.cannotRead(currentDirectory.path), e)
+                                logError(FileStrings.cannotRead(currentDirectory.path), e)
                                 null
                             }
                         }
@@ -250,8 +254,8 @@ fun FileManagerDialog(
                                             ),
                                 )
                                 Text(
-                                    if (isUnreadable) UiStrings.UNREADABLE_FOLDER
-                                    else UiStrings.EMPTY_FOLDER,
+                                    if (isUnreadable) FileStrings.UNREADABLE_FOLDER
+                                    else FileStrings.EMPTY_FOLDER,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color =
                                         if (isUnreadable) MaterialTheme.colorScheme.error
@@ -310,7 +314,7 @@ fun FileManagerDialog(
                             fileName = it
                             errorMessage = null
                         },
-                        label = { Text(UiStrings.FILE_NAME) },
+                        label = { Text(FileStrings.FILE_NAME) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         trailingIcon = {
@@ -337,7 +341,7 @@ fun FileManagerDialog(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) }
+                    TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = {
@@ -349,11 +353,11 @@ fun FileManagerDialog(
                                             trimmedName.dropLast(fileExtension.length).trim()
                                         else trimmedName
                                     if (baseName.isBlank()) {
-                                        errorMessage = UiStrings.FILE_NAME_REQUIRED
+                                        errorMessage = FileStrings.FILE_NAME_REQUIRED
                                         return@Button
                                     }
                                     if (baseName.any { it in "/\\:*?\"<>|" }) {
-                                        errorMessage = UiStrings.FILE_NAME_INVALID
+                                        errorMessage = FileStrings.FILE_NAME_INVALID
                                         return@Button
                                     }
                                     val file = File(currentDirectory, "$baseName$fileExtension")
@@ -387,7 +391,10 @@ fun FileManagerDialog(
                             modifier = Modifier.size(18.dp),
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(if (mode == FileManagerMode.SAVE) UiStrings.SAVE else UiStrings.OPEN)
+                        Text(
+                            if (mode == FileManagerMode.SAVE) CommonStrings.SAVE
+                            else FileStrings.OPEN
+                        )
                     }
                 }
             }
@@ -403,7 +410,7 @@ fun FileManagerDialog(
             },
             title = {
                 Text(
-                    text = UiStrings.INVALID_PATH,
+                    text = FileStrings.INVALID_PATH,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
@@ -421,7 +428,7 @@ fun FileManagerDialog(
                             )
                     }
                 ) {
-                    Text(UiStrings.OK)
+                    Text(CommonStrings.OK)
                 }
             },
             shape = RoundedCornerShape(28.dp),
@@ -435,14 +442,14 @@ fun FileManagerDialog(
             },
             title = {
                 Text(
-                    text = UiStrings.CONFIRM_OVERWRITE,
+                    text = FileStrings.CONFIRM_OVERWRITE,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
             },
             text = {
                 Text(
-                    text = UiStrings.fileExists(fileToOverwrite?.name.orEmpty()),
+                    text = FileStrings.fileExists(fileToOverwrite?.name.orEmpty()),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             },
@@ -454,7 +461,7 @@ fun FileManagerDialog(
                         fileToOverwrite = null
                     }
                 ) {
-                    Text(UiStrings.OVERWRITE)
+                    Text(FileStrings.OVERWRITE)
                 }
             },
             dismissButton = {
@@ -464,7 +471,7 @@ fun FileManagerDialog(
                         fileToOverwrite = null
                     }
                 ) {
-                    Text(UiStrings.CANCEL)
+                    Text(CommonStrings.CANCEL)
                 }
             },
             shape = RoundedCornerShape(28.dp),

@@ -4,8 +4,9 @@ import com.jder.data.DiagramFileRepository
 import com.jder.data.detectDiagramType
 import com.jder.domain.model.DiagramEditorState
 import com.jder.domain.model.DiagramType
+import com.jder.strings.CommandLineStrings
+import com.jder.strings.FileStrings
 import com.jder.ui.components.Toasts
-import com.jder.ui.strings.UiStrings
 import java.io.File
 
 private const val JSON_OPTION = "--json"
@@ -28,14 +29,14 @@ fun parseCommandLine(args: Array<String>): CommandLineOptions {
         val arg = args[index++]
         val isOption = arg.startsWith("-")
         if (!isOption) {
-            warnings += UiStrings.unexpectedArgument(arg)
+            warnings += CommandLineStrings.unexpectedArgument(arg)
             continue
         }
         val option = arg.substringBefore('=')
         when {
             option == "-h" || option == "--help" -> return CommandLineOptions(showHelp = true)
             option != JSON_OPTION && option != PNG_OPTION -> {
-                warnings += UiStrings.unknownOption(option)
+                warnings += CommandLineStrings.unknownOption(option)
                 continue
             }
         }
@@ -45,8 +46,8 @@ fun parseCommandLine(args: Array<String>): CommandLineOptions {
                 else -> args.getOrNull(index)?.takeUnless { it.startsWith("-") }?.also { index++ }
             }
         when {
-            path.isNullOrEmpty() -> warnings += UiStrings.missingFileAfter(option)
-            option in files -> warnings += UiStrings.repeatedOption(option)
+            path.isNullOrEmpty() -> warnings += CommandLineStrings.missingFileAfter(option)
+            option in files -> warnings += CommandLineStrings.repeatedOption(option)
             else -> files[option] = File(path).absoluteFile
         }
     }
@@ -61,11 +62,11 @@ private fun File.withExtension(extension: String): File =
 private fun File.takeIfUsable(option: String, warnings: MutableList<String>): File? {
     val problem =
         when {
-            isDirectory -> UiStrings.isFolder(path)
-            parentFile?.isDirectory != true -> UiStrings.missingFolder(parent)
+            isDirectory -> CommandLineStrings.isFolder(path)
+            parentFile?.isDirectory != true -> CommandLineStrings.missingFolder(parent)
             else -> return this
         }
-    warnings += UiStrings.optionIgnored(option, problem)
+    warnings += CommandLineStrings.optionIgnored(option, problem)
     return null
 }
 
@@ -116,8 +117,10 @@ fun <T> openStartupDiagram(
 }
 
 private fun warnCannotOpen(file: File, cause: Throwable, options: CommandLineOptions) {
-    Toasts.warning(UiStrings.cannotOpen(file.name), cause)
+    Toasts.warning(FileStrings.cannotOpen(file.name), cause)
     if (options.pngFile != null) {
-        Toasts.warning(UiStrings.optionIgnored(PNG_OPTION, UiStrings.JSON_CANNOT_BE_OPENED))
+        Toasts.warning(
+            CommandLineStrings.optionIgnored(PNG_OPTION, CommandLineStrings.JSON_CANNOT_BE_OPENED)
+        )
     }
 }

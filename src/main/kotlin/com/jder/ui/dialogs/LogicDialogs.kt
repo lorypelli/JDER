@@ -50,8 +50,10 @@ import com.jder.domain.model.LogicSimulator
 import com.jder.domain.model.LogicTruthTable
 import com.jder.domain.model.MAX_GATE_INPUTS
 import com.jder.domain.model.MIN_GATE_INPUTS
+import com.jder.strings.CommonStrings
+import com.jder.strings.Localization
+import com.jder.strings.LogicStrings
 import com.jder.ui.components.CustomIcons
-import com.jder.ui.strings.UiStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,9 +74,9 @@ fun LogicComponentPropertiesDialog(
         title = {
             Text(
                 when (component.type) {
-                    LogicComponentType.INPUT -> UiStrings.INPUT_PROPERTIES
-                    LogicComponentType.OUTPUT -> UiStrings.OUTPUT_PROPERTIES
-                    else -> UiStrings.GATE_PROPERTIES
+                    LogicComponentType.INPUT -> LogicStrings.INPUT_PROPERTIES
+                    LogicComponentType.OUTPUT -> LogicStrings.OUTPUT_PROPERTIES
+                    else -> LogicStrings.GATE_PROPERTIES
                 }
             )
         },
@@ -83,13 +85,15 @@ fun LogicComponentPropertiesDialog(
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text(UiStrings.LABEL) },
-                    placeholder = { if (component.type.isGate) Text(UiStrings.GATE_LABEL_EXAMPLE) },
+                    label = { Text(CommonStrings.LABEL) },
+                    placeholder = {
+                        if (component.type.isGate) Text(LogicStrings.GATE_LABEL_EXAMPLE)
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 if (component.type.isGate) {
-                    Text("${UiStrings.GATE_TYPE}:", style = MaterialTheme.typography.labelMedium)
+                    Text("${LogicStrings.GATE_TYPE}:", style = MaterialTheme.typography.labelMedium)
                     LogicComponentType.gates.chunked(4).forEach { row ->
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             row.forEach { gate ->
@@ -114,7 +118,10 @@ fun LogicComponentPropertiesDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Text(UiStrings.INPUT_COUNT, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                LogicStrings.INPUT_COUNT,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 IconButton(
                                     onClick = { inputCount-- },
@@ -122,7 +129,7 @@ fun LogicComponentPropertiesDialog(
                                 ) {
                                     Icon(
                                         Icons.Default.Remove,
-                                        contentDescription = UiStrings.REMOVE_INPUT,
+                                        contentDescription = LogicStrings.REMOVE_INPUT,
                                     )
                                 }
                                 Text("$inputCount", style = MaterialTheme.typography.titleMedium)
@@ -132,7 +139,7 @@ fun LogicComponentPropertiesDialog(
                                 ) {
                                     Icon(
                                         Icons.Default.Add,
-                                        contentDescription = UiStrings.ADD_INPUT,
+                                        contentDescription = LogicStrings.ADD_INPUT,
                                     )
                                 }
                             }
@@ -146,7 +153,7 @@ fun LogicComponentPropertiesDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            "${UiStrings.VALUE}: ${if (value) "1" else "0"}",
+                            "${LogicStrings.VALUE}: ${if (value) "1" else "0"}",
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Switch(checked = value, onCheckedChange = { value = it })
@@ -161,10 +168,10 @@ fun LogicComponentPropertiesDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -208,21 +215,21 @@ fun TruthTableDialog(diagram: LogicDiagram, onDismiss: () -> Unit) {
     val hasRows = table != null && table.outputs.isNotEmpty()
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.TRUTH_TABLE) },
+        title = { Text(LogicStrings.TRUTH_TABLE) },
         text = {
             when {
                 table == null ->
                     Text(
-                        UiStrings.tooManyTruthTableInputs(
+                        LogicStrings.tooManyTruthTableInputs(
                             inputCount,
                             LogicSimulator.MAX_TRUTH_TABLE_INPUTS,
                         )
                     )
-                table.outputs.isEmpty() -> Text(UiStrings.TRUTH_TABLE_NEEDS_OUTPUT)
+                table.outputs.isEmpty() -> Text(LogicStrings.TRUTH_TABLE_NEEDS_OUTPUT)
                 else -> TruthTableContent(table, diagram)
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CLOSE) } },
         dismissButton =
             if (hasRows) {
                 {
@@ -233,7 +240,7 @@ fun TruthTableDialog(diagram: LogicDiagram, onDismiss: () -> Unit) {
                             }
                         }
                     ) {
-                        Text(UiStrings.COPY)
+                        Text(CommonStrings.COPY)
                     }
                 }
             } else null,
@@ -279,7 +286,7 @@ private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
             }
         }
         val expressions =
-            remember(diagram, UiStrings.language) {
+            remember(diagram, Localization.language) {
                 table.outputs.mapNotNull { output ->
                     LogicSimulator.expression(diagram, output.id)?.let {
                         "${columnName(output)} = $it"
@@ -288,7 +295,7 @@ private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
             }
         if (expressions.isNotEmpty()) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("${UiStrings.EXPRESSIONS}:", style = MaterialTheme.typography.labelMedium)
+                Text("${LogicStrings.EXPRESSIONS}:", style = MaterialTheme.typography.labelMedium)
                 expressions.forEach { Text(it, style = MaterialTheme.typography.bodyMedium) }
             }
         }

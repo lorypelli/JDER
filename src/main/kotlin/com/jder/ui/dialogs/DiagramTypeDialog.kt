@@ -50,10 +50,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.jder.domain.model.DiagramType
+import com.jder.strings.DiagramTypeStrings
 import com.jder.ui.components.ToolbarPaletteTheme
 import com.jder.ui.components.diagramTypeKeys
 import com.jder.ui.components.logError
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.shortcutLabel
 import kotlinx.coroutines.Dispatchers
@@ -117,7 +117,7 @@ private fun DiagramTypeGrid(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = UiStrings.CHOOSE_DIAGRAM_TYPE,
+                text = DiagramTypeStrings.CHOOSE_DIAGRAM_TYPE,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f),
@@ -208,6 +208,6 @@ private fun loadScreenshot(path: String): ImageBitmap? =
     try {
         useResource(path, ::loadImageBitmap)
     } catch (e: Exception) {
-        logError(UiStrings.previewLoadFailed(path), e)
+        logError(DiagramTypeStrings.previewLoadFailed(path), e)
         null
     }

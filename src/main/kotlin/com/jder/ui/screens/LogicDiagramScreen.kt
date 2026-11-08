@@ -28,6 +28,8 @@ import com.jder.domain.model.LogicDiagramState
 import com.jder.domain.model.LogicToolMode
 import com.jder.domain.model.MAX_GATE_INPUTS
 import com.jder.domain.model.MIN_GATE_INPUTS
+import com.jder.strings.CommonStrings
+import com.jder.strings.LogicStrings
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -42,7 +44,6 @@ import com.jder.ui.components.Toasts
 import com.jder.ui.dialogs.LogicComponentPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.TruthTableDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderLogicDiagramToBitmap
 
@@ -67,12 +68,12 @@ fun LogicDiagramScreen(
         when (type) {
             LogicContextMenuType.COMPONENT ->
                 when (state.component(state.selectedComponentId)?.type) {
-                    LogicComponentType.INPUT -> UiStrings.INPUT_ACTIONS
-                    LogicComponentType.OUTPUT -> UiStrings.OUTPUT_ACTIONS
-                    else -> UiStrings.GATE_ACTIONS
+                    LogicComponentType.INPUT -> LogicStrings.INPUT_ACTIONS
+                    LogicComponentType.OUTPUT -> LogicStrings.OUTPUT_ACTIONS
+                    else -> LogicStrings.GATE_ACTIONS
                 }
-            LogicContextMenuType.WIRE -> UiStrings.WIRE_ACTIONS
-            LogicContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
+            LogicContextMenuType.WIRE -> LogicStrings.WIRE_ACTIONS
+            LogicContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
         }
     fun actions(type: LogicContextMenuType): List<ContextMenuItem> {
         val component = state.component(state.selectedComponentId)
@@ -80,13 +81,13 @@ fun LogicDiagramScreen(
             when (type) {
                 LogicContextMenuType.COMPONENT -> {
                     add(
-                        ContextMenuItem(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
+                        ContextMenuItem(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
                             showComponentDialog = true
                         }
                     )
                     if (component?.type == LogicComponentType.INPUT) {
                         add(
-                            ContextMenuItem(UiStrings.TOGGLE_VALUE, Icons.Default.ToggleOn) {
+                            ContextMenuItem(LogicStrings.TOGGLE_VALUE, Icons.Default.ToggleOn) {
                                 state.toggleInput(component.id)
                             }
                         )
@@ -94,7 +95,7 @@ fun LogicDiagramScreen(
                     if (component != null && component.type.supportsMultipleInputs) {
                         add(
                             ContextMenuItem(
-                                UiStrings.ADD_INPUT,
+                                LogicStrings.ADD_INPUT,
                                 Icons.Default.Add,
                                 enabled = component.inputPinCount < MAX_GATE_INPUTS,
                             ) {
@@ -103,7 +104,7 @@ fun LogicDiagramScreen(
                         )
                         add(
                             ContextMenuItem(
-                                UiStrings.REMOVE_INPUT,
+                                LogicStrings.REMOVE_INPUT,
                                 Icons.Default.Remove,
                                 enabled = component.inputPinCount > MIN_GATE_INPUTS,
                             ) {
@@ -114,14 +115,14 @@ fun LogicDiagramScreen(
                 }
                 LogicContextMenuType.NOTE ->
                     add(
-                        ContextMenuItem(UiStrings.EDIT_TEXT, Icons.Default.Edit) {
+                        ContextMenuItem(CommonStrings.EDIT_TEXT, Icons.Default.Edit) {
                             showNoteDialog = true
                         }
                     )
                 LogicContextMenuType.WIRE -> {}
             }
             add(
-                ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+                ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                     state.deleteSelection()?.let(Toasts::success)
                 }
             )
@@ -134,35 +135,35 @@ fun LogicDiagramScreen(
         renderImage = {
             renderLogicDiagramToBitmap(state.diagram, state.simulation, state.showSimulation, it)
         },
-        emptyHint = UiStrings.LOGIC_EMPTY_HINT,
+        emptyHint = LogicStrings.LOGIC_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     Icons.Default.ToggleOn,
-                    UiStrings.INPUT_TOOL,
-                    UiStrings.INPUT,
+                    LogicStrings.INPUT_TOOL,
+                    LogicStrings.INPUT,
                     state.toolMode == LogicToolMode.INPUT,
                 ) {
                     state.toolMode = LogicToolMode.INPUT
                 },
                 DiagramTool.Mode(
                     Icons.Default.Lightbulb,
-                    UiStrings.OUTPUT,
-                    UiStrings.OUTPUT,
+                    LogicStrings.OUTPUT,
+                    LogicStrings.OUTPUT,
                     state.toolMode == LogicToolMode.OUTPUT,
                 ) {
                     state.toolMode = LogicToolMode.OUTPUT
                 },
                 DiagramTool.Divider,
                 DiagramTool.Group(
-                    UiStrings.LOGIC_GATES,
+                    LogicStrings.LOGIC_GATES,
                     LogicToolMode.entries.mapNotNull { mode ->
                         mode.componentType
                             ?.takeIf { it.isGate }
                             ?.let {
                                 DiagramTool.Mode(
                                     CustomIcons.gate(it),
-                                    UiStrings.gate(it.display),
+                                    LogicStrings.gate(it.display),
                                     it.display,
                                     state.toolMode == mode,
                                 ) {
@@ -174,8 +175,8 @@ fun LogicDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Mode(
                     CustomIcons.Wire,
-                    UiStrings.WIRE_TOOL,
-                    UiStrings.WIRE,
+                    LogicStrings.WIRE_TOOL,
+                    LogicStrings.WIRE,
                     state.toolMode == LogicToolMode.WIRE,
                 ) {
                     state.toolMode = LogicToolMode.WIRE
@@ -183,8 +184,8 @@ fun LogicDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == LogicToolMode.NOTE,
                 ) {
                     state.toolMode = LogicToolMode.NOTE
@@ -192,16 +193,16 @@ fun LogicDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Action(
                     Icons.Default.TableChart,
-                    UiStrings.TRUTH_TABLE,
-                    UiStrings.TRUTH_TABLE_ELLIPSIS,
+                    LogicStrings.TRUTH_TABLE,
+                    LogicStrings.TRUTH_TABLE_ELLIPSIS,
                 ) {
                     showTruthTable = true
                 },
                 DiagramTool.Toggle(
                     if (state.showSimulation) Icons.Default.FlashOn else Icons.Default.FlashOff,
-                    if (state.showSimulation) UiStrings.HIDE_SIMULATION
-                    else UiStrings.SHOW_SIMULATION,
-                    UiStrings.SHOW_SIMULATION_MENU,
+                    if (state.showSimulation) LogicStrings.HIDE_SIMULATION
+                    else LogicStrings.SHOW_SIMULATION,
+                    LogicStrings.SHOW_SIMULATION_MENU,
                     state.showSimulation,
                 ) {
                     state.showSimulation = !state.showSimulation
@@ -236,7 +237,7 @@ fun LogicDiagramScreen(
                 modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
             ) {
                 Text(
-                    UiStrings.CIRCUIT_OSCILLATES,
+                    LogicStrings.CIRCUIT_OSCILLATES,
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -262,7 +263,7 @@ fun LogicDiagramScreen(
                         it.copy(label = label, type = type, inputCount = inputCount, value = value)
                     }
                     showComponentDialog = false
-                    Toasts.success(UiStrings.COMPONENT_UPDATED)
+                    Toasts.success(LogicStrings.COMPONENT_UPDATED)
                 },
             )
         }
@@ -278,7 +279,7 @@ fun LogicDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }

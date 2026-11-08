@@ -17,6 +17,8 @@ import com.jder.domain.model.Connection
 import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.ERToolMode
 import com.jder.domain.model.isManyToMany
+import com.jder.strings.CommonStrings
+import com.jder.strings.ERStrings
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -35,7 +37,6 @@ import com.jder.ui.dialogs.EditConnectionDialog
 import com.jder.ui.dialogs.EntityPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.RelationshipPropertiesDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderERDiagramToBitmap
 
@@ -63,7 +64,7 @@ fun ERDiagramScreen(
     fun convertSelectedRelationship() {
         state.selectedRelationshipId?.let {
             state.convertToAssociativeEntity(it)
-            Toasts.success(UiStrings.RELATIONSHIP_CONVERTED)
+            Toasts.success(ERStrings.RELATIONSHIP_CONVERTED)
         }
     }
     fun selectedType(): ERContextMenuType? =
@@ -75,17 +76,17 @@ fun ERDiagramScreen(
         }
     fun actionsTitle(type: ERContextMenuType): String =
         when (type) {
-            ERContextMenuType.ENTITY -> UiStrings.ENTITY_ACTIONS
-            ERContextMenuType.RELATIONSHIP -> UiStrings.RELATION_ACTIONS
-            ERContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
+            ERContextMenuType.ENTITY -> ERStrings.ENTITY_ACTIONS
+            ERContextMenuType.RELATIONSHIP -> CommonStrings.RELATION_ACTIONS
+            ERContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
         }
     fun actions(type: ERContextMenuType): List<ContextMenuItem> {
         val isManyToMany = state.relationship(state.selectedRelationshipId)?.isManyToMany() == true
         return buildList {
             add(
                 ContextMenuItem(
-                    if (type == ERContextMenuType.NOTE) UiStrings.EDIT_TEXT
-                    else UiStrings.EDIT_PROPERTIES,
+                    if (type == ERContextMenuType.NOTE) CommonStrings.EDIT_TEXT
+                    else CommonStrings.EDIT_PROPERTIES,
                     Icons.Default.Edit,
                 ) {
                     openEditor(type)
@@ -93,20 +94,20 @@ fun ERDiagramScreen(
             )
             if (type != ERContextMenuType.NOTE) {
                 add(
-                    ContextMenuItem(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add) {
+                    ContextMenuItem(CommonStrings.ADD_ATTRIBUTE, Icons.Default.Add) {
                         showAddAttributeDialog = true
                     }
                 )
             }
             if (type == ERContextMenuType.RELATIONSHIP) {
                 add(
-                    ContextMenuItem(UiStrings.ADD_CONNECTION, Icons.Default.Link) {
+                    ContextMenuItem(ERStrings.ADD_CONNECTION, Icons.Default.Link) {
                         showCreateConnectionDialog = true
                     }
                 )
                 add(
                     ContextMenuItem(
-                        UiStrings.CONVERT_TO_ASSOCIATIVE_ENTITY,
+                        ERStrings.CONVERT_TO_ASSOCIATIVE_ENTITY,
                         Icons.Default.AutoFixHigh,
                         enabled = isManyToMany,
                         onClick = { convertSelectedRelationship() },
@@ -114,7 +115,7 @@ fun ERDiagramScreen(
                 )
             }
             add(
-                ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+                ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                     state.deleteSelection()?.let(Toasts::success)
                 }
             )
@@ -125,29 +126,29 @@ fun ERDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderERDiagramToBitmap(state.diagram, it) },
-        emptyHint = UiStrings.ER_EMPTY_HINT,
+        emptyHint = ERStrings.ER_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.Rectangle,
-                    UiStrings.CREATE_ENTITY,
-                    UiStrings.ENTITY,
+                    ERStrings.CREATE_ENTITY,
+                    ERStrings.ENTITY,
                     state.toolMode == ERToolMode.ENTITY,
                 ) {
                     state.toolMode = ERToolMode.ENTITY
                 },
                 DiagramTool.Mode(
                     CustomIcons.Diamond,
-                    UiStrings.CREATE_RELATIONSHIP,
-                    UiStrings.RELATION,
+                    ERStrings.CREATE_RELATIONSHIP,
+                    CommonStrings.RELATION,
                     state.toolMode == ERToolMode.RELATIONSHIP,
                 ) {
                     state.toolMode = ERToolMode.RELATIONSHIP
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == ERToolMode.NOTE,
                 ) {
                     state.toolMode = ERToolMode.NOTE
@@ -170,7 +171,7 @@ fun ERDiagramScreen(
                     state.selectedRelationshipId?.let {
                         state.deleteAttributeFromRelationship(it, attributeId)
                     }
-                    Toasts.success(UiStrings.ATTRIBUTE_DELETED)
+                    Toasts.success(CommonStrings.ATTRIBUTE_DELETED)
                 },
                 onEditConnection = { entityId, connection ->
                     connectionToEdit = ConnectionEdit(entityId, connection)
@@ -178,7 +179,7 @@ fun ERDiagramScreen(
                 onDeleteConnection = { entityId ->
                     state.selectedRelationshipId?.let {
                         state.deleteConnection(it, entityId)
-                        Toasts.success(UiStrings.CONNECTION_DELETED)
+                        Toasts.success(ERStrings.CONNECTION_DELETED)
                     }
                 },
                 onConvertToAssociativeEntity = ::convertSelectedRelationship,
@@ -228,7 +229,7 @@ fun ERDiagramScreen(
                 onConfirm = { updated ->
                     state.updateEntity(entity.id) { updated }
                     showEntityDialog = false
-                    Toasts.success(UiStrings.ENTITY_UPDATED)
+                    Toasts.success(ERStrings.ENTITY_UPDATED)
                 },
             )
         }
@@ -241,7 +242,7 @@ fun ERDiagramScreen(
                 onConfirm = { updated ->
                     state.updateRelationship(it.id) { updated }
                     showRelationshipDialog = false
-                    Toasts.success(UiStrings.RELATION_UPDATED)
+                    Toasts.success(CommonStrings.RELATION_UPDATED)
                 },
             )
         }
@@ -257,7 +258,7 @@ fun ERDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -271,7 +272,7 @@ fun ERDiagramScreen(
                     state.addAttributeToRelationship(it, attribute)
                 }
                 showAddAttributeDialog = false
-                Toasts.success(UiStrings.ATTRIBUTE_ADDED)
+                Toasts.success(CommonStrings.ATTRIBUTE_ADDED)
             },
         )
     }
@@ -287,7 +288,7 @@ fun ERDiagramScreen(
                     state.updateAttributeInRelationship(it, attribute.id, updated)
                 }
                 attributeToEdit = null
-                Toasts.success(UiStrings.ATTRIBUTE_UPDATED)
+                Toasts.success(CommonStrings.ATTRIBUTE_UPDATED)
             },
         )
     }
@@ -302,13 +303,13 @@ fun ERDiagramScreen(
             CreateConnectionDialog(
                 entities = state.diagram.entities.filter { it.id !in connectedIds },
                 emptyMessage =
-                    if (state.diagram.entities.isEmpty()) UiStrings.NO_ENTITIES_YET
-                    else UiStrings.ALL_ENTITIES_CONNECTED,
+                    if (state.diagram.entities.isEmpty()) ERStrings.NO_ENTITIES_YET
+                    else ERStrings.ALL_ENTITIES_CONNECTED,
                 onDismiss = { showCreateConnectionDialog = false },
                 onConfirm = { entityId, cardinality ->
                     state.addConnection(relId, entityId, cardinality)
                     showCreateConnectionDialog = false
-                    Toasts.success(UiStrings.CONNECTION_CREATED)
+                    Toasts.success(ERStrings.CONNECTION_CREATED)
                 },
             )
         }
@@ -330,7 +331,7 @@ fun ERDiagramScreen(
                 onConfirm = { newEntityId, newCardinality ->
                     state.updateConnection(relId, entityId, newEntityId, newCardinality)
                     connectionToEdit = null
-                    Toasts.success(UiStrings.CONNECTION_UPDATED)
+                    Toasts.success(ERStrings.CONNECTION_UPDATED)
                 },
             )
         }

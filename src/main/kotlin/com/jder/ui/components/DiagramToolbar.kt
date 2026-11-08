@@ -24,7 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.DiagramEditorState
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.MenuStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.shortcutLabel
@@ -96,20 +97,20 @@ fun DiagramToolbar(
                 ) {
                     ToolbarToggleButton(
                         icon = Icons.Default.NearMe,
-                        label = "${UiStrings.SELECT_AND_MOVE} (Esc)",
+                        label = "${MenuStrings.SELECT_AND_MOVE} (Esc)",
                         checked = state.isSelectTool,
                         onClick = state::resetToolMode,
                     )
                     ToolbarVerticalDivider()
                     ToolbarIconButton(
                         icon = Icons.Default.Undo,
-                        label = "${UiStrings.UNDO} (${shortcutLabel("Z")})",
+                        label = "${MenuStrings.UNDO} (${shortcutLabel("Z")})",
                         onClick = onUndo,
                         enabled = state.canUndo(),
                     )
                     ToolbarIconButton(
                         icon = Icons.Default.Redo,
-                        label = "${UiStrings.REDO} (${shortcutLabel("Y")})",
+                        label = "${MenuStrings.REDO} (${shortcutLabel("Y")})",
                         onClick = onRedo,
                         enabled = state.canRedo(),
                     )
@@ -118,13 +119,13 @@ fun DiagramToolbar(
                     ToolbarVerticalDivider()
                     ToolbarIconButton(
                         icon = Icons.Default.Save,
-                        label = "${UiStrings.SAVE} (${shortcutLabel("S")})",
+                        label = "${CommonStrings.SAVE} (${shortcutLabel("S")})",
                         onClick = onSaveDiagram,
                     )
                     ToolbarIconButton(
                         icon = Icons.Default.Delete,
                         label =
-                            "${UiStrings.DELETE_SELECTED} (${if (isMacOS) "⌫" else UiStrings.DELETE_KEY})",
+                            "${MenuStrings.DELETE_SELECTED} (${if (isMacOS) "⌫" else MenuStrings.DELETE_KEY})",
                         onClick = onDeleteSelected,
                         enabled = hasSelection,
                         tint = MaterialTheme.colorScheme.error,

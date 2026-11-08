@@ -16,6 +16,9 @@ import com.jder.data.SequenceDiagramRepository
 import com.jder.domain.model.SequenceAnchor
 import com.jder.domain.model.SequenceDiagramState
 import com.jder.domain.model.SequenceToolMode
+import com.jder.strings.CommonStrings
+import com.jder.strings.SequenceStrings
+import com.jder.strings.UseCaseStrings
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -32,7 +35,6 @@ import com.jder.ui.dialogs.EditSequenceMessageDialog
 import com.jder.ui.dialogs.LifelinePropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.SequenceFragmentPropertiesDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderSequenceDiagramToBitmap
 
@@ -68,16 +70,16 @@ fun SequenceDiagramScreen(
         }
     fun actionsTitle(type: SequenceContextMenuType): String =
         when (type) {
-            SequenceContextMenuType.LIFELINE -> UiStrings.LIFELINE_ACTIONS
-            SequenceContextMenuType.MESSAGE -> UiStrings.MESSAGE_ACTIONS
-            SequenceContextMenuType.FRAGMENT -> UiStrings.FRAGMENT_ACTIONS
-            SequenceContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
+            SequenceContextMenuType.LIFELINE -> SequenceStrings.LIFELINE_ACTIONS
+            SequenceContextMenuType.MESSAGE -> SequenceStrings.MESSAGE_ACTIONS
+            SequenceContextMenuType.FRAGMENT -> SequenceStrings.FRAGMENT_ACTIONS
+            SequenceContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
         }
     fun actions(type: SequenceContextMenuType): List<ContextMenuItem> = buildList {
         add(
             ContextMenuItem(
-                if (type == SequenceContextMenuType.NOTE) UiStrings.EDIT_TEXT
-                else UiStrings.EDIT_PROPERTIES,
+                if (type == SequenceContextMenuType.NOTE) CommonStrings.EDIT_TEXT
+                else CommonStrings.EDIT_PROPERTIES,
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
@@ -87,7 +89,7 @@ fun SequenceDiagramScreen(
             val message = state.message(state.selectedMessageId)
             add(
                 ContextMenuItem(
-                    UiStrings.REVERSE_DIRECTION,
+                    CommonStrings.REVERSE_DIRECTION,
                     Icons.Default.SwapHoriz,
                     enabled = message?.isSelfMessage == false,
                 ) {
@@ -96,7 +98,7 @@ fun SequenceDiagramScreen(
             )
         }
         add(
-            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -108,39 +110,39 @@ fun SequenceDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderSequenceDiagramToBitmap(state.diagram, it) },
-        emptyHint = UiStrings.SEQUENCE_EMPTY_HINT,
+        emptyHint = SequenceStrings.SEQUENCE_EMPTY_HINT,
         tools =
             listOf(
                 lifelineTool(
                     SequenceToolMode.ACTOR,
-                    UiStrings.CREATE_ACTOR,
-                    UiStrings.ACTOR,
+                    UseCaseStrings.CREATE_ACTOR,
+                    UseCaseStrings.ACTOR,
                     Icons.Default.Person,
                 ),
                 lifelineTool(
                     SequenceToolMode.OBJECT,
-                    UiStrings.CREATE_OBJECT,
-                    UiStrings.OBJECT,
+                    SequenceStrings.CREATE_OBJECT,
+                    SequenceStrings.OBJECT,
                     CustomIcons.Lifeline,
                 ),
                 DiagramTool.Group(
-                    UiStrings.STEREOTYPES,
+                    SequenceStrings.STEREOTYPES,
                     listOf(
                         lifelineTool(
                             SequenceToolMode.BOUNDARY,
-                            UiStrings.CREATE_BOUNDARY,
+                            SequenceStrings.CREATE_BOUNDARY,
                             "Boundary",
                             CustomIcons.BoundaryLifeline,
                         ),
                         lifelineTool(
                             SequenceToolMode.CONTROL,
-                            UiStrings.CREATE_CONTROL,
+                            SequenceStrings.CREATE_CONTROL,
                             "Control",
                             CustomIcons.ControlLifeline,
                         ),
                         lifelineTool(
                             SequenceToolMode.ENTITY,
-                            UiStrings.CREATE_ENTITY_LIFELINE,
+                            SequenceStrings.CREATE_ENTITY_LIFELINE,
                             "Entity",
                             CustomIcons.EntityLifeline,
                         ),
@@ -149,8 +151,8 @@ fun SequenceDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
-                    UiStrings.CREATE_MESSAGE,
-                    UiStrings.MESSAGE,
+                    SequenceStrings.CREATE_MESSAGE,
+                    SequenceStrings.MESSAGE,
                     state.toolMode == SequenceToolMode.MESSAGE,
                 ) {
                     state.toolMode = SequenceToolMode.MESSAGE
@@ -158,16 +160,16 @@ fun SequenceDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.Fragment,
-                    UiStrings.CREATE_FRAGMENT,
-                    UiStrings.FRAGMENT,
+                    SequenceStrings.CREATE_FRAGMENT,
+                    SequenceStrings.FRAGMENT,
                     state.toolMode == SequenceToolMode.FRAGMENT,
                 ) {
                     state.toolMode = SequenceToolMode.FRAGMENT
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == SequenceToolMode.NOTE,
                 ) {
                     state.toolMode = SequenceToolMode.NOTE
@@ -219,7 +221,7 @@ fun SequenceDiagramScreen(
                         it.copy(name = newName, type = newType, documentation = newDoc)
                     }
                     showLifelineDialog = false
-                    Toasts.success(UiStrings.LIFELINE_UPDATED)
+                    Toasts.success(SequenceStrings.LIFELINE_UPDATED)
                 },
             )
         }
@@ -232,7 +234,7 @@ fun SequenceDiagramScreen(
                 onConfirm = { newLabel, newType ->
                     state.updateMessage(message.id) { it.copy(label = newLabel, type = newType) }
                     showMessageDialog = false
-                    Toasts.success(UiStrings.MESSAGE_UPDATED)
+                    Toasts.success(SequenceStrings.MESSAGE_UPDATED)
                 },
             )
         }
@@ -253,7 +255,7 @@ fun SequenceDiagramScreen(
                         )
                     }
                     showFragmentDialog = false
-                    Toasts.success(UiStrings.FRAGMENT_UPDATED)
+                    Toasts.success(SequenceStrings.FRAGMENT_UPDATED)
                 },
             )
         }
@@ -269,7 +271,7 @@ fun SequenceDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -280,7 +282,7 @@ fun SequenceDiagramScreen(
             onDismiss = { pendingMessage = null },
             onConfirm = { label, type ->
                 state.addMessage(source.lifelineId, targetId, source.y, label, type)
-                Toasts.success(UiStrings.MESSAGE_CREATED)
+                Toasts.success(SequenceStrings.MESSAGE_CREATED)
                 pendingMessage = null
             },
         )

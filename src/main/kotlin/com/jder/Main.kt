@@ -43,6 +43,10 @@ import com.jder.domain.model.SequenceDiagramState
 import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.StateMachineKind
 import com.jder.domain.model.UseCaseDiagramState
+import com.jder.strings.AppStrings
+import com.jder.strings.CommandLineStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.FileStrings
 import com.jder.ui.components.AppMenuBar
 import com.jder.ui.components.DiagramMenuHost
 import com.jder.ui.components.DockMenu
@@ -58,7 +62,6 @@ import com.jder.ui.components.toggleFullscreen
 import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isMacOS
@@ -68,7 +71,7 @@ import java.awt.Dimension
 fun main(args: Array<String>) {
     val options = parseCommandLine(args)
     if (options.showHelp) {
-        println(UiStrings.COMMAND_LINE_USAGE)
+        println(CommandLineStrings.COMMAND_LINE_USAGE)
         return
     }
     options.warnings.forEach(Toasts::warning)
@@ -121,7 +124,7 @@ fun main(args: Array<String>) {
         LaunchedEffect(Unit) {
             updateUrl =
                 UpdateChecker.findUpdate()
-                    .onFailure { logError(UiStrings.UPDATE_CHECK_FAILED, it) }
+                    .onFailure { logError(AppStrings.UPDATE_CHECK_FAILED, it) }
                     .getOrNull()
         }
         fun hasUnsavedChanges() =
@@ -257,8 +260,8 @@ fun main(args: Array<String>) {
                 if (showExitDialog) {
                     AlertDialog(
                         onDismissRequest = { showExitDialog = false },
-                        title = { Text(UiStrings.CONFIRM_EXIT_TITLE) },
-                        text = { Text(UiStrings.CONFIRM_EXIT_MESSAGE) },
+                        title = { Text(FileStrings.CONFIRM_EXIT_TITLE) },
+                        text = { Text(FileStrings.CONFIRM_EXIT_MESSAGE) },
                         confirmButton = {
                             TextButton(
                                 onClick = {
@@ -266,11 +269,13 @@ fun main(args: Array<String>) {
                                     shouldExit = true
                                 }
                             ) {
-                                Text(UiStrings.YES)
+                                Text(CommonStrings.YES)
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showExitDialog = false }) { Text(UiStrings.NO) }
+                            TextButton(onClick = { showExitDialog = false }) {
+                                Text(CommonStrings.NO)
+                            }
                         },
                     )
                 }

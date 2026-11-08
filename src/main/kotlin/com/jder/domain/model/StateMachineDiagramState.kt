@@ -3,7 +3,8 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.StateMachineStrings
 import java.util.UUID
 
 private const val BINARY_OUTPUT = "0"
@@ -56,15 +57,15 @@ class StateMachineDiagramState(val kind: StateMachineKind) :
     override fun deleteSelection(): String? {
         selectedStateId?.let {
             deleteState(it)
-            return UiStrings.STATE_DELETED
+            return StateMachineStrings.STATE_DELETED
         }
         selectedTransitionId?.let {
             deleteTransition(it)
-            return UiStrings.TRANSITION_DELETED
+            return StateMachineStrings.TRANSITION_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         return null
     }

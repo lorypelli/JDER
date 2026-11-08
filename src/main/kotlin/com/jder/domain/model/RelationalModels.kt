@@ -1,6 +1,6 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.RelationalStrings
 import kotlinx.serialization.Serializable
 
 @Serializable data class RelationalReference(val tableId: String, val columnId: String)
@@ -47,7 +47,7 @@ fun RelationalDiagram.validateReferences() {
                 tablesById[reference.tableId]
                     ?: run {
                         errors +=
-                            UiStrings.columnReferencesMissingTable(
+                            RelationalStrings.columnReferencesMissingTable(
                                 "${table.id}.${column.id}",
                                 reference.tableId,
                             )
@@ -55,7 +55,7 @@ fun RelationalDiagram.validateReferences() {
                     }
             if (referencedTable.columns.none { it.id == reference.columnId }) {
                 errors +=
-                    UiStrings.columnReferencesMissingColumn(
+                    RelationalStrings.columnReferencesMissingColumn(
                         "${table.id}.${column.id}",
                         "${reference.tableId}.${reference.columnId}",
                     )

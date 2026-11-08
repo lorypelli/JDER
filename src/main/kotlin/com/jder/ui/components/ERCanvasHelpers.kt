@@ -6,7 +6,8 @@ import com.jder.domain.model.ERDiagram
 import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.ERToolMode
 import com.jder.domain.model.Entity
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.ERStrings
 import kotlin.math.abs
 
 private const val ATTRIBUTE_HIT_RADIUS = 24f
@@ -144,15 +145,15 @@ internal fun handleERTap(state: ERDiagramState, offset: Offset) {
             hitTestERDiagram(state.diagram, offset)?.let { selectERElement(state, it) }
                 ?: state.clearSelection()
         ERToolMode.ENTITY -> {
-            state.addEntity(offset.x - 70f, offset.y - 35f, UiStrings.NEW_ENTITY)
+            state.addEntity(offset.x - 70f, offset.y - 35f, ERStrings.NEW_ENTITY)
             state.toolMode = ERToolMode.SELECT
         }
         ERToolMode.RELATIONSHIP -> {
-            state.addRelationship(offset.x - 60f, offset.y - 60f, UiStrings.NEW_RELATIONSHIP)
+            state.addRelationship(offset.x - 60f, offset.y - 60f, ERStrings.NEW_RELATIONSHIP)
             state.toolMode = ERToolMode.SELECT
         }
         ERToolMode.NOTE -> {
-            state.addNote(offset.x - 120f, offset.y - 90f, UiStrings.NEW_NOTE)
+            state.addNote(offset.x - 120f, offset.y - 90f, CommonStrings.NEW_NOTE)
             state.toolMode = ERToolMode.SELECT
         }
     }

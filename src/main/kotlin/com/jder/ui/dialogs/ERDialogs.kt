@@ -43,7 +43,8 @@ import com.jder.domain.model.AttributeType
 import com.jder.domain.model.Cardinality
 import com.jder.domain.model.Entity
 import com.jder.domain.model.Relationship
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.ERStrings
 import java.util.UUID
 
 @Composable
@@ -57,7 +58,7 @@ fun EntityPropertiesDialog(
     var documentation by remember(entity.id) { mutableStateOf(entity.documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.ENTITY_PROPERTIES) },
+        title = { Text(ERStrings.ENTITY_PROPERTIES) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -66,7 +67,7 @@ fun EntityPropertiesDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -74,13 +75,13 @@ fun EntityPropertiesDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(UiStrings.WEAK_ENTITY)
+                    Text(ERStrings.WEAK_ENTITY)
                     Switch(checked = isWeak, onCheckedChange = { isWeak = it })
                 }
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text(UiStrings.DOCUMENTATION) },
+                    label = { Text(CommonStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 5,
                 )
@@ -95,10 +96,10 @@ fun EntityPropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -112,7 +113,7 @@ fun RelationshipPropertiesDialog(
     var documentation by remember(relationship.id) { mutableStateOf(relationship.documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.RELATIONSHIP_PROPERTIES) },
+        title = { Text(ERStrings.RELATIONSHIP_PROPERTIES) },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -121,14 +122,14 @@ fun RelationshipPropertiesDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text(UiStrings.DOCUMENTATION) },
+                    label = { Text(CommonStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 5,
                 )
@@ -141,17 +142,17 @@ fun RelationshipPropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
 @Composable
 fun AddAttributeDialog(onDismiss: () -> Unit, onConfirm: (attribute: Attribute) -> Unit) {
     AttributeDialog(
-        title = UiStrings.ADD_ATTRIBUTE,
+        title = CommonStrings.ADD_ATTRIBUTE,
         initialAttribute = null,
         onDismiss = onDismiss,
         onConfirm = onConfirm,
@@ -165,7 +166,7 @@ fun EditAttributeDialog(
     onConfirm: (attribute: Attribute) -> Unit,
 ) {
     AttributeDialog(
-        title = UiStrings.EDIT_ATTRIBUTE,
+        title = CommonStrings.EDIT_ATTRIBUTE,
         initialAttribute = attribute,
         onDismiss = onDismiss,
         onConfirm = onConfirm,
@@ -203,7 +204,7 @@ private fun AttributeDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -212,7 +213,7 @@ private fun AttributeDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(UiStrings.PRIMARY_KEY)
+                    Text(CommonStrings.PRIMARY_KEY)
                     Switch(
                         checked = isPrimaryKey,
                         onCheckedChange = { isPrimaryKey = it },
@@ -225,7 +226,7 @@ private fun AttributeDialog(
                     exit = shrinkVertically() + fadeOut(),
                 ) {
                     Text(
-                        text = UiStrings.KEY_ATTRIBUTES_HINT,
+                        text = ERStrings.KEY_ATTRIBUTES_HINT,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -235,7 +236,7 @@ private fun AttributeDialog(
                         value = attributeType.display,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text(UiStrings.TYPE) },
+                        label = { Text(CommonStrings.TYPE) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
@@ -292,7 +293,7 @@ private fun AttributeDialog(
                     OutlinedTextField(
                         value = multiplicity,
                         onValueChange = { multiplicity = it },
-                        label = { Text(UiStrings.MULTIPLICITY_EXAMPLE) },
+                        label = { Text(ERStrings.MULTIPLICITY_EXAMPLE) },
                         placeholder = { Text("1..N") },
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -313,11 +314,11 @@ private fun AttributeDialog(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                "${UiStrings.COMPONENTS} (${components.size})",
+                                "${ERStrings.COMPONENTS} (${components.size})",
                                 style = MaterialTheme.typography.titleSmall,
                             )
                             IconButton(onClick = { showAddComponentDialog = true }) {
-                                Icon(Icons.Default.Add, UiStrings.ADD_COMPONENT)
+                                Icon(Icons.Default.Add, ERStrings.ADD_COMPONENT)
                             }
                         }
                         if (components.isNotEmpty()) {
@@ -347,7 +348,7 @@ private fun AttributeDialog(
                                             ) {
                                                 Icon(
                                                     Icons.Default.Delete,
-                                                    UiStrings.REMOVE_COMPONENT,
+                                                    ERStrings.REMOVE_COMPONENT,
                                                     tint = MaterialTheme.colorScheme.error,
                                                 )
                                             }
@@ -357,7 +358,7 @@ private fun AttributeDialog(
                             }
                         } else {
                             Text(
-                                UiStrings.NO_COMPONENTS,
+                                ERStrings.NO_COMPONENTS,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(vertical = 8.dp),
@@ -398,21 +399,21 @@ private fun AttributeDialog(
                     name.isNotBlank() &&
                         (attributeType != AttributeType.COMPOSITE || components.isNotEmpty()),
             ) {
-                Text(if (initialAttribute != null) UiStrings.CONFIRM else UiStrings.ADD)
+                Text(if (initialAttribute != null) CommonStrings.CONFIRM else CommonStrings.ADD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
     if (showAddComponentDialog) {
         var componentName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showAddComponentDialog = false },
-            title = { Text(UiStrings.ADD_COMPONENT) },
+            title = { Text(ERStrings.ADD_COMPONENT) },
             text = {
                 OutlinedTextField(
                     value = componentName,
                     onValueChange = { componentName = it },
-                    label = { Text(UiStrings.COMPONENT_NAME) },
+                    label = { Text(ERStrings.COMPONENT_NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -435,11 +436,13 @@ private fun AttributeDialog(
                     },
                     enabled = componentName.isNotBlank(),
                 ) {
-                    Text(UiStrings.ADD)
+                    Text(CommonStrings.ADD)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showAddComponentDialog = false }) { Text(UiStrings.CANCEL) }
+                TextButton(onClick = { showAddComponentDialog = false }) {
+                    Text(CommonStrings.CANCEL)
+                }
             },
         )
     }
@@ -453,7 +456,7 @@ fun CreateConnectionDialog(
     onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
     ConnectionDialog(
-        title = UiStrings.CREATE_CONNECTION,
+        title = ERStrings.CREATE_CONNECTION,
         entities = entities,
         emptyMessage = emptyMessage,
         initialEntityId = null,
@@ -472,9 +475,9 @@ fun EditConnectionDialog(
     onConfirm: (entityId: String, cardinality: Cardinality) -> Unit,
 ) {
     ConnectionDialog(
-        title = UiStrings.EDIT_CONNECTION,
+        title = ERStrings.EDIT_CONNECTION,
         entities = entities,
-        emptyMessage = UiStrings.NO_ENTITY_AVAILABLE,
+        emptyMessage = ERStrings.NO_ENTITY_AVAILABLE,
         initialEntityId = currentEntityId,
         initialCardinality = currentCardinality,
         onDismiss = onDismiss,
@@ -516,7 +519,7 @@ private fun ConnectionDialog(
                             value = selectedEntity?.name ?: "",
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text(UiStrings.ENTITY) },
+                            label = { Text(ERStrings.ENTITY) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedEntity)
                             },
@@ -545,7 +548,7 @@ private fun ConnectionDialog(
                             value = selectedCardinality.display,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text(UiStrings.CARDINALITY) },
+                            label = { Text(ERStrings.CARDINALITY) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(
                                     expanded = expandedCardinality
@@ -577,13 +580,13 @@ private fun ConnectionDialog(
                     onClick = { selectedEntity?.let { onConfirm(it.id, selectedCardinality) } },
                     enabled = selectedEntity != null,
                 ) {
-                    Text(UiStrings.CONFIRM)
+                    Text(CommonStrings.CONFIRM)
                 }
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(if (entities.isEmpty()) UiStrings.CLOSE else UiStrings.CANCEL)
+                Text(if (entities.isEmpty()) CommonStrings.CLOSE else CommonStrings.CANCEL)
             }
         },
     )

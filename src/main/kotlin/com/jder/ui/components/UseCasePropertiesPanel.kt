@@ -18,7 +18,8 @@ import com.jder.domain.model.SystemBoundary
 import com.jder.domain.model.UseCase
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseRelation
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.UseCaseStrings
 
 @Composable
 fun UseCasePropertiesPanel(
@@ -82,21 +83,21 @@ private fun findElementName(id: String, state: UseCaseDiagramState): String {
         ?.let {
             return it.name
         }
-    return UiStrings.UNKNOWN_ELEMENT
+    return UseCaseStrings.UNKNOWN_ELEMENT
 }
 
 @Composable
 private fun ActorPropertiesContent(actor: Actor, onEdit: () -> Unit) {
-    PropertyCard("${UiStrings.ACTOR}: ${actor.name}")
+    PropertyCard("${UseCaseStrings.ACTOR}: ${actor.name}")
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }
 
 @Composable
 private fun UseCasePropertiesContent(useCase: UseCase, onEdit: () -> Unit) {
-    PropertyCard("${UiStrings.USE_CASE}: ${useCase.name}")
+    PropertyCard("${UseCaseStrings.USE_CASE}: ${useCase.name}")
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     DocumentationCard(useCase.documentation)
 }
 
@@ -107,22 +108,22 @@ private fun RelationPropertiesContent(
     targetName: String,
     onEdit: () -> Unit,
 ) {
-    PropertyCard(UiStrings.RELATION) {
-        PropertyDetail("${UiStrings.TYPE}: ${relation.type.display}")
-        PropertyDetail("${UiStrings.FROM}: $sourceName")
-        PropertyDetail("${UiStrings.TO}: $targetName")
+    PropertyCard(CommonStrings.RELATION) {
+        PropertyDetail("${CommonStrings.TYPE}: ${relation.type.display}")
+        PropertyDetail("${CommonStrings.FROM}: $sourceName")
+        PropertyDetail("${CommonStrings.TO}: $targetName")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }
 
 @Composable
 private fun SystemBoundaryPropertiesContent(boundary: SystemBoundary, onEdit: () -> Unit) {
-    PropertyCard("${UiStrings.SYSTEM}: ${boundary.name}") {
+    PropertyCard("${UseCaseStrings.SYSTEM}: ${boundary.name}") {
         PropertyDetail(
-            "${UiStrings.SIZE}: ${boundary.width.toInt()} × ${boundary.height.toInt()} px"
+            "${CommonStrings.SIZE}: ${boundary.width.toInt()} × ${boundary.height.toInt()} px"
         )
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }

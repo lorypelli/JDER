@@ -15,7 +15,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.DiagramType
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.Localization
 
 private const val WORD_JOINER = '\u2060'
 private val tabMinHeight = 48.dp
@@ -29,7 +29,7 @@ fun DiagramTabRow(
     isModified: (DiagramType) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
-    key(UiStrings.language) {
+    key(Localization.language) {
         TabRow(selectedTabIndex = currentType.ordinal, modifier = modifier) {
             DiagramType.entries.forEach { type ->
                 val label = type.tabLabel.replace("/", "/$WORD_JOINER")

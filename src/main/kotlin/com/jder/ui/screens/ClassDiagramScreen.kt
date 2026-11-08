@@ -15,6 +15,8 @@ import com.jder.data.ClassDiagramRepository
 import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassMember
 import com.jder.domain.model.ClassToolMode
+import com.jder.strings.ClassStrings
+import com.jder.strings.CommonStrings
 import com.jder.ui.components.ClassContextMenuType
 import com.jder.ui.components.ClassDiagramCanvas
 import com.jder.ui.components.ClassPropertiesPanel
@@ -32,7 +34,6 @@ import com.jder.ui.dialogs.ClassPropertiesDialog
 import com.jder.ui.dialogs.ClassRelationPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.SelectClassRelationTypeDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderClassDiagramToBitmap
 
@@ -66,17 +67,17 @@ fun ClassDiagramScreen(
         }
     fun actionsTitle(type: ClassContextMenuType): String =
         when (type) {
-            ClassContextMenuType.CLASS -> UiStrings.CLASS_ACTIONS
-            ClassContextMenuType.RELATION -> UiStrings.RELATION_ACTIONS
-            ClassContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
+            ClassContextMenuType.CLASS -> ClassStrings.CLASS_ACTIONS
+            ClassContextMenuType.RELATION -> CommonStrings.RELATION_ACTIONS
+            ClassContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
         }
     fun actions(type: ClassContextMenuType): List<ContextMenuItem> = buildList {
         add(
             ContextMenuItem(
                 when (type) {
-                    ClassContextMenuType.CLASS -> UiStrings.EDIT_PROPERTIES
-                    ClassContextMenuType.RELATION -> UiStrings.EDIT_RELATION
-                    ClassContextMenuType.NOTE -> UiStrings.EDIT_TEXT
+                    ClassContextMenuType.CLASS -> CommonStrings.EDIT_PROPERTIES
+                    ClassContextMenuType.RELATION -> CommonStrings.EDIT_RELATION
+                    ClassContextMenuType.NOTE -> CommonStrings.EDIT_TEXT
                 },
                 Icons.Default.Edit,
             ) {
@@ -85,18 +86,18 @@ fun ClassDiagramScreen(
         )
         if (type == ClassContextMenuType.CLASS) {
             add(
-                ContextMenuItem(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add) {
+                ContextMenuItem(CommonStrings.ADD_ATTRIBUTE, Icons.Default.Add) {
                     showAddAttributeDialog = true
                 }
             )
             add(
-                ContextMenuItem(UiStrings.ADD_METHOD, Icons.Default.Add) {
+                ContextMenuItem(CommonStrings.ADD_METHOD, Icons.Default.Add) {
                     showAddMethodDialog = true
                 }
             )
         }
         add(
-            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -106,37 +107,37 @@ fun ClassDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderClassDiagramToBitmap(state.diagram, it) },
-        emptyHint = UiStrings.CLASS_EMPTY_HINT,
+        emptyHint = ClassStrings.CLASS_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.Rectangle,
-                    UiStrings.CREATE_CLASS,
-                    UiStrings.CLASS,
+                    ClassStrings.CREATE_CLASS,
+                    ClassStrings.CLASS,
                     state.toolMode == ClassToolMode.CLASS,
                 ) {
                     state.toolMode = ClassToolMode.CLASS
                 },
                 DiagramTool.Mode(
                     CustomIcons.Interface,
-                    UiStrings.CREATE_INTERFACE,
-                    UiStrings.INTERFACE,
+                    ClassStrings.CREATE_INTERFACE,
+                    ClassStrings.INTERFACE,
                     state.toolMode == ClassToolMode.INTERFACE,
                 ) {
                     state.toolMode = ClassToolMode.INTERFACE
                 },
                 DiagramTool.Mode(
                     Icons.Default.FormatListNumbered,
-                    UiStrings.CREATE_ENUM,
-                    UiStrings.ENUM,
+                    ClassStrings.CREATE_ENUM,
+                    ClassStrings.ENUM,
                     state.toolMode == ClassToolMode.ENUM,
                 ) {
                     state.toolMode = ClassToolMode.ENUM
                 },
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
-                    UiStrings.CREATE_CLASS_RELATION,
-                    UiStrings.RELATION,
+                    ClassStrings.CREATE_CLASS_RELATION,
+                    CommonStrings.RELATION,
                     state.toolMode == ClassToolMode.RELATION,
                 ) {
                     state.toolMode = ClassToolMode.RELATION
@@ -144,8 +145,8 @@ fun ClassDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == ClassToolMode.NOTE,
                 ) {
                     state.toolMode = ClassToolMode.NOTE
@@ -166,7 +167,7 @@ fun ClassDiagramScreen(
                 onDeleteMember = { memberId ->
                     state.selectedClassId?.let {
                         state.deleteMemberFromClass(it, memberId)
-                        Toasts.success(UiStrings.MEMBER_DELETED)
+                        Toasts.success(ClassStrings.MEMBER_DELETED)
                     }
                 },
                 onClose = { state.clearSelection() },
@@ -211,7 +212,7 @@ fun ClassDiagramScreen(
                         )
                     }
                     showClassDialog = false
-                    Toasts.success(UiStrings.CLASS_UPDATED)
+                    Toasts.success(ClassStrings.CLASS_UPDATED)
                 },
             )
         }
@@ -231,7 +232,7 @@ fun ClassDiagramScreen(
                         )
                     }
                     showRelationDialog = false
-                    Toasts.success(UiStrings.RELATION_UPDATED)
+                    Toasts.success(CommonStrings.RELATION_UPDATED)
                 },
             )
         }
@@ -247,7 +248,7 @@ fun ClassDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -261,7 +262,7 @@ fun ClassDiagramScreen(
                 onConfirm = {
                     state.updateMemberInClass(classId, it)
                     memberToEdit = null
-                    Toasts.success(UiStrings.MEMBER_UPDATED)
+                    Toasts.success(ClassStrings.MEMBER_UPDATED)
                 },
             )
         }
@@ -274,7 +275,7 @@ fun ClassDiagramScreen(
                 onConfirm = {
                     state.addMemberToClass(classId, it, isMethod = false)
                     showAddAttributeDialog = false
-                    Toasts.success(UiStrings.ATTRIBUTE_ADDED)
+                    Toasts.success(CommonStrings.ATTRIBUTE_ADDED)
                 },
             )
         }
@@ -287,7 +288,7 @@ fun ClassDiagramScreen(
                 onConfirm = {
                     state.addMemberToClass(classId, it, isMethod = true)
                     showAddMethodDialog = false
-                    Toasts.success(UiStrings.METHOD_ADDED)
+                    Toasts.success(ClassStrings.METHOD_ADDED)
                 },
             )
         }
@@ -297,7 +298,7 @@ fun ClassDiagramScreen(
             onDismiss = { pendingRelation = null },
             onConfirm = {
                 state.addRelation(sourceId, targetId, it)
-                Toasts.success(UiStrings.RELATION_CREATED)
+                Toasts.success(CommonStrings.RELATION_CREATED)
                 pendingRelation = null
             },
         )

@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
 
 @Composable
 fun NotePropertiesDialog(
@@ -26,13 +26,13 @@ fun NotePropertiesDialog(
     var text by remember(noteId) { mutableStateOf(noteText) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.NOTE_PROPERTIES) },
+        title = { Text(CommonStrings.NOTE_PROPERTIES) },
         text = {
             Column {
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
-                    label = { Text(UiStrings.NOTE_TEXT) },
+                    label = { Text(CommonStrings.NOTE_TEXT) },
                     modifier = Modifier.fillMaxWidth().height(200.dp),
                     maxLines = 10,
                 )
@@ -45,9 +45,9 @@ fun NotePropertiesDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }

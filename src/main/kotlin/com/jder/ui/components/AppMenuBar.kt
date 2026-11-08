@@ -3,7 +3,6 @@ package com.jder.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
@@ -23,7 +22,7 @@ fun FrameWindowScope.AppMenuBar(menus: List<AppMenu>, onAbout: () -> Unit) {
     }
     MenuBar {
         currentMenus.forEach { menu ->
-            key(menu.title) { Menu(menu.title) { menu.entries().forEach { MenuEntry(it) } } }
+            Menu(menu.title) { menu.entries().forEach { MenuEntry(it) } }
         }
     }
 }

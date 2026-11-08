@@ -6,7 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.window.FrameWindowScope
 import com.jder.domain.model.DiagramType
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.Localization
 import java.awt.Desktop
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -15,7 +16,7 @@ import java.awt.Taskbar
 @Composable
 fun FrameWindowScope.DockMenu(onNewDiagram: (DiagramType) -> Unit) {
     val currentOnNewDiagram by rememberUpdatedState(onNewDiagram)
-    DisposableEffect(UiStrings.language) {
+    DisposableEffect(Localization.language) {
         val isSupported =
             Taskbar.isTaskbarSupported() && Taskbar.getTaskbar().isSupported(Taskbar.Feature.MENU)
         val desktop = Desktop.getDesktop()
@@ -46,12 +47,12 @@ fun FrameWindowScope.DockMenu(onNewDiagram: (DiagramType) -> Unit) {
 private val DiagramType.newDiagramLabel: String
     get() =
         when (this) {
-            DiagramType.ER -> UiStrings.NEW_ER_DIAGRAM
-            DiagramType.RELATIONAL -> UiStrings.NEW_RELATIONAL_SCHEMA
-            DiagramType.CLASS -> UiStrings.NEW_CLASS_DIAGRAM
-            DiagramType.USE_CASE -> UiStrings.NEW_USE_CASE_DIAGRAM
-            DiagramType.SEQUENCE -> UiStrings.NEW_SEQUENCE_DIAGRAM
-            DiagramType.LOGIC -> UiStrings.NEW_LOGIC_DIAGRAM
-            DiagramType.MEALY -> UiStrings.NEW_MEALY_MACHINE
-            DiagramType.MOORE -> UiStrings.NEW_MOORE_MACHINE
+            DiagramType.ER -> DiagramTypeStrings.NEW_ER_DIAGRAM
+            DiagramType.RELATIONAL -> DiagramTypeStrings.NEW_RELATIONAL_SCHEMA
+            DiagramType.CLASS -> DiagramTypeStrings.NEW_CLASS_DIAGRAM
+            DiagramType.USE_CASE -> DiagramTypeStrings.NEW_USE_CASE_DIAGRAM
+            DiagramType.SEQUENCE -> DiagramTypeStrings.NEW_SEQUENCE_DIAGRAM
+            DiagramType.LOGIC -> DiagramTypeStrings.NEW_LOGIC_DIAGRAM
+            DiagramType.MEALY -> DiagramTypeStrings.NEW_MEALY_MACHINE
+            DiagramType.MOORE -> DiagramTypeStrings.NEW_MOORE_MACHINE
         }

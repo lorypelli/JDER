@@ -32,13 +32,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.Note
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
 
 @Composable
 fun PropertiesPanelHeader(onClose: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = UiStrings.PROPERTIES,
+            text = CommonStrings.PROPERTIES,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.align(Alignment.CenterStart),
@@ -46,7 +46,7 @@ fun PropertiesPanelHeader(onClose: () -> Unit) {
         IconButton(onClick = onClose, modifier = Modifier.align(Alignment.CenterEnd).size(32.dp)) {
             Icon(
                 Icons.Default.Close,
-                contentDescription = UiStrings.CLOSE_PROPERTIES_PANEL,
+                contentDescription = CommonStrings.CLOSE_PROPERTIES_PANEL,
                 tint = MaterialTheme.colorScheme.onSurface,
             )
         }
@@ -202,13 +202,13 @@ fun PropertyDetailCard(label: String, text: String) {
 fun DocumentationCard(documentation: String) {
     if (documentation.isBlank()) return
     Spacer(Modifier.height(8.dp))
-    PropertyDetailCard("${UiStrings.DOCUMENTATION}:", documentation)
+    PropertyDetailCard("${CommonStrings.DOCUMENTATION}:", documentation)
 }
 
 @Composable
 fun NotePropertiesContent(note: Note, onEdit: () -> Unit) {
     val preview = if (note.text.length > 50) "${note.text.take(50)}..." else note.text
-    PropertyCard(UiStrings.NOTE) { PropertyDetail(preview) }
+    PropertyCard(CommonStrings.NOTE) { PropertyDetail(preview) }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_TEXT, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_TEXT, Icons.Default.Edit, onEdit)
 }

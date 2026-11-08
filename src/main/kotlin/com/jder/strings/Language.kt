@@ -1,4 +1,4 @@
-package com.jder.ui.strings
+package com.jder.strings
 
 import com.jder.ui.components.logError
 import java.util.Locale
@@ -24,7 +24,7 @@ enum class Language(val displayName: String, val locale: Locale) {
                 preferences.put(LANGUAGE_KEY, language.locale.language)
                 preferences.flush()
             } catch (e: Exception) {
-                logError(UiStrings.LANGUAGE_SAVE_FAILED, e)
+                logError(MenuStrings.LANGUAGE_SAVE_FAILED, e)
             }
         }
 

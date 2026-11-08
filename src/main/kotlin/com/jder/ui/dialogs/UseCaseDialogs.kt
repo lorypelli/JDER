@@ -17,8 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.UseCaseRelation
 import com.jder.domain.model.UseCaseRelationType
+import com.jder.strings.CommonStrings
+import com.jder.strings.UseCaseStrings
 import com.jder.ui.components.RadioOptionList
-import com.jder.ui.strings.UiStrings
 
 @Composable
 fun ActorPropertiesDialog(
@@ -30,12 +31,12 @@ fun ActorPropertiesDialog(
     var name by remember(actorId) { mutableStateOf(actorName) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.ACTOR_PROPERTIES) },
+        title = { Text(UseCaseStrings.ACTOR_PROPERTIES) },
         text = {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text(UiStrings.NAME) },
+                label = { Text(CommonStrings.NAME) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
             )
@@ -48,10 +49,10 @@ fun ActorPropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -67,20 +68,20 @@ fun UseCasePropertiesDialog(
     var documentation by remember(useCaseId) { mutableStateOf(useCaseDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.USE_CASE_PROPERTIES) },
+        title = { Text(UseCaseStrings.USE_CASE_PROPERTIES) },
         text = {
             Column {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text(UiStrings.DOCUMENTATION) },
+                    label = { Text(CommonStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(120.dp).padding(top = 8.dp),
                     maxLines = 5,
                 )
@@ -94,10 +95,10 @@ fun UseCasePropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -107,7 +108,7 @@ fun SelectRelationTypeDialog(
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
     RelationTypeDialog(
-        title = UiStrings.RELATION_TYPE,
+        title = CommonStrings.RELATION_TYPE,
         relationId = null,
         initialType = UseCaseRelationType.ASSOCIATION,
         onDismiss = onDismiss,
@@ -122,7 +123,7 @@ fun EditRelationTypeDialog(
     onConfirm: (type: UseCaseRelationType) -> Unit,
 ) {
     RelationTypeDialog(
-        title = UiStrings.EDIT_RELATION_TYPE,
+        title = UseCaseStrings.EDIT_RELATION_TYPE,
         relationId = relation.id,
         initialType = relation.type,
         onDismiss = onDismiss,
@@ -152,10 +153,10 @@ private fun RelationTypeDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -173,27 +174,27 @@ fun SystemBoundaryPropertiesDialog(
     var height by remember(boundaryId) { mutableStateOf(boundaryHeight.toInt().toString()) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.SYSTEM_PROPERTIES) },
+        title = { Text(UseCaseStrings.SYSTEM_PROPERTIES) },
         text = {
             Column {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = width,
                     onValueChange = { width = it.filter { it.isDigit() } },
-                    label = { Text(UiStrings.WIDTH) },
+                    label = { Text(CommonStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = height,
                     onValueChange = { height = it.filter { it.isDigit() } },
-                    label = { Text(UiStrings.HEIGHT) },
+                    label = { Text(CommonStrings.HEIGHT) },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
                 )
@@ -211,9 +212,9 @@ fun SystemBoundaryPropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }

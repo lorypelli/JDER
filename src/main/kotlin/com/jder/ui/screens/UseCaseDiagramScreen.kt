@@ -14,6 +14,8 @@ import androidx.compose.runtime.setValue
 import com.jder.data.UseCaseDiagramRepository
 import com.jder.domain.model.UseCaseDiagramState
 import com.jder.domain.model.UseCaseToolMode
+import com.jder.strings.CommonStrings
+import com.jder.strings.UseCaseStrings
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -32,7 +34,6 @@ import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.SelectRelationTypeDialog
 import com.jder.ui.dialogs.SystemBoundaryPropertiesDialog
 import com.jder.ui.dialogs.UseCasePropertiesDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderUseCaseDiagramToBitmap
 
@@ -71,26 +72,26 @@ fun UseCaseDiagramScreen(
         }
     fun actionsTitle(type: UseCaseContextMenuType): String =
         when (type) {
-            UseCaseContextMenuType.ACTOR -> UiStrings.ACTOR_ACTIONS
-            UseCaseContextMenuType.USE_CASE -> UiStrings.USE_CASE_ACTIONS
-            UseCaseContextMenuType.RELATION -> UiStrings.RELATION_ACTIONS
-            UseCaseContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
-            UseCaseContextMenuType.SYSTEM -> UiStrings.SYSTEM_ACTIONS
+            UseCaseContextMenuType.ACTOR -> UseCaseStrings.ACTOR_ACTIONS
+            UseCaseContextMenuType.USE_CASE -> UseCaseStrings.USE_CASE_ACTIONS
+            UseCaseContextMenuType.RELATION -> CommonStrings.RELATION_ACTIONS
+            UseCaseContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
+            UseCaseContextMenuType.SYSTEM -> UseCaseStrings.SYSTEM_ACTIONS
         }
     fun actions(type: UseCaseContextMenuType): List<ContextMenuItem> =
         listOf(
             ContextMenuItem(
                 when (type) {
-                    UseCaseContextMenuType.ACTOR -> UiStrings.EDIT_NAME
-                    UseCaseContextMenuType.RELATION -> UiStrings.EDIT_TYPE
-                    UseCaseContextMenuType.NOTE -> UiStrings.EDIT_TEXT
-                    else -> UiStrings.EDIT_PROPERTIES
+                    UseCaseContextMenuType.ACTOR -> UseCaseStrings.EDIT_NAME
+                    UseCaseContextMenuType.RELATION -> UseCaseStrings.EDIT_TYPE
+                    UseCaseContextMenuType.NOTE -> CommonStrings.EDIT_TEXT
+                    else -> CommonStrings.EDIT_PROPERTIES
                 },
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
             },
-            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             },
         )
@@ -99,29 +100,29 @@ fun UseCaseDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderUseCaseDiagramToBitmap(state.diagram, it) },
-        emptyHint = UiStrings.USE_CASE_EMPTY_HINT,
+        emptyHint = UseCaseStrings.USE_CASE_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     Icons.Default.Person,
-                    UiStrings.CREATE_ACTOR,
-                    UiStrings.ACTOR,
+                    UseCaseStrings.CREATE_ACTOR,
+                    UseCaseStrings.ACTOR,
                     state.toolMode == UseCaseToolMode.ACTOR,
                 ) {
                     state.toolMode = UseCaseToolMode.ACTOR
                 },
                 DiagramTool.Mode(
                     CustomIcons.Ellipse,
-                    UiStrings.CREATE_USE_CASE,
-                    UiStrings.USE_CASE,
+                    UseCaseStrings.CREATE_USE_CASE,
+                    UseCaseStrings.USE_CASE,
                     state.toolMode == UseCaseToolMode.USE_CASE,
                 ) {
                     state.toolMode = UseCaseToolMode.USE_CASE
                 },
                 DiagramTool.Mode(
                     Icons.Default.ArrowRightAlt,
-                    UiStrings.CREATE_USE_CASE_RELATION,
-                    UiStrings.RELATION,
+                    UseCaseStrings.CREATE_USE_CASE_RELATION,
+                    CommonStrings.RELATION,
                     state.toolMode == UseCaseToolMode.RELATION,
                 ) {
                     state.toolMode = UseCaseToolMode.RELATION
@@ -129,16 +130,16 @@ fun UseCaseDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == UseCaseToolMode.NOTE,
                 ) {
                     state.toolMode = UseCaseToolMode.NOTE
                 },
                 DiagramTool.Mode(
                     Icons.Default.CropSquare,
-                    UiStrings.CREATE_SYSTEM,
-                    UiStrings.SYSTEM,
+                    UseCaseStrings.CREATE_SYSTEM,
+                    UseCaseStrings.SYSTEM,
                     state.toolMode == UseCaseToolMode.SYSTEM,
                 ) {
                     state.toolMode = UseCaseToolMode.SYSTEM
@@ -187,7 +188,7 @@ fun UseCaseDiagramScreen(
                 onConfirm = { newName ->
                     state.updateActor(id) { it.copy(name = newName) }
                     showActorDialog = false
-                    Toasts.success(UiStrings.ACTOR_UPDATED)
+                    Toasts.success(UseCaseStrings.ACTOR_UPDATED)
                 },
             )
         }
@@ -204,7 +205,7 @@ fun UseCaseDiagramScreen(
                         it.copy(name = newName, documentation = newDoc)
                     }
                     showUseCaseDialog = false
-                    Toasts.success(UiStrings.USE_CASE_UPDATED)
+                    Toasts.success(UseCaseStrings.USE_CASE_UPDATED)
                 },
             )
         }
@@ -217,7 +218,7 @@ fun UseCaseDiagramScreen(
                 onConfirm = { newType ->
                     state.updateRelation(relation.id) { it.copy(type = newType) }
                     showRelationDialog = false
-                    Toasts.success(UiStrings.RELATION_UPDATED)
+                    Toasts.success(CommonStrings.RELATION_UPDATED)
                 },
             )
         }
@@ -233,7 +234,7 @@ fun UseCaseDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -252,7 +253,7 @@ fun UseCaseDiagramScreen(
                         it.copy(name = newName, width = newWidth, height = newHeight)
                     }
                     showSystemBoundaryDialog = false
-                    Toasts.success(UiStrings.SYSTEM_UPDATED)
+                    Toasts.success(UseCaseStrings.SYSTEM_UPDATED)
                 },
             )
         }
@@ -262,7 +263,7 @@ fun UseCaseDiagramScreen(
             onDismiss = { pendingRelation = null },
             onConfirm = {
                 state.addRelation(sourceId, targetId, it)
-                Toasts.success(UiStrings.RELATION_CREATED)
+                Toasts.success(CommonStrings.RELATION_CREATED)
                 pendingRelation = null
             },
         )

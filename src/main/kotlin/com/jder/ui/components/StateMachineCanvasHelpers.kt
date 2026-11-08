@@ -5,7 +5,7 @@ import com.jder.domain.model.MachineState
 import com.jder.domain.model.StateMachineDiagram
 import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.StateMachineToolMode
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
 
 private const val TRANSITION_HIT_DISTANCE = 6f
 private const val LABEL_HIT_MARGIN = 2f
@@ -111,7 +111,7 @@ internal fun handleStateMachineTap(
             }
         }
         StateMachineToolMode.NOTE -> {
-            state.addNote(point.x - 120f, point.y - 90f, UiStrings.NEW_NOTE)
+            state.addNote(point.x - 120f, point.y - 90f, CommonStrings.NEW_NOTE)
             state.toolMode = StateMachineToolMode.SELECT
         }
     }

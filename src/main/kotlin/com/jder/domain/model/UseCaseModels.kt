@@ -1,6 +1,7 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.UseCaseStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,10 +35,10 @@ enum class UseCaseRelationType {
     val display: String
         get() =
             when (this) {
-                ASSOCIATION -> UiStrings.ASSOCIATION
+                ASSOCIATION -> CommonStrings.ASSOCIATION
                 INCLUDE -> "<<include>>"
                 EXTEND -> "<<extend>>"
-                GENERALIZATION -> UiStrings.GENERALIZATION
+                GENERALIZATION -> UseCaseStrings.GENERALIZATION
             }
 }
 

@@ -3,7 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.UseCaseStrings
 import java.util.UUID
 
 class UseCaseDiagramState : DiagramEditorState<UseCaseDiagram>({ UseCaseDiagram(name = "") }) {
@@ -26,7 +28,7 @@ class UseCaseDiagramState : DiagramEditorState<UseCaseDiagram>({ UseCaseDiagram(
     var pendingRelationSourceId by mutableStateOf<String?>(null)
 
     override val diagramName: String
-        get() = diagram.name.ifEmpty { UiStrings.NEW_USE_CASE_DIAGRAM }
+        get() = diagram.name.ifEmpty { DiagramTypeStrings.NEW_USE_CASE_DIAGRAM }
 
     override val isEmpty: Boolean
         get() =
@@ -73,23 +75,23 @@ class UseCaseDiagramState : DiagramEditorState<UseCaseDiagram>({ UseCaseDiagram(
     override fun deleteSelection(): String? {
         selectedActorId?.let {
             deleteActor(it)
-            return UiStrings.ACTOR_DELETED
+            return UseCaseStrings.ACTOR_DELETED
         }
         selectedUseCaseId?.let {
             deleteUseCase(it)
-            return UiStrings.USE_CASE_DELETED
+            return UseCaseStrings.USE_CASE_DELETED
         }
         selectedRelationId?.let {
             deleteRelation(it)
-            return UiStrings.RELATION_DELETED
+            return CommonStrings.RELATION_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         selectedSystemBoundaryId?.let {
             deleteSystemBoundary(it)
-            return UiStrings.SYSTEM_DELETED
+            return UseCaseStrings.SYSTEM_DELETED
         }
         return null
     }

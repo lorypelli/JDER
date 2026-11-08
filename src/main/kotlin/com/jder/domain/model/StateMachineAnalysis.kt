@@ -1,6 +1,6 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.StateMachineStrings
 
 private const val MAX_LISTED_ISSUES = 6
 private val sequenceSeparators = Regex("[\\s,;]+")
@@ -62,14 +62,14 @@ object StateMachineAnalyzer {
         val names = diagram.states.associate { it.id to it.name }
         val initial = diagram.states.find { it.id == diagram.initialStateId }
         if (initial == null) {
-            add(UiStrings.missingInitialState(UiStrings.SET_INITIAL_STATE))
+            add(StateMachineStrings.missingInitialState(StateMachineStrings.SET_INITIAL_STATE))
         }
         val (symbols, rows) = transitionTable(diagram)
         val conflicts = mutableListOf<String>()
         val missing = mutableListOf<String>()
         rows.forEach { (state, cells) ->
             cells.forEachIndexed { index, cell ->
-                val case = UiStrings.stateWithInput(state.name, symbols[index])
+                val case = StateMachineStrings.stateWithInput(state.name, symbols[index])
                 when {
                     cell.isEmpty() -> missing += case
                     isConflict(cell, kind) -> conflicts += case
@@ -77,14 +77,15 @@ object StateMachineAnalyzer {
             }
         }
         if (conflicts.isNotEmpty()) {
-            add(UiStrings.nondeterministicTransitions(summarize(conflicts)))
+            add(StateMachineStrings.nondeterministicTransitions(summarize(conflicts)))
         }
-        if (missing.isNotEmpty()) add(UiStrings.undefinedTransitions(summarize(missing)))
+        if (missing.isNotEmpty()) add(StateMachineStrings.undefinedTransitions(summarize(missing)))
         val unlabeled =
             diagram.transitions
                 .filter { it.inputSymbols.isEmpty() }
                 .map { "${names[it.sourceId]} → ${names[it.targetId]}" }
-        if (unlabeled.isNotEmpty()) add(UiStrings.transitionsWithoutInput(summarize(unlabeled)))
+        if (unlabeled.isNotEmpty())
+            add(StateMachineStrings.transitionsWithoutInput(summarize(unlabeled)))
         val withoutOutput =
             if (kind.hasStateOutputs) {
                 diagram.states.filter { it.output.isBlank() }.map { it.name }
@@ -96,15 +97,15 @@ object StateMachineAnalyzer {
         if (withoutOutput.isNotEmpty()) {
             val listed = summarize(withoutOutput)
             add(
-                if (kind.hasStateOutputs) UiStrings.statesWithoutOutput(listed)
-                else UiStrings.transitionsWithoutOutput(listed)
+                if (kind.hasStateOutputs) StateMachineStrings.statesWithoutOutput(listed)
+                else StateMachineStrings.transitionsWithoutOutput(listed)
             )
         }
         if (initial != null) {
             val reachable = reachableStateIds(diagram, initial.id)
             val unreachable = diagram.states.filter { it.id !in reachable }.map { it.name }
             if (unreachable.isNotEmpty()) {
-                add(UiStrings.unreachableStates(summarize(unreachable)))
+                add(StateMachineStrings.unreachableStates(summarize(unreachable)))
             }
         }
     }
@@ -135,7 +136,7 @@ object StateMachineAnalyzer {
     private fun summarize(items: List<String>): String {
         val listed = items.take(MAX_LISTED_ISSUES).joinToString(", ")
         val others = items.size - MAX_LISTED_ISSUES
-        return if (others > 0) UiStrings.andOthers(listed, others) else listed
+        return if (others > 0) StateMachineStrings.andOthers(listed, others) else listed
     }
 
     private class Simulation(
@@ -153,7 +154,7 @@ object StateMachineAnalyzer {
                         null,
                         emptyList(),
                         emptyList(),
-                        UiStrings.SET_INITIAL_STATE_FIRST,
+                        StateMachineStrings.SET_INITIAL_STATE_FIRST,
                     )
             val steps = mutableListOf<SimulationStep>()
             val outputs = mutableListOf<String>()
@@ -164,9 +165,13 @@ object StateMachineAnalyzer {
                 val error =
                     when {
                         candidates.isEmpty() ->
-                            UiStrings.noTransitionForInput(index, current.name, input)
+                            StateMachineStrings.noTransitionForInput(index, current.name, input)
                         isConflict(candidates, kind) ->
-                            UiStrings.severalTransitionsForInput(index, current.name, input)
+                            StateMachineStrings.severalTransitionsForInput(
+                                index,
+                                current.name,
+                                input,
+                            )
                         else -> null
                     }
                 if (error != null) {
@@ -186,7 +191,7 @@ object StateMachineAnalyzer {
                             initial,
                             steps,
                             outputs,
-                            UiStrings.transitionToMissingState(index),
+                            StateMachineStrings.transitionToMissingState(index),
                         )
                 val output =
                     if (kind.hasStateOutputs) current.output.trim() else transition.output.trim()

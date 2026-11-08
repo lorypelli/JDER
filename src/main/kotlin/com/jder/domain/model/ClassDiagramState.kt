@@ -3,7 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.ClassStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.DiagramTypeStrings
 import java.util.UUID
 
 class ClassDiagramState : DiagramEditorState<ClassDiagram>({ ClassDiagram(name = "") }) {
@@ -20,7 +22,7 @@ class ClassDiagramState : DiagramEditorState<ClassDiagram>({ ClassDiagram(name =
     var pendingRelationSourceId by mutableStateOf<String?>(null)
 
     override val diagramName: String
-        get() = diagram.name.ifEmpty { UiStrings.NEW_CLASS_DIAGRAM }
+        get() = diagram.name.ifEmpty { DiagramTypeStrings.NEW_CLASS_DIAGRAM }
 
     override val isEmpty: Boolean
         get() = diagram.classes.isEmpty() && diagram.relations.isEmpty() && diagram.notes.isEmpty()
@@ -50,15 +52,15 @@ class ClassDiagramState : DiagramEditorState<ClassDiagram>({ ClassDiagram(name =
     override fun deleteSelection(): String? {
         selectedClassId?.let {
             deleteClass(it)
-            return UiStrings.CLASS_DELETED
+            return ClassStrings.CLASS_DELETED
         }
         selectedRelationId?.let {
             deleteRelation(it)
-            return UiStrings.RELATION_DELETED
+            return CommonStrings.RELATION_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         return null
     }

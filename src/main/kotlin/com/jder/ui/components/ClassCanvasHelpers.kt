@@ -7,7 +7,8 @@ import com.jder.domain.model.ClassEntity
 import com.jder.domain.model.ClassEntityType
 import com.jder.domain.model.ClassRelation
 import com.jder.domain.model.ClassToolMode
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.ClassStrings
+import com.jder.strings.CommonStrings
 import kotlin.math.abs
 
 sealed interface ClassElement {
@@ -121,14 +122,14 @@ internal fun handleClassDiagramTap(
             hitTestClassDiagram(state.diagram, offset)?.let { selectClassElement(state, it) }
                 ?: state.clearSelection()
         ClassToolMode.CLASS -> {
-            state.addClass(offset.x - 100f, offset.y - 40f, UiStrings.NEW_CLASS)
+            state.addClass(offset.x - 100f, offset.y - 40f, ClassStrings.NEW_CLASS)
             state.toolMode = ClassToolMode.SELECT
         }
         ClassToolMode.INTERFACE -> {
             state.addClass(
                 offset.x - 100f,
                 offset.y - 40f,
-                UiStrings.NEW_INTERFACE,
+                ClassStrings.NEW_INTERFACE,
                 ClassEntityType.INTERFACE,
             )
             state.toolMode = ClassToolMode.SELECT
@@ -137,7 +138,7 @@ internal fun handleClassDiagramTap(
             state.addClass(
                 offset.x - 100f,
                 offset.y - 40f,
-                UiStrings.NEW_ENUM,
+                ClassStrings.NEW_ENUM,
                 ClassEntityType.ENUM,
             )
             state.toolMode = ClassToolMode.SELECT
@@ -159,7 +160,7 @@ internal fun handleClassDiagramTap(
             }
         }
         ClassToolMode.NOTE -> {
-            state.addNote(offset.x - 120f, offset.y - 90f, UiStrings.NEW_NOTE)
+            state.addNote(offset.x - 120f, offset.y - 90f, CommonStrings.NEW_NOTE)
             state.toolMode = ClassToolMode.SELECT
         }
     }

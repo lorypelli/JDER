@@ -24,8 +24,9 @@ import com.jder.domain.model.ClassMember
 import com.jder.domain.model.ClassRelation
 import com.jder.domain.model.ClassRelationType
 import com.jder.domain.model.Visibility
+import com.jder.strings.ClassStrings
+import com.jder.strings.CommonStrings
 import com.jder.ui.components.RadioOptionList
-import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 @Composable
@@ -45,17 +46,17 @@ fun ClassPropertiesDialog(
     var docs by remember(entityId) { mutableStateOf(documentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.CLASS_PROPERTIES) },
+        title = { Text(ClassStrings.CLASS_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = entityName,
                     onValueChange = { entityName = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
+                Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(ClassEntityType.entries, entityType, { entityType = it }) {
                     it.display
                 }
@@ -65,14 +66,17 @@ fun ClassPropertiesDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(UiStrings.CLASS_ABSTRACT, style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            ClassStrings.CLASS_ABSTRACT,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                         Switch(checked = abstract, onCheckedChange = { abstract = it })
                     }
                 }
                 OutlinedTextField(
                     value = docs,
                     onValueChange = { docs = it },
-                    label = { Text(UiStrings.DOCUMENTATION) },
+                    label = { Text(CommonStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 4,
                 )
@@ -86,10 +90,10 @@ fun ClassPropertiesDialog(
                 },
                 enabled = entityName.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -107,10 +111,10 @@ fun ClassMemberDialog(
     var isAbstract by remember { mutableStateOf(initialMember?.isAbstract ?: false) }
     val title =
         when {
-            initialMember == null && isMethod -> UiStrings.ADD_METHOD
-            initialMember == null -> UiStrings.ADD_ATTRIBUTE
-            isMethod -> UiStrings.EDIT_METHOD
-            else -> UiStrings.EDIT_ATTRIBUTE
+            initialMember == null && isMethod -> CommonStrings.ADD_METHOD
+            initialMember == null -> CommonStrings.ADD_ATTRIBUTE
+            isMethod -> ClassStrings.EDIT_METHOD
+            else -> CommonStrings.EDIT_ATTRIBUTE
         }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -124,19 +128,19 @@ fun ClassMemberDialog(
                     OutlinedTextField(
                         value = memberName,
                         onValueChange = { memberName = it },
-                        label = { Text(UiStrings.NAME) },
+                        label = { Text(CommonStrings.NAME) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                     OutlinedTextField(
                         value = memberType,
                         onValueChange = { memberType = it },
-                        label = { Text(UiStrings.TYPE) },
+                        label = { Text(CommonStrings.TYPE) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                 }
-                Text("${UiStrings.VISIBILITY}:", style = MaterialTheme.typography.labelMedium)
+                Text("${ClassStrings.VISIBILITY}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(Visibility.entries, visibility, { visibility = it }) {
                     "${it.symbol}  ${it.display}"
                 }
@@ -145,7 +149,7 @@ fun ClassMemberDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(UiStrings.STATIC, style = MaterialTheme.typography.bodyMedium)
+                    Text(ClassStrings.STATIC, style = MaterialTheme.typography.bodyMedium)
                     Switch(checked = isStatic, onCheckedChange = { isStatic = it })
                 }
                 if (isMethod) {
@@ -154,7 +158,10 @@ fun ClassMemberDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(UiStrings.METHOD_ABSTRACT, style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            ClassStrings.METHOD_ABSTRACT,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                         Switch(checked = isAbstract, onCheckedChange = { isAbstract = it })
                     }
                 }
@@ -177,10 +184,10 @@ fun ClassMemberDialog(
                 },
                 enabled = memberName.isNotBlank(),
             ) {
-                Text(if (initialMember == null) UiStrings.ADD else UiStrings.CONFIRM)
+                Text(if (initialMember == null) CommonStrings.ADD else CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -202,23 +209,23 @@ fun ClassRelationPropertiesDialog(
     var label by remember(relation.id) { mutableStateOf(relation.label) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.EDIT_RELATION) },
+        title = { Text(CommonStrings.EDIT_RELATION) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
+                Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(ClassRelationType.entries, relType, { relType = it }) { it.display }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = sourceMulti,
                         onValueChange = { sourceMulti = it },
-                        label = { Text(UiStrings.SOURCE_MULTIPLICITY_SHORT) },
+                        label = { Text(ClassStrings.SOURCE_MULTIPLICITY_SHORT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                     OutlinedTextField(
                         value = targetMulti,
                         onValueChange = { targetMulti = it },
-                        label = { Text(UiStrings.TARGET_MULTIPLICITY_SHORT) },
+                        label = { Text(ClassStrings.TARGET_MULTIPLICITY_SHORT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
@@ -226,7 +233,7 @@ fun ClassRelationPropertiesDialog(
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text(UiStrings.LABEL) },
+                    label = { Text(CommonStrings.LABEL) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
@@ -239,10 +246,10 @@ fun ClassRelationPropertiesDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -254,7 +261,7 @@ fun SelectClassRelationTypeDialog(
     var selected by remember { mutableStateOf(ClassRelationType.ASSOCIATION) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.RELATION_TYPE) },
+        title = { Text(CommonStrings.RELATION_TYPE) },
         text = {
             RadioOptionList(ClassRelationType.entries, selected, { selected = it }) { it.display }
         },
@@ -265,9 +272,9 @@ fun SelectClassRelationTypeDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }

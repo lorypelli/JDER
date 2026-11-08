@@ -3,7 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.RelationalStrings
 import java.util.UUID
 
 class RelationalDiagramState :
@@ -21,7 +23,7 @@ class RelationalDiagramState :
     var pendingForeignKeySourceId by mutableStateOf<String?>(null)
 
     override val diagramName: String
-        get() = diagram.name.ifEmpty { UiStrings.NEW_RELATIONAL_SCHEMA }
+        get() = diagram.name.ifEmpty { DiagramTypeStrings.NEW_RELATIONAL_SCHEMA }
 
     override val isEmpty: Boolean
         get() = diagram.tables.isEmpty() && diagram.notes.isEmpty()
@@ -51,15 +53,15 @@ class RelationalDiagramState :
     override fun deleteSelection(): String? {
         selectedTableId?.let {
             deleteTable(it)
-            return UiStrings.TABLE_DELETED
+            return RelationalStrings.TABLE_DELETED
         }
         selectedForeignKeyId?.let {
             deleteForeignKey(it)
-            return UiStrings.FOREIGN_KEY_DELETED
+            return RelationalStrings.FOREIGN_KEY_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         return null
     }

@@ -22,7 +22,8 @@ import com.jder.domain.model.ERDiagramState
 import com.jder.domain.model.Entity
 import com.jder.domain.model.Relationship
 import com.jder.domain.model.isManyToMany
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.ERStrings
 
 @Composable
 fun ERPropertiesPanel(
@@ -89,15 +90,15 @@ private fun EntityPropertiesContent(
     onEditAttribute: (attribute: Attribute) -> Unit,
     onDeleteAttribute: (attributeId: String) -> Unit,
 ) {
-    PropertyCard("${UiStrings.ENTITY}: ${entity.name}") {
+    PropertyCard("${ERStrings.ENTITY}: ${entity.name}") {
         PropertyDetail(
-            "${UiStrings.TYPE}: ${if (entity.isWeak) UiStrings.WEAK else UiStrings.STRONG}"
+            "${CommonStrings.TYPE}: ${if (entity.isWeak) ERStrings.WEAK else ERStrings.STRONG}"
         )
-        PropertyDetail("${UiStrings.ATTRIBUTES}: ${entity.attributes.size}")
+        PropertyDetail("${CommonStrings.ATTRIBUTES}: ${entity.attributes.size}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditEntity)
-    PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditEntity)
+    PropertyOutlinedButton(CommonStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
     AttributeList(entity.attributes, onEditAttribute, onDeleteAttribute)
     DocumentationCard(entity.documentation)
 }
@@ -115,32 +116,32 @@ private fun RelationshipPropertiesContent(
     onDeleteConnection: (entityId: String) -> Unit,
     onConvertToAssociativeEntity: () -> Unit,
 ) {
-    PropertyCard("${UiStrings.RELATION}: ${relationship.name}") {
-        PropertyDetail("${UiStrings.CONNECTIONS}: ${relationship.connections.size}")
-        PropertyDetail("${UiStrings.ATTRIBUTES}: ${relationship.attributes.size}")
+    PropertyCard("${CommonStrings.RELATION}: ${relationship.name}") {
+        PropertyDetail("${ERStrings.CONNECTIONS}: ${relationship.connections.size}")
+        PropertyDetail("${CommonStrings.ATTRIBUTES}: ${relationship.attributes.size}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditRelationship)
-    PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
-    PropertyOutlinedButton(UiStrings.ADD_CONNECTION, Icons.Default.Link, onAddConnection)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditRelationship)
+    PropertyOutlinedButton(CommonStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
+    PropertyOutlinedButton(ERStrings.ADD_CONNECTION, Icons.Default.Link, onAddConnection)
     PropertyOutlinedButton(
-        UiStrings.CONVERT_TO_ASSOCIATIVE_ENTITY,
+        ERStrings.CONVERT_TO_ASSOCIATIVE_ENTITY,
         Icons.Default.AutoFixHigh,
         onConvertToAssociativeEntity,
         enabled = relationship.isManyToMany(),
     )
     AttributeList(relationship.attributes, onEditAttribute, onDeleteAttribute)
     if (relationship.connections.isNotEmpty()) {
-        PropertyListTitle("${UiStrings.CONNECTIONS}:")
+        PropertyListTitle("${ERStrings.CONNECTIONS}:")
         relationship.connections.forEach {
             PropertyItemCard(
                 title =
                     entities.find { entity -> entity.id == it.entityId }?.name
-                        ?: UiStrings.UNKNOWN_ENTITY,
-                subtitle = "${UiStrings.CARDINALITY}: ${it.cardinality.display}",
-                editDescription = UiStrings.EDIT_CONNECTION,
+                        ?: ERStrings.UNKNOWN_ENTITY,
+                subtitle = "${ERStrings.CARDINALITY}: ${it.cardinality.display}",
+                editDescription = ERStrings.EDIT_CONNECTION,
                 onEdit = { onEditConnection(it.entityId, it) },
-                deleteDescription = UiStrings.DELETE_CONNECTION,
+                deleteDescription = ERStrings.DELETE_CONNECTION,
                 onDelete = { onDeleteConnection(it.entityId) },
             )
         }
@@ -155,15 +156,15 @@ private fun AttributeList(
     onDelete: (attributeId: String) -> Unit,
 ) {
     if (attributes.isEmpty()) return
-    PropertyListTitle("${UiStrings.ATTRIBUTES}:")
+    PropertyListTitle("${CommonStrings.ATTRIBUTES}:")
     attributes.forEach {
         PropertyItemCard(
             title = it.name,
             subtitle = it.type.display,
             isEmphasized = it.isPrimaryKey,
-            editDescription = UiStrings.EDIT_ATTRIBUTE,
+            editDescription = CommonStrings.EDIT_ATTRIBUTE,
             onEdit = { onEdit(it) },
-            deleteDescription = UiStrings.DELETE_ATTRIBUTE,
+            deleteDescription = CommonStrings.DELETE_ATTRIBUTE,
             onDelete = { onDelete(it.id) },
         )
     }

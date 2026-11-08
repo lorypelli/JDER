@@ -20,7 +20,8 @@ import com.jder.domain.model.SequenceFragment
 import com.jder.domain.model.SequenceFragmentType
 import com.jder.domain.model.SequenceLifeline
 import com.jder.domain.model.SequenceMessage
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.SequenceStrings
 
 @Composable
 fun SequencePropertiesPanel(
@@ -66,17 +67,17 @@ private fun LifelinePropertiesContent(
     diagram: SequenceDiagram,
     onEdit: () -> Unit,
 ) {
-    PropertyCard("${UiStrings.LIFELINE}: ${lifeline.name}") {
-        PropertyDetail("${UiStrings.TYPE}: ${lifeline.type.display}")
+    PropertyCard("${SequenceStrings.LIFELINE}: ${lifeline.name}") {
+        PropertyDetail("${CommonStrings.TYPE}: ${lifeline.type.display}")
         PropertyDetail(
-            "${UiStrings.MESSAGES_SENT}: ${diagram.messages.count { it.sourceId == lifeline.id }}"
+            "${SequenceStrings.MESSAGES_SENT}: ${diagram.messages.count { it.sourceId == lifeline.id }}"
         )
         PropertyDetail(
-            "${UiStrings.MESSAGES_RECEIVED}: ${diagram.messages.count { it.targetId == lifeline.id }}"
+            "${SequenceStrings.MESSAGES_RECEIVED}: ${diagram.messages.count { it.targetId == lifeline.id }}"
         )
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     DocumentationCard(lifeline.documentation)
 }
 
@@ -89,16 +90,17 @@ private fun MessagePropertiesContent(
     onReverse: () -> Unit,
 ) {
     PropertyCard(
-        if (message.label.isBlank()) UiStrings.MESSAGE else "${UiStrings.MESSAGE}: ${message.label}"
+        if (message.label.isBlank()) SequenceStrings.MESSAGE
+        else "${SequenceStrings.MESSAGE}: ${message.label}"
     ) {
-        PropertyDetail("${UiStrings.TYPE}: ${message.type.display}")
-        PropertyDetail("${UiStrings.FROM}: $sourceName")
-        PropertyDetail("${UiStrings.TO}: $targetName")
+        PropertyDetail("${CommonStrings.TYPE}: ${message.type.display}")
+        PropertyDetail("${CommonStrings.FROM}: $sourceName")
+        PropertyDetail("${CommonStrings.TO}: $targetName")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
-        UiStrings.REVERSE_DIRECTION,
+        CommonStrings.REVERSE_DIRECTION,
         Icons.Default.SwapHoriz,
         onReverse,
         enabled = !message.isSelfMessage,
@@ -107,24 +109,24 @@ private fun MessagePropertiesContent(
 
 @Composable
 private fun FragmentPropertiesContent(fragment: SequenceFragment, onEdit: () -> Unit) {
-    PropertyCard("${UiStrings.FRAGMENT}: ${fragment.type.keyword}") {
-        PropertyDetail("${UiStrings.TYPE}: ${fragment.type.display}")
+    PropertyCard("${SequenceStrings.FRAGMENT}: ${fragment.type.keyword}") {
+        PropertyDetail("${CommonStrings.TYPE}: ${fragment.type.display}")
         if (fragment.condition.isNotBlank()) {
             PropertyDetail(
                 if (fragment.type == SequenceFragmentType.REF) {
-                    "${UiStrings.INTERACTION}: ${fragment.condition}"
+                    "${SequenceStrings.INTERACTION}: ${fragment.condition}"
                 } else {
-                    "${UiStrings.CONDITION}: [${fragment.condition}]"
+                    "${SequenceStrings.CONDITION}: [${fragment.condition}]"
                 }
             )
         }
         if (fragment.type.hasOperands) {
-            PropertyDetail("${UiStrings.OPERANDS}: ${fragment.operands.size + 1}")
+            PropertyDetail("${SequenceStrings.OPERANDS}: ${fragment.operands.size + 1}")
         }
         PropertyDetail(
-            "${UiStrings.SIZE}: ${fragment.width.toInt()} × ${fragment.height.toInt()} px"
+            "${CommonStrings.SIZE}: ${fragment.width.toInt()} × ${fragment.height.toInt()} px"
         )
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }

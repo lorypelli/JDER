@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import com.jder.data.DiagramFileRepository
 import com.jder.data.ImageExporter
 import com.jder.domain.model.DiagramEditorState
+import com.jder.strings.FileStrings
+import com.jder.strings.Localization
 import com.jder.ui.components.ConfirmNewDiagramDialog
 import com.jder.ui.components.ConfirmOpenDiagramDialog
 import com.jder.ui.components.DiagramMenuCommands
@@ -55,7 +57,6 @@ import com.jder.ui.components.FileManagerMode
 import com.jder.ui.components.LocalDiagramMenuHost
 import com.jder.ui.components.Toasts
 import com.jder.ui.components.toExportPalette
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
@@ -93,7 +94,7 @@ fun <T> DiagramEditorScaffold(
     val currentRenderImage by rememberUpdatedState(renderImage)
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
     fun currentImageKey(): Any =
-        Triple(state.imageKey, themeState.selectedPalette, UiStrings.language)
+        Triple(state.imageKey, themeState.selectedPalette, Localization.language)
     fun renderExportImage() =
         currentRenderImage(themeState.selectedPalette.lightScheme.toExportPalette())
     fun writeAutoExport(file: File, key: Any, image: () -> ImageBitmap): Result<Unit> =
@@ -113,9 +114,9 @@ fun <T> DiagramEditorScaffold(
             ?.takeIf { state.isAutoExportEnabled && key != state.exportedImageKey }
             ?.let(::File)
     fun autoSave(file: File): Boolean =
-        writeDiagram(file).onFailure { Toasts.error(UiStrings.AUTO_SAVE_FAILED, it) }.isSuccess
+        writeDiagram(file).onFailure { Toasts.error(FileStrings.AUTO_SAVE_FAILED, it) }.isSuccess
     fun reportAutoExport(result: Result<Unit>): Boolean =
-        result.onFailure { Toasts.error(UiStrings.AUTO_EXPORT_FAILED, it) }.isSuccess
+        result.onFailure { Toasts.error(FileStrings.AUTO_EXPORT_FAILED, it) }.isSuccess
     fun flushAutoSave(): Boolean {
         val isSaved = autoSaveFile()?.let(::autoSave) ?: true
         val key = currentImageKey()
@@ -136,8 +137,8 @@ fun <T> DiagramEditorScaffold(
     fun saveTo(file: File) {
         writeDiagram(file)
             .fold(
-                onSuccess = { Toasts.success(UiStrings.diagramSaved(file.name)) },
-                onFailure = { Toasts.error(UiStrings.SAVE_FAILED, it) },
+                onSuccess = { Toasts.success(FileStrings.diagramSaved(file.name)) },
+                onFailure = { Toasts.error(FileStrings.SAVE_FAILED, it) },
             )
     }
     fun saveDiagram() {
@@ -151,11 +152,12 @@ fun <T> DiagramEditorScaffold(
         if (!flushAutoSave() || state.isModified) showNewDiagramConfirmDialog = true
         else {
             state.newDiagram()
-            Toasts.success(UiStrings.NEW_DIAGRAM_CREATED)
+            Toasts.success(FileStrings.NEW_DIAGRAM_CREATED)
         }
     }
     fun requestExport() {
-        if (state.isEmpty) Toasts.warning(UiStrings.NOTHING_TO_EXPORT) else showExportDialog = true
+        if (state.isEmpty) Toasts.warning(FileStrings.NOTHING_TO_EXPORT)
+        else showExportDialog = true
     }
     fun exportTo(file: File) {
         val key = currentImageKey()
@@ -171,36 +173,36 @@ fun <T> DiagramEditorScaffold(
                 Result.failure(e)
             }
         result.fold(
-            onSuccess = { Toasts.success(UiStrings.imageSaved(file.name)) },
-            onFailure = { Toasts.error(UiStrings.EXPORT_FAILED, it) },
+            onSuccess = { Toasts.success(FileStrings.imageSaved(file.name)) },
+            onFailure = { Toasts.error(FileStrings.EXPORT_FAILED, it) },
         )
     }
     fun toggleAutoSave() {
         val file = File(state.currentFile ?: return)
         state.isAutoSaveEnabled = !state.isAutoSaveEnabled
         Toasts.success(
-            if (state.isAutoSaveEnabled) UiStrings.autoSaveEnabled(file.name)
-            else UiStrings.AUTO_SAVE_DISABLED
+            if (state.isAutoSaveEnabled) FileStrings.autoSaveEnabled(file.name)
+            else FileStrings.AUTO_SAVE_DISABLED
         )
     }
     fun toggleAutoExport() {
         val file = File(state.imageFile ?: return)
         state.isAutoExportEnabled = !state.isAutoExportEnabled
         Toasts.success(
-            if (state.isAutoExportEnabled) UiStrings.autoExportEnabled(file.name)
-            else UiStrings.AUTO_EXPORT_DISABLED
+            if (state.isAutoExportEnabled) FileStrings.autoExportEnabled(file.name)
+            else FileStrings.AUTO_EXPORT_DISABLED
         )
     }
     fun undo() {
         if (state.canUndo()) {
             state.undo()
-            Toasts.success(UiStrings.ACTION_UNDONE)
+            Toasts.success(FileStrings.ACTION_UNDONE)
         }
     }
     fun redo() {
         if (state.canRedo()) {
             state.redo()
-            Toasts.success(UiStrings.ACTION_REDONE)
+            Toasts.success(FileStrings.ACTION_REDONE)
         }
     }
     fun deleteSelected() {
@@ -372,7 +374,7 @@ fun <T> DiagramEditorScaffold(
             onConfirm = {
                 showNewDiagramConfirmDialog = false
                 state.newDiagram()
-                Toasts.success(UiStrings.NEW_DIAGRAM_CREATED)
+                Toasts.success(FileStrings.NEW_DIAGRAM_CREATED)
             },
         )
     }
@@ -389,7 +391,7 @@ fun <T> DiagramEditorScaffold(
         FileManagerDialog(
             mode = FileManagerMode.OPEN,
             fileExtension = ".json",
-            title = UiStrings.OPEN_DIAGRAM,
+            title = FileStrings.OPEN_DIAGRAM,
             onDismiss = { showOpenDialog = false },
             onFileSelected = { file ->
                 showOpenDialog = false
@@ -398,9 +400,9 @@ fun <T> DiagramEditorScaffold(
                     .fold(
                         onSuccess = {
                             state.loadDiagram(it, file.absolutePath)
-                            Toasts.success(UiStrings.diagramLoaded(file.name))
+                            Toasts.success(FileStrings.diagramLoaded(file.name))
                         },
-                        onFailure = { Toasts.error(UiStrings.LOAD_FAILED, it) },
+                        onFailure = { Toasts.error(FileStrings.LOAD_FAILED, it) },
                     )
             },
         )
@@ -409,7 +411,7 @@ fun <T> DiagramEditorScaffold(
         FileManagerDialog(
             mode = FileManagerMode.SAVE,
             fileExtension = ".json",
-            title = UiStrings.SAVE_DIAGRAM,
+            title = FileStrings.SAVE_DIAGRAM,
             defaultFileName = state.diagramName,
             onDismiss = { showSaveAsDialog = false },
             onFileSelected = {
@@ -422,7 +424,7 @@ fun <T> DiagramEditorScaffold(
         FileManagerDialog(
             mode = FileManagerMode.SAVE,
             fileExtension = ".png",
-            title = UiStrings.EXPORT_PNG,
+            title = FileStrings.EXPORT_PNG,
             defaultFileName = state.diagramName,
             onDismiss = { showExportDialog = false },
             onFileSelected = {

@@ -18,7 +18,8 @@ import com.jder.domain.model.ClassDiagramState
 import com.jder.domain.model.ClassEntity
 import com.jder.domain.model.ClassMember
 import com.jder.domain.model.ClassRelation
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.ClassStrings
+import com.jder.strings.CommonStrings
 
 @Composable
 fun ClassPropertiesPanel(
@@ -74,18 +75,18 @@ private fun ClassEntityPropertiesContent(
     onEditMember: (ClassMember) -> Unit,
     onDeleteMember: (memberId: String) -> Unit,
 ) {
-    PropertyCard("${UiStrings.CLASS}: ${entity.name}") {
-        PropertyDetail("${UiStrings.TYPE}: ${entity.type.display}")
+    PropertyCard("${ClassStrings.CLASS}: ${entity.name}") {
+        PropertyDetail("${CommonStrings.TYPE}: ${entity.type.display}")
         if (entity.isAbstract) {
-            PropertyDetail("${UiStrings.CLASS_ABSTRACT}: ${UiStrings.yesNo(true)}")
+            PropertyDetail("${ClassStrings.CLASS_ABSTRACT}: ${CommonStrings.yesNo(true)}")
         }
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
-    PropertyOutlinedButton(UiStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
-    PropertyOutlinedButton(UiStrings.ADD_METHOD, Icons.Default.Add, onAddMethod)
-    MemberList("${UiStrings.ATTRIBUTES}:", entity.attributes, onEditMember, onDeleteMember)
-    MemberList("${UiStrings.METHODS}:", entity.methods, onEditMember, onDeleteMember)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyOutlinedButton(CommonStrings.ADD_ATTRIBUTE, Icons.Default.Add, onAddAttribute)
+    PropertyOutlinedButton(CommonStrings.ADD_METHOD, Icons.Default.Add, onAddMethod)
+    MemberList("${CommonStrings.ATTRIBUTES}:", entity.attributes, onEditMember, onDeleteMember)
+    MemberList("${ClassStrings.METHODS}:", entity.methods, onEditMember, onDeleteMember)
     DocumentationCard(entity.documentation)
 }
 
@@ -102,9 +103,9 @@ private fun MemberList(
         PropertyItemCard(
             title = "${it.visibility.symbol} ${it.name}",
             subtitle = memberDetails(it),
-            deleteDescription = UiStrings.DELETE_MEMBER,
+            deleteDescription = ClassStrings.DELETE_MEMBER,
             onDelete = { onDelete(it.id) },
-            editDescription = UiStrings.EDIT_MEMBER,
+            editDescription = ClassStrings.EDIT_MEMBER,
             onEdit = { onEdit(it) },
         )
     }
@@ -126,18 +127,18 @@ private fun ClassRelationPropertiesContent(
 ) {
     val sourceName = state.diagram.classes.find { it.id == relation.sourceId }?.name ?: "?"
     val targetName = state.diagram.classes.find { it.id == relation.targetId }?.name ?: "?"
-    PropertyCard(UiStrings.RELATION) {
-        PropertyDetail("${UiStrings.TYPE}: ${relation.type.display}")
-        PropertyDetail("${UiStrings.FROM}: $sourceName")
-        PropertyDetail("${UiStrings.TO}: $targetName")
+    PropertyCard(CommonStrings.RELATION) {
+        PropertyDetail("${CommonStrings.TYPE}: ${relation.type.display}")
+        PropertyDetail("${CommonStrings.FROM}: $sourceName")
+        PropertyDetail("${CommonStrings.TO}: $targetName")
         if (relation.sourceMultiplicity.isNotEmpty()) {
-            PropertyDetail("${UiStrings.SOURCE_MULTIPLICITY}: ${relation.sourceMultiplicity}")
+            PropertyDetail("${ClassStrings.SOURCE_MULTIPLICITY}: ${relation.sourceMultiplicity}")
         }
         if (relation.targetMultiplicity.isNotEmpty()) {
-            PropertyDetail("${UiStrings.TARGET_MULTIPLICITY}: ${relation.targetMultiplicity}")
+            PropertyDetail("${ClassStrings.TARGET_MULTIPLICITY}: ${relation.targetMultiplicity}")
         }
-        if (relation.label.isNotEmpty()) PropertyDetail("${UiStrings.LABEL}: ${relation.label}")
+        if (relation.label.isNotEmpty()) PropertyDetail("${CommonStrings.LABEL}: ${relation.label}")
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
 }

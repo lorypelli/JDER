@@ -1,6 +1,6 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.ERStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -70,11 +70,11 @@ enum class AttributeType {
     val display: String
         get() =
             when (this) {
-                NORMAL -> UiStrings.NORMAL
-                KEY -> UiStrings.KEY
-                MULTIVALUED -> UiStrings.MULTIVALUED
-                DERIVED -> UiStrings.DERIVED
-                COMPOSITE -> UiStrings.COMPOSITE
+                NORMAL -> ERStrings.NORMAL
+                KEY -> ERStrings.KEY
+                MULTIVALUED -> ERStrings.MULTIVALUED
+                DERIVED -> ERStrings.DERIVED
+                COMPOSITE -> ERStrings.COMPOSITE
             }
 }
 

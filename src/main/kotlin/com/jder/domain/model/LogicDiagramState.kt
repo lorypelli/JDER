@@ -3,7 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.LogicStrings
 import java.util.UUID
 
 class LogicDiagramState : DiagramEditorState<LogicDiagram>({ LogicDiagram(name = "") }) {
@@ -23,7 +25,7 @@ class LogicDiagramState : DiagramEditorState<LogicDiagram>({ LogicDiagram(name =
         private set
 
     override val diagramName: String
-        get() = diagram.name.ifEmpty { UiStrings.NEW_LOGIC_DIAGRAM }
+        get() = diagram.name.ifEmpty { DiagramTypeStrings.NEW_LOGIC_DIAGRAM }
 
     override val isEmpty: Boolean
         get() = diagram.components.isEmpty() && diagram.wires.isEmpty() && diagram.notes.isEmpty()
@@ -67,20 +69,20 @@ class LogicDiagramState : DiagramEditorState<LogicDiagram>({ LogicDiagram(name =
         selectedComponentId?.let {
             val message =
                 when (component(it)?.type) {
-                    LogicComponentType.INPUT -> UiStrings.INPUT_DELETED
-                    LogicComponentType.OUTPUT -> UiStrings.OUTPUT_DELETED
-                    else -> UiStrings.GATE_DELETED
+                    LogicComponentType.INPUT -> LogicStrings.INPUT_DELETED
+                    LogicComponentType.OUTPUT -> LogicStrings.OUTPUT_DELETED
+                    else -> LogicStrings.GATE_DELETED
                 }
             deleteComponent(it)
             return message
         }
         selectedWireId?.let {
             deleteWire(it)
-            return UiStrings.WIRE_DELETED
+            return LogicStrings.WIRE_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         return null
     }

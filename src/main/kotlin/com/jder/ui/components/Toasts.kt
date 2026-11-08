@@ -45,7 +45,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.AppStrings
+import com.jder.strings.CommonStrings
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
@@ -80,14 +81,14 @@ object Toasts {
     fun success(message: String) = show(message, ToastType.SUCCESS)
 
     fun warning(message: String) {
-        log(UiStrings.WARNING, message)
+        log(AppStrings.WARNING, message)
         show(message, ToastType.WARNING)
     }
 
     fun warning(action: String, cause: Throwable) = warning("$action: ${cause.describe()}")
 
     fun error(message: String) {
-        log(UiStrings.ERROR, message)
+        log(AppStrings.ERROR, message)
         show(message, ToastType.ERROR)
     }
 
@@ -99,7 +100,7 @@ object Toasts {
 }
 
 fun logError(action: String, cause: Throwable) =
-    log(UiStrings.ERROR, "$action: ${cause.describe()}")
+    log(AppStrings.ERROR, "$action: ${cause.describe()}")
 
 fun Throwable.describe(): String =
     message?.lineSequence()?.firstOrNull { it.isNotBlank() }?.trim() ?: javaClass.simpleName
@@ -194,7 +195,7 @@ private fun ToastCard(shown: ShownToast, isDarkTheme: Boolean) {
                     .semantics { liveRegion = LiveRegionMode.Polite },
             dismissAction = {
                 IconButton(onClick = shown::dismiss) {
-                    Icon(Icons.Default.Close, contentDescription = UiStrings.CLOSE)
+                    Icon(Icons.Default.Close, contentDescription = CommonStrings.CLOSE)
                 }
             },
             shape = MaterialTheme.shapes.medium,

@@ -19,10 +19,13 @@ import com.jder.domain.model.MachineState
 import com.jder.domain.model.MachineTransition
 import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.label
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.LogicStrings
+import com.jder.strings.StateMachineStrings
 
 fun finalStateActionLabel(isFinal: Boolean): String =
-    if (isFinal) UiStrings.REMOVE_FROM_FINAL_STATES else UiStrings.SET_FINAL_STATE
+    if (isFinal) StateMachineStrings.REMOVE_FROM_FINAL_STATES
+    else StateMachineStrings.SET_FINAL_STATE
 
 @Composable
 fun StateMachinePropertiesPanel(
@@ -62,21 +65,21 @@ private fun MachineStateContent(
     val isInitial = state.isInitial(machineState.id)
     val outgoing = state.diagram.transitions.filter { it.sourceId == machineState.id }
     val incoming = state.diagram.transitions.count { it.targetId == machineState.id }
-    PropertyCard("${UiStrings.STATE}: ${machineState.name}") {
+    PropertyCard("${StateMachineStrings.STATE}: ${machineState.name}") {
         if (state.kind.hasStateOutputs) {
             PropertyDetail(
-                "${UiStrings.OUTPUT}: ${machineState.output.ifBlank { "—" }}",
+                "${LogicStrings.OUTPUT}: ${machineState.output.ifBlank { "—" }}",
                 isEmphasized = true,
             )
         }
-        PropertyDetail("${UiStrings.INITIAL}: ${UiStrings.yesNo(isInitial)}")
-        PropertyDetail("${UiStrings.FINAL}: ${UiStrings.yesNo(machineState.isFinal)}")
-        PropertyDetail(UiStrings.transitionCounts(outgoing.size, incoming))
+        PropertyDetail("${StateMachineStrings.INITIAL}: ${CommonStrings.yesNo(isInitial)}")
+        PropertyDetail("${StateMachineStrings.FINAL}: ${CommonStrings.yesNo(machineState.isFinal)}")
+        PropertyDetail(StateMachineStrings.transitionCounts(outgoing.size, incoming))
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
-        UiStrings.SET_INITIAL_STATE,
+        StateMachineStrings.SET_INITIAL_STATE,
         CustomIcons.InitialState,
         { state.setInitialState(machineState.id) },
         enabled = !isInitial,
@@ -87,14 +90,14 @@ private fun MachineStateContent(
         { state.setFinalState(machineState.id, !machineState.isFinal) },
     )
     if (outgoing.isNotEmpty()) {
-        PropertyListTitle(UiStrings.OUTGOING_TRANSITIONS)
+        PropertyListTitle(StateMachineStrings.OUTGOING_TRANSITIONS)
         outgoing.forEach { transition ->
             PropertyItemCard(
                 title = transition.label(state.kind),
-                subtitle = UiStrings.towards(stateName(state, transition.targetId)),
-                deleteDescription = UiStrings.DELETE_TRANSITION,
+                subtitle = StateMachineStrings.towards(stateName(state, transition.targetId)),
+                deleteDescription = StateMachineStrings.DELETE_TRANSITION,
                 onDelete = { state.deleteTransition(transition.id) },
-                editDescription = UiStrings.EDIT_TRANSITION,
+                editDescription = StateMachineStrings.EDIT_TRANSITION,
                 onEdit = { onEditTransition(transition.id) },
             )
         }
@@ -107,30 +110,30 @@ private fun MachineTransitionContent(
     state: StateMachineDiagramState,
     onEdit: (String) -> Unit,
 ) {
-    PropertyCard(UiStrings.TRANSITION) {
-        PropertyDetail("${UiStrings.FROM}: ${stateName(state, transition.sourceId)}")
-        PropertyDetail("${UiStrings.TO}: ${stateName(state, transition.targetId)}")
+    PropertyCard(StateMachineStrings.TRANSITION) {
+        PropertyDetail("${CommonStrings.FROM}: ${stateName(state, transition.sourceId)}")
+        PropertyDetail("${CommonStrings.TO}: ${stateName(state, transition.targetId)}")
         PropertyDetail(
-            "${UiStrings.INPUT}: ${transition.input.ifBlank { "—" }}",
+            "${LogicStrings.INPUT}: ${transition.input.ifBlank { "—" }}",
             isEmphasized = true,
         )
         if (state.kind.hasTransitionOutputs) {
             PropertyDetail(
-                "${UiStrings.OUTPUT}: ${transition.output.ifBlank { "—" }}",
+                "${LogicStrings.OUTPUT}: ${transition.output.ifBlank { "—" }}",
                 isEmphasized = true,
             )
         }
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) { onEdit(transition.id) }
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit) { onEdit(transition.id) }
     PropertyOutlinedButton(
-        UiStrings.REVERSE_DIRECTION,
+        CommonStrings.REVERSE_DIRECTION,
         Icons.Default.SwapHoriz,
         { state.reverseTransition(transition.id) },
         enabled = !transition.isLoop,
     )
     PropertyOutlinedButton(
-        UiStrings.RESET_SHAPE,
+        StateMachineStrings.RESET_SHAPE,
         Icons.Default.AutoFixHigh,
         { state.resetTransitionShape(transition.id) },
         enabled = transition.hasCustomShape,
@@ -138,4 +141,4 @@ private fun MachineTransitionContent(
 }
 
 private fun stateName(state: StateMachineDiagramState, stateId: String): String =
-    state.machineState(stateId)?.name ?: UiStrings.UNKNOWN_STATE
+    state.machineState(stateId)?.name ?: StateMachineStrings.UNKNOWN_STATE

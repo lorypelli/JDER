@@ -31,8 +31,9 @@ import com.jder.domain.model.SequenceLifelineType
 import com.jder.domain.model.SequenceMessage
 import com.jder.domain.model.SequenceMessageType
 import com.jder.domain.model.SequenceOperand
+import com.jder.strings.CommonStrings
+import com.jder.strings.SequenceStrings
 import com.jder.ui.components.RadioOptionList
-import com.jder.ui.strings.UiStrings
 import java.util.UUID
 
 @Composable
@@ -49,23 +50,23 @@ fun LifelinePropertiesDialog(
     var documentation by remember(lifelineId) { mutableStateOf(lifelineDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.LIFELINE_PROPERTIES) },
+        title = { Text(SequenceStrings.LIFELINE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
-                    placeholder = { Text(UiStrings.LIFELINE_NAME_EXAMPLE) },
+                    label = { Text(CommonStrings.NAME) },
+                    placeholder = { Text(SequenceStrings.LIFELINE_NAME_EXAMPLE) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
+                Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(SequenceLifelineType.entries, type, { type = it }) { it.display }
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text(UiStrings.DOCUMENTATION) },
+                    label = { Text(CommonStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 4,
                 )
@@ -79,10 +80,10 @@ fun LifelinePropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -93,7 +94,7 @@ fun CreateSequenceMessageDialog(
     onConfirm: (label: String, type: SequenceMessageType) -> Unit,
 ) {
     SequenceMessageDialog(
-        title = UiStrings.NEW_MESSAGE,
+        title = SequenceStrings.NEW_MESSAGE,
         messageId = null,
         initialLabel = "",
         initialType = SequenceMessageType.SYNC,
@@ -110,7 +111,7 @@ fun EditSequenceMessageDialog(
     onConfirm: (label: String, type: SequenceMessageType) -> Unit,
 ) {
     SequenceMessageDialog(
-        title = UiStrings.EDIT_MESSAGE,
+        title = SequenceStrings.EDIT_MESSAGE,
         messageId = message.id,
         initialLabel = message.label,
         initialType = message.type,
@@ -145,12 +146,12 @@ private fun SequenceMessageDialog(
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text(UiStrings.LABEL) },
-                    placeholder = { Text(UiStrings.MESSAGE_LABEL_EXAMPLE) },
+                    label = { Text(CommonStrings.LABEL) },
+                    placeholder = { Text(SequenceStrings.MESSAGE_LABEL_EXAMPLE) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
+                Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(types, type, { type = it }) { it.display }
             }
         },
@@ -161,10 +162,10 @@ private fun SequenceMessageDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -189,13 +190,13 @@ fun SequenceFragmentPropertiesDialog(
     val isReference = type == SequenceFragmentType.REF
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.FRAGMENT_PROPERTIES) },
+        title = { Text(SequenceStrings.FRAGMENT_PROPERTIES) },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text("${UiStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
+                Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(SequenceFragmentType.entries, type, { type = it }) {
                     "${it.keyword} (${it.display})"
                 }
@@ -204,14 +205,14 @@ fun SequenceFragmentPropertiesDialog(
                     onValueChange = { condition = it },
                     label = {
                         Text(
-                            if (isReference) UiStrings.REFERENCED_INTERACTION
-                            else UiStrings.CONDITION
+                            if (isReference) SequenceStrings.REFERENCED_INTERACTION
+                            else SequenceStrings.CONDITION
                         )
                     },
                     placeholder = {
                         Text(
-                            if (isReference) UiStrings.REFERENCE_EXAMPLE
-                            else UiStrings.CONDITION_EXAMPLE
+                            if (isReference) SequenceStrings.REFERENCE_EXAMPLE
+                            else SequenceStrings.CONDITION_EXAMPLE
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -224,7 +225,7 @@ fun SequenceFragmentPropertiesDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "${UiStrings.ADDITIONAL_OPERANDS} (${operands.size})",
+                            "${SequenceStrings.ADDITIONAL_OPERANDS} (${operands.size})",
                             style = MaterialTheme.typography.titleSmall,
                         )
                         IconButton(
@@ -240,7 +241,7 @@ fun SequenceFragmentPropertiesDialog(
                                         )
                             }
                         ) {
-                            Icon(Icons.Default.Add, UiStrings.ADD_OPERAND)
+                            Icon(Icons.Default.Add, SequenceStrings.ADD_OPERAND)
                         }
                     }
                     operands.forEach { (id, _, condition) ->
@@ -257,14 +258,14 @@ fun SequenceFragmentPropertiesDialog(
                                             if (it.id == id) it.copy(condition = value) else it
                                         }
                                 },
-                                label = { Text(UiStrings.CONDITION) },
+                                label = { Text(SequenceStrings.CONDITION) },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
                             )
                             IconButton(onClick = { operands = operands.filter { it.id != id } }) {
                                 Icon(
                                     Icons.Default.Delete,
-                                    UiStrings.REMOVE_OPERAND,
+                                    SequenceStrings.REMOVE_OPERAND,
                                     tint = MaterialTheme.colorScheme.error,
                                 )
                             }
@@ -275,14 +276,14 @@ fun SequenceFragmentPropertiesDialog(
                     OutlinedTextField(
                         value = width,
                         onValueChange = { width = it.filter { it.isDigit() } },
-                        label = { Text(UiStrings.WIDTH) },
+                        label = { Text(CommonStrings.WIDTH) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                     OutlinedTextField(
                         value = height,
                         onValueChange = { height = it.filter { it.isDigit() } },
-                        label = { Text(UiStrings.HEIGHT) },
+                        label = { Text(CommonStrings.HEIGHT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
@@ -306,9 +307,9 @@ fun SequenceFragmentPropertiesDialog(
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }

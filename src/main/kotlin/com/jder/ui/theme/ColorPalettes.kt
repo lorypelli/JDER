@@ -4,7 +4,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.PaletteStrings
 
 data class ColorPalette(
     val name: () -> String,
@@ -106,7 +106,7 @@ object ColorPalettes {
 
     val Blue =
         createPalette(
-            name = UiStrings::PALETTE_BLUE,
+            name = PaletteStrings::PALETTE_BLUE,
             lightPrimary = Color(0xFF2196F3),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFBBDEFB),
@@ -134,7 +134,7 @@ object ColorPalettes {
         )
     val Red =
         createPalette(
-            name = UiStrings::PALETTE_RED,
+            name = PaletteStrings::PALETTE_RED,
             lightPrimary = Color(0xFFF44336),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFFFCDD2),
@@ -162,7 +162,7 @@ object ColorPalettes {
         )
     val Green =
         createPalette(
-            name = UiStrings::PALETTE_GREEN,
+            name = PaletteStrings::PALETTE_GREEN,
             lightPrimary = Color(0xFF4CAF50),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFC8E6C9),
@@ -190,7 +190,7 @@ object ColorPalettes {
         )
     val Purple =
         createPalette(
-            name = UiStrings::PALETTE_PURPLE,
+            name = PaletteStrings::PALETTE_PURPLE,
             lightPrimary = Color(0xFF9C27B0),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFE1BEE7),
@@ -218,7 +218,7 @@ object ColorPalettes {
         )
     val Orange =
         createPalette(
-            name = UiStrings::PALETTE_ORANGE,
+            name = PaletteStrings::PALETTE_ORANGE,
             lightPrimary = Color(0xFFFF9800),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFFFE0B2),
@@ -246,7 +246,7 @@ object ColorPalettes {
         )
     val Teal =
         createPalette(
-            name = UiStrings::PALETTE_TEAL,
+            name = PaletteStrings::PALETTE_TEAL,
             lightPrimary = Color(0xFF009688),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFB2DFDB),
@@ -274,7 +274,7 @@ object ColorPalettes {
         )
     val Indigo =
         createPalette(
-            name = UiStrings::PALETTE_INDIGO,
+            name = PaletteStrings::PALETTE_INDIGO,
             lightPrimary = Color(0xFF3F51B5),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFC5CAE9),
@@ -302,7 +302,7 @@ object ColorPalettes {
         )
     val Pink =
         createPalette(
-            name = UiStrings::PALETTE_PINK,
+            name = PaletteStrings::PALETTE_PINK,
             lightPrimary = Color(0xFFE91E63),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFF8BBD0),
@@ -330,7 +330,7 @@ object ColorPalettes {
         )
     val Cyan =
         createPalette(
-            name = UiStrings::PALETTE_CYAN,
+            name = PaletteStrings::PALETTE_CYAN,
             lightPrimary = Color(0xFF00BCD4),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFB2EBF2),
@@ -358,7 +358,7 @@ object ColorPalettes {
         )
     val Amber =
         createPalette(
-            name = UiStrings::PALETTE_AMBER,
+            name = PaletteStrings::PALETTE_AMBER,
             lightPrimary = Color(0xFFFFC107),
             lightOnPrimary = Color(0xFF000000),
             lightPrimaryContainer = Color(0xFFFFECB3),
@@ -386,7 +386,7 @@ object ColorPalettes {
         )
     val DeepPurple =
         createPalette(
-            name = UiStrings::PALETTE_DEEP_PURPLE,
+            name = PaletteStrings::PALETTE_DEEP_PURPLE,
             lightPrimary = Color(0xFF673AB7),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFD1C4E9),
@@ -414,7 +414,7 @@ object ColorPalettes {
         )
     val LightGreen =
         createPalette(
-            name = UiStrings::PALETTE_LIGHT_GREEN,
+            name = PaletteStrings::PALETTE_LIGHT_GREEN,
             lightPrimary = Color(0xFF8BC34A),
             lightOnPrimary = Color(0xFF000000),
             lightPrimaryContainer = Color(0xFFDCEDC8),
@@ -442,7 +442,7 @@ object ColorPalettes {
         )
     val Lime =
         createPalette(
-            name = UiStrings::PALETTE_LIME,
+            name = PaletteStrings::PALETTE_LIME,
             lightPrimary = Color(0xFFCDDC39),
             lightOnPrimary = Color(0xFF000000),
             lightPrimaryContainer = Color(0xFFF0F4C3),
@@ -470,7 +470,7 @@ object ColorPalettes {
         )
     val Yellow =
         createPalette(
-            name = UiStrings::PALETTE_YELLOW,
+            name = PaletteStrings::PALETTE_YELLOW,
             lightPrimary = Color(0xFFFFEB3B),
             lightOnPrimary = Color(0xFF000000),
             lightPrimaryContainer = Color(0xFFFFF9C4),
@@ -498,7 +498,7 @@ object ColorPalettes {
         )
     val DeepOrange =
         createPalette(
-            name = UiStrings::PALETTE_DEEP_ORANGE,
+            name = PaletteStrings::PALETTE_DEEP_ORANGE,
             lightPrimary = Color(0xFFFF5722),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFFFCCBC),
@@ -526,7 +526,7 @@ object ColorPalettes {
         )
     val Brown =
         createPalette(
-            name = UiStrings::PALETTE_BROWN,
+            name = PaletteStrings::PALETTE_BROWN,
             lightPrimary = Color(0xFF795548),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFD7CCC8),
@@ -554,7 +554,7 @@ object ColorPalettes {
         )
     val LightBlue =
         createPalette(
-            name = UiStrings::PALETTE_LIGHT_BLUE,
+            name = PaletteStrings::PALETTE_LIGHT_BLUE,
             lightPrimary = Color(0xFF03A9F4),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFB3E5FC),
@@ -582,7 +582,7 @@ object ColorPalettes {
         )
     val Gray =
         createPalette(
-            name = UiStrings::PALETTE_GRAY,
+            name = PaletteStrings::PALETTE_GRAY,
             lightPrimary = Color(0xFF9E9E9E),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFEEEEEE),
@@ -610,7 +610,7 @@ object ColorPalettes {
         )
     val BlueGray =
         createPalette(
-            name = UiStrings::PALETTE_BLUE_GRAY,
+            name = PaletteStrings::PALETTE_BLUE_GRAY,
             lightPrimary = Color(0xFF607D8B),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFFCFD8DC),
@@ -638,7 +638,7 @@ object ColorPalettes {
         )
     val BlackAndWhite =
         createPalette(
-            name = UiStrings::PALETTE_BLACK_AND_WHITE,
+            name = PaletteStrings::PALETTE_BLACK_AND_WHITE,
             lightPrimary = Color(0xFF000000),
             lightOnPrimary = Color(0xFFFFFFFF),
             lightPrimaryContainer = Color(0xFF424242),

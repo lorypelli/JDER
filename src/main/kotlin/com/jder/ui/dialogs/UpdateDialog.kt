@@ -5,7 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalUriHandler
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.AppStrings
 import com.jder.ui.utils.openSafely
 
 @Composable
@@ -13,8 +13,8 @@ fun UpdateAvailableDialog(downloadUrl: String, onDismiss: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.UPDATE_AVAILABLE) },
-        text = { Text(UiStrings.UPDATE_AVAILABLE_MESSAGE) },
+        title = { Text(AppStrings.UPDATE_AVAILABLE) },
+        text = { Text(AppStrings.UPDATE_AVAILABLE_MESSAGE) },
         confirmButton = {
             TextButton(
                 onClick = {
@@ -22,9 +22,9 @@ fun UpdateAvailableDialog(downloadUrl: String, onDismiss: () -> Unit) {
                     onDismiss()
                 }
             ) {
-                Text(UiStrings.DOWNLOAD)
+                Text(AppStrings.DOWNLOAD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.LATER) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(AppStrings.LATER) } },
     )
 }

@@ -1,6 +1,7 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.ClassStrings
+import com.jder.strings.CommonStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,10 +14,10 @@ enum class ClassEntityType(val stereotype: String) {
     val display: String
         get() =
             when (this) {
-                CLASS -> UiStrings.CLASS
-                INTERFACE -> UiStrings.INTERFACE
-                ENUM -> UiStrings.ENUMERATION
-                ABSTRACT_CLASS -> UiStrings.ABSTRACT_CLASS
+                CLASS -> ClassStrings.CLASS
+                INTERFACE -> ClassStrings.INTERFACE
+                ENUM -> ClassStrings.ENUMERATION
+                ABSTRACT_CLASS -> ClassStrings.ABSTRACT_CLASS
             }
 }
 
@@ -30,9 +31,9 @@ enum class Visibility(val symbol: String) {
     val display: String
         get() =
             when (this) {
-                PUBLIC -> UiStrings.PUBLIC
-                PRIVATE -> UiStrings.PRIVATE
-                PROTECTED -> UiStrings.PROTECTED
+                PUBLIC -> ClassStrings.PUBLIC
+                PRIVATE -> ClassStrings.PRIVATE
+                PROTECTED -> ClassStrings.PROTECTED
                 PACKAGE -> "Package"
             }
 }
@@ -59,12 +60,12 @@ enum class ClassRelationType {
     val display: String
         get() =
             when (this) {
-                ASSOCIATION -> UiStrings.ASSOCIATION
-                AGGREGATION -> UiStrings.AGGREGATION
-                COMPOSITION -> UiStrings.COMPOSITION
-                INHERITANCE -> UiStrings.INHERITANCE
-                REALIZATION -> UiStrings.REALIZATION
-                DEPENDENCY -> UiStrings.DEPENDENCY
+                ASSOCIATION -> CommonStrings.ASSOCIATION
+                AGGREGATION -> ClassStrings.AGGREGATION
+                COMPOSITION -> ClassStrings.COMPOSITION
+                INHERITANCE -> ClassStrings.INHERITANCE
+                REALIZATION -> ClassStrings.REALIZATION
+                DEPENDENCY -> ClassStrings.DEPENDENCY
             }
 }
 

@@ -1,6 +1,7 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.StateMachineStrings
 import kotlinx.serialization.Serializable
 
 enum class StateMachineKind(val diagramType: DiagramType) {
@@ -10,8 +11,8 @@ enum class StateMachineKind(val diagramType: DiagramType) {
     val defaultName: String
         get() =
             when (this) {
-                MEALY -> UiStrings.NEW_MEALY_MACHINE
-                MOORE -> UiStrings.NEW_MOORE_MACHINE
+                MEALY -> DiagramTypeStrings.NEW_MEALY_MACHINE
+                MOORE -> DiagramTypeStrings.NEW_MOORE_MACHINE
             }
 
     val hasStateOutputs: Boolean
@@ -82,14 +83,14 @@ fun StateMachineDiagram.validateReferences() {
     val stateIds = states.mapTo(mutableSetOf()) { it.id }
     val errors = mutableListOf<String>()
     if (initialStateId != null && initialStateId !in stateIds) {
-        errors += UiStrings.missingInitialStateId(initialStateId)
+        errors += StateMachineStrings.missingInitialStateId(initialStateId)
     }
     transitions.forEach { (id, sourceId, targetId) ->
         if (sourceId !in stateIds) {
-            errors += UiStrings.transitionMissingSource(id, sourceId)
+            errors += StateMachineStrings.transitionMissingSource(id, sourceId)
         }
         if (targetId !in stateIds) {
-            errors += UiStrings.transitionMissingTarget(id, targetId)
+            errors += StateMachineStrings.transitionMissingTarget(id, targetId)
         }
     }
     if (errors.isNotEmpty()) throw DiagramValidationException(errors)

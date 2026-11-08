@@ -3,7 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.SequenceStrings
 import java.util.UUID
 
 class SequenceDiagramState : DiagramEditorState<SequenceDiagram>({ SequenceDiagram(name = "") }) {
@@ -23,7 +25,7 @@ class SequenceDiagramState : DiagramEditorState<SequenceDiagram>({ SequenceDiagr
     var pendingMessageSource by mutableStateOf<SequenceAnchor?>(null)
 
     override val diagramName: String
-        get() = diagram.name.ifEmpty { UiStrings.NEW_SEQUENCE_DIAGRAM }
+        get() = diagram.name.ifEmpty { DiagramTypeStrings.NEW_SEQUENCE_DIAGRAM }
 
     override val isEmpty: Boolean
         get() =
@@ -66,19 +68,19 @@ class SequenceDiagramState : DiagramEditorState<SequenceDiagram>({ SequenceDiagr
     override fun deleteSelection(): String? {
         selectedLifelineId?.let {
             deleteLifeline(it)
-            return UiStrings.LIFELINE_DELETED
+            return SequenceStrings.LIFELINE_DELETED
         }
         selectedMessageId?.let {
             deleteMessage(it)
-            return UiStrings.MESSAGE_DELETED
+            return SequenceStrings.MESSAGE_DELETED
         }
         selectedFragmentId?.let {
             deleteFragment(it)
-            return UiStrings.FRAGMENT_DELETED
+            return SequenceStrings.FRAGMENT_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         return null
     }

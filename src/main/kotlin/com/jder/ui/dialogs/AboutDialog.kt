@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.AppStrings
+import com.jder.strings.CommonStrings
 
 @Composable
 fun AboutDialog(onDismiss: () -> Unit) {
@@ -25,8 +26,8 @@ fun AboutDialog(onDismiss: () -> Unit) {
         },
         title = { Text("JDER") },
         text = {
-            Text("Java Diagrammi E/R\n\n${UiStrings.ABOUT_TEXT}", textAlign = TextAlign.Center)
+            Text("Java Diagrammi E/R\n\n${AppStrings.ABOUT_TEXT}", textAlign = TextAlign.Center)
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CLOSE) } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CLOSE) } },
     )
 }

@@ -1,6 +1,7 @@
 package com.jder.domain.model
 
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.SequenceStrings
+import com.jder.strings.UseCaseStrings
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,8 +15,8 @@ enum class SequenceLifelineType {
     val display: String
         get() =
             when (this) {
-                ACTOR -> UiStrings.ACTOR
-                OBJECT -> UiStrings.OBJECT
+                ACTOR -> UseCaseStrings.ACTOR
+                OBJECT -> SequenceStrings.OBJECT
                 BOUNDARY -> "Boundary"
                 CONTROL -> "Control"
                 ENTITY -> "Entity"
@@ -44,11 +45,11 @@ enum class SequenceMessageType {
     val display: String
         get() =
             when (this) {
-                SYNC -> UiStrings.SYNCHRONOUS
-                ASYNC -> UiStrings.ASYNCHRONOUS
-                REPLY -> UiStrings.REPLY
-                CREATE -> UiStrings.CREATION
-                DESTROY -> UiStrings.DESTRUCTION
+                SYNC -> SequenceStrings.SYNCHRONOUS
+                ASYNC -> SequenceStrings.ASYNCHRONOUS
+                REPLY -> SequenceStrings.REPLY
+                CREATE -> SequenceStrings.CREATION
+                DESTROY -> SequenceStrings.DESTRUCTION
             }
 }
 
@@ -78,13 +79,13 @@ enum class SequenceFragmentType(val keyword: String) {
     val display: String
         get() =
             when (this) {
-                ALT -> UiStrings.ALTERNATIVE
-                OPT -> UiStrings.OPTION
-                LOOP -> UiStrings.LOOP
-                PAR -> UiStrings.PARALLEL
-                BREAK -> UiStrings.BREAK
-                CRITICAL -> UiStrings.CRITICAL_REGION
-                REF -> UiStrings.REFERENCE
+                ALT -> SequenceStrings.ALTERNATIVE
+                OPT -> SequenceStrings.OPTION
+                LOOP -> SequenceStrings.LOOP
+                PAR -> SequenceStrings.PARALLEL
+                BREAK -> SequenceStrings.BREAK
+                CRITICAL -> SequenceStrings.CRITICAL_REGION
+                REF -> SequenceStrings.REFERENCE
             }
 
     val hasOperands: Boolean
@@ -120,10 +121,10 @@ fun SequenceDiagram.validateMessageEndpoints() {
     val errors = mutableListOf<String>()
     messages.forEach { (id, sourceId, targetId) ->
         if (sourceId !in lifelineIds) {
-            errors += UiStrings.messageMissingSource(id, sourceId)
+            errors += SequenceStrings.messageMissingSource(id, sourceId)
         }
         if (targetId !in lifelineIds) {
-            errors += UiStrings.messageMissingTarget(id, targetId)
+            errors += SequenceStrings.messageMissingTarget(id, targetId)
         }
     }
     if (errors.isNotEmpty()) throw DiagramValidationException(errors)

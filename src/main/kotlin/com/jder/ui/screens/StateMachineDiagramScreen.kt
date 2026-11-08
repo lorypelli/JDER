@@ -15,6 +15,8 @@ import androidx.compose.runtime.setValue
 import com.jder.data.StateMachineDiagramRepository
 import com.jder.domain.model.StateMachineDiagramState
 import com.jder.domain.model.StateMachineToolMode
+import com.jder.strings.CommonStrings
+import com.jder.strings.StateMachineStrings
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -33,7 +35,6 @@ import com.jder.ui.dialogs.MachineTransitionPropertiesDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.StateMachineSimulationDialog
 import com.jder.ui.dialogs.TransitionTableDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderStateMachineDiagramToBitmap
 
@@ -79,28 +80,28 @@ fun StateMachineDiagramScreen(
         }
     fun actionsTitle(type: StateMachineContextMenuType): String =
         when (type) {
-            StateMachineContextMenuType.STATE -> UiStrings.STATE_ACTIONS
-            StateMachineContextMenuType.TRANSITION -> UiStrings.TRANSITION_ACTIONS
-            StateMachineContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
+            StateMachineContextMenuType.STATE -> StateMachineStrings.STATE_ACTIONS
+            StateMachineContextMenuType.TRANSITION -> StateMachineStrings.TRANSITION_ACTIONS
+            StateMachineContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
         }
     fun actions(type: StateMachineContextMenuType): List<ContextMenuItem> = buildList {
         when (type) {
             StateMachineContextMenuType.STATE -> {
                 add(
-                    ContextMenuItem(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
+                    ContextMenuItem(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
                         openEditor(type)
                     }
                 )
                 val stateId = state.selectedStateId
                 add(
                     ContextMenuItem(
-                        UiStrings.SET_INITIAL_STATE,
+                        StateMachineStrings.SET_INITIAL_STATE,
                         CustomIcons.InitialState,
                         enabled = stateId != null && !state.isInitial(stateId),
                     ) {
                         stateId?.let {
                             state.setInitialState(it)
-                            Toasts.success(UiStrings.INITIAL_STATE_SET)
+                            Toasts.success(StateMachineStrings.INITIAL_STATE_SET)
                         }
                     }
                 )
@@ -114,8 +115,8 @@ fun StateMachineDiagramScreen(
                         machineState?.let {
                             state.setFinalState(it.id, !it.isFinal)
                             Toasts.success(
-                                if (it.isFinal) UiStrings.STATE_REMOVED_FROM_FINAL
-                                else UiStrings.FINAL_STATE_SET
+                                if (it.isFinal) StateMachineStrings.STATE_REMOVED_FROM_FINAL
+                                else StateMachineStrings.FINAL_STATE_SET
                             )
                         }
                     }
@@ -123,14 +124,14 @@ fun StateMachineDiagramScreen(
             }
             StateMachineContextMenuType.TRANSITION -> {
                 add(
-                    ContextMenuItem(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
+                    ContextMenuItem(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit) {
                         openEditor(type)
                     }
                 )
                 val transition = state.transition(state.selectedTransitionId)
                 add(
                     ContextMenuItem(
-                        UiStrings.REVERSE_DIRECTION,
+                        CommonStrings.REVERSE_DIRECTION,
                         Icons.Default.SwapHoriz,
                         enabled = transition != null && !transition.isLoop,
                     ) {
@@ -139,7 +140,7 @@ fun StateMachineDiagramScreen(
                 )
                 add(
                     ContextMenuItem(
-                        UiStrings.RESET_SHAPE,
+                        StateMachineStrings.RESET_SHAPE,
                         Icons.Default.AutoFixHigh,
                         enabled = transition?.hasCustomShape == true,
                     ) {
@@ -148,10 +149,14 @@ fun StateMachineDiagramScreen(
                 )
             }
             StateMachineContextMenuType.NOTE ->
-                add(ContextMenuItem(UiStrings.EDIT_TEXT, Icons.Default.Edit) { openEditor(type) })
+                add(
+                    ContextMenuItem(CommonStrings.EDIT_TEXT, Icons.Default.Edit) {
+                        openEditor(type)
+                    }
+                )
         }
         add(
-            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -162,23 +167,23 @@ fun StateMachineDiagramScreen(
         themeState = themeState,
         renderImage = { renderStateMachineDiagramToBitmap(state.diagram, kind, it) },
         emptyHint =
-            "${UiStrings.STATE_MACHINE_EMPTY_HINT}\n" +
-                if (kind.hasTransitionOutputs) UiStrings.MEALY_EMPTY_HINT
-                else UiStrings.MOORE_EMPTY_HINT,
+            "${StateMachineStrings.STATE_MACHINE_EMPTY_HINT}\n" +
+                if (kind.hasTransitionOutputs) StateMachineStrings.MEALY_EMPTY_HINT
+                else StateMachineStrings.MOORE_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.MachineState,
-                    UiStrings.CREATE_STATE,
-                    UiStrings.STATE,
+                    StateMachineStrings.CREATE_STATE,
+                    StateMachineStrings.STATE,
                     state.toolMode == StateMachineToolMode.STATE,
                 ) {
                     state.toolMode = StateMachineToolMode.STATE
                 },
                 DiagramTool.Mode(
                     CustomIcons.Transition,
-                    UiStrings.CREATE_TRANSITION,
-                    UiStrings.TRANSITION,
+                    StateMachineStrings.CREATE_TRANSITION,
+                    StateMachineStrings.TRANSITION,
                     state.toolMode == StateMachineToolMode.TRANSITION,
                 ) {
                     state.toolMode = StateMachineToolMode.TRANSITION
@@ -186,8 +191,8 @@ fun StateMachineDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == StateMachineToolMode.NOTE,
                 ) {
                     state.toolMode = StateMachineToolMode.NOTE
@@ -195,15 +200,15 @@ fun StateMachineDiagramScreen(
                 DiagramTool.Divider,
                 DiagramTool.Action(
                     Icons.Default.TableChart,
-                    UiStrings.TRANSITION_TABLE,
-                    UiStrings.TRANSITION_TABLE_ELLIPSIS,
+                    StateMachineStrings.TRANSITION_TABLE,
+                    StateMachineStrings.TRANSITION_TABLE_ELLIPSIS,
                 ) {
                     showTransitionTable = true
                 },
                 DiagramTool.Action(
                     Icons.Default.PlayArrow,
-                    UiStrings.SIMULATE_SEQUENCE,
-                    UiStrings.SIMULATE_SEQUENCE_ELLIPSIS,
+                    StateMachineStrings.SIMULATE_SEQUENCE,
+                    StateMachineStrings.SIMULATE_SEQUENCE_ELLIPSIS,
                 ) {
                     showSimulation = true
                 },
@@ -254,7 +259,7 @@ fun StateMachineDiagramScreen(
                 onConfirm = { name, output, isInitial, isFinal ->
                     state.updateState(machineState.id, name, output, isInitial, isFinal)
                     showStateDialog = false
-                    Toasts.success(UiStrings.STATE_UPDATED)
+                    Toasts.success(StateMachineStrings.STATE_UPDATED)
                 },
             )
         }
@@ -262,7 +267,7 @@ fun StateMachineDiagramScreen(
     editedTransitionId?.let { transitionId ->
         state.transition(transitionId)?.let { transition ->
             MachineTransitionPropertiesDialog(
-                title = UiStrings.TRANSITION_PROPERTIES,
+                title = StateMachineStrings.TRANSITION_PROPERTIES,
                 kind = kind,
                 sourceName = stateName(transition.sourceId),
                 targetName = stateName(transition.targetId),
@@ -275,14 +280,14 @@ fun StateMachineDiagramScreen(
                         it.copy(input = input, output = output)
                     }
                     editedTransitionId = null
-                    Toasts.success(UiStrings.TRANSITION_UPDATED)
+                    Toasts.success(StateMachineStrings.TRANSITION_UPDATED)
                 },
             )
         }
     }
     pendingTransition?.let { (sourceId, targetId) ->
         MachineTransitionPropertiesDialog(
-            title = UiStrings.NEW_TRANSITION,
+            title = StateMachineStrings.NEW_TRANSITION,
             kind = kind,
             sourceName = stateName(sourceId),
             targetName = stateName(targetId),
@@ -293,7 +298,7 @@ fun StateMachineDiagramScreen(
             onConfirm = { input, output ->
                 state.addTransition(sourceId, targetId, input, output)
                 pendingTransition = null
-                Toasts.success(UiStrings.TRANSITION_CREATED)
+                Toasts.success(StateMachineStrings.TRANSITION_CREATED)
             },
         )
     }
@@ -308,7 +313,7 @@ fun StateMachineDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }

@@ -32,13 +32,14 @@ import com.jder.domain.model.LogicSimulator
 import com.jder.domain.model.LogicWire
 import com.jder.domain.model.MAX_GATE_INPUTS
 import com.jder.domain.model.MIN_GATE_INPUTS
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.LogicStrings
 
 fun logicValueLabel(value: Boolean?): String =
     when (value) {
-        true -> UiStrings.HIGH_VALUE
-        false -> UiStrings.LOW_VALUE
-        null -> UiStrings.UNDEFINED_VALUE
+        true -> LogicStrings.HIGH_VALUE
+        false -> LogicStrings.LOW_VALUE
+        null -> LogicStrings.UNDEFINED_VALUE
     }
 
 @Composable
@@ -77,9 +78,9 @@ private fun LogicComponentContent(
     val type = component.type
     val kind =
         when (type) {
-            LogicComponentType.INPUT -> UiStrings.INPUT_KIND
-            LogicComponentType.OUTPUT -> UiStrings.OUTPUT_KIND
-            else -> UiStrings.logicGateKind(type.display)
+            LogicComponentType.INPUT -> LogicStrings.INPUT_KIND
+            LogicComponentType.OUTPUT -> LogicStrings.OUTPUT_KIND
+            else -> LogicStrings.logicGateKind(type.display)
         }
     val value =
         when (type) {
@@ -88,17 +89,17 @@ private fun LogicComponentContent(
             else -> state.simulation.outputOf(component.id)
         }
     val valueLabel =
-        if (type == LogicComponentType.INPUT) UiStrings.VALUE else UiStrings.CURRENT_VALUE
-    PropertyCard("${UiStrings.COMPONENT}: ${component.displayName}") {
-        PropertyDetail("${UiStrings.TYPE}: $kind")
-        if (type.isGate) PropertyDetail("${UiStrings.INPUTS}: ${component.inputPinCount}")
+        if (type == LogicComponentType.INPUT) LogicStrings.VALUE else LogicStrings.CURRENT_VALUE
+    PropertyCard("${LogicStrings.COMPONENT}: ${component.displayName}") {
+        PropertyDetail("${CommonStrings.TYPE}: $kind")
+        if (type.isGate) PropertyDetail("${LogicStrings.INPUTS}: ${component.inputPinCount}")
         PropertyDetail("$valueLabel: ${logicValueLabel(value)}", isEmphasized = true)
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     if (type == LogicComponentType.INPUT) {
         PropertyOutlinedButton(
-            UiStrings.TOGGLE_VALUE,
+            LogicStrings.TOGGLE_VALUE,
             Icons.Default.ToggleOn,
             { state.toggleInput(component.id) },
         )
@@ -109,20 +110,20 @@ private fun LogicComponentContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(UiStrings.INPUT_COUNT, style = MaterialTheme.typography.bodyMedium)
+            Text(LogicStrings.INPUT_COUNT, style = MaterialTheme.typography.bodyMedium)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
                     onClick = { state.setInputCount(component.id, component.inputPinCount - 1) },
                     enabled = component.inputPinCount > MIN_GATE_INPUTS,
                 ) {
-                    Icon(Icons.Default.Remove, contentDescription = UiStrings.REMOVE_INPUT)
+                    Icon(Icons.Default.Remove, contentDescription = LogicStrings.REMOVE_INPUT)
                 }
                 Text("${component.inputPinCount}", style = MaterialTheme.typography.titleMedium)
                 IconButton(
                     onClick = { state.setInputCount(component.id, component.inputPinCount + 1) },
                     enabled = component.inputPinCount < MAX_GATE_INPUTS,
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = UiStrings.ADD_INPUT)
+                    Icon(Icons.Default.Add, contentDescription = LogicStrings.ADD_INPUT)
                 }
             }
         }
@@ -134,7 +135,7 @@ private fun LogicComponentContent(
             }
         expression?.let {
             PropertyDetailCard(
-                "${UiStrings.BOOLEAN_EXPRESSION}:",
+                "${LogicStrings.BOOLEAN_EXPRESSION}:",
                 if (type == LogicComponentType.OUTPUT) "${component.label.ifBlank { "Y" }} = $it"
                 else it,
             )
@@ -147,19 +148,19 @@ private fun LogicWireContent(wire: LogicWire, state: LogicDiagramState) {
     val source = state.component(wire.sourceId)
     val target = state.component(wire.targetId)
     val pin =
-        if ((target?.inputPinCount ?: 0) > 1) " (${UiStrings.inputNumber(wire.targetPin + 1)})"
+        if ((target?.inputPinCount ?: 0) > 1) " (${LogicStrings.inputNumber(wire.targetPin + 1)})"
         else ""
-    PropertyCard(UiStrings.WIRE) {
-        PropertyDetail("${UiStrings.FROM}: ${source?.displayName ?: "?"}")
-        PropertyDetail("${UiStrings.TO}: ${target?.displayName ?: "?"}$pin")
+    PropertyCard(LogicStrings.WIRE) {
+        PropertyDetail("${CommonStrings.FROM}: ${source?.displayName ?: "?"}")
+        PropertyDetail("${CommonStrings.TO}: ${target?.displayName ?: "?"}$pin")
         PropertyDetail(
-            "${UiStrings.VALUE}: ${logicValueLabel(state.simulation.outputOf(wire.sourceId))}",
+            "${LogicStrings.VALUE}: ${logicValueLabel(state.simulation.outputOf(wire.sourceId))}",
             isEmphasized = true,
         )
     }
     Spacer(Modifier.height(8.dp))
     PropertyOutlinedButton(
-        UiStrings.DELETE_WIRE,
+        LogicStrings.DELETE_WIRE,
         Icons.Default.Delete,
         { state.deleteWire(wire.id) },
         isDestructive = true,

@@ -3,7 +3,9 @@ package com.jder.domain.model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.DiagramTypeStrings
+import com.jder.strings.ERStrings
 import java.util.UUID
 
 class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "") }) {
@@ -19,7 +21,7 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "") }) {
     var toolMode by mutableStateOf(ERToolMode.SELECT)
 
     override val diagramName: String
-        get() = diagram.name.ifEmpty { UiStrings.NEW_ER_DIAGRAM_NAME }
+        get() = diagram.name.ifEmpty { DiagramTypeStrings.NEW_ER_DIAGRAM_NAME }
 
     override val isEmpty: Boolean
         get() =
@@ -55,15 +57,15 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "") }) {
     override fun deleteSelection(): String? {
         selectedEntityId?.let {
             deleteEntity(it)
-            return UiStrings.ENTITY_DELETED
+            return ERStrings.ENTITY_DELETED
         }
         selectedRelationshipId?.let {
             deleteRelationship(it)
-            return UiStrings.RELATION_DELETED
+            return CommonStrings.RELATION_DELETED
         }
         selectedNoteId?.let {
             deleteNote(it)
-            return UiStrings.NOTE_DELETED
+            return CommonStrings.NOTE_DELETED
         }
         return null
     }
@@ -308,7 +310,7 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "") }) {
             listOf(
                 Relationship(
                     id = UUID.randomUUID().toString(),
-                    name = UiStrings.NEW_RELATIONSHIP,
+                    name = ERStrings.NEW_RELATIONSHIP,
                     x = rel1X,
                     y = rel1Y,
                     connections =
@@ -319,7 +321,7 @@ class ERDiagramState : DiagramEditorState<ERDiagram>({ ERDiagram(name = "") }) {
                 ),
                 Relationship(
                     id = UUID.randomUUID().toString(),
-                    name = UiStrings.NEW_RELATIONSHIP,
+                    name = ERStrings.NEW_RELATIONSHIP,
                     x = rel2X,
                     y = rel2Y,
                     connections =

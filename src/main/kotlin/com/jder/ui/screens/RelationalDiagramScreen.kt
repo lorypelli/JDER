@@ -15,6 +15,8 @@ import com.jder.domain.model.RelationalColumn
 import com.jder.domain.model.RelationalDiagramState
 import com.jder.domain.model.RelationalToolMode
 import com.jder.domain.model.foreignKey
+import com.jder.strings.CommonStrings
+import com.jder.strings.RelationalStrings
 import com.jder.ui.components.ContextMenuItem
 import com.jder.ui.components.ContextMenuRequest
 import com.jder.ui.components.CustomIcons
@@ -32,7 +34,6 @@ import com.jder.ui.dialogs.EditColumnDialog
 import com.jder.ui.dialogs.ForeignKeyDialog
 import com.jder.ui.dialogs.NotePropertiesDialog
 import com.jder.ui.dialogs.TablePropertiesDialog
-import com.jder.ui.strings.UiStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.renderRelationalDiagramToBitmap
 
@@ -72,15 +73,15 @@ fun RelationalDiagramScreen(
         }
     fun actionsTitle(type: RelationalContextMenuType): String =
         when (type) {
-            RelationalContextMenuType.TABLE -> UiStrings.TABLE_ACTIONS
-            RelationalContextMenuType.FOREIGN_KEY -> UiStrings.FOREIGN_KEY_ACTIONS
-            RelationalContextMenuType.NOTE -> UiStrings.NOTE_ACTIONS
+            RelationalContextMenuType.TABLE -> RelationalStrings.TABLE_ACTIONS
+            RelationalContextMenuType.FOREIGN_KEY -> RelationalStrings.FOREIGN_KEY_ACTIONS
+            RelationalContextMenuType.NOTE -> CommonStrings.NOTE_ACTIONS
         }
     fun actions(type: RelationalContextMenuType): List<ContextMenuItem> = buildList {
         add(
             ContextMenuItem(
-                if (type == RelationalContextMenuType.NOTE) UiStrings.EDIT_TEXT
-                else UiStrings.EDIT_PROPERTIES,
+                if (type == RelationalContextMenuType.NOTE) CommonStrings.EDIT_TEXT
+                else CommonStrings.EDIT_PROPERTIES,
                 Icons.Default.Edit,
             ) {
                 openEditor(type)
@@ -88,18 +89,18 @@ fun RelationalDiagramScreen(
         )
         if (type == RelationalContextMenuType.TABLE) {
             add(
-                ContextMenuItem(UiStrings.ADD_COLUMN, Icons.Default.Add) {
+                ContextMenuItem(CommonStrings.ADD_COLUMN, Icons.Default.Add) {
                     showAddColumnDialog = true
                 }
             )
             add(
-                ContextMenuItem(UiStrings.ADD_FOREIGN_KEY, Icons.Default.Key) {
+                ContextMenuItem(RelationalStrings.ADD_FOREIGN_KEY, Icons.Default.Key) {
                     requestForeignKey()
                 }
             )
         }
         add(
-            ContextMenuItem(UiStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
+            ContextMenuItem(CommonStrings.DELETE, Icons.Default.Delete, isDestructive = true) {
                 state.deleteSelection()?.let(Toasts::success)
             }
         )
@@ -109,21 +110,21 @@ fun RelationalDiagramScreen(
         repository = repository,
         themeState = themeState,
         renderImage = { renderRelationalDiagramToBitmap(state.diagram, it) },
-        emptyHint = UiStrings.RELATIONAL_EMPTY_HINT,
+        emptyHint = RelationalStrings.RELATIONAL_EMPTY_HINT,
         tools =
             listOf(
                 DiagramTool.Mode(
                     CustomIcons.Table,
-                    UiStrings.CREATE_TABLE,
-                    UiStrings.TABLE,
+                    RelationalStrings.CREATE_TABLE,
+                    RelationalStrings.TABLE,
                     state.toolMode == RelationalToolMode.TABLE,
                 ) {
                     state.toolMode = RelationalToolMode.TABLE
                 },
                 DiagramTool.Mode(
                     Icons.Default.Key,
-                    UiStrings.CREATE_FOREIGN_KEY,
-                    UiStrings.FOREIGN_KEY,
+                    RelationalStrings.CREATE_FOREIGN_KEY,
+                    RelationalStrings.FOREIGN_KEY,
                     state.toolMode == RelationalToolMode.FOREIGN_KEY,
                 ) {
                     state.toolMode = RelationalToolMode.FOREIGN_KEY
@@ -131,8 +132,8 @@ fun RelationalDiagramScreen(
                 },
                 DiagramTool.Mode(
                     CustomIcons.StickyNote,
-                    UiStrings.CREATE_NOTE,
-                    UiStrings.NOTE,
+                    CommonStrings.CREATE_NOTE,
+                    CommonStrings.NOTE,
                     state.toolMode == RelationalToolMode.NOTE,
                 ) {
                     state.toolMode = RelationalToolMode.NOTE
@@ -151,11 +152,11 @@ fun RelationalDiagramScreen(
                 onEditColumn = { tableId, column -> columnToEdit = ColumnEdit(tableId, column) },
                 onDeleteColumn = { tableId, columnId ->
                     state.deleteColumn(tableId, columnId)
-                    Toasts.success(UiStrings.COLUMN_DELETED)
+                    Toasts.success(RelationalStrings.COLUMN_DELETED)
                 },
                 onDeleteForeignKey = {
                     state.deleteForeignKey(it)
-                    Toasts.success(UiStrings.FOREIGN_KEY_DELETED)
+                    Toasts.success(RelationalStrings.FOREIGN_KEY_DELETED)
                 },
                 onClose = { state.clearSelection() },
             )
@@ -203,7 +204,7 @@ fun RelationalDiagramScreen(
                         it.copy(name = newName, width = newWidth, documentation = newDoc)
                     }
                     showTableDialog = false
-                    Toasts.success(UiStrings.TABLE_UPDATED)
+                    Toasts.success(RelationalStrings.TABLE_UPDATED)
                 },
             )
         }
@@ -219,7 +220,7 @@ fun RelationalDiagramScreen(
                     onConfirm = { newText ->
                         state.updateNote(id) { it.copy(text = newText) }
                         showNoteDialog = false
-                        Toasts.success(UiStrings.NOTE_UPDATED)
+                        Toasts.success(CommonStrings.NOTE_UPDATED)
                     },
                 )
             }
@@ -232,7 +233,7 @@ fun RelationalDiagramScreen(
                 onConfirm = {
                     state.addColumns(tableId, listOf(it))
                     showAddColumnDialog = false
-                    Toasts.success(UiStrings.COLUMN_ADDED)
+                    Toasts.success(RelationalStrings.COLUMN_ADDED)
                 },
             )
         }
@@ -245,7 +246,7 @@ fun RelationalDiagramScreen(
             onConfirm = {
                 state.updateColumn(edit.tableId, it)
                 columnToEdit = null
-                Toasts.success(UiStrings.COLUMN_UPDATED)
+                Toasts.success(RelationalStrings.COLUMN_UPDATED)
             },
         )
     }
@@ -259,7 +260,7 @@ fun RelationalDiagramScreen(
                 onConfirm = {
                     state.addColumns(source.id, it)
                     foreignKeyRequest = null
-                    Toasts.success(UiStrings.FOREIGN_KEY_CREATED)
+                    Toasts.success(RelationalStrings.FOREIGN_KEY_CREATED)
                 },
             )
         }

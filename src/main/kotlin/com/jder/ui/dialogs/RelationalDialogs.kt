@@ -26,7 +26,8 @@ import androidx.compose.ui.unit.dp
 import com.jder.domain.model.RelationalColumn
 import com.jder.domain.model.RelationalReference
 import com.jder.domain.model.RelationalTable
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.RelationalStrings
 import java.util.UUID
 
 private data class ReferenceOption(val reference: RelationalReference, val label: String)
@@ -45,27 +46,27 @@ fun TablePropertiesDialog(
     var documentation by remember(tableId) { mutableStateOf(tableDocumentation) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.TABLE_PROPERTIES) },
+        title = { Text(RelationalStrings.TABLE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text(UiStrings.NAME) },
+                    label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = width,
                     onValueChange = { width = it.filter { it.isDigit() } },
-                    label = { Text(UiStrings.WIDTH) },
+                    label = { Text(CommonStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
-                    label = { Text(UiStrings.DOCUMENTATION) },
+                    label = { Text(CommonStrings.DOCUMENTATION) },
                     modifier = Modifier.fillMaxWidth().height(100.dp),
                     maxLines = 4,
                 )
@@ -83,10 +84,10 @@ fun TablePropertiesDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(UiStrings.CONFIRM)
+                Text(CommonStrings.CONFIRM)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -97,7 +98,7 @@ fun AddColumnDialog(
     onConfirm: (column: RelationalColumn) -> Unit,
 ) {
     ColumnDialog(
-        title = UiStrings.ADD_COLUMN,
+        title = CommonStrings.ADD_COLUMN,
         initialColumn = null,
         tables = tables,
         onDismiss = onDismiss,
@@ -113,7 +114,7 @@ fun EditColumnDialog(
     onConfirm: (column: RelationalColumn) -> Unit,
 ) {
     ColumnDialog(
-        title = UiStrings.EDIT_COLUMN,
+        title = RelationalStrings.EDIT_COLUMN,
         initialColumn = column,
         tables = tables,
         onDismiss = onDismiss,
@@ -162,32 +163,36 @@ private fun ColumnDialog(
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text(UiStrings.NAME) },
+                        label = { Text(CommonStrings.NAME) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                     OutlinedTextField(
                         value = type,
                         onValueChange = { type = it },
-                        label = { Text(UiStrings.TYPE) },
-                        placeholder = { Text(UiStrings.example("INT")) },
+                        label = { Text(CommonStrings.TYPE) },
+                        placeholder = { Text(CommonStrings.example("INT")) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
                 }
-                SwitchRow(UiStrings.PRIMARY_KEY, isPrimaryKey) { isPrimaryKey = it }
-                SwitchRow(UiStrings.NULLABLE, isNullable && !isPrimaryKey, !isPrimaryKey) {
+                SwitchRow(CommonStrings.PRIMARY_KEY, isPrimaryKey) { isPrimaryKey = it }
+                SwitchRow(RelationalStrings.NULLABLE, isNullable && !isPrimaryKey, !isPrimaryKey) {
                     isNullable = it
                 }
-                SwitchRow(UiStrings.UNIQUE_VALUE, isUnique && !isPrimaryKey, !isPrimaryKey) {
+                SwitchRow(
+                    RelationalStrings.UNIQUE_VALUE,
+                    isUnique && !isPrimaryKey,
+                    !isPrimaryKey,
+                ) {
                     isUnique = it
                 }
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
                     OutlinedTextField(
-                        value = selectedOption?.label ?: UiStrings.NO_REFERENCE,
+                        value = selectedOption?.label ?: RelationalStrings.NO_REFERENCE,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text(UiStrings.FOREIGN_KEY_TARGET) },
+                        label = { Text(RelationalStrings.FOREIGN_KEY_TARGET) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
@@ -198,7 +203,7 @@ private fun ColumnDialog(
                         onDismissRequest = { expanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text(UiStrings.NO_REFERENCE) },
+                            text = { Text(RelationalStrings.NO_REFERENCE) },
                             onClick = {
                                 reference = null
                                 expanded = false
@@ -217,7 +222,7 @@ private fun ColumnDialog(
                 }
                 if (options.isEmpty()) {
                     Text(
-                        UiStrings.FOREIGN_KEY_REQUIREMENT,
+                        RelationalStrings.FOREIGN_KEY_REQUIREMENT,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -242,10 +247,10 @@ private fun ColumnDialog(
                 },
                 enabled = name.isNotBlank(),
             ) {
-                Text(if (initialColumn != null) UiStrings.CONFIRM else UiStrings.ADD)
+                Text(if (initialColumn != null) CommonStrings.CONFIRM else CommonStrings.ADD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 
@@ -278,11 +283,11 @@ fun ForeignKeyDialog(
         }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(UiStrings.NEW_FOREIGN_KEY) },
+        title = { Text(RelationalStrings.NEW_FOREIGN_KEY) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "${UiStrings.FROM}: ${sourceTable.name}",
+                    "${CommonStrings.FROM}: ${sourceTable.name}",
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
@@ -290,7 +295,7 @@ fun ForeignKeyDialog(
                         value = target?.name ?: "",
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text(UiStrings.REFERENCED_TABLE) },
+                        label = { Text(RelationalStrings.REFERENCED_TABLE) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
@@ -314,7 +319,7 @@ fun ForeignKeyDialog(
                 target?.let { referenced ->
                     if (keyColumns.isEmpty()) {
                         Text(
-                            UiStrings.tableWithoutPrimaryKey(referenced.name),
+                            RelationalStrings.tableWithoutPrimaryKey(referenced.name),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
@@ -323,18 +328,20 @@ fun ForeignKeyDialog(
                         OutlinedTextField(
                             value = columnNames[id].orEmpty(),
                             onValueChange = { columnNames = columnNames + (id to it) },
-                            label = { Text(UiStrings.columnFor("${referenced.name}.${name}")) },
+                            label = {
+                                Text(RelationalStrings.columnFor("${referenced.name}.${name}"))
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                         )
                     }
                 }
                 if (keyColumns.isNotEmpty()) {
-                    SwitchRow(UiStrings.PART_OF_PRIMARY_KEY, isPartOfPrimaryKey) {
+                    SwitchRow(RelationalStrings.PART_OF_PRIMARY_KEY, isPartOfPrimaryKey) {
                         isPartOfPrimaryKey = it
                     }
                     SwitchRow(
-                        UiStrings.NULLABLE,
+                        RelationalStrings.NULLABLE,
                         isNullable && !isPartOfPrimaryKey,
                         !isPartOfPrimaryKey,
                     ) {
@@ -366,10 +373,10 @@ fun ForeignKeyDialog(
                     keyColumns.isNotEmpty() &&
                         keyColumns.all { columnNames[it.id].orEmpty().isNotBlank() },
             ) {
-                Text(UiStrings.ADD)
+                Text(CommonStrings.ADD)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiStrings.CANCEL) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) } },
     )
 }
 

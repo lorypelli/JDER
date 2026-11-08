@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.Localization
 import java.io.File
 
 @Composable
@@ -127,6 +127,6 @@ fun formatFileSize(bytes: Long): String {
     return if (unitIndex < 0) {
         "$bytes B"
     } else {
-        "%.2f %s".format(UiStrings.language.locale, size, units[unitIndex])
+        "%.2f %s".format(Localization.language.locale, size, units[unitIndex])
     }
 }

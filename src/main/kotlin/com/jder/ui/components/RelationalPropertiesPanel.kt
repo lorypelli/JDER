@@ -23,7 +23,8 @@ import com.jder.domain.model.RelationalForeignKey
 import com.jder.domain.model.RelationalTable
 import com.jder.domain.model.foreignKey
 import com.jder.domain.model.qualifiedColumnName
-import com.jder.ui.strings.UiStrings
+import com.jder.strings.CommonStrings
+import com.jder.strings.RelationalStrings
 
 @Composable
 fun RelationalPropertiesPanel(
@@ -80,27 +81,29 @@ private fun TablePropertiesContent(
     onDeleteColumn: (columnId: String) -> Unit,
 ) {
     val primaryKey = table.primaryKey.joinToString(", ") { it.name }
-    PropertyCard("${UiStrings.TABLE}: ${table.name}") {
-        PropertyDetail("${UiStrings.COLUMNS}: ${table.columns.size}")
+    PropertyCard("${RelationalStrings.TABLE}: ${table.name}") {
+        PropertyDetail("${RelationalStrings.COLUMNS}: ${table.columns.size}")
         PropertyDetail(
-            "${UiStrings.PRIMARY_KEY_DETAIL}: ${primaryKey.ifEmpty { UiStrings.NO_PRIMARY_KEY }}"
+            "${RelationalStrings.PRIMARY_KEY_DETAIL}: ${primaryKey.ifEmpty { RelationalStrings.NO_PRIMARY_KEY }}"
         )
-        PropertyDetail("${UiStrings.FOREIGN_KEYS}: ${table.columns.count { it.reference != null }}")
+        PropertyDetail(
+            "${RelationalStrings.FOREIGN_KEYS}: ${table.columns.count { it.reference != null }}"
+        )
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditTable)
-    PropertyOutlinedButton(UiStrings.ADD_COLUMN, Icons.Default.Add, onAddColumn)
-    PropertyOutlinedButton(UiStrings.ADD_FOREIGN_KEY, Icons.Default.Key, onAddForeignKey)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEditTable)
+    PropertyOutlinedButton(CommonStrings.ADD_COLUMN, Icons.Default.Add, onAddColumn)
+    PropertyOutlinedButton(RelationalStrings.ADD_FOREIGN_KEY, Icons.Default.Key, onAddForeignKey)
     if (table.columns.isNotEmpty()) {
-        PropertyListTitle("${UiStrings.COLUMNS}:")
+        PropertyListTitle("${RelationalStrings.COLUMNS}:")
         table.columns.forEach {
             PropertyItemCard(
                 title = if (it.isNullable) "${it.name}*" else it.name,
                 subtitle = columnDetails(it, diagram),
                 isEmphasized = it.isPrimaryKey,
-                editDescription = UiStrings.EDIT_COLUMN,
+                editDescription = RelationalStrings.EDIT_COLUMN,
                 onEdit = { onEditColumn(it) },
-                deleteDescription = UiStrings.DELETE_COLUMN,
+                deleteDescription = RelationalStrings.DELETE_COLUMN,
                 onDelete = { onDeleteColumn(it.id) },
             )
         }
@@ -111,12 +114,12 @@ private fun TablePropertiesContent(
 private fun columnDetails(column: RelationalColumn, diagram: RelationalDiagram): String =
     buildList {
             if (column.type.isNotBlank()) add(column.type)
-            if (column.isPrimaryKey) add(UiStrings.PRIMARY_KEY_TAG)
+            if (column.isPrimaryKey) add(RelationalStrings.PRIMARY_KEY_TAG)
             column.reference?.let {
-                add(UiStrings.references(diagram.qualifiedColumnName(it) ?: "?"))
+                add(RelationalStrings.references(diagram.qualifiedColumnName(it) ?: "?"))
             }
-            if (column.isUnique && !column.isPrimaryKey) add(UiStrings.UNIQUE_TAG)
-            if (column.isNullable) add(UiStrings.OPTIONAL_TAG)
+            if (column.isUnique && !column.isPrimaryKey) add(RelationalStrings.UNIQUE_TAG)
+            if (column.isNullable) add(RelationalStrings.OPTIONAL_TAG)
         }
         .joinToString(" · ")
 
@@ -126,17 +129,19 @@ private fun ForeignKeyPropertiesContent(
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    PropertyCard("${UiStrings.FOREIGN_KEY}: ${foreignKey.column.name}") {
-        PropertyDetail("${UiStrings.FROM}: ${foreignKey.table.name}.${foreignKey.column.name}")
+    PropertyCard("${RelationalStrings.FOREIGN_KEY}: ${foreignKey.column.name}") {
+        PropertyDetail("${CommonStrings.FROM}: ${foreignKey.table.name}.${foreignKey.column.name}")
         PropertyDetail(
-            "${UiStrings.TO}: ${foreignKey.referencedTable.name}.${foreignKey.referencedColumn.name}"
+            "${CommonStrings.TO}: ${foreignKey.referencedTable.name}.${foreignKey.referencedColumn.name}"
         )
-        PropertyDetail("${UiStrings.OPTIONAL}: ${UiStrings.yesNo(foreignKey.column.isNullable)}")
+        PropertyDetail(
+            "${RelationalStrings.OPTIONAL}: ${CommonStrings.yesNo(foreignKey.column.isNullable)}"
+        )
     }
     Spacer(Modifier.height(8.dp))
-    PropertyButton(UiStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
+    PropertyButton(CommonStrings.EDIT_PROPERTIES, Icons.Default.Edit, onEdit)
     PropertyOutlinedButton(
-        UiStrings.DELETE_FOREIGN_KEY,
+        RelationalStrings.DELETE_FOREIGN_KEY,
         Icons.Default.Delete,
         onDelete,
         isDestructive = true,
