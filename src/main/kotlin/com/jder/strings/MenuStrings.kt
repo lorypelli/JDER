@@ -10,7 +10,7 @@ object MenuStrings {
     val TOOLS by text("Strumenti", "Tools")
     val ELEMENT by text("Elemento", "Element")
     val WINDOW by text("Finestra", "Window")
-    val HELP by text("Aiuto", "Help")
+    val HELP by text("Aiuto", "Support")
     val EXPORT by text("Esporta", "Export")
     val NEW_DIAGRAM by text("Nuovo Diagramma", "New Diagram")
     val OPEN_DIAGRAM_ELLIPSIS by text("Apri Diagramma...", "Open Diagram...")

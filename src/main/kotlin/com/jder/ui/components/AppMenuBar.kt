@@ -9,6 +9,7 @@ import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.MenuScope
 import java.awt.Desktop
+import java.awt.desktop.QuitStrategy
 
 @Composable
 fun FrameWindowScope.AppMenuBar(menus: List<AppMenu>, onAbout: () -> Unit) {
@@ -16,6 +17,9 @@ fun FrameWindowScope.AppMenuBar(menus: List<AppMenu>, onAbout: () -> Unit) {
     val currentOnAbout by rememberUpdatedState(onAbout)
     DisposableEffect(Unit) {
         val desktop = Desktop.getDesktop()
+        if (desktop.isSupported(Desktop.Action.APP_QUIT_STRATEGY)) {
+            desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS)
+        }
         val isSupported = desktop.isSupported(Desktop.Action.APP_ABOUT)
         if (isSupported) desktop.setAboutHandler { currentOnAbout() }
         onDispose { if (isSupported) desktop.setAboutHandler(null) }

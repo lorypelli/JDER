@@ -1,10 +1,12 @@
 package com.jder.ui.utils
 
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.platform.UriHandler
 import com.jder.strings.AppStrings
 import com.jder.strings.FileStrings
 import com.jder.ui.components.Toasts
 import com.jder.ui.components.logError
+import java.awt.Desktop
 import java.awt.Taskbar
 import javax.imageio.ImageIO
 
@@ -21,6 +23,19 @@ fun setDockIcon(resourcePath: String) {
     } catch (e: Exception) {
         logError(AppStrings.DOCK_ICON_FAILED, e)
     }
+}
+
+fun ComposeWindow.bringToFront() {
+    isMinimized = false
+    val desktop = Desktop.getDesktop()
+    if (desktop.isSupported(Desktop.Action.APP_REQUEST_FOREGROUND)) {
+        desktop.requestForeground(true)
+    } else {
+        isAlwaysOnTop = true
+        toFront()
+        isAlwaysOnTop = false
+    }
+    requestFocus()
 }
 
 fun UriHandler.openSafely(url: String) {

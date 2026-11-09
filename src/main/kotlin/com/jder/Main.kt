@@ -64,6 +64,7 @@ import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
+import com.jder.ui.utils.bringToFront
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.setDockIcon
 import java.awt.Dimension
@@ -108,8 +109,6 @@ fun main(args: Array<String>) {
     val startup = prepareStartupDiagram(options, ::openStartupDiagramAs)
     (options.jsonFile ?: options.pngFile)?.parentFile?.let { lastUsedDirectory = it }
     System.setProperty("apple.awt.application.name", "JDER")
-    System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS")
-    System.setProperty("compose.application.configure.swing.globals", "true")
     setDockIcon("jder_icon.png")
     application {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
@@ -173,6 +172,7 @@ fun main(args: Array<String>) {
             LaunchedEffect(isModified) {
                 window.rootPane.putClientProperty("Window.documentModified", isModified)
             }
+            LaunchedEffect(showExitDialog) { if (showExitDialog) window.bringToFront() }
             LaunchedEffect(pendingNewDiagram, menuHost.commands) {
                 val type = pendingNewDiagram
                 val commands = menuHost.commands
