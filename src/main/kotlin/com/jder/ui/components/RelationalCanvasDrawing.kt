@@ -157,8 +157,8 @@ private fun DrawScope.drawRelationalTable(
         size = Size(table.width, RELATIONAL_HEADER_HEIGHT),
         style = Fill,
     )
-    table.columns.forEachIndexed { index, column ->
-        if (column.id in highlightedColumnIds) {
+    table.columns.forEachIndexed { index, (id) ->
+        if (id in highlightedColumnIds) {
             drawRect(
                 color = selectedColor.copy(alpha = 0.16f),
                 topLeft = Offset(table.x, table.rowTop(index)),
@@ -192,7 +192,7 @@ private fun DrawScope.drawRelationalTable(
     val badges = table.columns.map { textMeasurer.columnBadges(it, palette) }
     val badgesWidth = badges.maxOfOrNull(::badgeRowWidth) ?: 0f
     val gutterWidth = if (badgesWidth > 0f) badgesWidth + 2 * CELL_PADDING else CELL_PADDING
-    table.columns.forEachIndexed { index, column ->
+    table.columns.forEachIndexed { index, (_, name, type, isPrimaryKey, isNullable) ->
         val top = table.rowTop(index)
         val centerY = top + RELATIONAL_ROW_HEIGHT / 2
         if (index > 0) {
@@ -208,8 +208,8 @@ private fun DrawScope.drawRelationalTable(
             drawText(it, topLeft = Offset(badgeX, centerY - it.size.height / 2f))
             badgeX += it.size.width + BADGE_GAP
         }
-        val type =
-            column.type
+        val typeLayout =
+            type
                 .takeIf { it.isNotBlank() }
                 ?.let {
                     textMeasurer.measureLine(
@@ -219,27 +219,28 @@ private fun DrawScope.drawRelationalTable(
                         maxWidth = (table.width - gutterWidth) / 2,
                     )
                 }
-        val name =
+        val nameLayout =
             textMeasurer.measureLine(
-                text = if (column.isNullable) "${column.name}*" else column.name,
+                text = if (isNullable) "$name*" else name,
                 style =
                     TextStyle(
                         color = palette.text,
                         fontSize = 12.sp,
-                        fontWeight =
-                            if (column.isPrimaryKey) FontWeight.SemiBold else FontWeight.Normal,
+                        fontWeight = if (isPrimaryKey) FontWeight.SemiBold else FontWeight.Normal,
                         textDecoration =
-                            if (column.isPrimaryKey) TextDecoration.Underline
-                            else TextDecoration.None,
+                            if (isPrimaryKey) TextDecoration.Underline else TextDecoration.None,
                     ),
                 maxWidth =
                     table.width -
                         gutterWidth -
                         CELL_PADDING -
-                        (type?.let { it.size.width + CELL_PADDING } ?: 0f),
+                        (typeLayout?.let { it.size.width + CELL_PADDING } ?: 0f),
             )
-        drawText(name, topLeft = Offset(table.x + gutterWidth, centerY - name.size.height / 2f))
-        type?.let {
+        drawText(
+            nameLayout,
+            topLeft = Offset(table.x + gutterWidth, centerY - nameLayout.size.height / 2f),
+        )
+        typeLayout?.let {
             drawText(
                 it,
                 topLeft =

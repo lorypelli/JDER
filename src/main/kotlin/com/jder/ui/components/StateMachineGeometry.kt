@@ -336,7 +336,7 @@ private fun avoidingOffset(
                 val relative = it.center - source.center
                 dot(relative, direction) / distance to dot(relative, normal)
             }
-            .filter { (position, _) -> position > 0f && position < 1f }
+            .filter { it.first > 0f && it.first < 1f }
     val constraints = mutableSetOf<Pair<Float, Float>>()
     var offset = 0f
     repeat(AVOID_ITERATIONS) {

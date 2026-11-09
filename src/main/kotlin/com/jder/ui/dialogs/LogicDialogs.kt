@@ -265,7 +265,7 @@ private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
                 }
                 Divider()
                 LazyColumn(modifier = Modifier.heightIn(max = 320.dp)) {
-                    itemsIndexed(table.rows) { index, row ->
+                    itemsIndexed(table.rows) { index, (inputs, outputs) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier =
@@ -275,11 +275,9 @@ private fun TruthTableContent(table: LogicTruthTable, diagram: LogicDiagram) {
                                     else Color.Transparent
                                 ),
                         ) {
-                            row.inputs.forEach { TruthTableCell(bit(it), cellWidth) }
+                            inputs.forEach { TruthTableCell(bit(it), cellWidth) }
                             TruthTableSeparator()
-                            row.outputs.forEach {
-                                TruthTableCell(bit(it), cellWidth, isOutput = true)
-                            }
+                            outputs.forEach { TruthTableCell(bit(it), cellWidth, isOutput = true) }
                         }
                     }
                 }

@@ -61,7 +61,7 @@ object LogicSimulator {
         val oscillating = mutableSetOf<String>()
         repeat(maxIterations) {
             val next = step(components, drivers, values)
-            next.keys.filterTo(oscillating) { next[it] != values[it] }
+            next.keys.filterTo(oscillating) { key -> next[key] != values[key] }
             values = next
         }
         values = values.keys.associateWith { if (it in oscillating) null else values[it] }
@@ -88,7 +88,7 @@ object LogicSimulator {
                     simulate(
                         diagram,
                         inputOverrides =
-                            inputs.zip(inputValues) { input, value -> input.id to value }.toMap(),
+                            inputs.zip(inputValues) { (id), value -> id to value }.toMap(),
                     )
                 LogicTruthTableRow(inputValues, outputs.map { simulation.outputOf(it.id) })
             }

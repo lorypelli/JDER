@@ -44,21 +44,21 @@ internal fun DrawScope.drawSequenceDiagram(
             palette = palette,
         )
     }
-    diagram.lifelines.forEach { lifeline ->
-        lifelines[lifeline.id]?.let {
-            drawLifelineLine(layout = it, isSelected = lifeline.id == selectedId, palette = palette)
+    diagram.lifelines.forEach { (id) ->
+        lifelines[id]?.let {
+            drawLifelineLine(layout = it, isSelected = id == selectedId, palette = palette)
         }
     }
     activations.forEach {
         drawActivation(activation = it, isSelected = it.lifelineId == selectedId, palette = palette)
     }
-    diagram.lifelines.forEach { lifeline ->
-        lifelines[lifeline.id]?.let {
+    diagram.lifelines.forEach { (id) ->
+        lifelines[id]?.let {
             drawLifelineHead(
                 layout = it,
-                isSelected = lifeline.id == selectedId,
-                isHovered = lifeline.id == hoveredId,
-                isPendingSource = lifeline.id == pendingSource?.lifelineId,
+                isSelected = id == selectedId,
+                isHovered = id == hoveredId,
+                isPendingSource = id == pendingSource?.lifelineId,
                 palette = palette,
                 textMeasurer = textMeasurer,
             )

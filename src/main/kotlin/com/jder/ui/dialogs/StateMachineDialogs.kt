@@ -303,14 +303,14 @@ private fun TransitionTableContent(
             }
             Divider()
             LazyColumn(modifier = Modifier.heightIn(max = 320.dp)) {
-                itemsIndexed(table.rows) { index, row ->
+                itemsIndexed(table.rows) { index, (state, cells) ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.background(stripeColor(index)),
                     ) {
-                        TableCell(stateLabel(row.state), stateColumnWidth, isHeader = true)
+                        TableCell(stateLabel(state), stateColumnWidth, isHeader = true)
                         TableSeparator()
-                        row.cells.forEach {
+                        cells.forEach {
                             TableCell(
                                 cellText(it),
                                 valueColumnWidth,
@@ -320,7 +320,7 @@ private fun TransitionTableContent(
                         }
                         if (kind.hasStateOutputs) {
                             TableCell(
-                                row.state.output.trim().ifEmpty { MISSING },
+                                state.output.trim().ifEmpty { MISSING },
                                 valueColumnWidth,
                                 isOutput = true,
                             )

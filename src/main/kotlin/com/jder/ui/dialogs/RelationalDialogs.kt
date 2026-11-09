@@ -58,7 +58,7 @@ fun TablePropertiesDialog(
                 )
                 OutlinedTextField(
                     value = width,
-                    onValueChange = { width = it.filter { it.isDigit() } },
+                    onValueChange = { text -> width = text.filter { it.isDigit() } },
                     label = { Text(CommonStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -353,7 +353,7 @@ fun ForeignKeyDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    target?.let { referenced ->
+                    target?.let { (id) ->
                         onConfirm(
                             keyColumns.map {
                                 RelationalColumn(
@@ -362,7 +362,7 @@ fun ForeignKeyDialog(
                                     type = it.type,
                                     isPrimaryKey = isPartOfPrimaryKey,
                                     isNullable = isNullable && !isPartOfPrimaryKey,
-                                    reference = RelationalReference(referenced.id, it.id),
+                                    reference = RelationalReference(id, it.id),
                                 )
                             }
                         )

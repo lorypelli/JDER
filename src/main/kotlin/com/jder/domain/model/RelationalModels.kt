@@ -42,22 +42,22 @@ fun RelationalDiagram.validateReferences() {
     val errors = mutableListOf<String>()
     tables.forEach tableLoop@{ table ->
         table.columns.forEach columnLoop@{ column ->
-            val reference = column.reference ?: return@columnLoop
+            val (tableId, columnId) = column.reference ?: return@columnLoop
             val referencedTable =
-                tablesById[reference.tableId]
+                tablesById[tableId]
                     ?: run {
                         errors +=
                             RelationalStrings.columnReferencesMissingTable(
                                 "${table.id}.${column.id}",
-                                reference.tableId,
+                                tableId,
                             )
                         return@columnLoop
                     }
-            if (referencedTable.columns.none { it.id == reference.columnId }) {
+            if (referencedTable.columns.none { it.id == columnId }) {
                 errors +=
                     RelationalStrings.columnReferencesMissingColumn(
                         "${table.id}.${column.id}",
-                        "${reference.tableId}.${reference.columnId}",
+                        "$tableId.$columnId",
                     )
             }
         }
@@ -76,10 +76,10 @@ fun RelationalDiagram.foreignKeys(): List<RelationalForeignKey> {
     val tablesById = tables.associateBy { it.id }
     return tables.flatMap { table ->
         table.columns.mapNotNull { column ->
-            val reference = column.reference ?: return@mapNotNull null
-            val referencedTable = tablesById[reference.tableId] ?: return@mapNotNull null
+            val (tableId, columnId) = column.reference ?: return@mapNotNull null
+            val referencedTable = tablesById[tableId] ?: return@mapNotNull null
             referencedTable.columns
-                .find { it.id == reference.columnId }
+                .find { it.id == columnId }
                 ?.let {
                     RelationalForeignKey(
                         table = table,

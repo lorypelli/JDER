@@ -136,8 +136,7 @@ private fun RelationshipPropertiesContent(
         relationship.connections.forEach {
             PropertyItemCard(
                 title =
-                    entities.find { entity -> entity.id == it.entityId }?.name
-                        ?: ERStrings.UNKNOWN_ENTITY,
+                    entities.find { (id) -> id == it.entityId }?.name ?: ERStrings.UNKNOWN_ENTITY,
                 subtitle = "${ERStrings.CARDINALITY}: ${it.cardinality.display}",
                 editDescription = ERStrings.EDIT_CONNECTION,
                 onEdit = { onEditConnection(it.entityId, it) },

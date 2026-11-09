@@ -164,10 +164,10 @@ class ClassDiagramState : DiagramEditorState<ClassDiagram>({ ClassDiagram(name =
     }
 
     fun deleteMemberFromClass(classId: String, memberId: String) {
-        updateClass(classId) {
-            it.copy(
-                attributes = it.attributes.filter { it.id != memberId },
-                methods = it.methods.filter { it.id != memberId },
+        updateClass(classId) { classEntity ->
+            classEntity.copy(
+                attributes = classEntity.attributes.filter { it.id != memberId },
+                methods = classEntity.methods.filter { it.id != memberId },
             )
         }
     }

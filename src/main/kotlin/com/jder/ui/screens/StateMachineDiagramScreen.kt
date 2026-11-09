@@ -265,20 +265,18 @@ fun StateMachineDiagramScreen(
         }
     }
     editedTransitionId?.let { transitionId ->
-        state.transition(transitionId)?.let { transition ->
+        state.transition(transitionId)?.let { (id, sourceId, targetId, input, output) ->
             MachineTransitionPropertiesDialog(
                 title = StateMachineStrings.TRANSITION_PROPERTIES,
                 kind = kind,
-                sourceName = stateName(transition.sourceId),
-                targetName = stateName(transition.targetId),
-                initialInput = transition.input,
-                initialOutput = transition.output,
-                usedSymbols = usedSymbols(transition.sourceId, transition.id),
+                sourceName = stateName(sourceId),
+                targetName = stateName(targetId),
+                initialInput = input,
+                initialOutput = output,
+                usedSymbols = usedSymbols(sourceId, id),
                 onDismiss = { editedTransitionId = null },
-                onConfirm = { input, output ->
-                    state.updateTransition(transition.id) {
-                        it.copy(input = input, output = output)
-                    }
+                onConfirm = { newInput, newOutput ->
+                    state.updateTransition(id) { it.copy(input = newInput, output = newOutput) }
                     editedTransitionId = null
                     Toasts.success(StateMachineStrings.TRANSITION_UPDATED)
                 },

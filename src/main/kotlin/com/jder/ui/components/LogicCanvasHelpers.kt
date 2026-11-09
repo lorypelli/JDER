@@ -102,8 +102,8 @@ internal fun hitTestLogicDiagram(diagram: LogicDiagram, point: Offset): LogicEle
         }
     val routes = logicWireRoutes(diagram)
     diagram.wires
-        .lastOrNull { wire ->
-            routes[wire.id]
+        .lastOrNull { (id) ->
+            routes[id]
                 ?.zipWithNext { start, end -> distanceToSegment(point, start, end) }
                 ?.any { it <= WIRE_HIT_DISTANCE } == true
         }

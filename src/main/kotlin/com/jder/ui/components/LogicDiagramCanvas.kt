@@ -125,8 +125,9 @@ fun LogicDiagramCanvas(
                             LogicWirePreview(
                                 anchor = it.anchor,
                                 cursor =
-                                    candidate?.let { state.component(it.id)?.pinPosition(it.pin) }
-                                        ?: position,
+                                    candidate?.let { (id, pin) ->
+                                        state.component(id)?.pinPosition(pin)
+                                    } ?: position,
                                 isFromOutput = it.isFromOutput,
                                 target = candidate,
                             )
