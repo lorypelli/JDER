@@ -110,7 +110,7 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 ### 🎨 Interfaccia & UX
 
 - Sistema di design **Material 3** in tutta l'applicazione
-- **Modalità Chiara & Scura** con transizione animata fluida
+- **Modalità Chiara & Scura** con transizione animata fluida; tema e palette scelti vengono ricordati agli avvii successivi
 - **Interfaccia in italiano e in inglese** — al primo avvio JDER usa la lingua del sistema (l'inglese se non è l'italiano); si cambia al volo dal globo accanto alla palette o da Vista → Lingua, e la scelta viene ricordata
 - **20 palette di colori Material ufficiali** selezionabili a runtime:
   - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero

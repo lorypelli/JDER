@@ -4,6 +4,8 @@ object MenuStrings {
     val LANGUAGE by text("Lingua", "Language")
     val LANGUAGE_SAVE_FAILED by
         text("Impossibile salvare la lingua scelta", "Unable to save the chosen language")
+    val THEME_SAVE_FAILED by
+        text("Impossibile salvare il tema scelto", "Unable to save the chosen theme")
     val FILE by text("File", "File")
     val EDIT by text("Modifica", "Edit")
     val VIEW by text("Vista", "View")
