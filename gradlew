@@ -60,7 +60,7 @@
 #       https://github.com/gradle/gradle/blob/HEAD/platforms/jvm/plugins-application/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
 #       within the Gradle project.
 #
-#       You can find Gradle at https://github.com/gradle/gradle/.
+#       You can find Gradle at https://github.com/gradle/gradle.
 #
 ##############################################################################
 

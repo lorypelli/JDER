@@ -26,10 +26,17 @@
     <link rel="icon" href="favicon.ico" />
     <link rel="canonical" href="https://jder.it/" />
     <link rel="alternate" type="text/markdown" href="index.md" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com/" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.min.css" />
     <link rel="stylesheet" href="style.css" />
+    <script src="palettes.js"></script>
+    <script src="theme.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/petite-vue/0.4.1/petite-vue.iife.min.js" defer></script>
+    <script src="app.js" defer></script>
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
+        "@context": "https://schema.org/",
         "@type": "WebPage",
         "url": "https://jder.it/",
         "name": "JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati",
@@ -70,17 +77,43 @@
 </head>
 
 <body>
-    <header>
-        <div class="header-content">
-            <h1>JDER</h1>
-            <p>Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati</p>
-        </div>
-        <button class="theme-toggle">
-            <span class="theme-toggle-label">Tema scuro</span>
-        </button>
-    </header>
+    <mdui-top-app-bar scroll-behavior="elevate">
+        <mdui-top-app-bar-title class="app-bar-title"><a href="/">JDER</a></mdui-top-app-bar-title>
+        <nav class="app-bar-links">
+            <mdui-button variant="text" href="/download">Scarica</mdui-button>
+            <mdui-button variant="text" href="/guida.pdf" target="_blank">Guida</mdui-button>
+        </nav>
+        <mdui-dropdown placement="bottom-end">
+            <mdui-button-icon slot="trigger">
+                <span class="swatch swatch-current"></span>
+                <span class="visually-hidden">Palette Colori</span>
+            </mdui-button-icon>
+            <mdui-menu selects="single" :value="selected.id" @change="choose($event.target.value)">
+                <mdui-menu-item v-for="palette in palettes" :value="palette.id">
+                    <span slot="icon" class="swatch" :style="`background-color: #${palette.light[0]}`"></span>
+                    {{ palette.name }}
+                </mdui-menu-item>
+            </mdui-menu>
+        </mdui-dropdown>
+        <mdui-button-icon @click="toggleTheme()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <g class="theme-icon-sun">
+                    <circle cx="12" cy="12" r="4.2" />
+                    <path class="theme-icon-rays"
+                        d="M18 12h4.2M16.24 16.24l2.97 2.97M12 18v4.2M7.76 16.24l-2.97 2.97M6 12H1.8M7.76 7.76 4.79 4.79M12 6V1.8M16.24 7.76l2.97-2.97" />
+                </g>
+                <path class="theme-icon-moon"
+                    d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+            </svg>
+            <span class="visually-hidden" v-text="isDark ? 'Tema Chiaro' : 'Tema Scuro'">Tema Scuro</span>
+        </mdui-button-icon>
+    </mdui-top-app-bar>
     <main>
         <section class="hero">
+            <img class="hero-icon" src="favicon.ico" alt="" width="72" height="72" />
+            <h1>JDER</h1>
+            <p class="hero-subtitle">Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine
+                a Stati</p>
             <h2>Il Tuo Editor di Diagrammi Moderno</h2>
             <p class="hero-description">Nuova versione del software di <a href="https://ballini.it/Software/ProgER"
                     target="_blank">Alessandro Ballini</a>, poi successivamente ripresa da <a
@@ -88,205 +121,261 @@
                 una veste grafica più moderna e correzione di vari errori, riscritta completamente in Kotlin e Compose
             </p>
             <div class="hero-actions">
-                <a href="/download" class="download-button">Scarica Risorse</a>
-                <a href="/guida.pdf" class="guide-button" target="_blank">Guida Utente</a>
+                <mdui-button variant="filled" href="/download">
+                    <svg slot="icon" viewBox="0 0 24 24">
+                        <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z" />
+                    </svg>
+                    Scarica Risorse
+                </mdui-button>
+                <mdui-button variant="outlined" href="/guida.pdf" target="_blank">
+                    <svg slot="icon" viewBox="0 0 24 24">
+                        <path
+                            d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+                        <path
+                            d="M17.5 10.5c.88 0 1.73.09 2.5.26V9.24c-.79-.15-1.64-.24-2.5-.24-1.7 0-3.24.29-4.5.83v1.66c1.13-.64 2.7-.99 4.5-.99zM13 12.49v1.66c1.13-.64 2.7-.99 4.5-.99.88 0 1.73.09 2.5.26V11.9c-.79-.15-1.64-.24-2.5-.24-1.7 0-3.24.3-4.5.83zm4.5 1.84c-1.7 0-3.24.29-4.5.83v1.66c1.13-.64 2.7-.99 4.5-.99.88 0 1.73.09 2.5.26v-1.52c-.79-.16-1.64-.24-2.5-.24z" />
+                    </svg>
+                    Guida Utente
+                </mdui-button>
             </div>
         </section>
-        <section class="features">
-            <h2>Caratteristiche Principali</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🗂️</div>
-                    <h3>Diagramma E/R</h3>
-                    <p>Crea entità, relazioni con cardinalità completa, attributi (chiave, multivalore, derivati,
-                        composti) ed entità deboli</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔑</div>
-                    <h3>Schema Logico</h3>
-                    <p>Il passo dopo l'E/R: tabelle e colonne con chiavi primarie ed esterne, collegate da frecce che
-                        evitano le altre tabelle</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🧩</div>
-                    <h3>Diagramma delle Classi</h3>
-                    <p>Classi, interfacce, enumerazioni e classi astratte con attributi, metodi, visibilità e 6 tipi di
-                        relazione UML</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">👤</div>
-                    <h3>Diagramma Use Case</h3>
-                    <p>Attori, casi d'uso, confini di sistema e relazioni include/extend/generalizzazione con frecce UML
-                        corrette</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📨</div>
-                    <h3>Diagramma di Sequenza</h3>
-                    <p>Linee di vita, messaggi sincroni, asincroni, di risposta, creazione e distruzione, barre di
-                        attivazione automatiche e frammenti combinati</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔌</div>
-                    <h3>Diagramma Logico</h3>
-                    <p>Porte logiche AND, OR, NOT, NAND, NOR, XOR e XNOR con simulazione in tempo reale, tabella di
-                        verità ed espressioni booleane</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔁</div>
-                    <h3>Macchina di Mealy</h3>
-                    <p>Stati e transizioni con ingresso/uscita, stato iniziale e autoanelli, con tabella di transizione e
-                        simulazione di una sequenza di ingressi</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🚦</div>
-                    <h3>Macchina di Moore</h3>
-                    <p>Stati con nome e uscita, controlli su determinismo e transizioni mancanti e simulazione passo per
-                        passo della sequenza di uscita</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Interfaccia Material 3</h3>
-                    <p>Design pulito con tema chiaro/scuro, 20 palette di colori ufficiali selezionabili in tempo reale e
-                        interfaccia in italiano o in inglese</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💾</div>
-                    <h3>Salva ed Esporta</h3>
-                    <p>Salva i tuoi diagrammi in formato JSON o esportali come immagine PNG ad alta qualità</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⌨️</div>
-                    <h3>Scorciatoie e Controlli</h3>
-                    <p>Undo/Redo, zoom verso il cursore, pan trascinando la lavagna e scorciatoie da tastiera per un workflow efficiente</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📝</div>
-                    <h3>Note e Annotazioni</h3>
-                    <p>Aggiungi note e commenti testuali liberamente sul canvas in tutti i tipi di diagramma</p>
-                </div>
-                <div class="feature-card feature-card-wide">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Multipiattaforma</h3>
-                    <p>Scritto in Kotlin con Compose Multiplatform: gira su Windows, macOS e Linux con un solo JAR</p>
-                </div>
+        <section>
+            <h2 class="section-title">Caratteristiche Principali</h2>
+            <div class="card-grid">
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M14 9v2h-3V9H8.5V7H11V1H4v6h2.5v2H4v6h2.5v2H4v6h7v-6H8.5v-2H11v-2h3v2h7V9h-7z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Diagramma E/R</h3>
+                    <p class="card-text">Crea entità, relazioni con cardinalità completa, attributi (chiave, multivalore,
+                        derivati, composti) ed entità deboli</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M21 10h-8.35A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H13l2 2 2-2 2 2 4-4.04L21 10zM7 15c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Schema Logico</h3>
+                    <p class="card-text">Il passo dopo l'E/R: tabelle e colonne con chiavi primarie ed esterne, collegate
+                        da frecce che evitano le altre tabelle</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M4 7v2c0 .55-.45 1-1 1H2v4h1c.55 0 1 .45 1 1v2c0 1.65 1.35 3 3 3h3v-2H7c-.55 0-1-.45-1-1v-2c0-1.3-.84-2.42-2-2.83v-.34C5.16 11.42 6 10.3 6 9V7c0-.55.45-1 1-1h3V4H7C5.35 4 4 5.35 4 7zm17 3c-.55 0-1-.45-1-1V7c0-1.65-1.35-3-3-3h-3v2h3c.55 0 1 .45 1 1v2c0 1.3.84 2.42 2 2.83v.34c-1.16.41-2 1.52-2 2.83v2c0 .55-.45 1-1 1h-3v2h3c1.65 0 3-1.35 3-3v-2c0-.55.45-1 1-1h1v-4h-1z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Diagramma delle Classi</h3>
+                    <p class="card-text">Classi, interfacce, enumerazioni e classi astratte con attributi, metodi,
+                        visibilità e 6 tipi di relazione UML</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Diagramma Use Case</h3>
+                    <p class="card-text">Attori, casi d'uso, confini di sistema e relazioni include/extend/generalizzazione
+                        con frecce UML corrette</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="m18 12 4-4-4-4v3H3v2h15zM6 12l-4 4 4 4v-3h15v-2H6z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Diagramma di Sequenza</h3>
+                    <p class="card-text">Linee di vita, messaggi sincroni, asincroni, di risposta, creazione e
+                        distruzione, barre di attivazione automatiche e frammenti combinati</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Diagramma Logico</h3>
+                    <p class="card-text">Porte logiche AND, OR, NOT, NAND, NOR, XOR e XNOR con simulazione in tempo reale,
+                        tabella di verità ed espressioni booleane</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Macchina di Mealy</h3>
+                    <p class="card-text">Stati e transizioni con ingresso/uscita, stato iniziale e autoanelli, con tabella
+                        di transizione e simulazione di una sequenza di ingressi</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M20 10h-3V8.86c1.72-.45 3-2 3-3.86h-3V4c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1v1H4c0 1.86 1.28 3.41 3 3.86V10H4c0 1.86 1.28 3.41 3 3.86V15H4c0 1.86 1.28 3.41 3 3.86V20c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-1.14c1.72-.45 3-2 3-3.86h-3v-1.14c1.72-.45 3-2 3-3.86zm-8 9a2 2 0 1 1-.001-3.999A2 2 0 0 1 12 19zm0-5a2 2 0 1 1-.001-3.999A2 2 0 0 1 12 14zm0-5a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 1 1 0 4z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Macchina di Moore</h3>
+                    <p class="card-text">Stati con nome e uscita, controlli su determinismo e transizioni mancanti e
+                        simulazione passo per passo della sequenza di uscita</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10a2.5 2.5 0 0 0 2.5-2.5c0-.61-.23-1.2-.64-1.67a.528.528 0 0 1-.13-.33c0-.28.22-.5.5-.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9zm5.5 11c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-4c-.83 0-1.5-.67-1.5-1.5S13.67 6 14.5 6s1.5.67 1.5 1.5S15.33 9 14.5 9zM5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S7.33 13 6.5 13 5 12.33 5 11.5zm6-4c0 .83-.67 1.5-1.5 1.5S8 8.33 8 7.5 8.67 6 9.5 6s1.5.67 1.5 1.5z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Interfaccia Material 3</h3>
+                    <p class="card-text">Design pulito con tema chiaro/scuro, 20 palette di colori ufficiali selezionabili
+                        in tempo reale e interfaccia in italiano o in inglese</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Salva ed Esporta</h3>
+                    <p class="card-text">Salva i tuoi diagrammi in formato JSON o esportali come immagine PNG ad alta
+                        qualità</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Scorciatoie e Controlli</h3>
+                    <p class="card-text">Undo/Redo, zoom verso il cursore, pan trascinando la lavagna e scorciatoie da
+                        tastiera per un workflow efficiente</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H4.99C3.89 3 3 3.9 3 5l.01 14c0 1.1.89 2 1.99 2h10l6-6V5c0-1.1-.9-2-2-2zM7 8h10v2H7V8zm5 6H7v-2h5v2zm2 5.5V14h5.5L14 19.5z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Note e Annotazioni</h3>
+                    <p class="card-text">Aggiungi note e commenti testuali liberamente sul canvas in tutti i tipi di
+                        diagramma</p>
+                </mdui-card>
+                <mdui-card variant="outlined" class="feature-card card-wide">
+                    <span class="card-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z" />
+                        </svg>
+                    </span>
+                    <h3 class="card-title">Multipiattaforma</h3>
+                    <p class="card-text">Scritto in Kotlin con Compose Multiplatform: gira su Windows, macOS e Linux con un
+                        solo JAR</p>
+                </mdui-card>
             </div>
         </section>
-        <section class="screenshots">
-            <h2>Screenshot</h2>
-            <div class="screenshot-grid">
-                <figure class="screenshot-card">
-                    <a href="/screenshots/er-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/er-light.png"
-                            alt="Diagramma E/R in JDER (tema chiaro): studenti, corsi e docenti di un'università"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/er-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/er-dark.png"
-                            alt="Diagramma E/R in JDER (tema scuro): studenti, corsi e docenti di un'università"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Diagramma E/R</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/relational-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/relational-light.png"
-                            alt="Schema Logico in JDER (tema chiaro): tabelle, chiavi primarie e chiavi esterne di un'università"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/relational-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/relational-dark.png"
-                            alt="Schema Logico in JDER (tema scuro): tabelle, chiavi primarie e chiavi esterne di un'università"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Schema Logico</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/class-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/class-light.png"
-                            alt="Diagramma delle Classi in JDER (tema chiaro): e-commerce con ereditarietà, interfacce ed enumerazioni"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/class-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/class-dark.png"
-                            alt="Diagramma delle Classi in JDER (tema scuro): e-commerce con ereditarietà, interfacce ed enumerazioni"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Diagramma delle Classi</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/usecase-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/usecase-light.png"
-                            alt="Diagramma Use Case in JDER (tema chiaro): sistema di gestione di una biblioteca"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/usecase-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/usecase-dark.png"
-                            alt="Diagramma Use Case in JDER (tema scuro): sistema di gestione di una biblioteca"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Diagramma Use Case</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/sequence-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/sequence-light.png"
-                            alt="Diagramma di Sequenza in JDER (tema chiaro): prenotazione di un libro in una biblioteca"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/sequence-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/sequence-dark.png"
-                            alt="Diagramma di Sequenza in JDER (tema scuro): prenotazione di un libro in una biblioteca"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Diagramma di Sequenza</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/logic-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/logic-light.png"
-                            alt="Diagramma Logico in JDER (tema chiaro): sommatore completo con porte XOR, AND e OR e valori simulati"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/logic-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/logic-dark.png"
-                            alt="Diagramma Logico in JDER (tema scuro): sommatore completo con porte XOR, AND e OR e valori simulati"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Diagramma Logico</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/mealy-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/mealy-light.png"
-                            alt="Macchina di Mealy in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/mealy-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/mealy-dark.png"
-                            alt="Macchina di Mealy in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Macchina di Mealy</figcaption>
-                </figure>
-                <figure class="screenshot-card">
-                    <a href="/screenshots/moore-light.png" class="screenshot-light" target="_blank">
-                        <img src="/screenshots/moore-light.png"
-                            alt="Macchina di Moore in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite negli stati"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <a href="/screenshots/moore-dark.png" class="screenshot-dark" target="_blank">
-                        <img src="/screenshots/moore-dark.png"
-                            alt="Macchina di Moore in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite negli stati"
-                            width="1600" height="900" loading="lazy" decoding="async" />
-                    </a>
-                    <figcaption>Macchina di Moore</figcaption>
-                </figure>
+        <section>
+            <h2 class="section-title">Screenshot</h2>
+            <div class="card-grid shot-grid">
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/er-light.png" :href="screenshot('er')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/er-light.png"
+                        alt="Diagramma E/R in JDER (tema chiaro): studenti, corsi e docenti di un'università"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/er-dark.png"
+                        alt="Diagramma E/R in JDER (tema scuro): studenti, corsi e docenti di un'università"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Diagramma E/R</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/relational-light.png" :href="screenshot('relational')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/relational-light.png"
+                        alt="Schema Logico in JDER (tema chiaro): tabelle, chiavi primarie e chiavi esterne di un'università"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/relational-dark.png"
+                        alt="Schema Logico in JDER (tema scuro): tabelle, chiavi primarie e chiavi esterne di un'università"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Schema Logico</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/class-light.png" :href="screenshot('class')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/class-light.png"
+                        alt="Diagramma delle Classi in JDER (tema chiaro): e-commerce con ereditarietà, interfacce ed enumerazioni"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/class-dark.png"
+                        alt="Diagramma delle Classi in JDER (tema scuro): e-commerce con ereditarietà, interfacce ed enumerazioni"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Diagramma delle Classi</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/usecase-light.png" :href="screenshot('usecase')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/usecase-light.png"
+                        alt="Diagramma Use Case in JDER (tema chiaro): sistema di gestione di una biblioteca"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/usecase-dark.png"
+                        alt="Diagramma Use Case in JDER (tema scuro): sistema di gestione di una biblioteca"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Diagramma Use Case</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/sequence-light.png" :href="screenshot('sequence')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/sequence-light.png"
+                        alt="Diagramma di Sequenza in JDER (tema chiaro): prenotazione di un libro in una biblioteca"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/sequence-dark.png"
+                        alt="Diagramma di Sequenza in JDER (tema scuro): prenotazione di un libro in una biblioteca"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Diagramma di Sequenza</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/logic-light.png" :href="screenshot('logic')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/logic-light.png"
+                        alt="Diagramma Logico in JDER (tema chiaro): sommatore completo con porte XOR, AND e OR e valori simulati"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/logic-dark.png"
+                        alt="Diagramma Logico in JDER (tema scuro): sommatore completo con porte XOR, AND e OR e valori simulati"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Diagramma Logico</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/mealy-light.png" :href="screenshot('mealy')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/mealy-light.png"
+                        alt="Macchina di Mealy in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/mealy-dark.png"
+                        alt="Macchina di Mealy in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Macchina di Mealy</span>
+                </mdui-card>
+                <mdui-card variant="outlined" class="screenshot-card"
+                    href="/screenshots/moore-light.png" :href="screenshot('moore')" target="_blank">
+                    <img class="screenshot-light" src="/screenshots/moore-light.png"
+                        alt="Macchina di Moore in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite negli stati"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <img class="screenshot-dark" src="/screenshots/moore-dark.png"
+                        alt="Macchina di Moore in JDER (tema scuro): riconoscitore della sequenza 101 con le uscite negli stati"
+                        width="1600" height="900" loading="lazy" decoding="async" />
+                    <span class="card-title">Macchina di Moore</span>
+                </mdui-card>
             </div>
         </section>
-        <section class="tech-stack">
-            <h2>Tecnologie</h2>
-            <div class="tech-badges">
-                <span class="badge">Kotlin</span>
-                <span class="badge">Compose Multiplatform</span>
-                <span class="badge">Material 3</span>
-                <span class="badge">Java</span>
+        <section>
+            <h2 class="section-title">Tecnologie</h2>
+            <div class="chip-row">
+                <mdui-chip>Kotlin</mdui-chip>
+                <mdui-chip>Compose Multiplatform</mdui-chip>
+                <mdui-chip>Material 3</mdui-chip>
+                <mdui-chip>Java</mdui-chip>
             </div>
         </section>
     </main>
@@ -294,7 +383,6 @@
         <p>&copy; 2025-2026 LoryPelli - <a href="https://github.com/LoryPelli/JDER" target="_blank">GitHub
                 Repository</a></p>
     </footer>
-    <script src="theme.js"></script>
 </body>
 
 </html>

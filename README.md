@@ -182,16 +182,18 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 
 ## Stack Tecnologico
 
-| Tecnologia                                                                   | Utilizzo                     |
-| ---------------------------------------------------------------------------- | ---------------------------- |
-| [Kotlin](https://kotlinlang.org/)                                            | Linguaggio principale        |
-| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | Framework UI                 |
-| [Material 3](https://m3.material.io/)                                        | Sistema di design            |
-| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)     | Salvataggio/caricamento JSON |
-| [Gradle](https://gradle.org/)                                                | Sistema di build             |
-| [Cloudflare Workers](https://workers.cloudflare.com/)                        | Hosting del sito web         |
-| [Skia](https://skia.org/)                                                    | Rendering/esportazione PNG   |
-| Java 11                                                                      | Target JVM                   |
+| Tecnologia                                                                  | Utilizzo                     |
+| --------------------------------------------------------------------------- | ---------------------------- |
+| [Kotlin](https://kotlinlang.org/)                                           | Linguaggio principale        |
+| [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) | Framework UI                 |
+| [Material 3](https://m3.material.io/)                                       | Sistema di design            |
+| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)    | Salvataggio/caricamento JSON |
+| [Gradle](https://gradle.org/)                                               | Sistema di build             |
+| [Cloudflare Workers](https://workers.cloudflare.com/)                       | Hosting del sito web         |
+| [mdui](https://www.mdui.org/)                                               | Componenti M3 del sito web   |
+| [petite-vue](https://github.com/vuejs/petite-vue)                           | Reattività del sito web      |
+| [Skia](https://skia.org/)                                                   | Rendering/esportazione PNG   |
+| Java 11                                                                     | Target JVM                   |
 
 ---
 
