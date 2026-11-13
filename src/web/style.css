@@ -54,6 +54,12 @@ body {
     line-height: var(--mdui-typescale-body-large-line-height);
 }
 
+#app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 body > noscript {
     display: flex;
     align-items: center;

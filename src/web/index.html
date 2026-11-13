@@ -32,7 +32,7 @@
     <script src="palettes.js"></script>
     <script src="theme.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.global.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/petite-vue/0.4.1/petite-vue.iife.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.45/vue.global.prod.min.js" defer></script>
     <script src="app.js" defer></script>
     <script type="application/ld+json">
     {
@@ -82,6 +82,7 @@
             <p>Per visualizzare questa pagina è necessario abilitare JavaScript nel browser.</p>
         </div>
     </noscript>
+    <div id="app">
     <template v-if="true">
     <mdui-top-app-bar scroll-behavior="elevate">
         <mdui-top-app-bar-title class="app-bar-title"><a href="/">JDER</a></mdui-top-app-bar-title>
@@ -111,7 +112,7 @@
                 <path class="theme-icon-moon"
                     d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
             </svg>
-            <span class="visually-hidden" v-text="isDark ? 'Tema Chiaro' : 'Tema Scuro'">Tema Scuro</span>
+            <span class="visually-hidden" v-text="isDark ? 'Tema Chiaro' : 'Tema Scuro'"></span>
         </mdui-button-icon>
     </mdui-top-app-bar>
     <main>
@@ -294,7 +295,7 @@
             <h2 class="section-title">Screenshot</h2>
             <div class="card-grid shot-grid">
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/er-light.png" :href="screenshot('er')" target="_blank">
+                    :href="screenshot('er')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/er-light.png"
                         alt="Diagramma E/R in JDER (tema chiaro): studenti, corsi e docenti di un'università"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -304,7 +305,7 @@
                     <span class="card-title">Diagramma E/R</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/relational-light.png" :href="screenshot('relational')" target="_blank">
+                    :href="screenshot('relational')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/relational-light.png"
                         alt="Schema Logico in JDER (tema chiaro): tabelle, chiavi primarie e chiavi esterne di un'università"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -314,7 +315,7 @@
                     <span class="card-title">Schema Logico</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/class-light.png" :href="screenshot('class')" target="_blank">
+                    :href="screenshot('class')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/class-light.png"
                         alt="Diagramma delle Classi in JDER (tema chiaro): e-commerce con ereditarietà, interfacce ed enumerazioni"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -324,7 +325,7 @@
                     <span class="card-title">Diagramma delle Classi</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/usecase-light.png" :href="screenshot('usecase')" target="_blank">
+                    :href="screenshot('usecase')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/usecase-light.png"
                         alt="Diagramma Use Case in JDER (tema chiaro): sistema di gestione di una biblioteca"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -334,7 +335,7 @@
                     <span class="card-title">Diagramma Use Case</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/sequence-light.png" :href="screenshot('sequence')" target="_blank">
+                    :href="screenshot('sequence')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/sequence-light.png"
                         alt="Diagramma di Sequenza in JDER (tema chiaro): prenotazione di un libro in una biblioteca"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -344,7 +345,7 @@
                     <span class="card-title">Diagramma di Sequenza</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/logic-light.png" :href="screenshot('logic')" target="_blank">
+                    :href="screenshot('logic')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/logic-light.png"
                         alt="Diagramma Logico in JDER (tema chiaro): sommatore completo con porte XOR, AND e OR e valori simulati"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -354,7 +355,7 @@
                     <span class="card-title">Diagramma Logico</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/mealy-light.png" :href="screenshot('mealy')" target="_blank">
+                    :href="screenshot('mealy')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/mealy-light.png"
                         alt="Macchina di Mealy in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite sulle transizioni"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -364,7 +365,7 @@
                     <span class="card-title">Macchina di Mealy</span>
                 </mdui-card>
                 <mdui-card variant="outlined" class="screenshot-card"
-                    href="/screenshots/moore-light.png" :href="screenshot('moore')" target="_blank">
+                    :href="screenshot('moore')" target="_blank">
                     <img class="screenshot-light" src="/screenshots/moore-light.png"
                         alt="Macchina di Moore in JDER (tema chiaro): riconoscitore della sequenza 101 con le uscite negli stati"
                         width="1600" height="900" loading="lazy" decoding="async" />
@@ -390,6 +391,7 @@
                 Repository</a></p>
     </footer>
     </template>
+    </div>
 </body>
 
 </html>
