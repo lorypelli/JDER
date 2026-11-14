@@ -1,5 +1,7 @@
-const themeKey = 'jder-theme';
-const paletteKey = 'jder-palette';
+import { palettes } from './palettes.js';
+
+export const themeKey = 'jder-theme';
+export const paletteKey = 'jder-palette';
 const defaultPaletteId = 'Blue';
 const modes = ['light', 'dark'];
 const roles = ['primary', 'secondary', 'tertiary'].flatMap((name) => [
@@ -17,7 +19,7 @@ const containerElevations = {
 
 const root = document.documentElement;
 
-const store = (key, value) => {
+export const store = (key, value) => {
     try {
         return value == null
             ? localStorage.getItem(key)
@@ -44,7 +46,7 @@ const tint = (surface, primary, elevation) => {
     );
 };
 
-const applyPalette = (palette) => {
+export const applyPalette = (palette) => {
     for (const mode of modes) {
         const colors = Object.fromEntries(
             roles.map((role, index) => [role, toRgb(palette[mode][index])]),
@@ -66,12 +68,12 @@ const applyPalette = (palette) => {
     root.style.setProperty('--palette-swatch', `#${palette.light[0]}`);
 };
 
-const applyTheme = (isDark) => {
+export const applyTheme = (isDark) => {
     root.classList.toggle('mdui-theme-dark', isDark);
     root.classList.toggle('mdui-theme-light', !isDark);
 };
 
-const saved = {
+export const saved = {
     isDark: store(themeKey) == 'dark',
     selected:
         palettes.find(({ id }) => id == store(paletteKey)) ??

@@ -1,4 +1,16 @@
-const app = Vue.createApp({
+import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.45/vue.esm-browser.prod.min.js';
+import 'https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.esm.min.js';
+import { palettes } from './palettes.js';
+import {
+    applyPalette,
+    applyTheme,
+    paletteKey,
+    saved,
+    store,
+    themeKey,
+} from './theme.js';
+
+const app = createApp({
     data: () => ({ ...saved, palettes }),
     methods: {
         toggleTheme() {
