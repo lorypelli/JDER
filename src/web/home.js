@@ -1,5 +1,6 @@
 import { h } from 'vue';
 import { icon, icons, link, mount, page, section, state, svg } from './site.js';
+import { styles } from './styles.js';
 
 const features = [
     {
@@ -127,7 +128,7 @@ const links = () => [
 ];
 
 const actions = () => [
-    h('div', { class: 'hero-actions' }, [
+    h('div', { style: styles.heroActions }, [
         h('mdui-button', { variant: 'filled', href: '/download' }, [
             svg(icons.download, { slot: 'icon' }),
             'Scarica Risorse',
@@ -145,19 +146,22 @@ const feature = ({ title, text, icon: path, wide }) =>
         'mdui-card',
         {
             variant: 'outlined',
-            class: wide ? 'feature-card card-wide' : 'feature-card',
+            style: [styles.featureCard, wide && styles.wide],
         },
         [
-            h('span', { class: 'card-icon' }, [icon([path])]),
-            h('h3', { class: 'card-title' }, title),
-            h('p', { class: 'card-text' }, text),
+            h('span', { style: styles.featureIcon }, [icon([path])]),
+            h('h3', { style: styles.cardTitle }, title),
+            h('p', { style: styles.cardText }, text),
         ],
     );
 
 const screenshot = ({ key, title, alt }) => {
     const image = (mode, theme) =>
         h('img', {
-            class: `screenshot-${mode}`,
+            style: [
+                styles.screenshot,
+                state.isDark != (mode == 'dark') && styles.none,
+            ],
             src: `/screenshots/${key}-${mode}.png`,
             alt: `${title} in JDER (tema ${theme}): ${alt}`,
             width: 1600,
@@ -169,14 +173,14 @@ const screenshot = ({ key, title, alt }) => {
         'mdui-card',
         {
             variant: 'outlined',
-            class: 'screenshot-card',
+            style: styles.screenshotCard,
             href: `/screenshots/${key}-${state.isDark ? 'dark' : 'light'}.png`,
             target: '_blank',
         },
         [
             image('light', 'chiaro'),
             image('dark', 'scuro'),
-            h('span', { class: 'card-title' }, title),
+            h('span', { style: styles.screenshotTitle }, title),
         ],
     );
 };
@@ -203,21 +207,17 @@ mount(() =>
         content: [
             section(
                 'Caratteristiche Principali',
-                h('div', { class: 'card-grid' }, features.map(feature)),
+                h('div', { style: styles.grid }, features.map(feature)),
             ),
             section(
                 'Screenshot',
-                h(
-                    'div',
-                    { class: 'card-grid shot-grid' },
-                    screenshots.map(screenshot),
-                ),
+                h('div', { style: styles.grid }, screenshots.map(screenshot)),
             ),
             section(
                 'Tecnologie',
                 h(
                     'div',
-                    { class: 'chip-row' },
+                    { style: styles.chips },
                     technologies.map((name) => h('mdui-chip', name)),
                 ),
             ),

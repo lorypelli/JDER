@@ -1,5 +1,6 @@
 import { createApp, h, reactive } from 'vue';
 import { palettes } from './palettes.js';
+import { styles } from './styles.js';
 import {
     applyPalette,
     applyTheme,
@@ -28,18 +29,26 @@ export const state = reactive({ ...saved });
 export const svg = (paths, props = {}) =>
     h(
         'svg',
-        { viewBox: '0 0 24 24', ...props },
+        {
+            viewBox: '0 0 24 24',
+            ...props,
+            style: [styles.glyph, props.style],
+        },
         paths.map((d) => h('path', { d })),
     );
 
-export const icon = (paths) => svg(paths, { class: 'icon' });
+export const icon = (paths) => svg(paths, { style: styles.icon });
 
-export const hidden = (text) => h('span', { class: 'visually-hidden' }, text);
+export const hidden = (text) => h('span', { style: styles.hidden }, text);
 
-export const link = (href, text) => h('a', { href, target: '_blank' }, text);
+export const link = (href, text) =>
+    h('a', { href, target: '_blank', style: styles.link }, text);
 
 export const section = (title, content) =>
-    h('section', [h('h2', { class: 'section-title' }, title), content]);
+    h('section', { style: styles.section }, [
+        h('h2', { style: styles.heading }, title),
+        content,
+    ]);
 
 const toggleTheme = () => {
     state.isDark = !state.isDark;
@@ -56,7 +65,12 @@ const choose = (id) => {
 const paletteMenu = () =>
     h('mdui-dropdown', { placement: 'bottom-end' }, [
         h('mdui-button-icon', { slot: 'trigger' }, [
-            h('span', { class: 'swatch swatch-current' }),
+            h('span', {
+                style: [
+                    styles.swatch,
+                    { backgroundColor: 'var(--palette-swatch)' },
+                ],
+            }),
             hidden('Palette Colori'),
         ]),
         h(
@@ -64,14 +78,17 @@ const paletteMenu = () =>
             {
                 selects: 'single',
                 value: state.selected.id,
+                style: styles.menu,
                 onChange: (event) => choose(event.target.value),
             },
             palettes.map((palette) =>
                 h('mdui-menu-item', { value: palette.id }, [
                     h('span', {
                         slot: 'icon',
-                        class: 'swatch',
-                        style: { backgroundColor: `#${palette.light[0]}` },
+                        style: [
+                            styles.swatch,
+                            { backgroundColor: `#${palette.light[0]}` },
+                        ],
                     }),
                     palette.name,
                 ]),
@@ -81,16 +98,16 @@ const paletteMenu = () =>
 
 const themeButton = () =>
     h('mdui-button-icon', { onClick: toggleTheme }, [
-        h('svg', { class: 'icon', viewBox: '0 0 24 24' }, [
-            h('g', { class: 'theme-icon-sun' }, [
+        h('svg', { viewBox: '0 0 24 24', style: styles.icon }, [
+            h('g', { style: state.isDark && styles.none }, [
                 h('circle', { cx: 12, cy: 12, r: 4.2 }),
                 h('path', {
-                    class: 'theme-icon-rays',
+                    style: styles.rays,
                     d: 'M18 12h4.2M16.24 16.24l2.97 2.97M12 18v4.2M7.76 16.24l-2.97 2.97M6 12H1.8M7.76 7.76 4.79 4.79M12 6V1.8M16.24 7.76l2.97-2.97',
                 }),
             ]),
             h('path', {
-                class: 'theme-icon-moon',
+                style: !state.isDark && styles.none,
                 d: 'M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z',
             }),
         ]),
@@ -98,20 +115,24 @@ const themeButton = () =>
     ]);
 
 const appBar = ({ start = [], links = [] }) =>
-    h('mdui-top-app-bar', { 'scroll-behavior': 'elevate' }, [
-        ...start,
-        h('mdui-top-app-bar-title', { class: 'app-bar-title' }, [
-            h('a', { href: '/' }, 'JDER'),
-        ]),
-        ...links,
-        paletteMenu(),
-        themeButton(),
-    ]);
+    h(
+        'mdui-top-app-bar',
+        { 'scroll-behavior': 'elevate', style: styles.appBar },
+        [
+            ...start,
+            h('mdui-top-app-bar-title', [
+                h('a', { href: '/', style: styles.brand }, 'JDER'),
+            ]),
+            ...links,
+            paletteMenu(),
+            themeButton(),
+        ],
+    );
 
 const hero = ({ subtitle, title, description, actions = [] }) =>
-    h('section', { class: 'hero' }, [
+    h('section', { style: styles.hero }, [
         h('img', {
-            class: 'hero-icon',
+            style: styles.heroIcon,
             src: 'favicon.ico',
             alt: 'Logo di JDER',
             width: 72,
@@ -119,15 +140,15 @@ const hero = ({ subtitle, title, description, actions = [] }) =>
             loading: 'lazy',
             decoding: 'async',
         }),
-        h('h1', 'JDER'),
-        h('p', { class: 'hero-subtitle' }, subtitle),
-        h('h2', title),
-        h('p', { class: 'hero-description' }, description),
+        h('h1', { style: styles.heroTitle }, 'JDER'),
+        h('p', { style: styles.heroSubtitle }, subtitle),
+        h('h2', { style: styles.heading }, title),
+        h('p', { style: styles.heroDescription }, description),
         ...actions,
     ]);
 
 const footer = () =>
-    h('footer', [
+    h('footer', { style: styles.footer }, [
         h('p', [
             '© 2025-2026 LoryPelli - ',
             link(repository, 'GitHub Repository'),
@@ -136,7 +157,7 @@ const footer = () =>
 
 export const page = ({ start, links, hero: heroOptions, content }) => [
     appBar({ start, links }),
-    h('main', [hero(heroOptions), ...content]),
+    h('main', { style: styles.main }, [hero(heroOptions), ...content]),
     footer(),
 ];
 

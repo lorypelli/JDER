@@ -8,19 +8,20 @@ import {
     repository,
     section,
 } from './site.js';
+import { styles } from './styles.js';
 
 const resource = ({ title, text, paths, button }) =>
-    h('mdui-card', { variant: 'outlined', class: 'download-card' }, [
-        h('span', { class: 'card-icon' }, [icon(paths)]),
-        h('h3', { class: 'card-title' }, title),
-        h('p', { class: 'card-text' }, text),
+    h('mdui-card', { variant: 'outlined', style: styles.downloadCard }, [
+        h('span', { style: styles.cardIcon }, [icon(paths)]),
+        h('h3', { style: styles.cardTitle }, title),
+        h('p', { style: styles.downloadText }, text),
         button,
     ]);
 
 mount(() =>
     page({
         start: [
-            h('mdui-button-icon', { class: 'app-bar-back', href: '/' }, [
+            h('mdui-button-icon', { href: '/' }, [
                 icon(icons.back),
                 hidden('Torna alla home'),
             ]),
@@ -34,7 +35,7 @@ mount(() =>
         content: [
             section(
                 'Risorse Disponibili',
-                h('div', { class: 'card-grid' }, [
+                h('div', { style: styles.grid }, [
                     resource({
                         title: 'Applicazione JDER',
                         text: "Scarica l'eseguibile Java di JDER per usare l'editor su Windows, macOS e Linux.",
