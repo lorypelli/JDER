@@ -12,6 +12,8 @@ expect val isMacOS: Boolean
 
 expect val usesSystemMenuBar: Boolean
 
+expect val showsToolbarMenus: Boolean
+
 expect val systemLanguage: String
 
 expect fun copyToClipboard(text: String)

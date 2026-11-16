@@ -1,9 +1,30 @@
 package com.jder.ui.components
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.Redo
+import androidx.compose.material.icons.automirrored.filled.Undo
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.CenterFocusWeak
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.ZoomIn
+import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.platform.UriHandler
 import com.jder.domain.model.DiagramEditorState
@@ -67,10 +88,13 @@ class MenuShortcut(
 class AppMenu(val title: String, val entries: () -> List<AppMenuEntry>)
 
 sealed class AppMenuEntry {
+    open val icon: ImageVector? = null
+
     class Action(
         val label: String,
         val shortcut: MenuShortcut? = null,
         val isEnabled: Boolean = true,
+        override val icon: ImageVector? = null,
         val onClick: () -> Unit,
     ) : AppMenuEntry()
 
@@ -79,6 +103,7 @@ sealed class AppMenuEntry {
         val isChecked: Boolean,
         val shortcut: MenuShortcut? = null,
         val isEnabled: Boolean = true,
+        override val icon: ImageVector? = null,
         val onToggle: () -> Unit,
     ) : AppMenuEntry()
 
@@ -86,10 +111,15 @@ sealed class AppMenuEntry {
         val label: String,
         val isSelected: Boolean,
         val shortcut: MenuShortcut? = null,
+        override val icon: ImageVector? = null,
         val onSelect: () -> Unit,
     ) : AppMenuEntry()
 
-    class Submenu(val label: String, val entries: List<AppMenuEntry>) : AppMenuEntry()
+    class Submenu(
+        val label: String,
+        val entries: List<AppMenuEntry>,
+        override val icon: ImageVector? = null,
+    ) : AppMenuEntry()
 
     data object Separator : AppMenuEntry()
 }
@@ -145,6 +175,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: (() -> Unit)?): L
             AppMenuEntry.Action(
                 MenuStrings.NEW_DIAGRAM,
                 commandShortcut(Key.N, "N"),
+                icon = Icons.Default.Add,
                 onClick = commands.onNewDiagram,
             ),
         )
@@ -152,6 +183,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: (() -> Unit)?): L
             AppMenuEntry.Action(
                 MenuStrings.OPEN_DIAGRAM_ELLIPSIS,
                 commandShortcut(Key.O, "O"),
+                icon = Icons.Default.FolderOpen,
                 onClick = commands.onOpenDiagram,
             ),
         )
@@ -160,6 +192,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: (() -> Unit)?): L
             AppMenuEntry.Action(
                 CommonStrings.SAVE,
                 commandShortcut(Key.S, "S"),
+                icon = Icons.Default.Save,
                 onClick = commands.onSaveDiagram,
             ),
         )
@@ -167,6 +200,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: (() -> Unit)?): L
             AppMenuEntry.Action(
                 MenuStrings.SAVE_AS_ELLIPSIS,
                 commandShortcut(Key.S, "S", isShift = true),
+                icon = Icons.Default.Save,
                 onClick = commands.onSaveAsDiagram,
             ),
         )
@@ -177,6 +211,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: (() -> Unit)?): L
                 MenuStrings.EXPORT_PNG_ELLIPSIS,
                 commandShortcut(Key.E, "E"),
                 isEnabled = !commands.state.isEmpty,
+                icon = Icons.Default.Image,
                 onClick = commands.onExportPNG,
             ),
         )
@@ -187,6 +222,7 @@ private fun fileEntries(commands: DiagramMenuCommands, onExit: (() -> Unit)?): L
                 AppMenuEntry.Action(
                     MenuStrings.EXIT,
                     MenuShortcut(Key.F4, "F4", isAlt = true),
+                    icon = Icons.AutoMirrored.Default.ExitToApp,
                     onClick = onExit,
                 ),
             )
@@ -200,6 +236,7 @@ private fun editEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
             MenuStrings.UNDO,
             commandShortcut(Key.Z, "Z"),
             isEnabled = state.canUndo(),
+            icon = Icons.AutoMirrored.Default.Undo,
             onClick = commands.onUndo,
         ),
         AppMenuEntry.Action(
@@ -207,6 +244,7 @@ private fun editEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
             if (isMacOS) commandShortcut(Key.Z, "Z", isShift = true)
             else commandShortcut(Key.Y, "Y"),
             isEnabled = state.canRedo(),
+            icon = Icons.AutoMirrored.Default.Redo,
             onClick = commands.onRedo,
         ),
         AppMenuEntry.Separator,
@@ -215,6 +253,7 @@ private fun editEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
             if (isMacOS) MenuShortcut(Key.Backspace, "⌫")
             else MenuShortcut(Key.Delete, MenuStrings.DELETE_KEY),
             isEnabled = state.hasSelection,
+            icon = Icons.Default.Delete,
             onClick = commands.onDeleteSelected,
         ),
     )
@@ -231,6 +270,7 @@ private fun viewEntries(
         AppMenuEntry.Action(
             MenuStrings.ZOOM_IN,
             commandShortcut(Key.Plus, "+"),
+            icon = Icons.Default.ZoomIn,
             onClick = state::zoomIn,
         ),
     )
@@ -238,6 +278,7 @@ private fun viewEntries(
         AppMenuEntry.Action(
             MenuStrings.ZOOM_OUT,
             commandShortcut(Key.Minus, "-"),
+            icon = Icons.Default.ZoomOut,
             onClick = state::zoomOut,
         ),
     )
@@ -245,6 +286,7 @@ private fun viewEntries(
         AppMenuEntry.Action(
             MenuStrings.RESET_ZOOM,
             commandShortcut(Key.Zero, "0"),
+            icon = Icons.Default.CenterFocusWeak,
             onClick = state::resetView,
         ),
     )
@@ -276,6 +318,7 @@ private fun viewEntries(
                     themeState.selectPalette(palette)
                 }
             },
+            Icons.Default.Palette,
         ),
     )
     add(
@@ -286,6 +329,7 @@ private fun viewEntries(
                     Localization.selectLanguage(it)
                 }
             },
+            Icons.Default.Language,
         ),
     )
     if (!usesSystemMenuBar) {
@@ -308,6 +352,7 @@ private fun toolEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
             MenuStrings.SELECT_AND_MOVE,
             isSelected = state.isSelectTool,
             shortcut = MenuShortcut(Key.Escape, "Esc"),
+            icon = Icons.Default.NearMe,
             onSelect = state::resetToolMode,
         ),
         AppMenuEntry.Separator,
@@ -316,9 +361,11 @@ private fun toolEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
 
 private fun DiagramTool.toMenuEntry(): AppMenuEntry =
     when (this) {
-        is DiagramTool.Mode -> AppMenuEntry.Choice(menuLabel, isSelected, onSelect = onSelect)
-        is DiagramTool.Toggle -> AppMenuEntry.Toggle(menuLabel, isChecked, onToggle = onToggle)
-        is DiagramTool.Action -> AppMenuEntry.Action(menuLabel, onClick = onClick)
+        is DiagramTool.Mode ->
+            AppMenuEntry.Choice(menuLabel, isSelected, icon = icon, onSelect = onSelect)
+        is DiagramTool.Toggle ->
+            AppMenuEntry.Toggle(menuLabel, isChecked, icon = icon, onToggle = onToggle)
+        is DiagramTool.Action -> AppMenuEntry.Action(menuLabel, icon = icon, onClick = onClick)
         is DiagramTool.Group -> AppMenuEntry.Submenu(menuLabel, tools.map { it.toMenuEntry() })
         DiagramTool.Divider -> AppMenuEntry.Separator
     }
@@ -332,22 +379,47 @@ private fun selectionEntries(selection: DiagramSelectionMenu?): List<AppMenuEntr
         buildList {
             add(AppMenuEntry.Action(selection.title, isEnabled = false, onClick = {}))
             add(AppMenuEntry.Separator)
-            selection.items.forEach { (label, _, enabled, isDestructive, onClick) ->
+            selection.items.forEach { (label, icon, enabled, isDestructive, onClick) ->
                 if (isDestructive) add(AppMenuEntry.Separator)
-                add(AppMenuEntry.Action(label, isEnabled = enabled, onClick = onClick))
+                add(AppMenuEntry.Action(label, isEnabled = enabled, icon = icon, onClick = onClick))
             }
         }
     }
 
 private fun helpEntries(uriHandler: UriHandler, onAbout: () -> Unit): List<AppMenuEntry> =
     buildList {
-        add(AppMenuEntry.Action(MenuStrings.USER_GUIDE) { uriHandler.openSafely(GUIDE_URL) })
-        add(AppMenuEntry.Action(MenuStrings.WEBSITE) { uriHandler.openSafely(WEBSITE_URL) })
+        add(
+            AppMenuEntry.Action(
+                MenuStrings.USER_GUIDE,
+                icon = Icons.AutoMirrored.Default.MenuBook,
+            ) {
+                uriHandler.openSafely(GUIDE_URL)
+            },
+        )
+        add(
+            AppMenuEntry.Action(MenuStrings.WEBSITE, icon = Icons.Default.Public) {
+                uriHandler.openSafely(WEBSITE_URL)
+            },
+        )
         add(AppMenuEntry.Separator)
-        add(AppMenuEntry.Action(MenuStrings.REPORT_ISSUE) { uriHandler.openSafely(ISSUES_URL) })
-        add(AppMenuEntry.Action(MenuStrings.SOURCE_CODE) { uriHandler.openSafely(SOURCE_URL) })
+        add(
+            AppMenuEntry.Action(MenuStrings.REPORT_ISSUE, icon = Icons.Default.BugReport) {
+                uriHandler.openSafely(ISSUES_URL)
+            },
+        )
+        add(
+            AppMenuEntry.Action(MenuStrings.SOURCE_CODE, icon = Icons.Default.Code) {
+                uriHandler.openSafely(SOURCE_URL)
+            },
+        )
         if (!usesSystemMenuBar) {
             add(AppMenuEntry.Separator)
-            add(AppMenuEntry.Action(MenuStrings.ABOUT, onClick = onAbout))
+            add(
+                AppMenuEntry.Action(
+                    MenuStrings.ABOUT,
+                    icon = Icons.Default.Info,
+                    onClick = onAbout,
+                ),
+            )
         }
     }

@@ -16,7 +16,9 @@ import kotlinx.coroutines.withContext
 
 actual val isMacOS: Boolean = System.getProperty("os.name").orEmpty().lowercase().startsWith("mac")
 
-actual val usesSystemMenuBar: Boolean = isMacOS
+actual val usesSystemMenuBar: Boolean = isMacOS && System.getenv("JDER_WINDOW_MENU") == null
+
+actual val showsToolbarMenus: Boolean = isMacOS
 
 actual val systemLanguage: String
     get() = Locale.getDefault().language

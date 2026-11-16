@@ -30,7 +30,7 @@ import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.fileName
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.shortcutLabel
-import com.jder.ui.utils.usesSystemMenuBar
+import com.jder.ui.utils.showsToolbarMenus
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +61,7 @@ fun DiagramToolbar(
         TopAppBar(
             title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
             actions = {
-                if (usesSystemMenuBar) {
+                if (showsToolbarMenus) {
                     ToolbarFileMenu(
                         onNewDiagram = onNewDiagram,
                         onOpenDiagram = onOpenDiagram,

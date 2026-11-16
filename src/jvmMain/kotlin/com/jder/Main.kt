@@ -52,6 +52,7 @@ import com.jder.ui.utils.bringToFront
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.resourcePainter
 import com.jder.ui.utils.setDockIcon
+import com.jder.ui.utils.usesSystemMenuBar
 import java.awt.Dimension
 
 fun main(args: Array<String>) {
@@ -161,8 +162,10 @@ fun main(args: Array<String>) {
                     uriHandler = LocalUriHandler.current,
                     windowMenu = if (isMacOS) desktopWindow.windowMenu() else null,
                 )
-            if (isMacOS) {
+            if (usesSystemMenuBar) {
                 AppMenuBar(menus = menus, onAbout = { showAboutDialog = true })
+            }
+            if (isMacOS) {
                 DockMenu(
                     onNewDiagram = {
                         if (currentType != null) pendingNewDiagram = it
@@ -192,7 +195,7 @@ fun main(args: Array<String>) {
                             }
                         },
                 ) {
-                    if (!isMacOS) {
+                    if (!usesSystemMenuBar) {
                         WindowMenuBar(menus)
                     }
                     CompositionLocalProvider(LocalDiagramMenuHost provides menuHost) {

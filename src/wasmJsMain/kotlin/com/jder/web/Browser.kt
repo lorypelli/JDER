@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalWasmJsInterop::class)
-
 package com.jder.web
 
 import kotlin.io.encoding.Base64

@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
@@ -108,15 +112,16 @@ fun WindowMenuBar(menus: List<AppMenu>, modifier: Modifier = Modifier) {
 
 @Composable
 private fun WindowMenuEntries(entries: List<AppMenuEntry>, onAction: (() -> Unit) -> Unit) {
-    val hasChecks = entries.any { it is AppMenuEntry.Toggle || it is AppMenuEntry.Choice }
+    val hasLeading = entries.any {
+        it is AppMenuEntry.Toggle || it is AppMenuEntry.Choice || it.icon != null
+    }
     entries.forEach { entry ->
         when (entry) {
             is AppMenuEntry.Action ->
                 WindowMenuItem(
                     entry.label,
                     entry.shortcut,
-                    hasChecks,
-                    isChecked = false,
+                    leading = windowMenuLeading(hasLeading, entry.icon),
                     isEnabled = entry.isEnabled,
                 ) {
                     onAction(entry.onClick)
@@ -125,28 +130,48 @@ private fun WindowMenuEntries(entries: List<AppMenuEntry>, onAction: (() -> Unit
                 WindowMenuItem(
                     entry.label,
                     entry.shortcut,
-                    hasChecks,
-                    entry.isChecked,
+                    leading =
+                        windowMenuLeading(
+                            hasLeading,
+                            entry.icon
+                                ?: if (entry.isChecked) Icons.Default.CheckBox
+                                else Icons.Default.CheckBoxOutlineBlank,
+                            entry.isChecked && entry.icon != null,
+                        ),
                     isEnabled = entry.isEnabled,
                 ) {
                     onAction(entry.onToggle)
                 }
             is AppMenuEntry.Choice ->
-                WindowMenuItem(entry.label, entry.shortcut, hasChecks, entry.isSelected) {
+                WindowMenuItem(
+                    entry.label,
+                    entry.shortcut,
+                    leading =
+                        windowMenuLeading(
+                            hasLeading,
+                            entry.icon ?: Icons.Default.Check.takeIf { entry.isSelected },
+                            entry.isSelected && entry.icon != null,
+                        ),
+                ) {
                     onAction(entry.onSelect)
                 }
-            is AppMenuEntry.Submenu -> WindowSubmenu(entry, hasChecks, onAction)
+            is AppMenuEntry.Submenu -> WindowSubmenu(entry, hasLeading, onAction)
             AppMenuEntry.Separator -> HorizontalDivider()
         }
     }
 }
 
+private fun windowMenuLeading(
+    hasLeading: Boolean,
+    icon: ImageVector?,
+    isHighlighted: Boolean = false,
+): (@Composable () -> Unit)? = if (hasLeading) ({ WindowMenuIcon(icon, isHighlighted) }) else null
+
 @Composable
 private fun WindowMenuItem(
     label: String,
     shortcut: MenuShortcut?,
-    hasChecks: Boolean,
-    isChecked: Boolean,
+    leading: (@Composable () -> Unit)?,
     isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -155,7 +180,7 @@ private fun WindowMenuItem(
         onClick = onClick,
         modifier = Modifier.height(menuItemHeight),
         enabled = isEnabled,
-        leadingIcon = if (hasChecks) ({ WindowMenuCheck(isChecked) }) else null,
+        leadingIcon = leading,
         trailingIcon =
             shortcut?.let {
                 {
@@ -172,7 +197,7 @@ private fun WindowMenuItem(
 @Composable
 private fun WindowSubmenu(
     submenu: AppMenuEntry.Submenu,
-    hasChecks: Boolean,
+    hasLeading: Boolean,
     onAction: (() -> Unit) -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -183,7 +208,7 @@ private fun WindowSubmenu(
             text = { Text(submenu.label) },
             onClick = { isExpanded = true },
             modifier = Modifier.height(menuItemHeight),
-            leadingIcon = if (hasChecks) ({ WindowMenuCheck(isChecked = false) }) else null,
+            leadingIcon = windowMenuLeading(hasLeading, submenu.icon),
             trailingIcon = { Icon(Icons.Default.ChevronRight, contentDescription = null) },
         )
         DropdownMenu(
@@ -197,9 +222,14 @@ private fun WindowSubmenu(
 }
 
 @Composable
-private fun WindowMenuCheck(isChecked: Boolean) {
-    if (isChecked) {
-        Icon(Icons.Default.Check, contentDescription = null)
+private fun WindowMenuIcon(icon: ImageVector?, isHighlighted: Boolean) {
+    if (icon != null) {
+        Icon(
+            icon,
+            contentDescription = null,
+            tint =
+                if (isHighlighted) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+        )
     } else {
         Spacer(modifier = Modifier.size(24.dp))
     }
