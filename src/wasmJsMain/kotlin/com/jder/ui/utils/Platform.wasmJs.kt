@@ -10,7 +10,7 @@ actual val isMacOS: Boolean = isMacPlatform()
 
 actual val usesSystemMenuBar: Boolean = false
 
-actual val showsToolbarMenus: Boolean = false
+actual val showsToolbarMenus: Boolean = true
 
 actual val systemLanguage: String
     get() = browserLanguage().substringBefore('-')
