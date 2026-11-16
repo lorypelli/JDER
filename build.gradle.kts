@@ -1,67 +1,72 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-val javaVersion = JavaVersion.VERSION_11
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    kotlin("jvm") version "1.9.20"
-    id("org.jetbrains.compose") version "1.5.10"
-    kotlin("plugin.serialization") version "1.9.20"
-    id("com.diffplug.spotless") version "8.6.0"
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.spotless)
 }
 group = "com.jder"
 repositories {
+    google()
     mavenCentral()
 }
-dependencies {
-    implementation(compose.desktop.common)
-    implementation(compose.desktop.linux_x64)
-    implementation(compose.desktop.linux_arm64)
-    implementation(compose.desktop.windows_x64)
-    implementation(compose.desktop.macos_x64)
-    implementation(compose.desktop.macos_arm64)
-    implementation(compose.material3)
-    implementation(compose.materialIconsExtended)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
-}
-compose.desktop {
-    application {
-        mainClass = "com.jder.MainKt"
-        nativeDistributions {
-            macOS {
-                iconFile.set(project.file("src/main/resources/jder_icon.png"))
-            }
-            windows {
-                iconFile.set(project.file("src/main/resources/jder_icon.png"))
-            }
-            linux {
-                iconFile.set(project.file("src/main/resources/jder_icon.png"))
-            }
+kotlin {
+    jvm {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+            jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+            freeCompilerArgs.add("-Xjdk-release=11")
+        }
+    }
+    wasmJs {
+        outputModuleName = "jder"
+        browser { commonWebpackConfig { outputFileName = "jder.js" } }
+        binaries.executable()
+    }
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.bundles.compose)
+            implementation(libs.kotlinx.serialization.json)
+        }
+        jvmMain.dependencies {
+            implementation(libs.bundles.compose.desktop)
         }
     }
 }
-java {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+compose.desktop.application {
+    mainClass = "com.jder.MainKt"
+    nativeDistributions {
+        val icon = file("src/web/jder_icon.png")
+        macOS.iconFile = icon
+        windows.iconFile = icon
+        linux.iconFile = icon
+    }
 }
 spotless {
     kotlin {
+        target("src/*/kotlin/**/*.kt")
         ktfmt().kotlinlangStyle()
     }
 }
-tasks.withType<KotlinCompile>().configureEach {
+tasks.named("compileKotlinJvm") {
     dependsOn("clean", "spotlessApply")
-    kotlinOptions {
-        jvmTarget = javaVersion.toString()
-        freeCompilerArgs += listOf("-Xjvm-default=all", "-Xjdk-release=$javaVersion")
-    }
 }
-tasks.processResources {
-    from("src/web/screenshots") {
-        into("screenshots")
-    }
+tasks.named<ProcessResources>("jvmProcessResources") {
+    from("src/web/jder_icon.png")
+    from("src/web/screenshots") { into("screenshots") }
 }
-tasks.withType<Jar>().configureEach {
-    manifest {
-        attributes["Main-Class"] = "com.jder.MainKt"
-    }
+tasks.named<Jar>("jvmJar") {
+    archiveFileName = "JDER.jar"
+    manifest.attributes["Main-Class"] = "com.jder.MainKt"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    from({ configurations["jvmRuntimeClasspath"].map { if (it.isDirectory) it else zipTree(it) } })
+}
+tasks.matching { it.name.endsWith("PackageLock") }.configureEach { enabled = false }
+tasks.register<Sync>("webApp") {
+    from(tasks.named("wasmJsBrowserDistribution"))
+    exclude("**/*.map")
+    into("src/web/app")
 }

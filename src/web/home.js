@@ -65,7 +65,7 @@ const features = [
     },
     {
         title: 'Multipiattaforma',
-        text: 'Scritto in Kotlin con Compose Multiplatform: gira su Windows, macOS e Linux con un solo JAR',
+        text: 'Scritto in Kotlin con Compose Multiplatform: gira su Windows, macOS e Linux con un solo JAR, oppure direttamente nel browser senza installare nulla',
         icon: 'M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z',
         wide: true,
     },
@@ -114,11 +114,18 @@ const screenshots = [
     },
 ];
 
-const technologies = ['Kotlin', 'Compose Multiplatform', 'Material 3', 'Java'];
+const technologies = [
+    'Kotlin',
+    'Compose Multiplatform',
+    'Material 3',
+    'Java',
+    'WebAssembly',
+];
 
 const links = () => [
     h('nav', { class: 'app-bar-links' }, [
         h('mdui-button', { variant: 'text', href: '/download' }, 'Scarica'),
+        h('mdui-button', { variant: 'text', href: '/app' }, 'Versione Web'),
         h(
             'mdui-button',
             { variant: 'text', href: '/guida.pdf', target: '_blank' },
@@ -132,6 +139,10 @@ const actions = () => [
         h('mdui-button', { variant: 'filled', href: '/download' }, [
             svg(icons.download, { slot: 'icon' }),
             'Scarica Risorse',
+        ]),
+        h('mdui-button', { variant: 'tonal', href: '/app' }, [
+            svg(icons.browser, { slot: 'icon' }),
+            'Apri nel Browser',
         ]),
         h(
             'mdui-button',

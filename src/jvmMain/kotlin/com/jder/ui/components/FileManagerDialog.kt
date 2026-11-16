@@ -1,0 +1,474 @@
+package com.jder.ui.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.FileOpen
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import com.jder.strings.CommonStrings
+import com.jder.strings.FileStrings
+import java.io.File
+
+enum class FileManagerMode {
+    SAVE,
+    OPEN,
+}
+
+var lastUsedDirectory = File(System.getProperty("user.home"))
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FileManagerDialog(
+    mode: FileManagerMode,
+    fileExtension: String,
+    title: String,
+    defaultFileName: String? = null,
+    initialDirectory: File = lastUsedDirectory,
+    onDismiss: () -> Unit,
+    onFileSelected: (File) -> Unit,
+) {
+    val selectFile: (File) -> Unit = { file ->
+        file.parentFile?.let { lastUsedDirectory = it }
+        onFileSelected(file)
+    }
+    var currentDirectory by remember { mutableStateOf(initialDirectory) }
+    var fileName by remember { mutableStateOf(defaultFileName ?: "") }
+    var selectedFile by remember { mutableStateOf<File?>(null) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showInvalidPathDialog by remember { mutableStateOf(false) }
+    var invalidPathError by remember { mutableStateOf("") }
+    var refreshTrigger by remember { mutableStateOf(0) }
+    var showOnlySupportedFiles by remember { mutableStateOf(false) }
+    var showOverwriteDialog by remember { mutableStateOf(false) }
+    var fileToOverwrite by remember { mutableStateOf<File?>(null) }
+    var pathInput by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = currentDirectory.absolutePath,
+                selection = TextRange(currentDirectory.absolutePath.length),
+            ),
+        )
+    }
+    val pathFocusRequester = remember { FocusRequester() }
+    LaunchedEffect(currentDirectory) {
+        pathInput =
+            TextFieldValue(
+                text = currentDirectory.absolutePath,
+                selection = TextRange(currentDirectory.absolutePath.length),
+            )
+    }
+    LaunchedEffect(currentDirectory) {
+        if (!currentDirectory.exists() || !currentDirectory.isDirectory) {
+            currentDirectory = File(System.getProperty("user.home"))
+        }
+    }
+    BasicAlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.width(700.dp).height(600.dp),
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            shape = RoundedCornerShape(28.dp),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 6.dp,
+        ) {
+            Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        onClick = {
+                            currentDirectory.parentFile?.let {
+                                if (it.exists() && it.canRead()) {
+                                    currentDirectory = it
+                                    selectedFile = null
+                                }
+                            }
+                        },
+                        enabled = currentDirectory.parentFile != null,
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = FileStrings.PARENT_FOLDER,
+                        )
+                    }
+                    OutlinedTextField(
+                        value = pathInput,
+                        onValueChange = { pathInput = it },
+                        modifier =
+                            Modifier.weight(1f).focusRequester(pathFocusRequester).onKeyEvent {
+                                if (it.key == Key.Enter) {
+                                    val newPath = File(pathInput.text)
+                                    when {
+                                        !newPath.exists() -> {
+                                            invalidPathError = FileStrings.PATH_NOT_FOUND
+                                            showInvalidPathDialog = true
+                                        }
+                                        !newPath.isDirectory -> {
+                                            invalidPathError = FileStrings.PATH_NOT_FOLDER
+                                            showInvalidPathDialog = true
+                                        }
+                                        !newPath.canRead() -> {
+                                            invalidPathError = FileStrings.FOLDER_ACCESS_DENIED
+                                            showInvalidPathDialog = true
+                                        }
+                                        else -> {
+                                            currentDirectory = newPath
+                                            selectedFile = null
+                                        }
+                                    }
+                                    true
+                                } else {
+                                    false
+                                }
+                            },
+                        singleLine = true,
+                        label = { Text(FileStrings.PATH) },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Folder,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                    )
+                    IconButton(
+                        onClick = {
+                            refreshTrigger++
+                            selectedFile = null
+                        },
+                    ) {
+                        Icon(Icons.Default.Refresh, contentDescription = FileStrings.RELOAD)
+                    }
+                }
+                if (mode == FileManagerMode.OPEN && fileExtension == ".json") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = FileStrings.SHOW_ONLY_JSON,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Switch(
+                            checked = showOnlySupportedFiles,
+                            onCheckedChange = { showOnlySupportedFiles = it },
+                        )
+                    }
+                }
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    val files =
+                        remember(currentDirectory, refreshTrigger, showOnlySupportedFiles) {
+                            try {
+                                val allFiles =
+                                    currentDirectory
+                                        .listFiles()
+                                        ?.sortedWith(
+                                            compareBy<File> { !it.isDirectory }
+                                                .thenBy { it.name.lowercase() },
+                                        ) ?: return@remember null
+                                if (showOnlySupportedFiles) {
+                                    allFiles.filter { it.isDirectory || it.extension == "json" }
+                                } else {
+                                    allFiles
+                                }
+                            } catch (e: Exception) {
+                                logError(FileStrings.cannotRead(currentDirectory.path), e)
+                                null
+                            }
+                        }
+                    if (files.isNullOrEmpty()) {
+                        val isUnreadable = files == null
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                Icon(
+                                    if (isUnreadable) Icons.Default.ErrorOutline
+                                    else Icons.Default.FolderOpen,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(48.dp),
+                                    tint =
+                                        if (isUnreadable) MaterialTheme.colorScheme.error
+                                        else
+                                            MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.5f,
+                                            ),
+                                )
+                                Text(
+                                    if (isUnreadable) FileStrings.UNREADABLE_FOLDER
+                                    else FileStrings.EMPTY_FOLDER,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color =
+                                        if (isUnreadable) MaterialTheme.colorScheme.error
+                                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            items(files) {
+                                FileItem(
+                                    file = it,
+                                    isSelected = selectedFile == it,
+                                    fileExtension = fileExtension,
+                                    mode = mode,
+                                    onClick = {
+                                        if (it.isDirectory) {
+                                            if (it.canRead()) {
+                                                currentDirectory = it
+                                                selectedFile = null
+                                            }
+                                        } else {
+                                            selectedFile = it
+                                            fileName = it.nameWithoutExtension
+                                        }
+                                    },
+                                    onDoubleClick = {
+                                        if (it.isDirectory) {
+                                            if (it.canRead()) {
+                                                currentDirectory = it
+                                                selectedFile = null
+                                            }
+                                        } else if (
+                                            mode == FileManagerMode.OPEN &&
+                                                it.extension.equals(
+                                                    fileExtension.removePrefix("."),
+                                                    true,
+                                                )
+                                        ) {
+                                            selectFile(it)
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+                if (mode == FileManagerMode.SAVE) {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                    OutlinedTextField(
+                        value = fileName,
+                        onValueChange = {
+                            fileName = it
+                            errorMessage = null
+                        },
+                        label = { Text(FileStrings.FILE_NAME) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        trailingIcon = {
+                            Text(
+                                text = fileExtension,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(end = 12.dp),
+                            )
+                        },
+                        isError = errorMessage != null,
+                    )
+                    errorMessage?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    TextButton(onClick = onDismiss) { Text(CommonStrings.CANCEL) }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            when (mode) {
+                                FileManagerMode.SAVE -> {
+                                    val baseName = baseFileName(fileName, fileExtension)
+                                    errorMessage = fileNameError(baseName)
+                                    if (errorMessage != null) return@Button
+                                    val file = File(currentDirectory, "$baseName$fileExtension")
+                                    if (file.exists()) {
+                                        fileToOverwrite = file
+                                        showOverwriteDialog = true
+                                    } else {
+                                        selectFile(file)
+                                    }
+                                }
+                                FileManagerMode.OPEN -> {
+                                    selectedFile?.let {
+                                        if (it.exists() && it.isFile) {
+                                            selectFile(it)
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        enabled =
+                            when (mode) {
+                                FileManagerMode.SAVE -> fileName.isNotBlank()
+                                FileManagerMode.OPEN ->
+                                    selectedFile != null && selectedFile?.isFile == true
+                            },
+                    ) {
+                        Icon(
+                            if (mode == FileManagerMode.SAVE) Icons.Default.Save
+                            else Icons.Default.FileOpen,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            if (mode == FileManagerMode.SAVE) CommonStrings.SAVE
+                            else FileStrings.OPEN,
+                        )
+                    }
+                }
+            }
+        }
+    }
+    if (showInvalidPathDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showInvalidPathDialog = false
+                val currentPath = currentDirectory.absolutePath
+                pathInput =
+                    TextFieldValue(text = currentPath, selection = TextRange(currentPath.length))
+            },
+            title = {
+                Text(
+                    text = FileStrings.INVALID_PATH,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = { Text(text = invalidPathError, style = MaterialTheme.typography.bodyMedium) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showInvalidPathDialog = false
+                        val currentPath = currentDirectory.absolutePath
+                        pathInput =
+                            TextFieldValue(
+                                text = currentPath,
+                                selection = TextRange(currentPath.length),
+                            )
+                    },
+                ) {
+                    Text(CommonStrings.OK)
+                }
+            },
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+    if (showOverwriteDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showOverwriteDialog = false
+                fileToOverwrite = null
+            },
+            title = {
+                Text(
+                    text = FileStrings.CONFIRM_OVERWRITE,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = {
+                Text(
+                    text = FileStrings.fileExists(fileToOverwrite?.name.orEmpty()),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        fileToOverwrite?.let { selectFile(it) }
+                        showOverwriteDialog = false
+                        fileToOverwrite = null
+                    },
+                ) {
+                    Text(FileStrings.OVERWRITE)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showOverwriteDialog = false
+                        fileToOverwrite = null
+                    },
+                ) {
+                    Text(CommonStrings.CANCEL)
+                }
+            },
+            shape = RoundedCornerShape(28.dp),
+        )
+    }
+}

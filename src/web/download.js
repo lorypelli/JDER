@@ -47,6 +47,16 @@ mount(() =>
                         ),
                     }),
                     resource({
+                        title: 'Versione Web',
+                        text: 'Usa JDER direttamente nel browser, senza installare Java: i diagrammi si aprono e si salvano come file sul tuo computer.',
+                        paths: icons.browser,
+                        button: h(
+                            'mdui-button',
+                            { variant: 'outlined', href: '/app' },
+                            'Apri nel browser',
+                        ),
+                    }),
+                    resource({
                         title: 'Guida Utente',
                         text: 'Scarica la guida completa in formato PDF per scoprire tutte le funzionalità di JDER.',
                         paths: icons.book,

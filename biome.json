@@ -10,9 +10,18 @@
             }
         }
     },
+    "files": {
+        "includes": ["**", "!src/web/app"]
+    },
     "formatter": {
         "indentStyle": "space",
         "indentWidth": 4
+    },
+    "html": {
+        "experimentalFullSupportEnabled": true,
+        "formatter": {
+            "enabled": true
+        }
     },
     "javascript": {
         "formatter": {

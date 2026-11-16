@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "Noto Sans Math";
+    src: url("fonts/NotoSansMath-Regular.woff2") format("woff2");
+    font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -40,7 +46,7 @@
     --mdui-color-inverse-surface-dark: 224, 224, 224;
     --mdui-color-inverse-on-surface-dark: 26, 26, 26;
     --page-padding: 1rem;
-    font-family: system-ui, sans-serif;
+    font-family: "Noto Sans Math", sans-serif;
 }
 
 body {
@@ -66,6 +72,13 @@ body > noscript {
     justify-content: center;
     min-height: 100vh;
     width: 100%;
+}
+
+#loading {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
 }
 
 .noscript-message {

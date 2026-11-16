@@ -1,0 +1,41 @@
+[versions]
+kotlin = "2.4.21"
+compose = "1.12.2"
+
+[libraries]
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+compose-material3 = "org.jetbrains.compose.material3:material3:1.9.0"
+compose-icons-extended = "org.jetbrains.compose.material:material-icons-extended:1.7.3"
+compose-desktop = { module = "org.jetbrains.compose.desktop:desktop", version.ref = "compose" }
+compose-desktop-linux-x64 = { module = "org.jetbrains.compose.desktop:desktop-jvm-linux-x64", version.ref = "compose" }
+compose-desktop-linux-arm64 = { module = "org.jetbrains.compose.desktop:desktop-jvm-linux-arm64", version.ref = "compose" }
+compose-desktop-windows-x64 = { module = "org.jetbrains.compose.desktop:desktop-jvm-windows-x64", version.ref = "compose" }
+compose-desktop-macos-x64 = { module = "org.jetbrains.compose.desktop:desktop-jvm-macos-x64", version.ref = "compose" }
+compose-desktop-macos-arm64 = { module = "org.jetbrains.compose.desktop:desktop-jvm-macos-arm64", version.ref = "compose" }
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0"
+
+[bundles]
+compose = [
+    "compose-runtime",
+    "compose-foundation",
+    "compose-ui",
+    "compose-material3",
+    "compose-icons-extended",
+]
+compose-desktop = [
+    "compose-desktop",
+    "compose-desktop-linux-x64",
+    "compose-desktop-linux-arm64",
+    "compose-desktop-windows-x64",
+    "compose-desktop-macos-x64",
+    "compose-desktop-macos-arm64",
+]
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+spotless = { id = "com.diffplug.spotless", version = "8.11.0" }

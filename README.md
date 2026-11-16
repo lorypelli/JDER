@@ -5,16 +5,18 @@
 [![Website](https://img.shields.io/badge/Website-jder.it-blue?style=for-the-badge)](https://jder.it/)
 [![GitHub Release](https://img.shields.io/github/v/release/LoryPelli/JDER?style=for-the-badge)](https://github.com/LoryPelli/JDER/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE.md)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.4-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
 
-[🌐 Sito Web](https://jder.it/) • [⬇️ Download](https://jder.it/download) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
+[🌐 Sito Web](https://jder.it/) • [▶️ Apri nel Browser](https://jder.it/app) • [⬇️ Download](https://jder.it/download) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
 
 ---
 
 ## Panoramica
 
 JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del software originale creato da [Alessandro Ballini](https://ballini.it/Software/ProgER) e successivamente mantenuto da [Gianvito Pio](https://gianvitopio.wordpress.com/jder). Porta con sé un'interfaccia Material 3 moderna e pulita, nuovi tipi di diagramma e un'esperienza utente notevolmente migliorata.
+
+Funziona come applicazione desktop su Windows, macOS e Linux e direttamente nel browser, senza installare nulla, all'indirizzo [jder.it/app](https://jder.it/app).
 
 ---
 
@@ -118,10 +120,10 @@ JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del softwar
 - **Navigazione a schede** tra gli otto tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
 - **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
 - **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
-- **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette, la lingua e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows e Linux sta in cima alla finestra e segue il tema dell'app
+- **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette, la lingua e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows, su Linux e nella versione web sta in cima alla finestra e segue il tema dell'app
 - **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, schema logico o diagramma delle classi, dei casi d'uso, di sequenza o logico, oppure una nuova macchina di Mealy o di Moore
 - **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
-- **Messaggi colorati** in basso nella finestra: verdi per le conferme, gialli per gli avvisi e rossi per gli errori; si chiudono da soli (rispettivamente dopo 4, 8 e 12 secondi) o con ✕ e, avviando JDER da terminale, avvisi ed errori vengono scritti anche lì
+- **Messaggi colorati** in basso nella finestra: verdi per le conferme, gialli per gli avvisi e rossi per gli errori; si chiudono da soli (rispettivamente dopo 4, 8 e 12 secondi) o con ✕ e, avviando JDER da terminale, avvisi ed errori vengono scritti anche lì (nella versione web, nella console del browser)
 
 ---
 
@@ -171,12 +173,25 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 ### 💾 Salvataggio & Esportazione
 
 - Salva i diagrammi in formato **JSON** (`.json`)
-- **Salvataggio automatico**: dopo il primo salvataggio si può attivare **File → Salvataggio Automatico** e ogni modifica viene salvata da sola nello stesso file
+- **Salvataggio automatico** (app desktop): dopo il primo salvataggio si può attivare **File → Salvataggio Automatico** e ogni modifica viene salvata da sola nello stesso file
 - Apri e ricarica diagrammi salvati in precedenza (un file di un altro tipo di diagramma viene riconosciuto e non sovrascritto per errore)
 - Esporta qualsiasi diagramma come **immagine PNG** ad alta risoluzione, identica a quanto mostrato sulla lavagna e ritagliata sul contenuto
-- **Esportazione automatica**: dopo la prima esportazione si può attivare **File → Esportazione Automatica** e l'immagine PNG viene aggiornata a ogni modifica (comodo per tenerla sempre allineata in documenti e presentazioni)
+- **Esportazione automatica** (app desktop): dopo la prima esportazione si può attivare **File → Esportazione Automatica** e l'immagine PNG viene aggiornata a ogni modifica (comodo per tenerla sempre allineata in documenti e presentazioni)
 - Finestra di dialogo per modifiche non salvate alla chiusura o all'apertura di un nuovo diagramma
 - Cronologia annulla/ripeti per ogni diagramma (fino a 50 stati)
+
+---
+
+### 🧭 Versione Web
+
+La stessa app gira nel browser su [jder.it/app](https://jder.it/app), con gli stessi diagrammi, strumenti, menu e file JSON dell'app desktop. Cambia solo il modo di gestire i file:
+
+- **Apri** usa la finestra del browser per scegliere un file `.json` dal computer
+- **Salva**, **Salva con nome** ed **Esporta come PNG** chiedono il nome del file e lo scaricano (Salva riusa il nome del file aperto o già salvato)
+- Il salvataggio e l'esportazione automatici e le opzioni da riga di comando sono disponibili solo nell'app desktop
+- Chiudendo o ricaricando la pagina con modifiche non salvate, il browser chiede conferma
+- Tema, palette e lingua vengono ricordati dal browser
+- Alcune scorciatoie (per esempio `Ctrl + N`) sono riservate dal browser: in quel caso si usa il menu **File**
 
 ---
 
@@ -185,6 +200,7 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 | Tecnologia                                                                  | Utilizzo                     |
 | --------------------------------------------------------------------------- | ---------------------------- |
 | [Kotlin](https://kotlinlang.org/)                                           | Linguaggio principale        |
+| [Kotlin/Wasm](https://kotlinlang.org/docs/wasm-overview.html)               | Versione web nel browser     |
 | [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform) | Framework UI                 |
 | [Material 3](https://m3.material.io/)                                       | Sistema di design            |
 | [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)    | Salvataggio/caricamento JSON |
@@ -193,14 +209,15 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 | [mdui](https://www.mdui.org/)                                               | Componenti M3 del sito web   |
 | [Vue](https://github.com/vuejs/core)                                        | Reattività del sito web      |
 | [Skia](https://skia.org/)                                                   | Rendering/esportazione PNG   |
+| [Noto Sans Math](https://github.com/notofonts/math)                         | Font del sito e simboli web  |
 | Java 11                                                                     | Target JVM                   |
 
 ---
 
 ## Requisiti
 
-- **Java 11** o versione superiore
-- Windows, macOS (Intel o Apple Silicon), o Linux (x64 o ARM)
+- **App desktop**: **Java 11** o versione superiore su Windows, macOS (Intel o Apple Silicon) o Linux (x64 o ARM)
+- **Versione web**: un browser recente con WebAssembly GC (Chrome o Edge 119+, Firefox 120+, Safari 18.2+)
 
 ---
 
@@ -221,6 +238,10 @@ java -jar JDER.jar
 ```
 
 All'avvio JDER controlla l'ultima release su GitHub: se il `JDER.jar` pubblicato è un file diverso da quello in uso (anche se ha lo stesso nome), propone di scaricare l'aggiornamento.
+
+### Nel browser
+
+Apri [jder.it/app](https://jder.it/app): non serve installare né Java né JDER (vedi [Versione Web](#-versione-web)).
 
 ### Riga di comando
 
@@ -261,10 +282,18 @@ cd JDER
 Per creare un JAR standalone:
 
 ```bash
-./gradlew jar
+./gradlew jvmJar
 ```
 
 Il file di output si troverà in `build/libs/JDER.jar`.
+
+Per compilare la versione web:
+
+```bash
+./gradlew webApp
+```
+
+La build la mette in `src/web/app/`, che il sito pubblica su `/app` (in locale si prova con `pnpm exec wrangler dev`). La prima volta Gradle scarica Node.js e i pacchetti npm che gli servono.
 
 ---
 
@@ -272,52 +301,64 @@ Il file di output si troverà in `build/libs/JDER.jar`.
 
 ```
 src/
-└── main/
-    ├── kotlin/com/jder/
-    │   ├── Main.kt                    # Punto di ingresso dell'app
-    │   ├── CommandLine.kt             # Opzioni da riga di comando (--json, --png)
-    │   ├── data/
-    │   │   ├── DiagramFileRepository.kt         # Persistenza JSON generica con riconoscimento del tipo
-    │   │   ├── ERDiagramRepository.kt           # Persistenza JSON E/R
-    │   │   ├── RelationalDiagramRepository.kt   # Persistenza JSON Schema Logico
-    │   │   ├── UseCaseDiagramRepository.kt      # Persistenza JSON Use Case
-    │   │   ├── SequenceDiagramRepository.kt     # Persistenza JSON Diagramma di Sequenza
-    │   │   ├── ClassDiagramRepository.kt        # Persistenza JSON Diagramma Classi
-    │   │   ├── LogicDiagramRepository.kt        # Persistenza JSON Diagramma Logico
-    │   │   ├── StateMachineDiagramRepository.kt # Persistenza JSON Macchine di Mealy e di Moore
-    │   │   ├── ImageExporter.kt                 # Esportazione PNG via Skia
-    │   │   ├── JsonConfig.kt                    # Configurazione kotlinx.serialization
-    │   │   └── UpdateChecker.kt                 # Controllo aggiornamenti dalla release GitHub
-    │   ├── domain/model/
-    │   │   ├── DiagramEditorState.kt            # Stato comune: file, modifiche, annulla/ripeti, zoom
-    │   │   ├── UndoHistory.kt                   # Cronologia annulla/ripeti
-    │   │   ├── DiagramType.kt                   # Tipi di diagramma (schede e file)
-    │   │   ├── ERModels.kt                      # Data class Entity, Relationship, Attribute, Note
-    │   │   ├── RelationalModels.kt              # Data class RelationalTable, RelationalColumn, chiavi esterne
-    │   │   ├── UseCaseModels.kt                 # Data class Actor, UseCase, SystemBoundary
-    │   │   ├── SequenceModels.kt                # Data class SequenceLifeline, SequenceMessage, SequenceFragment
-    │   │   ├── ClassModels.kt                   # Data class ClassEntity, ClassMember, ClassRelation
-    │   │   ├── LogicModels.kt                   # Data class LogicComponent, LogicWire, LogicDiagram
-    │   │   ├── LogicSimulator.kt                # Simulazione, tabella di verità, espressioni booleane
-    │   │   ├── StateMachineModels.kt            # Data class MachineState, MachineTransition, StateMachineDiagram
-    │   │   ├── StateMachineAnalysis.kt          # Tabella di transizione, controlli e simulazione di sequenze
-    │   │   ├── ERDiagramState.kt                # Stato E/R
-    │   │   ├── RelationalDiagramState.kt        # Stato Schema Logico
-    │   │   ├── UseCaseDiagramState.kt           # Stato Use Case
-    │   │   ├── SequenceDiagramState.kt          # Stato Diagramma di Sequenza
-    │   │   ├── ClassDiagramState.kt             # Stato Diagramma Classi
-    │   │   ├── LogicDiagramState.kt             # Stato Diagramma Logico
-    │   │   ├── StateMachineDiagramState.kt      # Stato Macchine di Mealy e di Moore
-    │   │   └── *ToolMode.kt                     # Modalità strumento di ogni diagramma
-    │   └── ui/
-    │       ├── components/            # Lavagne, disegno, gesti, barre strumenti, pannelli
-    │       ├── dialogs/               # Finestre di dialogo per proprietà e creazione
-    │       ├── screens/               # AppScreen, DiagramEditorScaffold e una schermata per diagramma
-    │       ├── strings/               # Testi dell'interfaccia in italiano e in inglese, lingua scelta
-    │       ├── theme/                 # Tema, Palette Colori, StatoTema
-    │       └── utils/                 # Esportazione PNG e utilità di piattaforma
-    └── resources/
-        └── jder_icon.png
+├── commonMain/                        # Codice condiviso da app desktop e versione web
+│   └── kotlin/com/jder/
+│       ├── data/
+│       │   ├── DiagramFileRepository.kt         # Lettura/scrittura JSON con riconoscimento del tipo
+│       │   ├── ERDiagramRepository.kt           # Persistenza JSON E/R
+│       │   ├── RelationalDiagramRepository.kt   # Persistenza JSON Schema Logico
+│       │   ├── UseCaseDiagramRepository.kt      # Persistenza JSON Use Case
+│       │   ├── SequenceDiagramRepository.kt     # Persistenza JSON Diagramma di Sequenza
+│       │   ├── ClassDiagramRepository.kt        # Persistenza JSON Diagramma Classi
+│       │   ├── LogicDiagramRepository.kt        # Persistenza JSON Diagramma Logico
+│       │   ├── StateMachineDiagramRepository.kt # Persistenza JSON Macchine di Mealy e di Moore
+│       │   ├── AppPreferences.kt                # Preferenze (tema, palette, lingua) di ogni piattaforma
+│       │   ├── ImageExporter.kt                 # Codifica PNG via Skia
+│       │   └── JsonConfig.kt                    # Configurazione kotlinx.serialization
+│       ├── domain/model/
+│       │   ├── DiagramEditorState.kt            # Stato comune: file, modifiche, annulla/ripeti, zoom
+│       │   ├── UndoHistory.kt                   # Cronologia annulla/ripeti
+│       │   ├── DiagramType.kt                   # Tipi di diagramma (schede e file)
+│       │   ├── ERModels.kt                      # Data class Entity, Relationship, Attribute, Note
+│       │   ├── RelationalModels.kt              # Data class RelationalTable, RelationalColumn, chiavi esterne
+│       │   ├── UseCaseModels.kt                 # Data class Actor, UseCase, SystemBoundary
+│       │   ├── SequenceModels.kt                # Data class SequenceLifeline, SequenceMessage, SequenceFragment
+│       │   ├── ClassModels.kt                   # Data class ClassEntity, ClassMember, ClassRelation
+│       │   ├── LogicModels.kt                   # Data class LogicComponent, LogicWire, LogicDiagram
+│       │   ├── LogicSimulator.kt                # Simulazione, tabella di verità, espressioni booleane
+│       │   ├── StateMachineModels.kt            # Data class MachineState, MachineTransition, StateMachineDiagram
+│       │   ├── StateMachineAnalysis.kt          # Tabella di transizione, controlli e simulazione di sequenze
+│       │   ├── ERDiagramState.kt                # Stato E/R
+│       │   ├── RelationalDiagramState.kt        # Stato Schema Logico
+│       │   ├── UseCaseDiagramState.kt           # Stato Use Case
+│       │   ├── SequenceDiagramState.kt          # Stato Diagramma di Sequenza
+│       │   ├── ClassDiagramState.kt             # Stato Diagramma Classi
+│       │   ├── LogicDiagramState.kt             # Stato Diagramma Logico
+│       │   ├── StateMachineDiagramState.kt      # Stato Macchine di Mealy e di Moore
+│       │   └── *ToolMode.kt                     # Modalità strumento di ogni diagramma
+│       ├── strings/                   # Testi dell'interfaccia in italiano e in inglese, lingua scelta
+│       └── ui/
+│           ├── components/            # Lavagne, disegno, gesti, barre strumenti, pannelli
+│           ├── dialogs/               # Finestre di dialogo per proprietà e creazione
+│           ├── screens/               # AppScreen, editor comune, gestione dei file e una schermata per diagramma
+│           ├── theme/                 # Tema, Palette Colori, StatoTema
+│           └── utils/                 # Rendering delle immagini e utilità di piattaforma
+├── jvmMain/kotlin/com/jder/           # App desktop
+│   ├── Main.kt                        # Punto di ingresso, finestra, barra dei menu e Dock
+│   ├── CommandLine.kt                 # Opzioni da riga di comando (--json, --png)
+│   ├── data/                          # File, preferenze Java e controllo aggiornamenti dalla release GitHub
+│   └── ui/                            # File manager, menu di sistema, salvataggio ed esportazione automatici
+├── wasmJsMain/                        # Versione web (jder.it/app)
+│   ├── kotlin/com/jder/
+│   │   ├── Main.kt                    # Punto di ingresso nel browser
+│   │   ├── web/                       # API del browser: file, download, localStorage, schermo intero
+│   │   └── ui/                        # Apertura e download dei file, nome del file da salvare
+│   └── resources/
+│       └── index.html                 # Pagina che carica l'app
+└── web/                               # Sito jder.it; app/ è generata da ./gradlew webApp
+    ├── jder_icon.png                  # Icona, usata anche dall'app
+    ├── screenshots/                   # Anteprime, usate anche dall'app
+    └── fonts/                         # Noto Sans Math (subset, WOFF2), font del sito e simboli dell'app (licenza OFL)
 ```
 
 ---
