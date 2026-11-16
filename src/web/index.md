@@ -2,19 +2,19 @@
 
 title: JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati
 description: Editor gratuito e open source per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici e macchine a stati finiti di Mealy e di Moore. Scritto in Kotlin e Compose Multiplatform con interfaccia Material 3, gira su Windows, macOS e Linux.
-keywords: JDER, editor diagrammi ER, Entity-Relationship, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, diagramma delle classi, Sequence diagram, diagramma di sequenza, diagramma logico, porte logiche, tabella di verità, macchina a stati finiti, macchina di Mealy, macchina di Moore, tabella di transizione, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux
+keywords: JDER, editor diagrammi ER, Entity-Relationship, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, diagramma delle classi, Sequence diagram, diagramma di sequenza, diagramma logico, porte logiche, tabella di verità, macchina a stati finiti, macchina di Mealy, macchina di Moore, tabella di transizione, modellazione database, UML, Kotlin, Compose Multiplatform, open source, gratuito, Windows, macOS, Linux, versione web, browser, WebAssembly
 url: https://jder.it/
 ---
 
 # JDER — Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati
 
-**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **schemi logici relazionali**, **Use Case**, **Class Diagram**, **diagrammi di sequenza**, **diagrammi logici** e **macchine a stati finiti di Mealy e di Moore**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR.
+**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **schemi logici relazionali**, **Use Case**, **Class Diagram**, **diagrammi di sequenza**, **diagrammi logici** e **macchine a stati finiti di Mealy e di Moore**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR, oppure direttamente nel browser all'indirizzo [jder.it/app](https://jder.it/app).
 
 ## Il Tuo Editor di Diagrammi Moderno
 
 Nuova versione del software di [Alessandro Ballini](https://ballini.it/Software/ProgER), poi successivamente ripresa da [Gianvito Pio](https://gianvitopio.wordpress.com/jder), con una veste grafica più moderna e correzione di vari errori, riscritta completamente in Kotlin e Compose.
 
-[Scarica JDER](/download) | [Guida Utente PDF](/guida.pdf)
+[Scarica JDER](/download) | [Apri nel Browser](/app) | [Guida Utente PDF](/guida.pdf)
 
 ## Tipi di Diagramma
 
@@ -70,7 +70,7 @@ Aggiungi note e commenti testuali a qualsiasi punto del canvas.
 
 ### Veloce e Reattivo
 
-Scritto in Kotlin con Compose Multiplatform per massime prestazioni su Windows, macOS e Linux.
+Scritto in Kotlin con Compose Multiplatform per massime prestazioni su Windows, macOS e Linux, e nel browser grazie a WebAssembly.
 
 ## Screenshot
 
@@ -112,6 +112,7 @@ Scritto in Kotlin con Compose Multiplatform per massime prestazioni su Windows, 
 - Compose Multiplatform
 - Material 3
 - Java
+- WebAssembly
 
 ---
 

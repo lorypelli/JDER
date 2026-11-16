@@ -236,6 +236,9 @@ dedicata nell'interfaccia principale:
 
 \begin{itemize}
   \item Sistema operativo: Windows, macOS o Linux con Java 11 o superiore installato.
+  \item Versione web: un browser recente con WebAssembly GC (Chrome o Edge 119 e successivi,
+        Firefox 120 e successivi, Safari 18.2 e successivi), senza bisogno di Java (vedi
+        sezione~\ref{sec:web}).
   \item RAM consigliata: almeno 512\,MB liberi.
   \item Risoluzione schermo: minima 800$\times$600 pixel (si consiglia Full HD o superiore).
 \end{itemize}
@@ -308,6 +311,34 @@ sezione~\ref{sec:messaggi}). Se invece il file JSON esiste ma non si può aprire
 il motivo e \jder{} parte dalla scelta del tipo di diagramma senza usare né il file né l'immagine
 indicata con \texttt{-{}-png}, così da non sovrascriverli.
 
+\subsection{Versione web}
+\label{sec:web}
+
+\jder{} funziona anche nel browser, senza installare né Java né l'applicazione:
+\begin{itemize}
+  \item Versione web: \url{https://jder.it/app}
+\end{itemize}
+
+La versione web ha gli stessi diagrammi, strumenti e menu dell'applicazione desktop e usa gli
+stessi file JSON, quindi un diagramma salvato nell'una si apre anche nell'altra. Cambia solo il
+modo di gestire i file:
+
+\begin{itemize}
+  \item \menu{Apri Diagramma\ldots} usa la finestra del browser per scegliere un file
+        \texttt{.json} dal computer;
+  \item \menu{Salva}, \menu{Salva con nome\ldots} ed \menu{Esporta come PNG\ldots} chiedono il
+        nome del file e lo scaricano (\menu{Salva} riusa il nome del file aperto o già salvato);
+  \item il salvataggio e l'esportazione automatici, il controllo degli aggiornamenti e le opzioni
+        da riga di comando sono disponibili solo nell'applicazione desktop;
+  \item chiudendo o ricaricando la pagina con modifiche non salvate, il browser chiede conferma;
+  \item tema, palette e lingua vengono ricordati dal browser.
+\end{itemize}
+
+\begin{tcolorbox}[notebox, title={Nota}]
+  Alcune scorciatoie da tastiera (per esempio \key{Ctrl} + \key{N}) sono riservate dal browser e
+  non arrivano a \jder{}: in quel caso basta usare il menu \menu{File}.
+\end{tcolorbox}
+
 % =============================================================
 \section{Interfaccia Principale}
 \label{sec:interfaccia}
@@ -316,8 +347,8 @@ Scelto il tipo di diagramma, \jder{} mostra una finestra massimizzata con i segu
 principali:
 
 \begin{enumerate}
-  \item \textbf{Barra dei menu} --- su macOS è la barra dei menu del sistema, su Windows e Linux si
-        trova in cima alla finestra.
+  \item \textbf{Barra dei menu} --- su macOS è la barra dei menu del sistema, su Windows, su Linux e
+        nella versione web si trova in cima alla finestra.
   \item \textbf{Barra delle schede} --- permette di passare tra gli otto tipi di diagramma.
   \item \textbf{Barra degli strumenti} --- mostra il nome del diagramma, la lingua, la palette e il
         tema.
@@ -372,7 +403,8 @@ La barra dei menu contiene i comandi di tutta l'applicazione, con le relative sc
 \end{itemize}
 
 Su macOS, il clic destro sull'icona di \jder{} nel Dock permette di creare subito un nuovo
-diagramma di qualsiasi tipo.
+diagramma di qualsiasi tipo. Nella versione web la barra dei menu sta in cima alla pagina, senza
+Salvataggio Automatico ed Esportazione Automatica (vedi sezione~\ref{sec:web}).
 
 \subsection{Barra degli strumenti principale}
 
@@ -561,6 +593,7 @@ una connessione:
 
 \subsubsection{Cardinalità supportate}
 
+\Needspace{12\baselineskip}
 \jder{} supporta le seguenti notazioni di cardinalità:
 
 \begin{center}
@@ -844,6 +877,7 @@ statica di un sistema a oggetti.
 La classe è il blocco fondamentale. Viene rappresentata con un rettangolo diviso in tre sezioni:
 nome (in alto), attributi (al centro) e metodi (in basso).
 
+\Needspace{9\baselineskip}
 \textbf{Tipi di classe supportati:}
 \begin{center}
 \begin{tabular}{@{}lll@{}}
@@ -1460,8 +1494,9 @@ Per aprire un file di diagramma esistente:
   \item Scorciatoia: \key{Ctrl} + \key{O}
 \end{itemize}
 
-Si aprirà il \textbf{Gestore File} integrato (vedi sezione~\ref{sec:filemanager}). Se il file
-contiene un diagramma di un altro tipo, \jder{} non lo apre e indica la scheda da usare.
+Si aprirà il \textbf{Gestore File} integrato (vedi sezione~\ref{sec:filemanager}); nella
+versione web, invece, la finestra del browser per scegliere un file. Se il file contiene un
+diagramma di un altro tipo, \jder{} non lo apre e indica la scheda da usare.
 
 \subsubsection{Salvare un diagramma}
 
@@ -1488,8 +1523,8 @@ indipendentemente dal tipo di diagramma.
 
 \subsubsection{Salvataggio automatico}
 
-Dopo aver salvato il diagramma almeno una volta si può attivare \menu{File} $\to$
-\menu{Salvataggio Automatico}: da quel momento ogni modifica viene salvata da sola nello stesso
+Nell'applicazione desktop, dopo aver salvato il diagramma almeno una volta si può attivare
+\menu{File} $\to$ \menu{Salvataggio Automatico}: da quel momento ogni modifica viene salvata da sola nello stesso
 file, mezzo secondo dopo averla fatta (durante un trascinamento si aspetta che l'elemento sia
 fermo), e l'asterisco nel titolo scompare. La voce resta disattivata finché il diagramma non ha
 un file; si spegne creando un nuovo diagramma o aprendone un altro, mentre con \menu{Salva con
@@ -1500,8 +1535,8 @@ conferma per quelle modifiche.
 \subsection{Il Gestore File}
 \label{sec:filemanager}
 
-\jder{} include un gestore file integrato che funziona sia in modalità \textbf{Apri} che in
-modalità \textbf{Salva con nome}. Le sue funzionalità sono:
+L'applicazione desktop include un gestore file integrato che funziona sia in modalità
+\textbf{Apri} che in modalità \textbf{Salva con nome}. Le sue funzionalità sono:
 
 \begin{itemize}
   \item \textbf{Navigazione delle directory:} fare clic sulle cartelle per entrarvi; usare il
@@ -1523,7 +1558,8 @@ modalità \textbf{Salva con nome}. Le sue funzionalità sono:
 \begin{enumerate}
   \item Menu \menu{File} $\to$ \menu{Esporta come PNG\ldots} oppure \key{Ctrl} + \key{E} (su macOS
         anche dal pulsante \uielement{Esporta} della barra degli strumenti).
-  \item Scegliere la cartella di destinazione e il nome del file nel Gestore File.
+  \item Scegliere la cartella di destinazione e il nome del file nel Gestore File (nella versione
+        web si sceglie solo il nome e l'immagine viene scaricata).
 \end{enumerate}
 
 L'immagine esportata cattura l'intero contenuto della lavagna, inclusi tutti gli elementi
@@ -1539,8 +1575,8 @@ vuoto non può essere esportato.
 \subsubsection{Esportazione automatica}
 \label{sec:autoexport}
 
-Dopo la prima esportazione si può attivare \menu{File} $\to$ \menu{Esportazione Automatica} (su
-macOS anche dal pulsante \uielement{Esporta}): da quel momento l'immagine viene riesportata nello
+Nell'applicazione desktop, dopo la prima esportazione si può attivare \menu{File} $\to$
+\menu{Esportazione Automatica} (su macOS anche dal pulsante \uielement{Esporta}): da quel momento l'immagine viene riesportata nello
 stesso file PNG a ogni modifica del diagramma, e anche cambiando la palette di colori, così resta
 sempre allineata, per esempio in un documento o in una presentazione che la include. Il file viene
 sostituito solo quando la nuova immagine è completa, quindi chi lo sta leggendo non ne vede mai
@@ -1733,6 +1769,14 @@ UUID univoco generato automaticamente.
   \end{itemize}
 \end{tcolorbox}
 
+\begin{tcolorbox}[warnbox, title={La versione web non si avvia}]
+  \begin{itemize}
+    \item Se la pagina resta su \uielement{Caricamento di JDER\ldots}, aggiornare il browser:
+          serve il supporto a WebAssembly GC (vedi sezione~\ref{sec:web}).
+    \item Verificare che JavaScript sia attivo per il sito \texttt{jder.it}.
+  \end{itemize}
+\end{tcolorbox}
+
 \begin{tcolorbox}[warnbox, title={Il file salvato non si apre}]
   \begin{itemize}
     \item Assicurarsi di aprire il file nella scheda corretta (es.\@ un file di diagramma classi
@@ -1772,11 +1816,14 @@ UUID univoco generato automaticamente.
   \item \textbf{Jetpack Compose Multiplatform} --- framework UI dichiarativo
   \item \textbf{Material 3} --- sistema di design dell'interfaccia
   \item \textbf{kotlinx.serialization} --- serializzazione JSON
+  \item \textbf{Kotlin/Wasm} --- versione web nel browser
+  \item \textbf{Noto Sans Math} --- font del sito web e simboli matematici nella versione web (licenza OFL)
 \end{itemize}
 
 \subsection*{Risorse}
 \begin{itemize}
   \item Sito web ufficiale: \url{https://jder.it/}
+  \item Versione web: \url{https://jder.it/app}
   \item Repository GitHub: \url{https://github.com/LoryPelli/JDER}
   \item Segnalazione problemi: \url{https://github.com/LoryPelli/JDER/issues}
   \item Download ultima versione: \url{https://github.com/LoryPelli/JDER/releases/latest}

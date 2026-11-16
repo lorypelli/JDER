@@ -1,44 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
-    <meta name="keywords"
-        content="JDER, Entity-Relationship, ER diagram, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, Sequence diagram, diagramma di sequenza, diagrammi logici, porte logiche, logic gates, tabella di verità, macchina a stati finiti, automa a stati finiti, macchina di Mealy, macchina di Moore, finite state machine, tabella di transizione, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3" />
-    <meta name="author" content="LoryPelli" />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="it_IT" />
-    <meta property="og:site_name" content="JDER" />
-    <meta property="og:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati" />
-    <meta property="og:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
-    <meta property="og:url" content="https://jder.it/" />
-    <meta property="og:image" content="https://jder.it/favicon.ico" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati" />
-    <meta name="twitter:description"
-        content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori." />
-    <meta name="twitter:image" content="https://jder.it/favicon.ico" />
-    <link rel="icon" href="favicon.ico" />
-    <link rel="canonical" href="https://jder.it/" />
-    <link rel="alternate" type="text/markdown" href="index.md" />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com/" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.min.css" />
-    <link rel="stylesheet" href="style.css" />
-    <script type="importmap">
-    {
-        "imports": {
-            "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.45/vue.runtime.esm-browser.prod.min.js"
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta
+            name="description"
+            content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori."
+        >
+        <meta
+            name="keywords"
+            content="JDER, Entity-Relationship, ER diagram, schema logico, schema relazionale, chiavi esterne, Use Case diagram, Class diagram, Sequence diagram, diagramma di sequenza, diagrammi logici, porte logiche, logic gates, tabella di verità, macchina a stati finiti, automa a stati finiti, macchina di Mealy, macchina di Moore, finite state machine, tabella di transizione, diagrammi ER, database design, modellazione database, Alessandro Ballini, Gianvito Pio, entità associative, relazioni N a N, esportazione PNG, esportazione JSON, editor diagrammi, Kotlin, Compose Multiplatform, Material 3"
+        >
+        <meta name="author" content="LoryPelli">
+        <meta name="robots" content="index, follow">
+        <meta property="og:type" content="website">
+        <meta property="og:locale" content="it_IT">
+        <meta property="og:site_name" content="JDER">
+        <meta
+            property="og:title"
+            content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati"
+        >
+        <meta
+            property="og:description"
+            content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori."
+        >
+        <meta property="og:url" content="https://jder.it/">
+        <meta property="og:image" content="https://jder.it/jder_icon.png">
+        <meta name="twitter:card" content="summary">
+        <meta
+            name="twitter:title"
+            content="JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati"
+        >
+        <meta
+            name="twitter:description"
+            content="JDER - Editor moderno per diagrammi Entity-Relationship, schemi logici relazionali, Use Case, Class Diagram, diagrammi di sequenza, diagrammi logici con porte logiche e macchine a stati finiti di Mealy e di Moore. Riscritta completamente in Kotlin e Compose Multiplatform, con Material 3, tema chiaro/scuro e 20 palette di colori."
+        >
+        <meta name="twitter:image" content="https://jder.it/jder_icon.png">
+        <link rel="icon" href="jder_icon.png">
+        <link rel="canonical" href="https://jder.it/">
+        <link rel="alternate" type="text/markdown" href="index.md">
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com/">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.min.css"
+        >
+        <link rel="stylesheet" href="style.css">
+        <script type="importmap">
+        {
+            "imports": {
+                "vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.45/vue.runtime.esm-browser.prod.min.js"
+            }
         }
-    }
-    </script>
-    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.esm.min.js"></script>
-    <script type="module" src="home.js"></script>
-    <script type="application/ld+json">
+        </script>
+        <script
+            type="module"
+            src="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.5/mdui.esm.min.js"
+        ></script>
+        <script type="module" src="home.js"></script>
+        <script type="application/ld+json">
     {
         "@context": "https://schema.org/",
         "@type": "WebPage",
@@ -59,7 +78,7 @@
         "mainEntity": {
             "@type": "SoftwareApplication",
             "name": "JDER",
-            "operatingSystem": "Windows, macOS, Linux",
+            "operatingSystem": "Windows, macOS, Linux, Web",
             "applicationCategory": "DeveloperApplication",
             "softwareRequirements": "Java 11 or later",
             "downloadUrl": "https://jder.it/download/JDER.jar",
@@ -77,16 +96,21 @@
         }
     }
     </script>
-    <title>JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati</title>
-</head>
+        <title>
+            JDER - Editor di Diagrammi ER, Schemi Logici, Use Case, Class,
+            Sequenza, Logici e Macchine a Stati
+        </title>
+    </head>
 
-<body>
-    <noscript>
-        <div class="noscript-message">
-            <p>Per visualizzare questa pagina è necessario abilitare JavaScript nel browser.</p>
-        </div>
-    </noscript>
-    <div id="app"></div>
-</body>
-
+    <body>
+        <noscript>
+            <div class="noscript-message">
+                <p>
+                    Per visualizzare questa pagina è necessario abilitare
+                    JavaScript nel browser.
+                </p>
+            </div>
+        </noscript>
+        <div id="app"></div>
+    </body>
 </html>
