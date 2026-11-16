@@ -51,9 +51,6 @@ spotless {
         ktfmt().kotlinlangStyle()
     }
 }
-tasks.named("compileKotlinJvm") {
-    dependsOn("clean", "spotlessApply")
-}
 tasks.named<ProcessResources>("jvmProcessResources") {
     from("src/web/jder_icon.png")
     from("src/web/screenshots") { into("screenshots") }
