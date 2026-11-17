@@ -4,11 +4,14 @@ import com.jder.strings.AppStrings
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
-import java.net.HttpURLConnection
 import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.security.DigestInputStream
 import java.security.MessageDigest
 import java.time.Duration
+import java.util.HexFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
@@ -50,25 +53,25 @@ object UpdateChecker {
     }
 
     private fun latestReleaseJar(): GitHubAsset? {
-        val timeout = requestTimeout.toMillis().toInt()
-        val connection = URI(LATEST_RELEASE_URL).toURL().openConnection()
-        check(connection is HttpURLConnection)
-        connection.connectTimeout = timeout
-        connection.readTimeout = timeout
-        connection.setRequestProperty("Accept", "application/vnd.github+json")
-        connection.setRequestProperty("User-Agent", "JDER")
-        try {
-            if (connection.responseCode !in 200..299) {
-                throw IOException(AppStrings.gitHubStatus(connection.responseCode))
-            }
-            val body = connection.inputStream.use { it.readBytes().decodeToString() }
-            return releaseJson
-                .decodeFromString(GitHubRelease.serializer(), body)
-                .assets
-                .firstOrNull { it.name.endsWith(".jar") }
-        } finally {
-            connection.disconnect()
+        val request =
+            HttpRequest.newBuilder(URI(LATEST_RELEASE_URL))
+                .timeout(requestTimeout)
+                .header("Accept", "application/vnd.github+json")
+                .header("User-Agent", "JDER")
+                .build()
+        val response =
+            HttpClient.newBuilder()
+                .connectTimeout(requestTimeout)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build()
+                .use { it.send(request, HttpResponse.BodyHandlers.ofString()) }
+        if (response.statusCode() !in 200..299) {
+            throw IOException(AppStrings.gitHubStatus(response.statusCode()))
         }
+        return releaseJson
+            .decodeFromString(GitHubRelease.serializer(), response.body())
+            .assets
+            .firstOrNull { it.name.endsWith(".jar") }
     }
 
     private fun sha256(file: File): String {
@@ -76,6 +79,6 @@ object UpdateChecker {
         DigestInputStream(file.inputStream(), digest).use {
             it.copyTo(OutputStream.nullOutputStream())
         }
-        return digest.digest().joinToString("") { "%02x".format(it) }
+        return HexFormat.of().formatHex(digest.digest())
     }
 }

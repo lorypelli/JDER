@@ -16,9 +16,9 @@ repositories {
 kotlin {
     jvm {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_21
             jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
-            freeCompilerArgs.add("-Xjdk-release=11")
+            freeCompilerArgs.add("-Xjdk-release=21")
         }
     }
     wasmJs {

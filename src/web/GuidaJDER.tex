@@ -235,7 +235,7 @@ dedicata nell'interfaccia principale:
 \subsection{Requisiti di sistema}
 
 \begin{itemize}
-  \item Sistema operativo: Windows, macOS o Linux con Java 11 o superiore installato.
+  \item Sistema operativo: Windows, macOS o Linux con Java 21 o superiore installato.
   \item Versione web: un browser recente con WebAssembly GC (Chrome o Edge 119 e successivi,
         Firefox 120 e successivi, Safari 18.2 e successivi), senza bisogno di Java (vedi
         sezione~\ref{sec:web}).
@@ -259,7 +259,7 @@ Per avviare l'applicazione:
 \end{enumerate}
 
 \begin{tcolorbox}[warnbox, title={Attenzione}]
-  Se il doppio clic non avvia l'applicazione, verificare che Java 11 o superiore sia installato
+  Se il doppio clic non avvia l'applicazione, verificare che Java 21 o superiore sia installato
   e che la variabile di ambiente \texttt{JAVA\_HOME} sia configurata correttamente.
 \end{tcolorbox}
 
@@ -1791,7 +1791,9 @@ UUID univoco generato automaticamente.
 
 \begin{tcolorbox}[warnbox, title={L'applicazione non si avvia}]
   \begin{itemize}
-    \item Verificare che Java 11 (o superiore) sia installato: \texttt{java -{}-version}.
+    \item Verificare che Java 21 (o superiore) sia installato: \texttt{java -{}-version}.
+    \item Se da terminale compare l'errore \texttt{UnsupportedClassVersionError}, la versione di
+          Java è troppo vecchia: installare Java 21 o una versione successiva.
     \item Su Windows, provare ad avviare da terminale per leggere il messaggio di errore.
     \item Assicurarsi che il file \texttt{JDER.jar} non sia bloccato (clic destro
           $\to$ Proprietà $\to$ Sblocca su Windows).

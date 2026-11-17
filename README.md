@@ -212,13 +212,13 @@ La stessa app gira nel browser su [jder.it/app](https://jder.it/app), con gli st
 | [Vue](https://github.com/vuejs/core)                                        | Reattività del sito web      |
 | [Skia](https://skia.org/)                                                   | Rendering/esportazione PNG   |
 | [Noto Sans Math](https://github.com/notofonts/math)                         | Font del sito e simboli web  |
-| Java 11                                                                     | Target JVM                   |
+| Java 21                                                                     | Target JVM                   |
 
 ---
 
 ## Requisiti
 
-- **App desktop**: **Java 11** o versione superiore su Windows, macOS (Intel o Apple Silicon) o Linux (x64 o ARM)
+- **App desktop**: **Java 21** o versione superiore su Windows, macOS (Intel o Apple Silicon) o Linux (x64 o ARM)
 - **Versione web**: un browser recente con WebAssembly GC (Chrome o Edge 119+, Firefox 120+, Safari 18.2+)
 
 ---
@@ -274,6 +274,8 @@ Se un'opzione non è valida, JDER la ignora e lo segnala all'apertura con un avv
 La cartella [`examples/`](examples/) contiene un diagramma per ogni tipo (E/R, schema logico, classi, casi d'uso, sequenza, logico e le macchine di Mealy e di Moore, che riconoscono la stessa sequenza `101` per confrontarle), apribili da JDER con **File → Apri Diagramma**. Gli screenshot del sito, in versione chiara e scura, sono generati da questi file e la build li include anche in `JDER.jar`, come anteprime nella scelta del tipo di diagramma.
 
 ### Compilare dal sorgente
+
+Serve il JDK 21 o una versione successiva.
 
 ```bash
 git clone https://github.com/LoryPelli/JDER.git
