@@ -2,11 +2,14 @@ package com.jder.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -15,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -25,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -37,6 +42,9 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jder.data.DiagramFileRepository
@@ -52,10 +60,16 @@ import com.jder.ui.components.DiagramToolbar
 import com.jder.ui.components.LocalDiagramMenuHost
 import com.jder.ui.components.Toasts
 import com.jder.ui.theme.ThemeState
+import com.jder.ui.utils.isCompactWidth
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 private val zoomInKeys = setOf(Key.Plus, Key.Equals, Key.NumPadAdd)
 private val zoomOutKeys = setOf(Key.Minus, Key.NumPadSubtract)
 private val resetZoomKeys = setOf(Key.Zero, Key.NumPad0)
+private val propertiesPanelWidth = 300.dp
+private const val PROPERTIES_SHEET_HEIGHT_FRACTION = 0.45f
+private val sheetRevealMargin = 64.dp
 
 @Composable
 fun <T> DiagramEditorScaffold(
@@ -99,7 +113,20 @@ private fun DiagramEditorContent(
     var showOpenDiagramConfirmDialog by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val currentFiles by rememberUpdatedState(files)
+    var lastPress by remember { mutableStateOf<Offset?>(null) }
+    var canvasHeight by remember { mutableIntStateOf(0) }
+    var isSelectionSettled by remember { mutableStateOf(false) }
+    val doubleTapTimeout = LocalViewConfiguration.current.doubleTapTimeoutMillis
+    val isCompactWidth = isCompactWidth()
+    val revealMargin = with(LocalDensity.current) { sheetRevealMargin.toPx() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    LaunchedEffect(state.hasSelection) {
+        isSelectionSettled = false
+        if (state.hasSelection) {
+            delay(doubleTapTimeout.milliseconds)
+            isSelectionSettled = true
+        }
+    }
     fun requestOpenDiagram() {
         if (!currentFiles.flushAutoSave() || state.isModified) showOpenDiagramConfirmDialog = true
         else currentFiles.open()
@@ -233,29 +260,57 @@ private fun DiagramEditorContent(
             )
         },
     ) {
-        Row(modifier = Modifier.fillMaxSize().padding(it)) {
-            Box(
-                modifier =
-                    Modifier.weight(1f).fillMaxHeight().onPointerEvent(
-                        PointerEventType.Press,
-                        PointerEventPass.Initial,
+        Column(modifier = Modifier.fillMaxSize().padding(it)) {
+            Row(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                Box(
+                    modifier =
+                        Modifier.weight(1f)
+                            .fillMaxHeight()
+                            .onSizeChanged { size ->
+                                val press = lastPress
+                                if (
+                                    isCompactWidth &&
+                                        press != null &&
+                                        size.height < canvasHeight &&
+                                        press.y > size.height - revealMargin
+                                ) {
+                                    state.panOffset += Offset(0f, size.height / 2f - press.y)
+                                }
+                                canvasHeight = size.height
+                            }
+                            .onPointerEvent(PointerEventType.Press, PointerEventPass.Initial) {
+                                event ->
+                                lastPress = event.changes.first().position
+                                focusRequester.requestFocus()
+                            },
+                ) {
+                    canvas()
+                    if (state.isEmpty) {
+                        Text(
+                            text = emptyHint,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.align(Alignment.Center).padding(32.dp),
+                        )
+                    }
+                }
+                if (state.hasSelection && !isCompactWidth) {
+                    Surface(
+                        modifier = Modifier.width(propertiesPanelWidth).fillMaxHeight(),
+                        tonalElevation = 2.dp,
                     ) {
-                        focusRequester.requestFocus()
-                    },
-            ) {
-                canvas()
-                if (state.isEmpty) {
-                    Text(
-                        text = emptyHint,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center).padding(32.dp),
-                    )
+                        properties()
+                    }
                 }
             }
-            if (state.hasSelection) {
-                Surface(modifier = Modifier.width(300.dp).fillMaxHeight(), tonalElevation = 2.dp) {
+            if (state.hasSelection && isCompactWidth && isSelectionSettled) {
+                HorizontalDivider()
+                Surface(
+                    modifier =
+                        Modifier.fillMaxWidth().fillMaxHeight(PROPERTIES_SHEET_HEIGHT_FRACTION),
+                    tonalElevation = 2.dp,
+                ) {
                     properties()
                 }
             }

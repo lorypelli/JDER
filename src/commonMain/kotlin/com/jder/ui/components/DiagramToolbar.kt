@@ -28,6 +28,8 @@ import com.jder.strings.CommonStrings
 import com.jder.strings.MenuStrings
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.fileName
+import com.jder.ui.utils.isCompactHeight
+import com.jder.ui.utils.isCompactWidth
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.shortcutLabel
 import com.jder.ui.utils.showsToolbarMenus
@@ -51,41 +53,55 @@ fun DiagramToolbar(
     tools: List<DiagramTool>,
     modifier: Modifier = Modifier,
 ) {
+    val isCompactWidth = isCompactWidth()
     val title = buildString {
-        append("JDER - ")
+        if (!isCompactWidth) append("JDER - ")
         append(state.currentFile?.let(::fileName) ?: state.diagramName)
         if (state.isModified) append(" *")
     }
     val hasSelection = state.hasSelection
-    Column(modifier = modifier) {
-        TopAppBar(
-            title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-            actions = {
-                if (showsToolbarMenus) {
-                    ToolbarFileMenu(
-                        onNewDiagram = onNewDiagram,
-                        onOpenDiagram = onOpenDiagram,
-                        onSaveDiagram = onSaveDiagram,
-                        onSaveAsDiagram = onSaveAsDiagram,
-                        autoSave = onToggleAutoSave?.let { autoSaveToggle(state, it) },
-                        onExportPNG = onExportPNG,
-                        autoExport = onToggleAutoExport?.let { autoExportToggle(state, it) },
-                        hasSelection = hasSelection,
-                        onDeleteSelected = onDeleteSelected,
-                    )
-                    ToolbarViewMenuBox(
-                        onZoomIn = state::zoomIn,
-                        onZoomOut = state::zoomOut,
-                        onResetZoom = state::resetView,
-                    )
-                    ToolbarExportMenu(
-                        onExportPNG = onExportPNG,
-                        autoExport = onToggleAutoExport?.let { autoExportToggle(state, it) },
-                    )
-                }
-                ToolbarPaletteTheme(themeState = themeState)
-            },
+    val zoomControls: @Composable () -> Unit = {
+        ToolbarZoomControls(
+            zoomPercentage = "${(state.zoom * 100).roundToInt()}%",
+            onZoomIn = state::zoomIn,
+            onZoomOut = state::zoomOut,
+            onResetZoom = state::resetView,
         )
+    }
+    Column(modifier = modifier) {
+        if (!isCompactHeight()) {
+            TopAppBar(
+                title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                actions = {
+                    if (showsToolbarMenus && !isCompactWidth) {
+                        ToolbarFileMenu(
+                            onNewDiagram = onNewDiagram,
+                            onOpenDiagram = onOpenDiagram,
+                            onSaveDiagram = onSaveDiagram,
+                            onSaveAsDiagram = onSaveAsDiagram,
+                            autoSave = onToggleAutoSave?.let { autoSaveToggle(state, it) },
+                            onExportPNG = onExportPNG,
+                            autoExport = onToggleAutoExport?.let { autoExportToggle(state, it) },
+                            hasSelection = hasSelection,
+                            onDeleteSelected = onDeleteSelected,
+                        )
+                        ToolbarViewMenuBox(
+                            onZoomIn = state::zoomIn,
+                            onZoomOut = state::zoomOut,
+                            onResetZoom = state::resetView,
+                        )
+                        ToolbarExportMenu(
+                            onExportPNG = onExportPNG,
+                            autoExport = onToggleAutoExport?.let { autoExportToggle(state, it) },
+                        )
+                    }
+                    ToolbarPaletteTheme(
+                        themeState = themeState,
+                        showsLanguageName = !isCompactWidth,
+                    )
+                },
+            )
+        }
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = 2.dp) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
@@ -131,13 +147,12 @@ fun DiagramToolbar(
                         enabled = hasSelection,
                         tint = MaterialTheme.colorScheme.error,
                     )
+                    if (isCompactWidth) {
+                        ToolbarVerticalDivider()
+                        zoomControls()
+                    }
                 }
-                ToolbarZoomControls(
-                    zoomPercentage = "${(state.zoom * 100).roundToInt()}%",
-                    onZoomIn = state::zoomIn,
-                    onZoomOut = state::zoomOut,
-                    onResetZoom = state::resetView,
-                )
+                if (!isCompactWidth) zoomControls()
             }
         }
     }

@@ -264,8 +264,11 @@ fun ToolbarViewMenuBox(onZoomIn: () -> Unit, onZoomOut: () -> Unit, onResetZoom:
 }
 
 @Composable
-fun ToolbarPaletteTheme(themeState: ThemeState) {
-    LanguageSelector(modifier = Modifier.padding(horizontal = 4.dp))
+fun ToolbarPaletteTheme(themeState: ThemeState, showsLanguageName: Boolean = true) {
+    LanguageSelector(
+        showsName = showsLanguageName,
+        modifier = Modifier.padding(horizontal = 4.dp),
+    )
     PaletteSelector(
         selectedPalette = themeState.selectedPalette,
         onPaletteSelected = themeState::selectPalette,
@@ -316,17 +319,24 @@ fun ToolbarVerticalDivider() {
 }
 
 @Composable
-private fun LanguageSelector(modifier: Modifier = Modifier) {
+private fun LanguageSelector(showsName: Boolean, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
         WithTooltip(MenuStrings.LANGUAGE) {
-            TextButton(
-                onClick = { expanded = true },
-                colors = ButtonDefaults.textButtonColors(contentColor = LocalContentColor.current),
-            ) {
-                Icon(Icons.Default.Language, MenuStrings.LANGUAGE, Modifier.size(20.dp))
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(Localization.language.displayName)
+            if (showsName) {
+                TextButton(
+                    onClick = { expanded = true },
+                    colors =
+                        ButtonDefaults.textButtonColors(contentColor = LocalContentColor.current),
+                ) {
+                    Icon(Icons.Default.Language, MenuStrings.LANGUAGE, Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(Localization.language.displayName)
+                }
+            } else {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Default.Language, MenuStrings.LANGUAGE)
+                }
             }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {

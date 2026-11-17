@@ -118,8 +118,8 @@ Funziona come applicazione desktop su Windows, macOS e Linux e direttamente nel 
   - Rosso, Rosa, Viola, Viola Scuro, Indaco, Blu, Blu Chiaro, Ciano, Verde Acqua, Verde, Verde Chiaro, Lime, Giallo, Ambra, Arancione, Arancione Scuro, Marrone, Grigio, Grigio Blu, Bianco & Nero
 - **Scelta del tipo di diagramma** all'avvio, con l'anteprima di ogni tipo in versione chiara o scura secondo il tema (clic sull'anteprima oppure `Ctrl` + `1` … `8`)
 - **Navigazione a schede** tra gli otto tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
-- **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati
-- **Menu Contestuale** — clic destro su qualsiasi elemento della lavagna per azioni rapide
+- **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati (sotto la lavagna sugli schermi stretti)
+- **Menu Contestuale** — clic destro (o tocco prolungato) su qualsiasi elemento della lavagna per azioni rapide
 - **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette, la lingua e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows, su Linux e nella versione web sta in cima alla finestra e segue il tema dell'app
 - **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, schema logico o diagramma delle classi, dei casi d'uso, di sequenza o logico, oppure una nuova macchina di Mealy o di Moore
 - **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
@@ -192,6 +192,8 @@ La stessa app gira nel browser su [jder.it/app](https://jder.it/app), con gli st
 - Chiudendo o ricaricando la pagina con modifiche non salvate, il browser chiede conferma
 - Tema, palette e lingua vengono ricordati dal browser
 - Alcune scorciatoie (per esempio `Ctrl + N`) sono riservate dal browser: in quel caso si usa il menu **File**
+- **Telefono e tablet** — l'interfaccia si adatta allo schermo: su quelli stretti il pannello Proprietà compare sotto la lavagna, la barra dei menu, le schede e la barra degli strumenti scorrono di lato e la scelta del tipo di diagramma usa due colonne; con il telefono in orizzontale la barra del titolo lascia spazio alla lavagna
+- **Gesti touch** sulla lavagna: tocco per selezionare o creare un elemento, doppio tocco per modificarlo, tocco prolungato per il menu contestuale, trascinamento con un dito per spostare un elemento o la vista, due dita per scorrere e per lo zoom
 
 ---
 

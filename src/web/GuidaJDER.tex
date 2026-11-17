@@ -339,6 +339,32 @@ modo di gestire i file:
   non arrivano a \jder{}: in quel caso basta usare il menu \menu{File}.
 \end{tcolorbox}
 
+\subsubsection{Telefono e tablet}
+\label{sec:touch}
+
+Sugli schermi touch la lavagna risponde ai gesti:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+  \toprule
+  \textbf{Azione} & \textbf{Gesto} \\
+  \midrule
+  Selezionare o creare un elemento & Tocco \\
+  Modificare un elemento & Doppio tocco \\
+  Menu contestuale & Tocco prolungato \\
+  Spostare un elemento o la vista & Trascinamento con un dito \\
+  Scorrimento (pan) & Trascinamento con due dita \\
+  Zoom & Allontanare o avvicinare due dita \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Anche l'interfaccia si adatta allo spazio disponibile. Su uno schermo stretto, come quello di un
+telefono in verticale, il pannello Proprietà compare sotto la lavagna, la barra dei menu, le
+schede e la barra degli strumenti di disegno scorrono di lato e la scelta del tipo di diagramma
+mostra le anteprime su due colonne. Con il telefono in orizzontale la barra con il titolo lascia
+spazio alla lavagna: lingua, palette e tema restano nel menu \menu{Vista}.
+
 % =============================================================
 \section{Interfaccia Principale}
 \label{sec:interfaccia}
@@ -355,8 +381,9 @@ principali:
   \item \textbf{Barra degli strumenti di disegno} --- sotto la barra principale, contiene gli
         strumenti di creazione degli elementi.
   \item \textbf{Lavagna (Canvas)} --- area centrale dove vengono disegnati i diagrammi.
-  \item \textbf{Pannello Proprietà} --- barra laterale destra che appare quando si seleziona un
-        elemento, mostrando e permettendo di modificare le sue proprietà.
+  \item \textbf{Pannello Proprietà} --- barra laterale destra (sotto la lavagna sugli schermi
+        stretti) che appare quando si seleziona un elemento, mostrando e permettendo di modificare
+        le sue proprietà.
 \end{enumerate}
 
 \subsection{Barra delle schede}
@@ -385,6 +412,7 @@ segnate con un pallino (\textbullet) accanto al nome.
   \jder{} mostrerà una finestra di conferma prima di uscire.
 \end{tcolorbox}
 
+\Needspace{7\baselineskip}
 \subsection{Barra dei menu}
 
 La barra dei menu contiene i comandi di tutta l'applicazione, con le relative scorciatoie:
@@ -465,7 +493,8 @@ La lavagna è l'area principale di disegno. Supporta le seguenti interazioni:
 \begin{tcolorbox}[tipbox, title={Suggerimento}]
   Lo zoom con la rotella si centra sulla posizione del cursore. Lo zoom massimo è al
   \textbf{300\%} e il minimo al \textbf{25\%}. Per tornare allo zoom predefinito (100\%) usare
-  \menu{Vista} $\to$ \menu{Reimposta Zoom} oppure \key{Ctrl} + \key{0}.
+  \menu{Vista} $\to$ \menu{Reimposta Zoom} oppure \key{Ctrl} + \key{0}. Sugli schermi touch
+  si usano i gesti della sezione~\ref{sec:touch}.
 \end{tcolorbox}
 
 \subsection{Pannello Proprietà}

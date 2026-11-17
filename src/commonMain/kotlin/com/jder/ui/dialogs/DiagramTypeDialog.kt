@@ -44,6 +44,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -53,13 +54,17 @@ import com.jder.ui.components.ToolbarPaletteTheme
 import com.jder.ui.components.diagramTypeKeys
 import com.jder.ui.components.logError
 import com.jder.ui.theme.ThemeState
+import com.jder.ui.utils.isCompactWidth
 import com.jder.ui.utils.loadImageResource
 import com.jder.ui.utils.shortcutLabel
 
 private const val WIDE_COLUMNS = 4
 private const val NARROW_COLUMNS = 3
+private const val COMPACT_COLUMNS = 2
 private val dialogMaxWidth = 1100.dp
 private val wideLayoutMinWidth = 1040.dp
+private val dialogPadding = 24.dp
+private val compactDialogPadding = 16.dp
 private const val NO_BREAK_SPACE = '\u00A0'
 
 @Composable
@@ -74,10 +79,12 @@ fun DiagramTypeDialog(themeState: ThemeState, onTypeSelected: (DiagramType) -> U
             ),
     ) {
         val focusRequester = remember { FocusRequester() }
+        val isCompact = isCompactWidth()
+        val padding = if (isCompact) compactDialogPadding else dialogPadding
         LaunchedEffect(Unit) { focusRequester.requestFocus() }
         Surface(
             modifier =
-                Modifier.padding(24.dp)
+                Modifier.padding(padding)
                     .widthIn(max = dialogMaxWidth)
                     .focusRequester(focusRequester)
                     .focusTarget()
@@ -95,8 +102,13 @@ fun DiagramTypeDialog(themeState: ThemeState, onTypeSelected: (DiagramType) -> U
             tonalElevation = 6.dp,
         ) {
             BoxWithConstraints {
-                val columns = if (maxWidth >= wideLayoutMinWidth) WIDE_COLUMNS else NARROW_COLUMNS
-                DiagramTypeGrid(themeState, columns, onTypeSelected)
+                val columns =
+                    when {
+                        isCompact -> COMPACT_COLUMNS
+                        maxWidth >= wideLayoutMinWidth -> WIDE_COLUMNS
+                        else -> NARROW_COLUMNS
+                    }
+                DiagramTypeGrid(themeState, columns, isCompact, padding, onTypeSelected)
             }
         }
     }
@@ -106,20 +118,28 @@ fun DiagramTypeDialog(themeState: ThemeState, onTypeSelected: (DiagramType) -> U
 private fun DiagramTypeGrid(
     themeState: ThemeState,
     columns: Int,
+    isCompact: Boolean,
+    padding: Dp,
     onTypeSelected: (DiagramType) -> Unit,
 ) {
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()).padding(24.dp),
+        modifier = Modifier.verticalScroll(rememberScrollState()).padding(padding),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = DiagramTypeStrings.CHOOSE_DIAGRAM_TYPE,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-            )
-            ToolbarPaletteTheme(themeState)
+        if (isCompact) {
+            DiagramTypeTitle()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ToolbarPaletteTheme(themeState)
+            }
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                DiagramTypeTitle(modifier = Modifier.weight(1f))
+                ToolbarPaletteTheme(themeState)
+            }
         }
         DiagramType.entries.chunked(columns).forEach { rowTypes ->
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -127,6 +147,7 @@ private fun DiagramTypeGrid(
                     DiagramTypeCard(
                         type = type,
                         isDarkTheme = themeState.isDarkTheme,
+                        isCompact = isCompact,
                         onClick = { onTypeSelected(type) },
                         modifier = Modifier.weight(1f),
                     )
@@ -138,9 +159,20 @@ private fun DiagramTypeGrid(
 }
 
 @Composable
+private fun DiagramTypeTitle(modifier: Modifier = Modifier) {
+    Text(
+        text = DiagramTypeStrings.CHOOSE_DIAGRAM_TYPE,
+        style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier,
+    )
+}
+
+@Composable
 private fun DiagramTypeCard(
     type: DiagramType,
     isDarkTheme: Boolean,
+    isCompact: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -187,18 +219,24 @@ private fun DiagramTypeCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                val labelLines = if (isCompact) 2 else 1
                 Text(
-                    text = type.tabLabel.replace(' ', NO_BREAK_SPACE),
+                    text =
+                        if (isCompact) type.tabLabel
+                        else type.tabLabel.replace(' ', NO_BREAK_SPACE),
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
+                    minLines = labelLines,
+                    maxLines = labelLines,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
-                Text(
-                    text = shortcutLabel("${type.ordinal + 1}"),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (!isCompact) {
+                    Text(
+                        text = shortcutLabel("${type.ordinal + 1}"),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }

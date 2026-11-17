@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +19,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jder.domain.model.DiagramType
 import com.jder.strings.Localization
+import com.jder.ui.utils.isCompactHeight
+import com.jder.ui.utils.windowSizeMatches
 
 private const val WORD_JOINER = '\u2060'
 private val tabMinHeight = 48.dp
 private val tabHorizontalPadding = 8.dp
 private val tabVerticalPadding = 10.dp
 private val tabIndicatorHeight = 3.dp
+private val fixedTabsMinWidth = 760.dp
 
 @Composable
 fun DiagramTabRow(
@@ -31,42 +36,58 @@ fun DiagramTabRow(
     isModified: (DiagramType) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
-    key(Localization.language) {
-        SecondaryTabRow(
-            selectedTabIndex = currentType.ordinal,
-            modifier = modifier,
-            contentColor = TabRowDefaults.primaryContentColor,
-            indicator = {
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(currentType.ordinal),
-                    height = tabIndicatorHeight,
-                )
-            },
-        ) {
-            DiagramType.entries.forEach { type ->
-                val label = type.tabLabel.replace("/", "/$WORD_JOINER")
-                Tab(
-                    selected = currentType == type,
-                    onClick = { onTypeChange(type) },
-                    modifier = Modifier.focusProperties { canFocus = false },
+    val hasRoomForFixedTabs =
+        windowSizeMatches { it.width >= fixedTabsMinWidth } && !isCompactHeight()
+    val indicator: @Composable TabIndicatorScope.() -> Unit = {
+        TabRowDefaults.SecondaryIndicator(
+            modifier = Modifier.tabIndicatorOffset(currentType.ordinal),
+            height = tabIndicatorHeight,
+        )
+    }
+    val tabs: @Composable () -> Unit = {
+        DiagramType.entries.forEach { type ->
+            val label = type.tabLabel.replace("/", "/$WORD_JOINER")
+            Tab(
+                selected = currentType == type,
+                onClick = { onTypeChange(type) },
+                modifier = Modifier.focusProperties { canFocus = false },
+            ) {
+                Box(
+                    modifier =
+                        Modifier.heightIn(min = tabMinHeight)
+                            .padding(
+                                horizontal = tabHorizontalPadding,
+                                vertical = tabVerticalPadding,
+                            ),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Box(
-                        modifier =
-                            Modifier.heightIn(min = tabMinHeight)
-                                .padding(
-                                    horizontal = tabHorizontalPadding,
-                                    vertical = tabVerticalPadding,
-                                ),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = if (isModified(type)) "$label •" else label,
-                            style = MaterialTheme.typography.titleSmall,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
+                    Text(
+                        text = if (isModified(type)) "$label •" else label,
+                        style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
+        }
+    }
+    key(Localization.language) {
+        if (hasRoomForFixedTabs) {
+            SecondaryTabRow(
+                selectedTabIndex = currentType.ordinal,
+                modifier = modifier,
+                contentColor = TabRowDefaults.primaryContentColor,
+                indicator = indicator,
+                tabs = tabs,
+            )
+        } else {
+            SecondaryScrollableTabRow(
+                selectedTabIndex = currentType.ordinal,
+                modifier = modifier,
+                contentColor = TabRowDefaults.primaryContentColor,
+                edgePadding = 0.dp,
+                indicator = indicator,
+                tabs = tabs,
+            )
         }
     }
 }
