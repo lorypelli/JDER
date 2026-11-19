@@ -24,10 +24,10 @@ import com.jder.strings.AppStrings
 import com.jder.ui.components.DiagramMenuHost
 import com.jder.ui.components.LocalDiagramMenuHost
 import com.jder.ui.components.ToastHost
+import com.jder.ui.components.Toasts
 import com.jder.ui.components.WindowMenuBar
 import com.jder.ui.components.appMenus
 import com.jder.ui.components.diagramTypeKeys
-import com.jder.ui.components.logError
 import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.screens.DiagramWorkspace
@@ -35,6 +35,7 @@ import com.jder.ui.theme.AppFont
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import com.jder.web.BrowserWindow
+import com.jder.web.syncTheme
 import com.jder.web.warnBeforeUnload
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -49,8 +50,8 @@ fun main() {
                 AppFont.load()
             } catch (e: CancellationException) {
                 throw e
-            } catch (e: Exception) {
-                logError(AppStrings.FONT_LOAD_FAILED, e)
+            } catch (e: Throwable) {
+                Toasts.error(AppStrings.FONT_LOAD_FAILED, e)
             }
             isFontLoaded = true
         }
@@ -67,6 +68,7 @@ private fun WebApp(workspace: DiagramWorkspace) {
     val browserWindow = remember { BrowserWindow() }
     var currentType by remember { mutableStateOf<DiagramType?>(null) }
     var showAboutDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(themeState.isDarkTheme, themeState.selectedPalette) { syncTheme() }
     val menus =
         appMenus(
             commands = menuHost.commands,

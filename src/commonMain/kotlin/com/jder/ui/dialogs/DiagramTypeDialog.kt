@@ -1,5 +1,8 @@
 package com.jder.ui.dialogs
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -52,7 +56,6 @@ import com.jder.domain.model.DiagramType
 import com.jder.strings.DiagramTypeStrings
 import com.jder.ui.components.ToolbarPaletteTheme
 import com.jder.ui.components.diagramTypeKeys
-import com.jder.ui.components.logError
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isCompactWidth
 import com.jder.ui.utils.loadImageResource
@@ -61,6 +64,7 @@ import com.jder.ui.utils.shortcutLabel
 private const val WIDE_COLUMNS = 4
 private const val NARROW_COLUMNS = 3
 private const val COMPACT_COLUMNS = 2
+private const val PREVIEW_FADE_MILLIS = 350
 private val dialogMaxWidth = 1100.dp
 private val wideLayoutMinWidth = 1040.dp
 private val dialogPadding = 24.dp
@@ -179,10 +183,7 @@ private fun DiagramTypeCard(
     val screenshotPath = "screenshots/${type.key}-${if (isDarkTheme) "dark" else "light"}.png"
     val screenshot by
         produceState<ImageBitmap?>(null, screenshotPath) {
-            value =
-                loadImageResource(screenshotPath) {
-                    logError(DiagramTypeStrings.previewLoadFailed(screenshotPath), it)
-                }
+            value = loadImageResource(screenshotPath)
         }
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -201,18 +202,26 @@ private fun DiagramTypeCard(
         interactionSource = interactionSource,
     ) {
         Column {
-            val imageModifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f)
-            val image = screenshot
-            if (image != null) {
-                Image(
-                    bitmap = image,
-                    contentDescription = null,
-                    modifier = imageModifier,
-                    contentScale = ContentScale.Crop,
-                    filterQuality = FilterQuality.Medium,
-                )
-            } else {
-                Box(modifier = imageModifier.background(MaterialTheme.colorScheme.surfaceVariant))
+            Crossfade(
+                targetState = screenshot,
+                modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),
+                animationSpec = tween(PREVIEW_FADE_MILLIS, easing = LinearEasing),
+            ) { image ->
+                if (image != null) {
+                    Image(
+                        bitmap = image,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        filterQuality = FilterQuality.Medium,
+                    )
+                } else {
+                    Box(
+                        modifier =
+                            Modifier.fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                    )
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),

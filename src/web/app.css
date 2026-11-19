@@ -1,6 +1,18 @@
 html {
-    color-scheme: light dark;
     overscroll-behavior: none;
+}
+
+:root,
+.mdui-theme-light {
+    color-scheme: light;
+    --mdui-color-background: var(--mdui-color-background-light);
+    --mdui-color-on-background: var(--mdui-color-on-background-light);
+}
+
+.mdui-theme-dark {
+    color-scheme: dark;
+    --mdui-color-background: var(--mdui-color-background-dark);
+    --mdui-color-on-background: var(--mdui-color-on-background-dark);
 }
 
 body {

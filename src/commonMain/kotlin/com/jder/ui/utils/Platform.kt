@@ -20,8 +20,6 @@ expect val systemLanguage: String
 
 expect fun copyToClipboard(text: String)
 
-expect fun printError(message: String)
-
 expect suspend fun readResource(path: String): ByteArray
 
 expect fun fontFromBytes(name: String, bytes: ByteArray, weight: FontWeight): Font
@@ -32,13 +30,12 @@ fun shortcutLabel(key: String, hasShift: Boolean = false): String =
 
 fun decodeImage(bytes: ByteArray): ImageBitmap = Image.makeFromEncoded(bytes).toComposeImageBitmap()
 
-suspend fun loadImageResource(path: String, onFailure: (Exception) -> Unit = {}): ImageBitmap? =
+suspend fun loadImageResource(path: String): ImageBitmap? =
     try {
         decodeImage(readResource(path))
     } catch (e: CancellationException) {
         throw e
-    } catch (e: Exception) {
-        onFailure(e)
+    } catch (_: Exception) {
         null
     }
 

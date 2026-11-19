@@ -1,5 +1,7 @@
 package com.jder.web
 
+import com.jder.strings.CommonStrings
+import com.jder.ui.components.Toasts
 import kotlin.js.JsAny
 import kotlin.js.JsString
 import kotlin.js.toJsArray
@@ -25,11 +27,11 @@ internal fun isMacPlatform(): Boolean = window.navigator.platform.startsWith("Ma
 
 internal fun browserLanguage(): String = window.navigator.language
 
-internal fun consoleError(message: String): Unit = js("console.error(message)")
+internal external fun syncTheme()
 
 internal fun writeClipboard(text: String) {
-    window.navigator.clipboard.writeText(text).catch { error ->
-        consoleError(error.toString())
+    window.navigator.clipboard.writeText(text).catch {
+        Toasts.error(CommonStrings.COPY_FAILED)
         null
     }
 }
@@ -52,10 +54,7 @@ internal fun toggleDocumentFullscreen() {
     val request =
         if (document.fullscreenElement != null) document.exitFullscreen()
         else document.documentElement?.requestFullscreen()
-    request?.catch { error ->
-        consoleError(error.toString())
-        null
-    }
+    request?.catch { null }
 }
 
 internal fun onFullscreenChange(callback: () -> Unit) {

@@ -1,44 +1,8 @@
 :root {
-    --mdui-color-error-light: 176, 0, 32;
-    --mdui-color-error-container-light: 252, 216, 223;
-    --mdui-color-on-error-light: 255, 255, 255;
-    --mdui-color-on-error-container-light: 140, 0, 9;
-    --mdui-color-background-light: 250, 250, 250;
-    --mdui-color-on-background-light: 26, 26, 26;
-    --mdui-color-surface-light: 255, 255, 255;
-    --mdui-color-surface-dim-light: 250, 250, 250;
-    --mdui-color-surface-bright-light: 255, 255, 255;
-    --mdui-color-surface-container-lowest-light: 255, 255, 255;
-    --mdui-color-on-surface-light: 26, 26, 26;
-    --mdui-color-surface-variant-light: 224, 224, 224;
-    --mdui-color-on-surface-variant-light: 66, 66, 66;
-    --mdui-color-outline-light: 117, 117, 117;
-    --mdui-color-outline-variant-light: 202, 196, 208;
-    --mdui-color-inverse-surface-light: 47, 47, 47;
-    --mdui-color-inverse-on-surface-light: 245, 245, 245;
-    --mdui-color-error-dark: 207, 102, 121;
-    --mdui-color-error-container-dark: 147, 0, 10;
-    --mdui-color-on-error-dark: 105, 0, 5;
-    --mdui-color-on-error-container-dark: 252, 216, 223;
-    --mdui-color-background-dark: 18, 18, 18;
-    --mdui-color-on-background-dark: 224, 224, 224;
-    --mdui-color-surface-dark: 30, 30, 30;
-    --mdui-color-surface-dim-dark: 18, 18, 18;
-    --mdui-color-surface-bright-dark: 30, 30, 30;
-    --mdui-color-surface-container-lowest-dark: 30, 30, 30;
-    --mdui-color-on-surface-dark: 224, 224, 224;
-    --mdui-color-surface-variant-dark: 66, 66, 66;
-    --mdui-color-on-surface-variant-dark: 189, 189, 189;
-    --mdui-color-outline-dark: 141, 141, 141;
-    --mdui-color-outline-variant-dark: 73, 69, 79;
-    --mdui-color-inverse-surface-dark: 224, 224, 224;
-    --mdui-color-inverse-on-surface-dark: 26, 26, 26;
     --page-padding: 1rem;
 }
 
 body {
-    background-color: rgb(var(--mdui-color-background));
-    color: rgb(var(--mdui-color-on-background));
     font-size: var(--mdui-typescale-body-large-size);
     line-height: var(--mdui-typescale-body-large-line-height);
 }

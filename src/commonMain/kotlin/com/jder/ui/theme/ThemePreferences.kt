@@ -3,7 +3,7 @@ package com.jder.ui.theme
 import com.jder.data.readPreference
 import com.jder.data.savePreference
 import com.jder.strings.MenuStrings
-import com.jder.ui.components.logError
+import com.jder.ui.components.Toasts
 
 private const val DARK_THEME_KEY = "darkTheme"
 private const val PALETTE_KEY = "palette"
@@ -24,5 +24,5 @@ object ThemePreferences {
     fun savePalette(palette: ColorPalette) = save(PALETTE_KEY, palette.id)
 
     private fun save(key: String, value: String) =
-        savePreference(key, value) { logError(MenuStrings.THEME_SAVE_FAILED, it) }
+        savePreference(key, value) { Toasts.error(MenuStrings.THEME_SAVE_FAILED, it) }
 }

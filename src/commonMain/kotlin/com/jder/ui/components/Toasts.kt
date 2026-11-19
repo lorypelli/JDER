@@ -44,9 +44,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import com.jder.strings.AppStrings
 import com.jder.strings.CommonStrings
-import com.jder.ui.utils.printError
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
@@ -80,17 +78,11 @@ object Toasts {
 
     fun success(message: String) = show(message, ToastType.SUCCESS)
 
-    fun warning(message: String) {
-        log(AppStrings.WARNING, message)
-        show(message, ToastType.WARNING)
-    }
+    fun warning(message: String) = show(message, ToastType.WARNING)
 
     fun warning(action: String, cause: Throwable) = warning("$action: ${cause.describe()}")
 
-    fun error(message: String) {
-        log(AppStrings.ERROR, message)
-        show(message, ToastType.ERROR)
-    }
+    fun error(message: String) = show(message, ToastType.ERROR)
 
     fun error(action: String, cause: Throwable) = error("$action: ${cause.describe()}")
 
@@ -99,14 +91,9 @@ object Toasts {
     }
 }
 
-fun logError(action: String, cause: Throwable) =
-    log(AppStrings.ERROR, "$action: ${cause.describe()}")
-
 fun Throwable.describe(): String =
     message?.lineSequence()?.firstOrNull { it.isNotBlank() }?.trim()
         ?: this::class.simpleName.orEmpty()
-
-private fun log(level: String, message: String) = printError("$level: $message")
 
 private class ShownToast(val toast: Toast) {
     val visibility = MutableTransitionState(false).apply { targetState = true }

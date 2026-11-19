@@ -1,4 +1,20 @@
-export const palettes = [
+const themeKey = 'jder-dark-theme';
+const paletteKey = 'jder-palette';
+const defaultPaletteId = 'Blue';
+
+const root = document.documentElement;
+
+const store = (key, value) => {
+    try {
+        return value == null
+            ? localStorage.getItem(key)
+            : localStorage.setItem(key, value);
+    } catch {
+        return null;
+    }
+};
+
+const palettes = [
     'Red|Rosso|F44336 FFFFFF FFCDD2 B71C1C E91E63 FFFFFF F8BBD0 880E4F FF5722 FFFFFF FFCCBC BF360C|EF9A9A B71C1C C62828 FFCDD2 F48FB1 880E4F C2185B F8BBD0 FFAB91 BF360C E64A19 FFCCBC',
     'Pink|Rosa|E91E63 FFFFFF F8BBD0 880E4F EC407A FFFFFF F8BBD0 880E4F 9C27B0 FFFFFF E1BEE7 4A148C|F48FB1 880E4F C2185B F8BBD0 F48FB1 880E4F C2185B F8BBD0 CE93D8 4A148C 7B1FA2 E1BEE7',
     'Purple|Viola|9C27B0 FFFFFF E1BEE7 4A148C 673AB7 FFFFFF D1C4E9 311B92 3F51B5 FFFFFF C5CAE9 1A237E|CE93D8 4A148C 7B1FA2 E1BEE7 B39DDB 311B92 512DA8 D1C4E9 9FA8DA 1A237E 303F9F C5CAE9',
@@ -23,3 +39,77 @@ export const palettes = [
     const [id, name, light, dark] = row.split('|');
     return { id, name, light: light.split(' '), dark: dark.split(' ') };
 });
+
+const modes = ['light', 'dark'];
+const roles = ['primary', 'secondary', 'tertiary'].flatMap((name) => [
+    name,
+    `on-${name}`,
+    `${name}-container`,
+    `on-${name}-container`,
+]);
+const containerElevations = {
+    'surface-container-low': 1,
+    'surface-container': 3,
+    'surface-container-high': 6,
+    'surface-container-highest': 12,
+};
+
+const toRgb = (hex) =>
+    [0, 2, 4].map((start) => Number.parseInt(hex.slice(start, start + 2), 16));
+
+const surfaceOf = (mode) =>
+    getComputedStyle(root)
+        .getPropertyValue(`--mdui-color-surface-${mode}`)
+        .split(',')
+        .map(Number);
+
+const tint = (surface, primary, elevation) => {
+    const alpha =
+        Math.round(((4.5 * Math.log(elevation + 1) + 2) / 100) * 255) / 255;
+    return surface.map((channel, index) =>
+        Math.round(channel + (primary[index] - channel) * alpha),
+    );
+};
+
+const applyPalette = (palette) => {
+    for (const mode of modes) {
+        const colors = Object.fromEntries(
+            roles.map((role, index) => [role, toRgb(palette[mode][index])]),
+        );
+        for (const [role, elevation] of Object.entries(containerElevations)) {
+            colors[role] = tint(surfaceOf(mode), colors.primary, elevation);
+        }
+        colors['inverse-primary'] = toRgb(
+            palette[mode == 'light' ? 'dark' : 'light'][0],
+        );
+        colors['surface-tint-color'] = colors.primary;
+        for (const [role, rgb] of Object.entries(colors)) {
+            root.style.setProperty(
+                `--mdui-color-${role}-${mode}`,
+                rgb.join(', '),
+            );
+        }
+    }
+    root.style.setProperty('--palette-swatch', `#${palette.light[0]}`);
+};
+
+const applyTheme = (isDark) => {
+    root.classList.toggle('mdui-theme-dark', isDark);
+    root.classList.toggle('mdui-theme-light', !isDark);
+};
+
+const saveTheme = (isDark) => store(themeKey, String(isDark));
+
+const savePalette = (id) => store(paletteKey, id);
+
+const readSaved = () => ({
+    isDark: store(themeKey) == 'true',
+    selected:
+        palettes.find(({ id }) => id == store(paletteKey)) ??
+        palettes.find(({ id }) => id == defaultPaletteId),
+});
+
+const saved = readSaved();
+
+applyTheme(saved.isDark);
+applyPalette(saved.selected);

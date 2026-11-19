@@ -6,6 +6,7 @@ object CommonStrings {
     val CLOSE by text("Chiudi", "Close")
     val CONFIRM by text("Conferma", "Confirm")
     val COPY by text("Copia", "Copy")
+    val COPY_FAILED by text("Impossibile copiare negli appunti", "Unable to copy to the clipboard")
     val DELETE by text("Elimina", "Delete")
     val EDIT_PROPERTIES by text("Modifica Proprietà", "Edit Properties")
     val EDIT_TEXT by text("Modifica Testo", "Edit Text")

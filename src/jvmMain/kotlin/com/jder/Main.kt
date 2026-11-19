@@ -26,7 +26,6 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.jder.data.UpdateChecker
 import com.jder.domain.model.DiagramType
-import com.jder.strings.AppStrings
 import com.jder.strings.CommandLineStrings
 import com.jder.strings.CommonStrings
 import com.jder.strings.FileStrings
@@ -41,7 +40,6 @@ import com.jder.ui.components.WindowMenuBar
 import com.jder.ui.components.appMenus
 import com.jder.ui.components.diagramTypeKeys
 import com.jder.ui.components.lastUsedDirectory
-import com.jder.ui.components.logError
 import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
@@ -113,10 +111,7 @@ fun main(args: Array<String>) {
         var shouldExit by remember { mutableStateOf(false) }
         var updateUrl by remember { mutableStateOf<String?>(null) }
         LaunchedEffect(Unit) {
-            updateUrl =
-                UpdateChecker.findUpdate()
-                    .onFailure { logError(AppStrings.UPDATE_CHECK_FAILED, it) }
-                    .getOrNull()
+            updateUrl = UpdateChecker.findUpdate().getOrNull()
         }
         fun selectType(type: DiagramType) {
             if (currentType == null) startup.pendingOptions?.let { openStartupDiagramAs(type, it) }

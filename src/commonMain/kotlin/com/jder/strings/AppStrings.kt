@@ -1,17 +1,11 @@
 package com.jder.strings
 
 object AppStrings {
-    val WARNING by text("Attenzione", "Warning")
-    val ERROR by text("Errore", "Error")
-    val DOCK_ICON_FAILED by
-        text("Impossibile impostare l'icona nel Dock", "Unable to set the Dock icon")
     val FONT_LOAD_FAILED by
         text("Impossibile caricare il font dei simboli", "Unable to load the symbol font")
     val READ_ONLY_FILE by text("il file è di sola lettura", "the file is read-only")
     val IMAGE_ENCODING_FAILED by
         text("Impossibile codificare l'immagine", "Unable to encode the image")
-    val UPDATE_CHECK_FAILED by
-        text("Controllo degli aggiornamenti non riuscito", "Update check failed")
     val UPDATE_AVAILABLE by text("Aggiornamento disponibile", "Update available")
     val UPDATE_AVAILABLE_MESSAGE by
         text(

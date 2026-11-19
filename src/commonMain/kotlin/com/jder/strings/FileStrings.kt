@@ -88,8 +88,6 @@ object FileStrings {
             "The file \"$fileName\" already exists. Do you want to overwrite it?",
         )
 
-    fun cannotRead(path: String) = localized("Impossibile leggere $path", "Unable to read $path")
-
     fun cannotOpen(target: String) =
         localized("Impossibile aprire $target", "Unable to open $target")
 }

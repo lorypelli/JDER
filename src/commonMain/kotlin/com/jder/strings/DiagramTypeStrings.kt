@@ -28,9 +28,6 @@ object DiagramTypeStrings {
     val NEW_MOORE_MACHINE by text("Nuova Macchina di Moore", "New Moore Machine")
     val CHOOSE_DIAGRAM_TYPE by text("Scegli il tipo di diagramma", "Choose the diagram type")
 
-    fun previewLoadFailed(path: String) =
-        localized("Impossibile caricare l'anteprima $path", "Unable to load the preview $path")
-
     fun wrongDiagramType(found: String, foundTab: String, expectedTab: String) =
         localized(
             "il file contiene $found: aprilo dalla scheda \"$foundTab\" " +

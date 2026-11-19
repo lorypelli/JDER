@@ -4,7 +4,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.platform.Font
 import com.jder.web.browserLanguage
-import com.jder.web.consoleError
 import com.jder.web.fetchBytes
 import com.jder.web.isMacPlatform
 import com.jder.web.writeClipboard
@@ -19,8 +18,6 @@ actual val systemLanguage: String
     get() = browserLanguage().substringBefore('-')
 
 actual fun copyToClipboard(text: String) = writeClipboard(text)
-
-actual fun printError(message: String) = consoleError(message)
 
 actual suspend fun readResource(path: String): ByteArray = fetchBytes("/$path")
 

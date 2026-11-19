@@ -6,8 +6,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.platform.Font
-import com.jder.strings.AppStrings
-import com.jder.ui.components.logError
 import java.awt.Desktop
 import java.awt.Taskbar
 import java.awt.Toolkit
@@ -30,8 +28,6 @@ actual fun copyToClipboard(text: String) {
     Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(text), null)
 }
 
-actual fun printError(message: String) = System.err.println(message)
-
 actual suspend fun readResource(path: String): ByteArray =
     withContext(Dispatchers.IO) { resourceBytes(path) }
 
@@ -42,10 +38,8 @@ private fun resourceBytes(path: String): ByteArray = ClassLoader.getSystemResour
 
 fun setDockIcon(resourcePath: String) {
     if (!isMacOS) return
-    try {
+    runCatching {
         Taskbar.getTaskbar().iconImage = ImageIO.read(ClassLoader.getSystemResource(resourcePath))
-    } catch (e: Exception) {
-        logError(AppStrings.DOCK_ICON_FAILED, e)
     }
 }
 

@@ -230,8 +230,7 @@ fun FileManagerDialog(
                                 } else {
                                     allFiles
                                 }
-                            } catch (e: Exception) {
-                                logError(FileStrings.cannotRead(currentDirectory.path), e)
+                            } catch (_: Exception) {
                                 null
                             }
                         }
