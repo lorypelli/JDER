@@ -299,7 +299,7 @@ Per compilare la versione web:
 ./gradlew webApp
 ```
 
-La build la mette in `src/web/app/`, che il sito pubblica su `/app` (in locale si prova con `pnpm exec wrangler dev`). La prima volta Gradle scarica Node.js e i pacchetti npm che gli servono.
+La build la mette in `src/web/app/`, che il sito pubblica su `/app` (in locale si prova con `pnpm exec wrangler dev`). Il bundle è prodotto da Vite (plugin Gradle `io.github.turansky.kfc.application`). La prima volta Gradle scarica Node.js e i pacchetti npm che gli servono.
 
 ---
 
@@ -359,8 +359,8 @@ src/
 │   │   ├── Main.kt                    # Punto di ingresso nel browser
 │   │   ├── web/                       # API del browser: file, download, localStorage, schermo intero
 │   │   └── ui/                        # Apertura e download dei file, nome del file da salvare
-│   └── resources/
-│       └── index.html                 # Pagina che carica l'app
+│   └── (nessuna risorsa: la pagina è in vite/)
+├── vite/                              # Pagina index.html dell'app web e configurazione di Vite
 └── web/                               # Sito jder.it; app/ è generata da ./gradlew webApp
     ├── jder_icon.png                  # Icona, usata anche dall'app
     ├── screenshots/                   # Anteprime, usate anche dall'app

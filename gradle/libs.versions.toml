@@ -38,4 +38,5 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+kfc-application = { id = "io.github.turansky.kfc.application", version = "19.20.0" }
 spotless = { id = "com.diffplug.spotless", version = "8.11.0" }

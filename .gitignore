@@ -3,14 +3,8 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
-# IntelliJ IDEA
+# IDE
 .idea/
-*.iml
-*.ipr
-*.iws
-out/
-
-# Eclipse
 .classpath
 .project
 .settings/
@@ -19,21 +13,9 @@ bin/
 # macOS
 .DS_Store
 
-# Windows
-Thumbs.db
-desktop.ini
-
 # Kotlin
 .kotlin/
-kotlin-js-store/
-*.class
-*.log
-
-# Compose
-compose-desktop.properties
-
-# Local files
-local.properties
+.kotlin-locks/
 
 # Wrangler
 .wrangler/

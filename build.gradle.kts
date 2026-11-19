@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kfc.application)
 }
 group = "com.jder"
 repositories {
@@ -20,11 +21,6 @@ kotlin {
             jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
             freeCompilerArgs.add("-Xjdk-release=21")
         }
-    }
-    wasmJs {
-        outputModuleName = "jder"
-        browser { commonWebpackConfig { outputFileName = "jder.js" } }
-        binaries.executable()
     }
     sourceSets {
         commonMain.dependencies {
@@ -62,9 +58,7 @@ tasks.named<Jar>("jvmJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from({ configurations["jvmRuntimeClasspath"].map { if (it.isDirectory) it else zipTree(it) } })
 }
-tasks.matching { it.name.endsWith("PackageLock") }.configureEach { enabled = false }
 tasks.register<Sync>("webApp") {
-    from(tasks.named("wasmJsBrowserDistribution"))
-    exclude("**/*.map")
+    from(tasks.named("wasmJsBrowserProductionVite"))
     into("src/web/app")
 }
