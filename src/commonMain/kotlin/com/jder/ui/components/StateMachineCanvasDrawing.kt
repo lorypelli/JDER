@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -26,7 +25,7 @@ private const val MOORE_TEXT_OFFSET = 0.42f
 private val previewDash = PathEffect.dashPathEffect(floatArrayOf(8f, 5f))
 
 private fun stateTextStyle(color: Color, isSelected: Boolean) =
-    TextStyle(
+    diagramTextStyle(
         color = color,
         fontSize = 13.sp,
         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,

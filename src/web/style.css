@@ -1,7 +1,17 @@
 @font-face {
-    font-family: "Noto Sans Math";
-    src: url("fonts/NotoSansMath-Regular.woff2") format("woff2");
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
     font-display: swap;
+    src: url("fonts/Roboto-Regular.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/Roboto-Bold.woff2") format("woff2");
 }
 
 *,
@@ -46,7 +56,7 @@
     --mdui-color-inverse-surface-dark: 224, 224, 224;
     --mdui-color-inverse-on-surface-dark: 26, 26, 26;
     --page-padding: 1rem;
-    font-family: "Noto Sans Math", sans-serif;
+    font-family: "Roboto", sans-serif;
 }
 
 .web-app {

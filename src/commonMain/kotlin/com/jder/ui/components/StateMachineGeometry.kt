@@ -4,7 +4,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import com.jder.domain.model.MachineState
 import com.jder.domain.model.MachineTransition
@@ -46,7 +45,8 @@ private const val AVOID_ITERATIONS = 4
 private const val PREFERRED_LOOP_ANGLE = -PI.toFloat() / 2
 private const val PREFERRED_INITIAL_ANGLE = PI.toFloat()
 
-internal val transitionLabelStyle = TextStyle(fontSize = 12.sp)
+internal val transitionLabelStyle
+    get() = diagramTextStyle(fontSize = 12.sp)
 
 internal sealed interface TransitionShape {
     class Line(val start: Offset, val end: Offset) : TransitionShape

@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -127,7 +126,7 @@ internal fun DrawScope.drawClassEntity(
             textMeasurer.measure(
                 text = entity.type.stereotype,
                 style =
-                    TextStyle(
+                    diagramTextStyle(
                         color = palette.text.copy(alpha = 0.7f),
                         fontSize = 10.sp,
                         fontStyle = FontStyle.Italic,
@@ -144,7 +143,7 @@ internal fun DrawScope.drawClassEntity(
         textMeasurer.measureLine(
             text = entity.name,
             style =
-                TextStyle(
+                diagramTextStyle(
                     color = palette.text,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
@@ -207,7 +206,7 @@ private fun DrawScope.drawMemberText(
         textMeasurer.measureLine(
             text = "$prefix${member.name}$paramSuffix$suffix",
             style =
-                TextStyle(
+                diagramTextStyle(
                     color = textColor,
                     fontSize = 11.sp,
                     textDecoration =
@@ -307,7 +306,7 @@ internal fun DrawScope.drawClassRelation(
         val labelResult =
             textMeasurer.measure(
                 text = relation.label,
-                style = TextStyle(color = lineColor, fontSize = 10.sp),
+                style = diagramTextStyle(color = lineColor, fontSize = 10.sp),
             )
         drawRoundRect(
             color = textBackgroundColor,
@@ -327,7 +326,8 @@ internal fun DrawScope.drawClassRelation(
         )
     }
     fun drawMultiplicity(text: String, anchor: Offset) {
-        val result = textMeasurer.measure(text, TextStyle(color = lineColor, fontSize = 10.sp))
+        val result =
+            textMeasurer.measure(text, diagramTextStyle(color = lineColor, fontSize = 10.sp))
         val perpendicular = Offset(-normY, normX)
         val clearance =
             abs(perpendicular.x) * result.size.width / 2f +

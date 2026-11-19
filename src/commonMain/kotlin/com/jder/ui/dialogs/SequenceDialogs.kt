@@ -14,7 +14,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +33,7 @@ import com.jder.domain.model.SequenceOperand
 import com.jder.domain.model.newId
 import com.jder.strings.CommonStrings
 import com.jder.strings.SequenceStrings
+import com.jder.ui.components.AppTextField
 import com.jder.ui.components.RadioOptionList
 
 @Composable
@@ -53,7 +53,7 @@ fun LifelinePropertiesDialog(
         title = { Text(SequenceStrings.LIFELINE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
@@ -63,7 +63,7 @@ fun LifelinePropertiesDialog(
                 )
                 Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(SequenceLifelineType.entries, type, { type = it }) { it.display }
-                OutlinedTextField(
+                AppTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
                     label = { Text(CommonStrings.DOCUMENTATION) },
@@ -143,7 +143,7 @@ private fun SequenceMessageDialog(
         title = { Text(title) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+                AppTextField(
                     value = label,
                     onValueChange = { label = it },
                     label = { Text(CommonStrings.LABEL) },
@@ -200,7 +200,7 @@ fun SequenceFragmentPropertiesDialog(
                 RadioOptionList(SequenceFragmentType.entries, type, { type = it }) {
                     "${it.keyword} (${it.display})"
                 }
-                OutlinedTextField(
+                AppTextField(
                     value = condition,
                     onValueChange = { condition = it },
                     label = {
@@ -250,7 +250,7 @@ fun SequenceFragmentPropertiesDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            OutlinedTextField(
+                            AppTextField(
                                 value = condition,
                                 onValueChange = { value ->
                                     operands = operands.map {
@@ -272,14 +272,14 @@ fun SequenceFragmentPropertiesDialog(
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = width,
                         onValueChange = { text -> width = text.filter { it.isDigit() } },
                         label = { Text(CommonStrings.WIDTH) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
-                    OutlinedTextField(
+                    AppTextField(
                         value = height,
                         onValueChange = { text -> height = text.filter { it.isDigit() } },
                         label = { Text(CommonStrings.HEIGHT) },

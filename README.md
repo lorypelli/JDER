@@ -124,6 +124,7 @@ Funziona come applicazione desktop su Windows, macOS e Linux e direttamente nel 
 - **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, schema logico o diagramma delle classi, dei casi d'uso, di sequenza o logico, oppure una nuova macchina di Mealy o di Moore
 - **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
 - **Messaggi colorati** in basso nella finestra: verdi per le conferme, gialli per gli avvisi e rossi per gli errori; si chiudono da soli (rispettivamente dopo 4, 8 e 12 secondi) o con ✕ e, avviando JDER da terminale, avvisi ed errori vengono scritti anche lì (nella versione web, nella console del browser)
+- **Testo supportato** — nei campi di testo si accettano lettere e simboli ASCII e le lettere accentate latine (da `À` a `ÿ`); gli altri caratteri (emoji, greco, cirillico, ecc.) vengono ignorati e le virgolette, i trattini e i puntini di sospensione tipografici diventano quelli ASCII
 
 ---
 
@@ -211,7 +212,8 @@ La stessa app gira nel browser su [jder.it/app](https://jder.it/app), con gli st
 | [mdui](https://www.mdui.org/)                                               | Componenti M3 del sito web   |
 | [Vue](https://github.com/vuejs/core)                                        | Reattività del sito web      |
 | [Skia](https://skia.org/)                                                   | Rendering/esportazione PNG   |
-| [Noto Sans Math](https://github.com/notofonts/math)                         | Font del sito e simboli web  |
+| [Roboto](https://github.com/googlefonts/roboto-3-classic)                   | Font di app, web e sito      |
+| [Noto Symbols](https://notofonts.github.io/)                                | Simboli e tasti nel font     |
 | Java 21                                                                     | Target JVM                   |
 
 ---
@@ -362,7 +364,7 @@ src/
 └── web/                               # Sito jder.it; app/ è generata da ./gradlew webApp
     ├── jder_icon.png                  # Icona, usata anche dall'app
     ├── screenshots/                   # Anteprime, usate anche dall'app
-    └── fonts/                         # Noto Sans Math (subset, WOFF2), font del sito e simboli dell'app (licenza OFL)
+    └── fonts/                         # Roboto (Apache 2.0) con i simboli di Noto (OFL), subset WOFF2, usato da app, web e sito
 ```
 
 ---

@@ -534,6 +534,15 @@ Ogni messaggio si può chiudere prima del tempo con il pulsante \textbf{X}; avvi
 l'altro: un nuovo messaggio verde sostituisce quello verde precedente, mentre avvisi ed errori
 restano finché non scadono o non vengono chiusi.
 
+\subsection{Caratteri supportati}
+
+Nei campi di testo (nomi, tipi, documentazione, note e così via) \jder{} accetta le lettere, le
+cifre e i simboli della tastiera ASCII, più le lettere accentate latine, per esempio
+\texttt{à}, \texttt{é}, \texttt{ü} o \texttt{ñ}. Gli altri caratteri, come emoji, lettere greche
+o cirillico, vengono ignorati mentre si scrive o si incolla. Le virgolette tipografiche, i
+trattini lunghi e i puntini di sospensione, che spesso arrivano da un copia e incolla, vengono
+sostituiti dai corrispondenti caratteri ASCII.
+
 % =============================================================
 \Needspace{14cm}
 \section{Diagramma Entità-Relazione (E/R)}
@@ -1848,7 +1857,8 @@ UUID univoco generato automaticamente.
   \item \textbf{Material 3} --- sistema di design dell'interfaccia
   \item \textbf{kotlinx.serialization} --- serializzazione JSON
   \item \textbf{Kotlin/Wasm} --- versione web nel browser
-  \item \textbf{Noto Sans Math} --- font del sito web e simboli matematici nella versione web (licenza OFL)
+  \item \textbf{Roboto} --- font dell'applicazione, della versione web e del sito (licenza Apache 2.0)
+  \item \textbf{Noto Sans Math, Symbols e Symbols 2} --- simboli, frecce e tasti inclusi nel font (licenza OFL)
 \end{itemize}
 
 \subsection*{Risorse}

@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -179,7 +178,12 @@ private fun DrawScope.drawRelationalTable(
     val title =
         textMeasurer.measureLine(
             text = table.name,
-            style = TextStyle(color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold),
+            style =
+                diagramTextStyle(
+                    color = palette.text,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
             maxWidth = table.width - 16f,
         )
     drawTextCentered(
@@ -218,7 +222,10 @@ private fun DrawScope.drawRelationalTable(
                     textMeasurer.measureLine(
                         text = it,
                         style =
-                            TextStyle(color = palette.text.copy(alpha = 0.6f), fontSize = 11.sp),
+                            diagramTextStyle(
+                                color = palette.text.copy(alpha = 0.6f),
+                                fontSize = 11.sp,
+                            ),
                         maxWidth = (table.width - gutterWidth) / 2,
                     )
                 }
@@ -226,7 +233,7 @@ private fun DrawScope.drawRelationalTable(
             textMeasurer.measureLine(
                 text = if (isNullable) "$name*" else name,
                 style =
-                    TextStyle(
+                    diagramTextStyle(
                         color = palette.text,
                         fontSize = 12.sp,
                         fontWeight = if (isPrimaryKey) FontWeight.SemiBold else FontWeight.Normal,
@@ -266,7 +273,7 @@ private fun TextMeasurer.columnBadges(
 }
 
 private fun TextMeasurer.badge(label: String, color: Color): TextLayoutResult =
-    measure(label, TextStyle(color = color, fontSize = 9.sp, fontWeight = FontWeight.Bold))
+    measure(label, diagramTextStyle(color = color, fontSize = 9.sp, fontWeight = FontWeight.Bold))
 
 private fun badgeRowWidth(row: List<TextLayoutResult>): Float =
     if (row.isEmpty()) 0f else row.sumOf { it.size.width } + BADGE_GAP * (row.size - 1)

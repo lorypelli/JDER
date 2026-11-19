@@ -46,6 +46,7 @@ import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.dialogs.UpdateAvailableDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.screens.DiagramWorkspace
+import com.jder.ui.theme.AppFont
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.bringToFront
@@ -54,6 +55,7 @@ import com.jder.ui.utils.resourcePainter
 import com.jder.ui.utils.setDockIcon
 import com.jder.ui.utils.usesSystemMenuBar
 import java.awt.Dimension
+import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) {
     val options = parseCommandLine(args)
@@ -61,6 +63,7 @@ fun main(args: Array<String>) {
         println(CommandLineStrings.COMMAND_LINE_USAGE)
         return
     }
+    runBlocking { AppFont.load() }
     options.warnings.forEach(Toasts::warning)
     val workspace = DiagramWorkspace()
     fun openStartupDiagramAs(type: DiagramType, startupOptions: CommandLineOptions) =

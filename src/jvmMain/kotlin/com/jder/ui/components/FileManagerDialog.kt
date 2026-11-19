@@ -312,7 +312,7 @@ fun FileManagerDialog(
                 }
                 if (mode == FileManagerMode.SAVE) {
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                    OutlinedTextField(
+                    AppTextField(
                         value = fileName,
                         onValueChange = {
                             fileName = it

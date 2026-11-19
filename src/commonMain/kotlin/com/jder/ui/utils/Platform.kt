@@ -3,6 +3,8 @@ package com.jder.ui.utils
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.platform.UriHandler
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import com.jder.strings.FileStrings
 import com.jder.ui.components.Toasts
 import kotlin.coroutines.cancellation.CancellationException
@@ -21,6 +23,8 @@ expect fun copyToClipboard(text: String)
 expect fun printError(message: String)
 
 expect suspend fun readResource(path: String): ByteArray
+
+expect fun fontFromBytes(name: String, bytes: ByteArray, weight: FontWeight): Font
 
 fun shortcutLabel(key: String, hasShift: Boolean = false): String =
     if (isMacOS) "⌘${if (hasShift) "⇧" else ""}$key"

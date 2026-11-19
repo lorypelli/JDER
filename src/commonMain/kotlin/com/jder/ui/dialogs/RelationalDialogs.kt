@@ -12,7 +12,6 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,6 +29,7 @@ import com.jder.domain.model.RelationalTable
 import com.jder.domain.model.newId
 import com.jder.strings.CommonStrings
 import com.jder.strings.RelationalStrings
+import com.jder.ui.components.AppTextField
 
 private data class ReferenceOption(val reference: RelationalReference, val label: String)
 
@@ -50,21 +50,21 @@ fun TablePropertiesDialog(
         title = { Text(RelationalStrings.TABLE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = width,
                     onValueChange = { text -> width = text.filter { it.isDigit() } },
                     label = { Text(CommonStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
                     label = { Text(CommonStrings.DOCUMENTATION) },
@@ -160,14 +160,14 @@ private fun ColumnDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = name,
                         onValueChange = { name = it },
                         label = { Text(CommonStrings.NAME) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
-                    OutlinedTextField(
+                    AppTextField(
                         value = type,
                         onValueChange = { type = it },
                         label = { Text(CommonStrings.TYPE) },
@@ -188,7 +188,7 @@ private fun ColumnDialog(
                     isUnique = it
                 }
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = selectedOption?.label ?: RelationalStrings.NO_REFERENCE,
                         onValueChange = {},
                         readOnly = true,
@@ -293,7 +293,7 @@ fun ForeignKeyDialog(
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = target?.name ?: "",
                         onValueChange = {},
                         readOnly = true,
@@ -329,7 +329,7 @@ fun ForeignKeyDialog(
                         )
                     }
                     keyColumns.forEach { (id, name) ->
-                        OutlinedTextField(
+                        AppTextField(
                             value = columnNames[id].orEmpty(),
                             onValueChange = { columnNames = columnNames + (id to it) },
                             label = {

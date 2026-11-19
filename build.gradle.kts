@@ -54,6 +54,7 @@ spotless {
 tasks.named<ProcessResources>("jvmProcessResources") {
     from("src/web/jder_icon.png")
     from("src/web/screenshots") { into("screenshots") }
+    from("src/web/fonts") { into("fonts") }
 }
 tasks.named<Jar>("jvmJar") {
     archiveFileName = "JDER.jar"

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,6 +26,7 @@ import com.jder.domain.model.Visibility
 import com.jder.domain.model.newId
 import com.jder.strings.ClassStrings
 import com.jder.strings.CommonStrings
+import com.jder.ui.components.AppTextField
 import com.jder.ui.components.RadioOptionList
 
 @Composable
@@ -49,7 +49,7 @@ fun ClassPropertiesDialog(
         title = { Text(ClassStrings.CLASS_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+                AppTextField(
                     value = entityName,
                     onValueChange = { entityName = it },
                     label = { Text(CommonStrings.NAME) },
@@ -73,7 +73,7 @@ fun ClassPropertiesDialog(
                         Switch(checked = abstract, onCheckedChange = { abstract = it })
                     }
                 }
-                OutlinedTextField(
+                AppTextField(
                     value = docs,
                     onValueChange = { docs = it },
                     label = { Text(CommonStrings.DOCUMENTATION) },
@@ -125,14 +125,14 @@ fun ClassMemberDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = memberName,
                         onValueChange = { memberName = it },
                         label = { Text(CommonStrings.NAME) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
-                    OutlinedTextField(
+                    AppTextField(
                         value = memberType,
                         onValueChange = { memberType = it },
                         label = { Text(CommonStrings.TYPE) },
@@ -215,14 +215,14 @@ fun ClassRelationPropertiesDialog(
                 Text("${CommonStrings.TYPE}:", style = MaterialTheme.typography.labelMedium)
                 RadioOptionList(ClassRelationType.entries, relType, { relType = it }) { it.display }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = sourceMulti,
                         onValueChange = { sourceMulti = it },
                         label = { Text(ClassStrings.SOURCE_MULTIPLICITY_SHORT) },
                         modifier = Modifier.weight(1f),
                         singleLine = true,
                     )
-                    OutlinedTextField(
+                    AppTextField(
                         value = targetMulti,
                         onValueChange = { targetMulti = it },
                         label = { Text(ClassStrings.TARGET_MULTIPLICITY_SHORT) },
@@ -230,7 +230,7 @@ fun ClassRelationPropertiesDialog(
                         singleLine = true,
                     )
                 }
-                OutlinedTextField(
+                AppTextField(
                     value = label,
                     onValueChange = { label = it },
                     label = { Text(CommonStrings.LABEL) },

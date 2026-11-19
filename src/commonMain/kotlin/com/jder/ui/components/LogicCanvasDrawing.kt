@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -289,7 +288,11 @@ private fun DrawScope.drawLogicInput(
         textMeasurer.measureLine(
             text = component.label.ifBlank { component.type.display },
             style =
-                TextStyle(color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
+                diagramTextStyle(
+                    color = palette.text,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
             maxWidth = 32f,
         )
     drawText(label, topLeft = Offset(component.x + 9f, midY - label.size.height / 2f))
@@ -313,7 +316,7 @@ private fun DrawScope.drawLogicInput(
         textMeasurer.measure(
             text = if (isOn) "1" else "0",
             style =
-                TextStyle(
+                diagramTextStyle(
                     color = if (isOn) Color.White else palette.text,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
@@ -378,7 +381,7 @@ private fun DrawScope.drawLogicOutput(
                         null -> "?"
                     },
                 style =
-                    TextStyle(
+                    diagramTextStyle(
                         color = if (value == true) Color.White else palette.text,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
@@ -390,7 +393,11 @@ private fun DrawScope.drawLogicOutput(
         textMeasurer.measureLine(
             text = component.label.ifBlank { component.type.display },
             style =
-                TextStyle(color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
+                diagramTextStyle(
+                    color = palette.text,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
             maxWidth = 36f,
         )
     drawText(label, topLeft = Offset(component.x + 48f, midY - label.size.height / 2f))
@@ -399,7 +406,7 @@ private fun DrawScope.drawLogicOutput(
 private fun gateLabel(component: LogicComponent, textMeasurer: TextMeasurer, color: Color) =
     textMeasurer.measureLine(
         text = component.label,
-        style = TextStyle(color = color, fontSize = 11.sp, fontWeight = FontWeight.Medium),
+        style = diagramTextStyle(color = color, fontSize = 11.sp, fontWeight = FontWeight.Medium),
         maxWidth = 160f,
     )
 

@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -86,7 +85,7 @@ internal fun useCaseDiagramBounds(diagram: UseCaseDiagram, textMeasurer: TextMea
 }
 
 private fun actorNameStyle(color: Color, isSelected: Boolean) =
-    TextStyle(
+    diagramTextStyle(
         color = color,
         fontSize = 13.sp,
         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
@@ -122,7 +121,7 @@ internal fun DrawScope.drawSystemBoundary(
         textMeasurer.measureLine(
             text = boundary.name,
             style =
-                TextStyle(
+                diagramTextStyle(
                     color = if (isSelected) palette.selected else palette.text,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -252,7 +251,7 @@ internal fun DrawScope.drawUseCase(
         textMeasurer.measureBlock(
             text = useCase.name,
             style =
-                TextStyle(
+                diagramTextStyle(
                     color = palette.text,
                     fontSize = 13.sp,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
@@ -319,7 +318,7 @@ internal fun DrawScope.drawUseCaseRelation(
                 textMeasurer.measure(
                     text = relation.type.display,
                     style =
-                        TextStyle(
+                        diagramTextStyle(
                             color = lineColor,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Normal,

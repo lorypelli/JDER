@@ -17,10 +17,7 @@ import androidx.compose.ui.input.key.isMetaPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.window.ComposeViewport
 import com.jder.domain.model.DiagramType
 import com.jder.strings.AppStrings
@@ -34,26 +31,23 @@ import com.jder.ui.components.logError
 import com.jder.ui.dialogs.AboutDialog
 import com.jder.ui.screens.AppScreen
 import com.jder.ui.screens.DiagramWorkspace
+import com.jder.ui.theme.AppFont
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
-import com.jder.ui.utils.readResource
 import com.jder.web.BrowserWindow
 import com.jder.web.removeElement
 import com.jder.web.warnBeforeUnload
 import kotlin.coroutines.cancellation.CancellationException
-
-private const val SYMBOL_FONT = "fonts/NotoSansMath-Regular.woff2"
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     val workspace = DiagramWorkspace()
     warnBeforeUnload { workspace.hasUnsavedChanges }
     ComposeViewport("app") {
-        val fontFamilyResolver = LocalFontFamilyResolver.current
         var isFontLoaded by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
             try {
-                fontFamilyResolver.preload(FontFamily(Font(SYMBOL_FONT, readResource(SYMBOL_FONT))))
+                AppFont.load()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

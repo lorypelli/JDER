@@ -16,6 +16,8 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -23,14 +25,32 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.jder.domain.model.DiagramEditorState
 import com.jder.domain.model.Note
+import com.jder.ui.theme.AppFont
 import kotlin.math.floor
 
 private const val TEXT_MEASURER_CACHE_SIZE = 256
 private const val GRID_SPACING = 20f
 private const val MIN_GRID_SPACING_PX = 12f
+
+internal fun diagramTextStyle(
+    color: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontWeight: FontWeight? = null,
+    fontStyle: FontStyle? = null,
+    textDecoration: TextDecoration? = null,
+) =
+    TextStyle(
+        color = color,
+        fontSize = fontSize,
+        fontWeight = fontWeight,
+        fontStyle = fontStyle,
+        textDecoration = textDecoration,
+        fontFamily = AppFont.family,
+    )
 
 @Composable
 internal fun rememberDiagramTextMeasurer(): TextMeasurer {
@@ -169,7 +189,7 @@ internal fun DrawScope.drawNoteShape(
     val textResult =
         textMeasurer.measure(
             text = note.text,
-            style = TextStyle(color = Color.Black, fontSize = 12.sp),
+            style = diagramTextStyle(color = Color.Black, fontSize = 12.sp),
             constraints =
                 Constraints(
                     maxWidth = (note.width - padding * 2).toInt().coerceAtLeast(1),

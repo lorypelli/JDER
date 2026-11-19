@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -239,7 +238,7 @@ internal fun DrawScope.drawConnectionsForRelationship(
             textMeasurer.measure(
                 text = it.cardinality.display,
                 style =
-                    TextStyle(
+                    diagramTextStyle(
                         color = cardinalityColor,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -279,14 +278,14 @@ private fun highlightColor(
     }
 
 private fun shapeNameStyle(textColor: Color, isEmphasized: Boolean) =
-    TextStyle(
+    diagramTextStyle(
         color = textColor,
         fontSize = 14.sp,
         fontWeight = if (isEmphasized) FontWeight.SemiBold else FontWeight.Normal,
     )
 
 private fun componentStyle(color: Color) =
-    TextStyle(color = color, fontSize = 11.sp, fontWeight = FontWeight.Normal)
+    diagramTextStyle(color = color, fontSize = 11.sp, fontWeight = FontWeight.Normal)
 
 private fun componentPosition(parent: Offset, index: Int, total: Int): Offset {
     val startY = parent.y - ((total - 1) * COMPONENT_SPACING_Y / 2f)
@@ -317,7 +316,7 @@ private fun attributeLabel(
         textMeasurer.measure(
             text = attribute.name,
             style =
-                TextStyle(
+                diagramTextStyle(
                     color = textColor,
                     fontSize = 13.sp,
                     fontWeight =
@@ -333,7 +332,7 @@ private fun attributeLabel(
         if (attribute.type == AttributeType.MULTIVALUED && attribute.multiplicity.isNotBlank()) {
             textMeasurer.measure(
                 text = attribute.multiplicity,
-                style = TextStyle(color = multiplicityColor, fontSize = 11.sp),
+                style = diagramTextStyle(color = multiplicityColor, fontSize = 11.sp),
             )
         } else null
     return AttributeLabel(

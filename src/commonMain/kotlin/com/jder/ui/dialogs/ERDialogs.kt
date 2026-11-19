@@ -27,7 +27,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,6 +46,7 @@ import com.jder.domain.model.Relationship
 import com.jder.domain.model.newId
 import com.jder.strings.CommonStrings
 import com.jder.strings.ERStrings
+import com.jder.ui.components.AppTextField
 
 @Composable
 fun EntityPropertiesDialog(
@@ -65,7 +65,7 @@ fun EntityPropertiesDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
@@ -79,7 +79,7 @@ fun EntityPropertiesDialog(
                     Text(ERStrings.WEAK_ENTITY)
                     Switch(checked = isWeak, onCheckedChange = { isWeak = it })
                 }
-                OutlinedTextField(
+                AppTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
                     label = { Text(CommonStrings.DOCUMENTATION) },
@@ -120,14 +120,14 @@ fun RelationshipPropertiesDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
                     label = { Text(CommonStrings.DOCUMENTATION) },
@@ -202,7 +202,7 @@ private fun AttributeDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
@@ -233,7 +233,7 @@ private fun AttributeDialog(
                     )
                 }
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = attributeType.display,
                         onValueChange = {},
                         readOnly = true,
@@ -293,7 +293,7 @@ private fun AttributeDialog(
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut(),
                 ) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = multiplicity,
                         onValueChange = { multiplicity = it },
                         label = { Text(ERStrings.MULTIPLICITY_EXAMPLE) },
@@ -413,7 +413,7 @@ private fun AttributeDialog(
             onDismissRequest = { showAddComponentDialog = false },
             title = { Text(ERStrings.ADD_COMPONENT) },
             text = {
-                OutlinedTextField(
+                AppTextField(
                     value = componentName,
                     onValueChange = { componentName = it },
                     label = { Text(ERStrings.COMPONENT_NAME) },
@@ -518,7 +518,7 @@ private fun ConnectionDialog(
                         expanded = expandedEntity,
                         onExpandedChange = { expandedEntity = it },
                     ) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = selectedEntity?.name ?: "",
                             onValueChange = {},
                             readOnly = true,
@@ -549,7 +549,7 @@ private fun ConnectionDialog(
                         expanded = expandedCardinality,
                         onExpandedChange = { expandedCardinality = it },
                     ) {
-                        OutlinedTextField(
+                        AppTextField(
                             value = selectedCardinality.display,
                             onValueChange = {},
                             readOnly = true,

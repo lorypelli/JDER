@@ -23,7 +23,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,6 +49,7 @@ import com.jder.domain.model.MIN_GATE_INPUTS
 import com.jder.strings.CommonStrings
 import com.jder.strings.Localization
 import com.jder.strings.LogicStrings
+import com.jder.ui.components.AppTextField
 import com.jder.ui.components.CustomIcons
 import com.jder.ui.utils.copyToClipboard
 
@@ -79,7 +79,7 @@ fun LogicComponentPropertiesDialog(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+                AppTextField(
                     value = label,
                     onValueChange = { label = it },
                     label = { Text(CommonStrings.LABEL) },

@@ -17,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,6 +45,7 @@ import com.jder.strings.CommonStrings
 import com.jder.strings.Localization
 import com.jder.strings.LogicStrings
 import com.jder.strings.StateMachineStrings
+import com.jder.ui.components.AppTextField
 import com.jder.ui.utils.copyToClipboard
 
 private val stateColumnWidth = 132.dp
@@ -72,7 +72,7 @@ fun MachineStatePropertiesDialog(
         title = { Text(StateMachineStrings.STATE_PROPERTIES) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
@@ -82,7 +82,7 @@ fun MachineStatePropertiesDialog(
                 )
                 if (isDuplicate) ErrorText(StateMachineStrings.DUPLICATE_STATE_NAME)
                 if (kind.hasStateOutputs) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = output,
                         onValueChange = { output = it },
                         label = { Text(LogicStrings.OUTPUT) },
@@ -137,7 +137,7 @@ fun MachineTransitionPropertiesDialog(
                     else StateMachineStrings.transitionBetween(sourceName, targetName),
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = input,
                     onValueChange = { input = it },
                     label = { Text(LogicStrings.INPUT) },
@@ -153,7 +153,7 @@ fun MachineTransitionPropertiesDialog(
                     )
                 }
                 if (kind.hasTransitionOutputs) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = output,
                         onValueChange = { output = it },
                         label = { Text(LogicStrings.OUTPUT) },
@@ -372,7 +372,7 @@ fun StateMachineSimulationDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    OutlinedTextField(
+                    AppTextField(
                         value = sequence,
                         onValueChange = onSequenceChange,
                         label = { Text(StateMachineStrings.INPUT_SEQUENCE) },

@@ -3,6 +3,9 @@ package com.jder.ui.utils
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.platform.Font
 import com.jder.strings.AppStrings
 import com.jder.ui.components.logError
 import java.awt.Desktop
@@ -31,6 +34,9 @@ actual fun printError(message: String) = System.err.println(message)
 
 actual suspend fun readResource(path: String): ByteArray =
     withContext(Dispatchers.IO) { resourceBytes(path) }
+
+actual fun fontFromBytes(name: String, bytes: ByteArray, weight: FontWeight): Font =
+    Font(name, bytes, weight)
 
 private fun resourceBytes(path: String): ByteArray = ClassLoader.getSystemResource(path).readBytes()
 

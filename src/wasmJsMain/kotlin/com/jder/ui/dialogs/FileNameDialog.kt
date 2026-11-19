@@ -11,7 +11,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jder.strings.CommonStrings
 import com.jder.strings.FileStrings
+import com.jder.ui.components.AppTextField
 import com.jder.ui.components.baseFileName
 import com.jder.ui.components.fileNameError
 
@@ -45,7 +45,7 @@ fun FileNameDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
-            OutlinedTextField(
+            AppTextField(
                 value = fileName,
                 onValueChange = {
                     fileName = it

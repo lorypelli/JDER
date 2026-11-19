@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,6 +18,7 @@ import com.jder.domain.model.UseCaseRelation
 import com.jder.domain.model.UseCaseRelationType
 import com.jder.strings.CommonStrings
 import com.jder.strings.UseCaseStrings
+import com.jder.ui.components.AppTextField
 import com.jder.ui.components.RadioOptionList
 
 @Composable
@@ -33,7 +33,7 @@ fun ActorPropertiesDialog(
         onDismissRequest = onDismiss,
         title = { Text(UseCaseStrings.ACTOR_PROPERTIES) },
         text = {
-            OutlinedTextField(
+            AppTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text(CommonStrings.NAME) },
@@ -71,14 +71,14 @@ fun UseCasePropertiesDialog(
         title = { Text(UseCaseStrings.USE_CASE_PROPERTIES) },
         text = {
             Column {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = documentation,
                     onValueChange = { documentation = it },
                     label = { Text(CommonStrings.DOCUMENTATION) },
@@ -177,21 +177,21 @@ fun SystemBoundaryPropertiesDialog(
         title = { Text(UseCaseStrings.SYSTEM_PROPERTIES) },
         text = {
             Column {
-                OutlinedTextField(
+                AppTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(CommonStrings.NAME) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = width,
                     onValueChange = { text -> width = text.filter { it.isDigit() } },
                     label = { Text(CommonStrings.WIDTH) },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     singleLine = true,
                 )
-                OutlinedTextField(
+                AppTextField(
                     value = height,
                     onValueChange = { text -> height = text.filter { it.isDigit() } },
                     label = { Text(CommonStrings.HEIGHT) },

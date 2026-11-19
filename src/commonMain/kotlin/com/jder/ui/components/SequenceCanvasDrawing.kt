@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -171,7 +170,7 @@ private fun messageLabel(
     val text =
         textMeasurer.measureLine(
             text = label,
-            style = TextStyle(color = color, fontSize = 12.sp),
+            style = diagramTextStyle(color = color, fontSize = 12.sp),
             maxWidth = MESSAGE_LABEL_MAX_WIDTH,
         )
     val topLeft =
@@ -319,7 +318,7 @@ private fun DrawScope.drawLifelineHead(
         )
     }
     val nameStyle =
-        TextStyle(
+        diagramTextStyle(
             color = palette.text,
             fontSize = 13.sp,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
@@ -481,7 +480,12 @@ private fun DrawScope.drawSequenceFragmentLabels(
     val keyword =
         textMeasurer.measure(
             text = fragment.type.keyword,
-            style = TextStyle(color = palette.text, fontSize = 12.sp, fontWeight = FontWeight.Bold),
+            style =
+                diagramTextStyle(
+                    color = palette.text,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
         )
     val labelWidth = keyword.size.width + 22f
     val labelBottom = fragment.y + SEQUENCE_FRAGMENT_LABEL_HEIGHT
@@ -505,7 +509,7 @@ private fun DrawScope.drawSequenceFragmentLabels(
                 fragment.y + (SEQUENCE_FRAGMENT_LABEL_HEIGHT - keyword.size.height) / 2f,
             ),
     )
-    val guardStyle = TextStyle(color = palette.text, fontSize = 12.sp)
+    val guardStyle = diagramTextStyle(color = palette.text, fontSize = 12.sp)
     if (fragment.type == SequenceFragmentType.REF) {
         if (fragment.condition.isNotBlank()) {
             val name =

@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 package com.jder.web
 
 import kotlin.io.encoding.Base64
+import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.Promise
 import kotlinx.coroutines.await
 
