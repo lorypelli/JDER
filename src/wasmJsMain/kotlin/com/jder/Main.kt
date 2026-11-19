@@ -35,7 +35,6 @@ import com.jder.ui.theme.AppFont
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import com.jder.web.BrowserWindow
-import com.jder.web.removeElement
 import com.jder.web.warnBeforeUnload
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -53,7 +52,6 @@ fun main() {
             } catch (e: Exception) {
                 logError(AppStrings.FONT_LOAD_FAILED, e)
             }
-            removeElement("loading")
             isFontLoaded = true
         }
         if (isFontLoaded) {
