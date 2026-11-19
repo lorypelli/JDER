@@ -1,0 +1,9 @@
+.web-app {
+    color-scheme: light dark;
+    overscroll-behavior: none;
+}
+
+body {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
