@@ -58,10 +58,6 @@ tasks.named<Jar>("jvmJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from({ configurations["jvmRuntimeClasspath"].map { if (it.isDirectory) it else zipTree(it) } })
 }
-bundlerEnvironment {
-    set("SITE_DIR", file("src/web").absolutePath)
-    set("KOTLIN_ENTRY", "./kotlin/jder.mjs")
-}
 tasks.register<Sync>("webApp") {
     from(tasks.named("wasmJsBrowserProductionVite"))
     into("src/web/app")
