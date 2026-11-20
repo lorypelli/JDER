@@ -136,9 +136,11 @@ internal fun resolveLogicWire(
         val target = componentsById[targetEndpoint.componentId] ?: return null
         if (!type.hasOutput || sourceEndpoint.pin is LogicPin.Input) return null
         if (target.inputPinCount == 0 || targetEndpoint.pin == LogicPin.Output) return null
+        val targetPin = targetEndpoint.pin
         val pin =
-            (targetEndpoint.pin as? LogicPin.Input)?.index
-                ?: run {
+            if (targetPin is LogicPin.Input) targetPin.index
+            else
+                run {
                     val usedPins =
                         diagram.wires
                             .filter { it.targetId == target.id }

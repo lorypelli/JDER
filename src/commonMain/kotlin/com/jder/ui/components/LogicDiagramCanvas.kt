@@ -180,7 +180,9 @@ fun LogicDiagramCanvas(
                     state.selectedComponentId ?: state.selectedWireId ?: state.selectedNoteId,
                 hoveredId = hovered?.id,
                 highlightedPins =
-                    listOfNotNull(hovered as? LogicElement.PinRef, preview?.target).distinct(),
+                    listOfNotNull<LogicElement>(hovered, preview?.target)
+                        .filterIsInstance<LogicElement.PinRef>()
+                        .distinct(),
                 pendingSource = state.pendingWireSource,
             )
             preview?.let { drawLogicWirePreview(it.anchor, it.cursor, it.isFromOutput, palette) }

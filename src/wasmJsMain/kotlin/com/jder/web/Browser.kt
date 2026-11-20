@@ -3,7 +3,6 @@ package com.jder.web
 import com.jder.strings.CommonStrings
 import com.jder.ui.components.Toasts
 import kotlin.js.JsAny
-import kotlin.js.JsString
 import kotlin.js.toJsArray
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
@@ -66,13 +65,14 @@ internal fun pickTextFile(
     onPicked: (String, String) -> Unit,
     onFailed: (String) -> Unit,
 ) {
-    val input = document.createElement("input") as HTMLInputElement
+    val input = document.createElement("input")
+    if (input !is HTMLInputElement) return
     input.type = "file"
     input.accept = accept
     input.addEventListener("change") {
         val file = input.files?.item(0) ?: return@addEventListener
         val reader = FileReader()
-        reader.onload = { onPicked(file.name, (reader.result as JsString).toString()) }
+        reader.onload = { onPicked(file.name, reader.result.toString()) }
         reader.onerror = { onFailed(reader.error.toString()) }
         reader.readAsText(file)
     }
@@ -82,7 +82,8 @@ internal fun pickTextFile(
 internal fun downloadFile(name: String, type: String, bytes: ByteArray) {
     val blob = Blob(listOf<JsAny?>(bytes.toInt8Array()).toJsArray(), BlobPropertyBag(type))
     val url = URL.createObjectURL(blob)
-    val link = document.createElement("a") as HTMLAnchorElement
+    val link = document.createElement("a")
+    if (link !is HTMLAnchorElement) return
     link.href = url
     link.download = name
     link.click()
