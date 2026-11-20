@@ -8,7 +8,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4-purple?style=for-the-badge&logo=kotlin)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-orange?style=for-the-badge&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform)
 
-[🌐 Sito Web](https://jder.it/) • [▶️ Apri nel Browser](https://jder.it/app) • [⬇️ Download](https://jder.it/download) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
+[🌐 Sito Web](https://jder.it/) • [▶️ Apri nel Browser](https://jder.it/app/) • [⬇️ Download](https://jder.it/download) • [🐛 Segnala un problema](https://github.com/LoryPelli/JDER/issues)
 
 ---
 
@@ -16,7 +16,7 @@
 
 JDER è una riscrittura completa in **Kotlin** e **Jetpack Compose** del software originale creato da [Alessandro Ballini](https://ballini.it/Software/ProgER) e successivamente mantenuto da [Gianvito Pio](https://gianvitopio.wordpress.com/jder). Porta con sé un'interfaccia Material 3 moderna e pulita, nuovi tipi di diagramma e un'esperienza utente notevolmente migliorata.
 
-Funziona come applicazione desktop su Windows, macOS e Linux e direttamente nel browser, senza installare nulla, all'indirizzo [jder.it/app](https://jder.it/app).
+Funziona come applicazione desktop su Windows, macOS e Linux e direttamente nel browser, senza installare nulla, all'indirizzo [jder.it/app/](https://jder.it/app/).
 
 ---
 
@@ -185,7 +185,7 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 
 ### 🧭 Versione Web
 
-La stessa app gira nel browser su [jder.it/app](https://jder.it/app), con gli stessi diagrammi, strumenti, menu e file JSON dell'app desktop. Cambia solo il modo di gestire i file:
+La stessa app gira nel browser su [jder.it/app/](https://jder.it/app/), con gli stessi diagrammi, strumenti, menu e file JSON dell'app desktop. Cambia solo il modo di gestire i file:
 
 - **Apri** usa la finestra del browser per scegliere un file `.json` dal computer
 - **Salva**, **Salva con nome** ed **Esporta come PNG** chiedono il nome del file e lo scaricano (Salva riusa il nome del file aperto o già salvato)
@@ -245,7 +245,7 @@ All'avvio JDER controlla l'ultima release su GitHub: se il `JDER.jar` pubblicato
 
 ### Nel browser
 
-Apri [jder.it/app](https://jder.it/app): non serve installare né Java né JDER (vedi [Versione Web](#-versione-web)).
+Apri [jder.it/app/](https://jder.it/app/): non serve installare né Java né JDER (vedi [Versione Web](#-versione-web)).
 
 ### Riga di comando
 
@@ -299,7 +299,7 @@ Per compilare la versione web:
 ./gradlew webApp
 ```
 
-La build la mette in `src/web/app/`, che il sito pubblica su `/app` (in locale si prova con `pnpm exec wrangler dev`). Il bundle è prodotto da Vite (plugin Gradle `io.github.turansky.kfc.application`). La prima volta Gradle scarica Node.js e i pacchetti npm che gli servono.
+La build la mette in `src/web/app/`, che il sito pubblica su `/app/` (in locale si prova con `pnpm exec wrangler dev`). Il bundle è prodotto da Vite (plugin Gradle `io.github.turansky.kfc.application`). La prima volta Gradle scarica Node.js e i pacchetti npm che gli servono.
 
 ---
 
@@ -354,7 +354,7 @@ src/
 │   ├── CommandLine.kt                 # Opzioni da riga di comando (--json, --png)
 │   ├── data/                          # File, preferenze Java e controllo aggiornamenti dalla release GitHub
 │   └── ui/                            # File manager, menu di sistema, salvataggio ed esportazione automatici
-├── wasmJsMain/                        # Versione web (jder.it/app)
+├── wasmJsMain/                        # Versione web (jder.it/app/)
 │   ├── kotlin/com/jder/
 │   │   ├── Main.kt                    # Punto di ingresso nel browser
 │   │   ├── web/                       # API del browser: file, download, localStorage, schermo intero

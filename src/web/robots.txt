@@ -4,7 +4,7 @@ Disallow: /download/JDER.jar
 Allow: /
 Allow: /index.md
 Allow: /download
-Allow: /app
+Allow: /app/
 Allow: /guida.pdf
 Allow: /screenshots/er-light.png
 Allow: /screenshots/er-dark.png

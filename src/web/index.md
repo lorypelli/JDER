@@ -8,13 +8,13 @@ url: https://jder.it/
 
 # JDER — Editor di Diagrammi ER, Schemi Logici, Use Case, Class, Sequenza, Logici e Macchine a Stati
 
-**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **schemi logici relazionali**, **Use Case**, **Class Diagram**, **diagrammi di sequenza**, **diagrammi logici** e **macchine a stati finiti di Mealy e di Moore**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR, oppure direttamente nel browser all'indirizzo [jder.it/app](https://jder.it/app).
+**JDER** è un editor gratuito e open source per diagrammi **Entity-Relationship**, **schemi logici relazionali**, **Use Case**, **Class Diagram**, **diagrammi di sequenza**, **diagrammi logici** e **macchine a stati finiti di Mealy e di Moore**, scritto in Kotlin e Compose Multiplatform. Gira su Windows, macOS e Linux con un singolo file JAR, oppure direttamente nel browser all'indirizzo [jder.it/app/](https://jder.it/app/).
 
 ## Il Tuo Editor di Diagrammi Moderno
 
 Nuova versione del software di [Alessandro Ballini](https://ballini.it/Software/ProgER), poi successivamente ripresa da [Gianvito Pio](https://gianvitopio.wordpress.com/jder), con una veste grafica più moderna e correzione di vari errori, riscritta completamente in Kotlin e Compose.
 
-[Scarica JDER](/download) | [Apri nel Browser](/app) | [Guida Utente PDF](/guida.pdf)
+[Scarica JDER](/download) | [Apri nel Browser](/app/) | [Guida Utente PDF](/guida.pdf)
 
 ## Tipi di Diagramma
 

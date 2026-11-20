@@ -381,7 +381,7 @@ const technologies = [
 const links = () => [
     h('nav', { class: 'app-bar-links' }, [
         h('mdui-button', { variant: 'text', href: '/download' }, 'Scarica'),
-        h('mdui-button', { variant: 'text', href: '/app' }, 'Versione Web'),
+        h('mdui-button', { variant: 'text', href: '/app/' }, 'Versione Web'),
         h(
             'mdui-button',
             { variant: 'text', href: '/guida.pdf', target: '_blank' },
@@ -396,7 +396,7 @@ const actions = () => [
             svg(icons.download, { slot: 'icon' }),
             'Scarica Risorse',
         ]),
-        h('mdui-button', { variant: 'tonal', href: '/app' }, [
+        h('mdui-button', { variant: 'tonal', href: '/app/' }, [
             svg(icons.browser, { slot: 'icon' }),
             'Apri nel Browser',
         ]),
@@ -533,7 +533,7 @@ const download = () =>
                         paths: icons.browser,
                         button: h(
                             'mdui-button',
-                            { variant: 'outlined', href: '/app' },
+                            { variant: 'outlined', href: '/app/' },
                             'Apri nel browser',
                         ),
                     }),

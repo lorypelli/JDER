@@ -10,7 +10,6 @@
     "assets": {
         "binding": "ASSETS",
         "directory": "./src/web",
-        "html_handling": "drop-trailing-slash",
         "run_worker_first": ["/"]
     }
 }
