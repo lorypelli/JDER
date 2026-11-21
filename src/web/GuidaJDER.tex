@@ -1,200 +1,394 @@
 % ============================================================
 %  Guida Utente — JDER (Java Diagrammi E/R)
-%  Compilare con: pdflatex GuidaJDER.tex  (due passaggi)
-%  Dipendenze: geometry, hyperref, graphicx, booktabs,
-%              tcolorbox, fontenc, inputenc, babel,
-%              enumitem, xcolor, titlesec, parskip,
-%              microtype, fancyhdr, lastpage, needspace
+%  Compilare con Tectonic (XeTeX) dalla cartella src/web:
+%    tectonic GuidaJDER.tex --outdir <cartella temporanea>
+%  e copiare il PDF ottenuto in guida.pdf
+%  Stile Material 3 come l'app e il sito: font Roboto e colori
+%  della palette Blu (tema chiaro) di ColorPalettes.kt
 % ============================================================
+\RequirePackage{fix-cm}
 \documentclass[a4paper,11pt]{article}
 
-% --- Encoding & lingua ----------------------------------------
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
+% --- Font e lingua --------------------------------------------
+\usepackage{fontspec}
 \usepackage[italian]{babel}
+\setmainfont{Roboto}[
+  Extension=.otf,
+  UprightFont=*-Regular,
+  BoldFont=*-Bold,
+  ItalicFont=*-Italic,
+  BoldItalicFont=*-BoldItalic,
+  FontFace={mb}{n}{*-Medium},
+  FontFace={mb}{it}{*-MediumItalic},
+  WordSpace={1,1.5,1},
+]
+\setmonofont{RobotoMono}[
+  Extension=.otf,
+  UprightFont=*-Regular,
+  BoldFont=*-Bold,
+  ItalicFont=*-Italic,
+  BoldItalicFont=*-BoldItalic,
+  Scale=MatchLowercase,
+]
+
+% --- Scala tipografica Material 3 (1 dp = 0,75 pt) -----------
+\makeatletter
+\renewcommand\normalsize{%
+  \@setfontsize\normalsize{10.5}{15}%
+  \abovedisplayskip 8\p@ \@plus2\p@ \@minus4\p@
+  \abovedisplayshortskip \z@ \@plus2\p@
+  \belowdisplayshortskip 4\p@ \@plus2\p@ \@minus2\p@
+  \belowdisplayskip \abovedisplayskip
+  \let\@listi\@listI}
+\makeatother
+\normalsize
+\newcommand\mediumweight{\fontseries{mb}\selectfont}
+\newcommand\displaymedium{\fontsize{33.75}{39}\selectfont}
+\newcommand\headlinemedium{\fontsize{21}{27}\selectfont}
+\newcommand\headlinesmall{\fontsize{18}{24}\selectfont}
+\newcommand\titlelarge{\fontsize{16.5}{21}\selectfont}
+\newcommand\titlemedium{\fontsize{12}{18}\selectfont\mediumweight}
+\newcommand\titlesmall{\fontsize{10.5}{15}\selectfont\mediumweight}
+\newcommand\bodylarge{\fontsize{12}{18}\selectfont}
+\newcommand\bodysmall{\fontsize{9}{12}\selectfont}
+\newcommand\labellarge{\fontsize{10.5}{15}\selectfont\mediumweight}
+\newcommand\labelmedium{\fontsize{9}{12}\selectfont\mediumweight}
+
+% --- Colori (palette Blu, tema chiaro) -----------------------
+\usepackage{xcolor}
+\definecolor{m3primary}{HTML}{2196F3}
+\definecolor{m3onprimary}{HTML}{FFFFFF}
+\definecolor{m3primarycontainer}{HTML}{BBDEFB}
+\definecolor{m3onprimarycontainer}{HTML}{0D47A1}
+\definecolor{m3secondarycontainer}{HTML}{B3E5FC}
+\definecolor{m3onsecondarycontainer}{HTML}{01579B}
+\definecolor{m3tertiarycontainer}{HTML}{B2DFDB}
+\definecolor{m3ontertiarycontainer}{HTML}{004D40}
+\definecolor{m3errorcontainer}{HTML}{FCD8DF}
+\definecolor{m3onerrorcontainer}{HTML}{8C0009}
+\definecolor{m3surface}{HTML}{FFFFFF}
+\definecolor{m3onsurface}{HTML}{1A1A1A}
+\definecolor{m3onsurfacevariant}{HTML}{424242}
+\definecolor{m3outline}{HTML}{757575}
+\definecolor{m3outlinevariant}{HTML}{CAC4D0}
+\definecolor{m3surfacecontainerlow}{RGB}{244,250,254}
+\definecolor{m3surfacecontainerhigh}{RGB}{231,244,254}
+\definecolor{m3zebra}{RGB}{240,240,240}
 
 % --- Layout ---------------------------------------------------
 \usepackage[
-  top=2.5cm, bottom=2.8cm,
-  left=2.8cm, right=2.8cm,
-  headheight=14pt
+  top=2.4cm, bottom=2.4cm,
+  left=2.2cm, right=2.2cm,
+  headheight=15pt, headsep=0.6cm, footskip=1.1cm
 ]{geometry}
-\usepackage{parskip}         % spazio tra paragrafi al posto del rientro
-\usepackage{microtype}       % micro-tipografia
-\usepackage{emptypage}       % pagine vuote realmente vuote
-\usepackage{needspace}       % evita titoli isolati a fondo pagina
-
-% --- Colori ---------------------------------------------------
-\usepackage{xcolor}
-% Palette brand JDER (dal sito jder.it)
-\definecolor{jderorange}{RGB}{240,120,24}   % primario sito
-\definecolor{jderred}{RGB}{233,75,60}        % accento sito
-\definecolor{jderdarkblue}{RGB}{30,60,114}   % heading h2/h3 sito
-\definecolor{jderblue}{RGB}{42,82,152}       % link/badge sito
-\definecolor{jderdark}{RGB}{44,62,80}        % testo body sito
-\definecolor{jdergray}{RGB}{80,90,100}       % testo secondario
-\definecolor{coverbgA}{RGB}{15,32,39}        % inizio gradiente sfondo sito
-\definecolor{coverbgB}{RGB}{32,58,67}        % metà gradiente sito
-\definecolor{notebg}{RGB}{255,248,235}       % caldo-arancio chiaro
-\definecolor{warnbg}{RGB}{255,235,230}       % rosso chiaro
-\definecolor{tipbg}{RGB}{235,245,255}        % blu chiaro
-
-% --- Tipografia -----------------------------------------------
-\usepackage{lmodern}
-\usepackage{textcomp}
+\usepackage[skip=6pt plus 2pt]{parskip}
+\usepackage{microtype}
+\raggedbottom
+\widowpenalty=10000
+\clubpenalty=10000
+\emergencystretch=2em
 
 % --- Grafica --------------------------------------------------
 \usepackage{graphicx}
-\usepackage{float}
-
-% --- Tabelle --------------------------------------------------
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{longtable}
-
-% --- Box colorati ---------------------------------------------
+\usepackage{tikz}
+\usetikzlibrary{svg.path}
 \usepackage[most]{tcolorbox}
+% cmex anche a 10,5 pt: amsmath (caricato da tcolorbox) lo dichiara solo a misure fisse
+\DeclareFontShape{OMX}{cmex}{m}{n}{<-8>cmex7<8>cmex8<9>cmex9<9.5->cmex10}{}
+\usepackage{tabularray}
+\usepackage{caption}
+\usepackage{flafter}
+\renewcommand\topfraction{0.9}
+\renewcommand\bottomfraction{0.7}
+\renewcommand\textfraction{0.1}
+\renewcommand\floatpagefraction{0.8}
+\setlength\floatsep{14pt plus 4pt minus 2pt}
+\setlength\textfloatsep{16pt plus 4pt minus 4pt}
 
+% --- Icone Material (gli stessi tracciati SVG del sito) -------
+\newcommand\deficon[2]{\expandafter\def\csname icon@#1\endcsname{#2}}
+% svg.path disegna in pt ignorando x/y: si scala con xscale/yscale e si parte da (0,0)
+% perché un tracciato che inizia con una m relativa non dipenda dal punto precedente
+\newcommand\filliconpath[2]{\fill[#2] (0,0) svg {#1};}
+\newcommand\drawicon[4]{%
+  \begin{scope}[shift={(#4)}, xscale=#2/24, yscale=-#2/24, shift={(-12pt,-12pt)}]
+    \edef\iconpath{\csname icon@#1\endcsname}%
+    \expandafter\filliconpath\expandafter{\iconpath}{#3}%
+  \end{scope}}
+\newcommand\mdicon[3]{%
+  \tikz[baseline={-#2*5/6}]{\path (0,0) rectangle (#2,-#2);
+    \drawicon{#1}{#2}{#3}{#2/2,-#2/2}}}
+\deficon{book}{M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z M17.5 10.5c.88 0 1.73.09 2.5.26V9.24c-.79-.15-1.64-.24-2.5-.24-1.7 0-3.24.29-4.5.83v1.66c1.13-.64 2.7-.99 4.5-.99zM13 12.49v1.66c1.13-.64 2.7-.99 4.5-.99.88 0 1.73.09 2.5.26V11.9c-.79-.15-1.64-.24-2.5-.24-1.7 0-3.24.3-4.5.83zm4.5 1.84c-1.7 0-3.24.29-4.5.83v1.66c1.13-.64 2.7-.99 4.5-.99.88 0 1.73.09 2.5.26v-1.52c-.79-.16-1.64-.24-2.5-.24z}
+\deficon{palette}{M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10a2.5 2.5 0 0 0 2.5-2.5c0-.61-.23-1.2-.64-1.67a.528.528 0 0 1-.13-.33c0-.28.22-.5.5-.5H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9zm5.5 11c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-4c-.83 0-1.5-.67-1.5-1.5S13.67 6 14.5 6s1.5.67 1.5 1.5S15.33 9 14.5 9zM5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S7.33 13 6.5 13 5 12.33 5 11.5zm6-4c0 .83-.67 1.5-1.5 1.5S8 8.33 8 7.5 8.67 6 9.5 6s1.5.67 1.5 1.5z}
+\deficon{er}{M14 9v2h-3V9H8.5V7H11V1H4v6h2.5v2H4v6h2.5v2H4v6h7v-6H8.5v-2H11v-2h3v2h7V9h-7z}
+\deficon{relational}{M21 10h-8.35A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H13l2 2 2-2 2 2 4-4.04L21 10zM7 15c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z}
+\deficon{class}{M4 7v2c0 .55-.45 1-1 1H2v4h1c.55 0 1 .45 1 1v2c0 1.65 1.35 3 3 3h3v-2H7c-.55 0-1-.45-1-1v-2c0-1.3-.84-2.42-2-2.83v-.34C5.16 11.42 6 10.3 6 9V7c0-.55.45-1 1-1h3V4H7C5.35 4 4 5.35 4 7zm17 3c-.55 0-1-.45-1-1V7c0-1.65-1.35-3-3-3h-3v2h3c.55 0 1 .45 1 1v2c0 1.3.84 2.42 2 2.83v.34c-1.16.41-2 1.52-2 2.83v2c0 .55-.45 1-1 1h-3v2h3c1.65 0 3-1.35 3-3v-2c0-.55.45-1 1-1h1v-4h-1z}
+\deficon{usecase}{M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z}
+\deficon{sequence}{m18 12 4-4-4-4v3H3v2h15zM6 12l-4 4 4 4v-3h15v-2H6z}
+\deficon{logic}{M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z}
+\deficon{statemachine}{M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z}
+\deficon{save}{M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z}
+\deficon{keyboard}{M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z}
+\deficon{description}{M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z}
+\deficon{error}{M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z}
+\deficon{code}{M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z}
+\deficon{download}{M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z}
+\deficon{browser}{M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6-4 4h3v6h2v-6h3l-4-4z}
+\deficon{info}{M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z}
+\deficon{warning}{M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z}
+\deficon{lightbulb}{M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z}
+
+% --- Riquadri, tabelle e figure ------------------------------
 \tcbset{
-  notebox/.style={
-    colback=notebg, colframe=jderorange,
-    coltitle=jderdarkblue,
-    fonttitle=\bfseries, left=6pt, right=6pt,
-    top=4pt, bottom=4pt, arc=4pt
+  m3callout/.style n args={3}{
+    enhanced, frame hidden, boxrule=0pt, arc=9pt, colback=#2, coltext=m3onsurface, parbox=false,
+    left=40pt, right=14pt, top=11pt, bottom=11pt, boxsep=0pt,
+    before skip=10pt plus 2pt, after skip=10pt plus 2pt,
+    detach title, coltitle=#3, fonttitle=\titlesmall,
+    before upper={\parskip=3pt plus 1pt\tcbtitle\par},
+    overlay={\drawicon{#1}{18pt}{#3}{[xshift=22pt, yshift=-15pt]frame.north west}},
   },
-  warnbox/.style={
-    colback=warnbg,
-    coltitle=jderred,
-    fonttitle=\bfseries, left=6pt, right=6pt,
-    top=4pt, bottom=4pt, arc=4pt
+  tipbox/.style={m3callout={lightbulb}{m3primarycontainer}{m3onprimarycontainer}},
+  notebox/.style={m3callout={info}{m3tertiarycontainer}{m3ontertiarycontainer}},
+  warnbox/.style={m3callout={warning}{m3errorcontainer}{m3onerrorcontainer}},
+  m3card/.style={
+    enhanced, arc=9pt, boxrule=0.75pt, colframe=m3outlinevariant, colback=m3surface,
+    left=0pt, right=0pt, top=0pt, bottom=0pt, boxsep=0pt, clip upper,
+    before upper={\parskip=0pt},
   },
-  tipbox/.style={
-    colback=tipbg, colframe=jderblue,
-    coltitle=jderdarkblue,
-    fonttitle=\bfseries, left=6pt, right=6pt,
-    top=4pt, bottom=4pt, arc=4pt
+  m3button/.style={
+    on line, enhanced, arc=15pt, boxrule=0.75pt, boxsep=0pt, left=12pt, right=16pt, top=7.5pt, bottom=7.5pt,
+    fontupper=\labellarge,
   },
-  shortcutbox/.style={
-    colback=gray!8, colframe=jderorange!40,
-    left=6pt, right=6pt, top=4pt, bottom=4pt, arc=4pt
-  }
+  filled/.style={m3button, colframe=m3primary, colback=m3primary, coltext=m3onprimary},
+  tonal/.style={m3button, colframe=m3secondarycontainer, colback=m3secondarycontainer,
+    coltext=m3onsecondarycontainer},
+  outlined/.style={m3button, colframe=m3outline, colback=m3surface, coltext=m3primary},
 }
+\NewTblrTheme{m3}{
+  \SetTblrTemplate{head}{empty}
+  \SetTblrTemplate{foot}{empty}
+}
+\NewTblrEnviron{m3tblr}
+\SetTblrOuter[m3tblr]{long, theme=m3, entry=none, label=none, presep=8pt, postsep=8pt}
+\SetTblrInner[m3tblr]{
+  width=\linewidth, rowhead=1, rowsep=3pt, colsep=8pt,
+  row{odd}={bg=m3zebra}, row{1}={bg=m3surface, font=\bfseries},
+  hline{2,Z}={0.75pt, m3outlinevariant},
+}
+% Prima della tabella si riserva lo spazio di intestazione e due righe: se manca, la riga
+% che la introduce va a pagina nuova insieme alla tabella (il 9999 la rende verificabile
+% senza che diventi un punto di interruzione); parskip a zero perché tabularray non lo conta
+\NewDocumentEnvironment{m3table}{m +b}{%
+  \par\nopagebreak\vbox to 5\baselineskip{}\penalty9999\vskip-5\baselineskip
+  \parskip=0pt\begin{m3tblr}{colspec={#1}}#2\end{m3tblr}}{}
+\DeclareCaptionFont{m3label}{\labellarge\color{m3primary}}
+\DeclareCaptionFont{m3text}{\color{m3onsurfacevariant}}
+\captionsetup[figure]{
+  labelfont=m3label, textfont=m3text, labelsep=quad,
+  justification=raggedright, singlelinecheck=false, skip=0pt,
+}
+\newcommand\screenshot[2]{%
+  \begin{figure}[tb]
+    \begin{tcolorbox}[m3card]
+      \includegraphics[width=\linewidth]{screenshots/#1-light.png}\par
+      \vspace{9pt}%
+      \hspace*{14pt}\parbox{\dimexpr\linewidth-28pt\relax}{\caption{#2}\label{fig:#1}}\par
+      \vspace{11pt}%
+    \end{tcolorbox}
+  \end{figure}}
+\newcommand\codeblock[1]{%
+  \begin{tcolorbox}[enhanced, frame hidden, boxrule=0pt, arc=9pt, colback=m3surfacecontainerhigh,
+    left=14pt, right=14pt, top=9pt, bottom=9pt, boxsep=0pt,
+    before skip=8pt plus 2pt, after skip=8pt plus 2pt, fontupper=\ttfamily\color{m3onsurface}]
+    #1
+  \end{tcolorbox}}
 
 % --- Elenchi puntati ------------------------------------------
 \usepackage{enumitem}
-\setlist[itemize]{leftmargin=1.6em, itemsep=2pt, topsep=4pt}
-\setlist[enumerate]{leftmargin=1.6em, itemsep=2pt, topsep=4pt}
+\NewDocumentCommand\stepbadge{m}{%
+  \tikz[baseline=(badge.base)]\node[circle, fill=m3primarycontainer, text=m3onprimarycontainer,
+    font=\labelmedium, inner sep=0pt, minimum size=14pt] (badge) {#1};}
+\setlist{itemsep=2pt, topsep=2pt, parsep=0pt, beginpenalty=10000}
+\setlist[itemize]{leftmargin=16pt, label=\textcolor{m3primary}{\textbullet}}
+\setlist[itemize,2]{label=\textcolor{m3outline}{\textendash}}
+\setlist[enumerate]{leftmargin=24pt, labelsep=8pt, label=\stepbadge{\arabic*}, ref=\arabic*}
 
 % --- Titoli di sezione ----------------------------------------
-\usepackage{titlesec}
-\titleformat{\section}
-  {\Large\bfseries\color{jderorange}}
-  {\thesection}{1em}{}[\vspace{-4pt}\textcolor{jderorange}{\rule{\linewidth}{1.5pt}}]
-\titleformat{\subsection}
-  {\large\bfseries\color{jderdarkblue}}
-  {\thesubsection}{0.8em}{}
-\titleformat{\subsubsection}
-  {\normalsize\bfseries\color{jderblue}}
-  {\thesubsubsection}{0.7em}{}
+\usepackage[nobottomtitles*]{titlesec}
+\renewcommand\bottomtitlespace{0.12\textheight}
+\newcommand\currenticon{book}
+\newcommand\tocicon{book}
+\newcommand\sectionicon[1]{%
+  \renewcommand\currenticon{#1}%
+  \addtocontents{toc}{\gdef\protect\tocicon{#1}}}
+\newcommand\iconbadge[4]{%
+  \tikz{\fill[m3primarycontainer, rounded corners=#3] (0,0) rectangle (#2,#2);
+    \drawicon{#1}{#4}{m3onprimarycontainer}{#2/2,#2/2}}}
+\newcommand\sectionheader[1]{%
+  \begin{minipage}[c]{36pt}\iconbadge{\currenticon}{36pt}{10pt}{22pt}\end{minipage}%
+  \hspace{14pt}%
+  \begin{minipage}[c]{\dimexpr\linewidth-50pt\relax}
+    \parskip=0pt
+    {\labellarge\color{m3primary}Sezione \thesection\par}
+    {\headlinemedium\color{m3onsurface}#1\par}
+  \end{minipage}}
+\titleformat{\section}[block]{}{}{0pt}{\sectionheader}
+\titleformat{name=\section, numberless}[block]{\headlinemedium\color{m3onsurface}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{20pt plus 4pt minus 2pt}{10pt plus 2pt}
+\titleformat{\subsection}{\titlelarge\color{m3onsurface}}{\textcolor{m3primary}{\thesubsection}}{10pt}{}
+\titleformat{name=\subsection, numberless}{\titlelarge\color{m3onsurface}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{14pt plus 3pt minus 2pt}{2pt plus 1pt}
+\titleformat{\subsubsection}{\titlemedium\color{m3onsurface}}{\textcolor{m3primary}{\thesubsubsection}}{8pt}{}
+\titlespacing*{\subsubsection}{0pt}{10pt plus 2pt minus 1pt}{0pt plus 1pt}
+
+% --- Indice ---------------------------------------------------
+\usepackage{titletoc}
+\setcounter{tocdepth}{2}
+\contentsmargin{24pt}
+\titlecontents{section}[30pt]
+  {\addvspace{10pt minus 6pt}\fontsize{12}{16}\selectfont\mediumweight\color{m3onsurface}}
+  {\llap{\mdicon{\tocicon}{16pt}{m3primary}\hspace{14pt}}}
+  {}
+  {\hfill\textcolor{m3primary}{\contentspage}}
+\titlecontents*{subsection}[30pt]
+  {\addvspace{2pt minus 1pt}\rightskip=24pt plus 1fil\relax\bodysmall\color{m3onsurfacevariant}}
+  {\thecontentslabel\enspace}
+  {}
+  {}
+  [\enspace·\enspace]
+\makeatletter
+\newcommand\guidetoc{\@starttoc{toc}}
+\makeatother
 
 % --- Intestazioni e piè di pagina -----------------------------
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{jderdarkblue}\textbf{JDER} --- Guida Utente}
-\fancyhead[R]{\small\color{jdergray}\leftmark}
-\fancyfoot[C]{\small\color{jdergray}Pagina \thepage\ di \pageref{LastPage}}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.3pt}
+\fancyhead[L]{\labelmedium\textcolor{m3primary}{JDER}\enspace\textcolor{m3onsurfacevariant}{Guida Utente}}
+\fancyhead[R]{\labelmedium\color{m3onsurfacevariant}\leftmark}
+\fancyfoot[C]{\tcbox[on line, enhanced, frame hidden, boxrule=0pt, arc=7pt, colback=m3primarycontainer,
+  left=8pt, right=8pt, top=2.5pt, bottom=2.5pt, boxsep=0pt,
+  fontupper=\labelmedium\color{m3onprimarycontainer}]{\thepage\,/\,\pageref*{LastPage}}}
+\renewcommand\headrulewidth{0.5pt}
+\renewcommand\footrulewidth{0pt}
+\renewcommand\headrule{{\color{m3outlinevariant}\hrule height\headrulewidth width\headwidth\vskip-\headrulewidth}}
+\renewcommand\sectionmark[1]{\markboth{#1}{#1}}
 
 % --- Hyperlink ------------------------------------------------
 \usepackage[
   colorlinks=true,
-  linkcolor=jderdarkblue,
-  urlcolor=jderorange,
+  linkcolor=m3primary,
+  urlcolor=m3primary,
+  linktoc=all,
   pdfauthor={JDER Project},
   pdftitle={Guida Utente JDER},
   pdfsubject={Editor di Diagrammi E/R, Schemi Logici, UML, Logici e Macchine a Stati}
 ]{hyperref}
+\urlstyle{same}
 
 % --- Comandi personalizzati -----------------------------------
-\newcommand{\key}[1]{\texttt{\textbf{#1}}}
-\newcommand{\menu}[1]{\textit{#1}}
-\newcommand{\uielement}[1]{\textbf{#1}}
-\newcommand{\jder}{\textbf{JDER}}
-\newcommand{\theauthor}{LoryPelli}
+\tcbset{
+  m3key/.style={on line, enhanced, arc=3pt, boxrule=0.6pt, colframe=m3outlinevariant,
+    colback=m3surfacecontainerlow, left=3pt, right=3pt, top=1pt, bottom=1pt, boxsep=0pt,
+    fontupper=\labelmedium\color{m3onsurface}},
+  m3code/.style={on line, enhanced, frame hidden, boxrule=0pt, arc=3pt,
+    colback=m3surfacecontainerhigh, left=2.5pt, right=2.5pt, top=1pt, bottom=1pt, boxsep=0pt,
+    fontupper=\ttfamily\color{m3onsurface}},
+}
+% Ogni chip viene composto una volta sola e poi riusato: tabularray misura più volte le celle
+\makeatletter
+\newcommand\chipbox[2]{%
+  \edef\chipname{chip@#1@\f@size @\detokenize{#2}}%
+  \ifcsname\chipname\endcsname\else
+    \expandafter\newsavebox\csname\chipname\endcsname
+    \global\expandafter\setbox\csname\chipname\endcsname\hbox{\tcbox[#1]{\vphantom{Ag}#2}}%
+  \fi
+  \expandafter\usebox\csname\chipname\endcsname}
+\makeatother
+\newcommand\key[1]{\chipbox{m3key}{#1}}
+\RenewDocumentCommand\texttt{m}{\chipbox{m3code}{#1}}
+\newcommand\menu[1]{{\mediumweight\color{m3onprimarycontainer}#1}}
+\newcommand\uielement[1]{{\mediumweight #1}}
+\newcommand\jder{{\mediumweight JDER}}
+\newcommand\theauthor{LoryPelli}
+\newcommand\chip[1]{\tcbox[on line, enhanced, arc=6pt, boxrule=0.75pt, colframe=m3outlinevariant,
+  colback=m3surface, left=9pt, right=9pt, top=5pt, bottom=5pt, boxsep=0pt,
+  fontupper=\labellarge\color{m3onsurfacevariant}]{\vphantom{Ag}#1}}
+\newcommand\coverbutton[4]{%
+  \href{#4}{\tcbox[#1]{\mdicon{#2}{13.5pt}{tcbcolupper}\hspace{6pt}#3}}}
+\newlength\cardwidth
+\newsavebox\cardbox
+\newcommand\diagramcard[3]{%
+  \begin{lrbox}{\cardbox}%
+    \begin{tcolorbox}[m3card, width=\cardwidth, nobeforeafter, box align=top]
+      \includegraphics[width=\linewidth]{screenshots/#1-light.png}\par
+      \vspace{6pt}\hspace*{8pt}{\labelmedium\color{m3onsurface}#2}\par
+      \vspace{7pt}
+    \end{tcolorbox}%
+  \end{lrbox}%
+  \hyperref[#3]{\usebox\cardbox}}
 
 % =============================================================
 \begin{document}
 
-
-    
-    % ===================== COPERTINA =============================
-% Copertina senza ancora: titlepage riparte da pagina 1 e page.1 sarebbe doppia
-\hypersetup{pageanchor=false}
-\begin{titlepage}
-  \pagecolor{coverbgA}
-  \color{white}
-  \centering
-  \vspace*{2.5cm}
-
-  % Decorazione superiore
-  {\color{jderorange}\rule{4cm}{2pt}}\quad
-  {\color{white!50!coverbgA}\rule{2cm}{0.5pt}}\quad
-  {\color{jderred}\rule{4cm}{2pt}}
-
-  \vspace{1.2cm}
-
-  % Titolo principale in arancione brand
-  {\fontsize{60}{68}\selectfont\bfseries\color{jderorange} JDER}
-
-  \vspace{0.3cm}
-  {\large\color{white!80!coverbgA} Java Diagrammi E/R}
-
-  \vspace{0.8cm}
-  {\color{jderorange}\rule{9cm}{1pt}}
-
-  \vspace{0.8cm}
-  {\LARGE\bfseries Guida Utente Completa}
-
-  \vspace{0.5cm}
-  {\normalsize\color{white!70!coverbgA} a cura di \textbf{\color{jderorange}\theauthor}}
-
-  \vspace{2cm}
-  {\normalsize\color{white!85!coverbgA}
-    Editor moderno e multipiattaforma per\\
-    \textbf{Diagrammi Entità-Relazione} e \textbf{Schemi Logici},\\
-    \textbf{Diagrammi delle Classi}, \textbf{dei Casi d'Uso}, \textbf{di Sequenza},\\
-    \textbf{Diagrammi Logici} e \textbf{Macchine di Mealy} e \textbf{di Moore}
-  }
-
-  \vspace{1.5cm}
-
-  % Badge tecnologie
-  \tcbox[on line, colback=coverbgB, colframe=jderorange,
-    arc=4pt, boxrule=0.8pt, left=4pt, right=4pt, top=3pt, bottom=3pt,
-    fontupper=\bfseries\color{white}]{Kotlin}\quad
-  \tcbox[on line, colback=coverbgB, colframe=jderorange,
-    arc=4pt, boxrule=0.8pt, left=4pt, right=4pt, top=3pt, bottom=3pt,
-    fontupper=\bfseries\color{white}]{Compose Multiplatform}\quad
-  \tcbox[on line, colback=coverbgB, colframe=jderorange,
-    arc=4pt, boxrule=0.8pt, left=4pt, right=4pt, top=3pt, bottom=3pt,
-    fontupper=\bfseries\color{white}]{Material 3}
-
-  \vfill
-  {\color{jderorange}\rule{9cm}{0.8pt}}\\[0.4cm]
-  {\small\color{white!70!coverbgA} Basato su Kotlin \& Jetpack Compose Multiplatform \quad\textbullet\quad Licenza MIT}\\[0.3cm]
-  {\small\color{jderorange} \url{https://jder.it/}}
-\end{titlepage}
-\hypersetup{pageanchor=true}
-\nopagecolor
+% ===================== COPERTINA =============================
+\thispagestyle{empty}
+\begin{center}
+  \includegraphics[width=2.4cm]{jder_icon.png}\par
+  \vspace{12pt}
+  {\displaymedium\color{m3onsurface}JDER\par}
+  \vspace{4pt}
+  {\titlelarge\color{m3onsurfacevariant}Java Diagrammi E/R\par}
+  \vspace{24pt}
+  {\headlinesmall\color{m3onsurface}Guida Utente Completa\par}
+  \vspace{8pt}
+  \parbox{13.5cm}{\centering\bodylarge\color{m3onsurfacevariant}
+    Editor moderno e multipiattaforma per Diagrammi Entità-Relazione e Schemi Logici,
+    Diagrammi delle Classi, dei Casi d'Uso, di Sequenza, Diagrammi Logici e Macchine di
+    Mealy e di Moore}\par
+  \vspace{20pt}
+  \coverbutton{filled}{download}{Scarica Risorse}{https://jder.it/download}\hspace{8pt}%
+  \coverbutton{tonal}{browser}{Apri nel Browser}{https://jder.it/app/}\hspace{8pt}%
+  \coverbutton{outlined}{code}{Codice Sorgente}{https://github.com/LoryPelli/JDER}
+\end{center}
+\vfill
+{\titlemedium\color{m3onsurface}Otto tipi di diagramma\par}
+\vspace{2pt}
+\setlength\cardwidth{\dimexpr(\linewidth-24pt)/4\relax}
+\noindent\diagramcard{er}{Diagramma E/R}{sec:er}\hfill
+\diagramcard{relational}{Schema Logico}{sec:relational}\hfill
+\diagramcard{class}{Diagramma Classi}{sec:class}\hfill
+\diagramcard{usecase}{Casi d'Uso}{sec:usecase}\par
+\vspace{8pt}
+\noindent\diagramcard{sequence}{Diagramma Sequenza}{sec:sequence}\hfill
+\diagramcard{logic}{Diagramma Logico}{sec:logic}\hfill
+\diagramcard{mealy}{Macchina di Mealy}{sec:fsm}\hfill
+\diagramcard{moore}{Macchina di Moore}{sec:fsm}\par
+\vfill
+\begin{center}
+  \chip{Kotlin}\hspace{6pt}\chip{Compose Multiplatform}\hspace{6pt}\chip{Material 3}\hspace{6pt}%
+  \chip{Java}\hspace{6pt}\chip{WebAssembly}
+\end{center}
+\vspace{6pt}
+{\color{m3outlinevariant}\rule{\linewidth}{0.5pt}}\par
+{\centering\color{m3onsurfacevariant}a cura di \textcolor{m3onsurface}{\theauthor}\quad\textbullet\quad
+  Licenza MIT\quad\textbullet\quad\url{https://jder.it/}\par}
+\clearpage
 
 % ===================== INDICE ================================
-\tableofcontents
-\newpage
+\markboth{Indice}{Indice}
+{\headlinemedium\color{m3onsurface}Indice\par}
+\vspace{6pt}
+\begingroup
+\hypersetup{hidelinks}
+\guidetoc
+\endgroup
+\clearpage
 
 % =============================================================
+\sectionicon{book}
 \section{Introduzione}
 \label{sec:intro}
 
@@ -251,7 +445,6 @@ Scaricare il file \texttt{JDER.jar} da una di queste pagine:
   \item Sito ufficiale: \url{https://jder.it/}
 \end{itemize}
 
-\Needspace{4\baselineskip}
 Per avviare l'applicazione:
 \begin{enumerate}
   \item Doppio clic sul file \texttt{JDER.jar} (se Java è associato all'estensione \texttt{.jar}).
@@ -292,9 +485,7 @@ Se manca, al nome del file viene aggiunta l'estensione (\texttt{.json} o \texttt
 
 Per esempio, per modificare un diagramma tenendo sempre aggiornata la sua immagine:
 
-\begin{center}
-  \texttt{java -jar JDER.jar -{}-json diagramma.json -{}-png diagramma.png}
-\end{center}
+\codeblock{java -jar JDER.jar -{}-json diagramma.json -{}-png diagramma.png}
 
 Con \texttt{-{}-png} l'esportazione automatica (vedi sezione~\ref{sec:autoexport}) parte già
 attiva e si può disattivare dal menu \menu{File}. Un file JSON esistente invece non viene salvato
@@ -344,20 +535,15 @@ modo di gestire i file:
 
 Sugli schermi touch la lavagna risponde ai gesti:
 
-\begin{center}
-\begin{tabular}{@{}ll@{}}
-  \toprule
-  \textbf{Azione} & \textbf{Gesto} \\
-  \midrule
+\begin{m3table}{lX}
+  Azione & Gesto \\
   Selezionare o creare un elemento & Tocco \\
   Modificare un elemento & Doppio tocco \\
   Menu contestuale & Tocco prolungato \\
   Spostare un elemento o la vista & Trascinamento con un dito \\
   Scorrimento (pan) & Trascinamento con due dita \\
   Zoom & Allontanare o avvicinare due dita \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 Anche l'interfaccia si adatta allo spazio disponibile. Su uno schermo stretto, come quello di un
 telefono in verticale, il pannello Proprietà compare sotto la lavagna, la barra dei menu, le
@@ -366,6 +552,7 @@ mostra le anteprime su due colonne. Con il telefono in orizzontale la barra con 
 spazio alla lavagna: lingua, palette e tema restano nel menu \menu{Vista}.
 
 % =============================================================
+\sectionicon{palette}
 \section{Interfaccia Principale}
 \label{sec:interfaccia}
 
@@ -412,7 +599,6 @@ segnate con un pallino (\textbullet) accanto al nome.
   \jder{} mostrerà una finestra di conferma prima di uscire.
 \end{tcolorbox}
 
-\Needspace{7\baselineskip}
 \subsection{Barra dei menu}
 
 La barra dei menu contiene i comandi di tutta l'applicazione, con le relative scorciatoie:
@@ -473,11 +659,8 @@ relativa scorciatoia.
 
 La lavagna è l'area principale di disegno. Supporta le seguenti interazioni:
 
-\begin{center}
-\begin{tabular}{@{}ll@{}}
-  \toprule
-  \textbf{Azione} & \textbf{Controllo} \\
-  \midrule
+\begin{m3table}{lX}
+  Azione & Controllo \\
   Zoom avanti & \key{Ctrl} + \key{+} oppure rotella del mouse verso l'alto \\
   Zoom indietro & \key{Ctrl} + \key{-} oppure rotella del mouse verso il basso \\
   Scorrimento (pan) & Trascinamento su un'area vuota o con il tasto centrale \\
@@ -487,9 +670,7 @@ La lavagna è l'area principale di disegno. Supporta le seguenti interazioni:
   Menu contestuale & Clic destro (\key{Ctrl} + clic su macOS) \\
   Creare un elemento & Clic sinistro sull'area vuota (con strumento attivo) \\
   Deselezionare / Annullare & \key{Esc} \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \begin{tcolorbox}[tipbox, title={Suggerimento}]
   Lo zoom con la rotella si centra sulla posizione del cursore. Lo zoom massimo è al
@@ -545,19 +726,14 @@ trattini lunghi e i puntini di sospensione, che spesso arrivano da un copia e in
 sostituiti dai corrispondenti caratteri ASCII.
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{er}
 \section{Diagramma Entità-Relazione (E/R)}
 \label{sec:er}
 
 Il modulo E/R implementa la notazione classica dei diagrammi Entità-Relazione, ampiamente
 utilizzata nella progettazione concettuale di basi di dati.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/er-light.png}
-  \caption{Il diagramma E/R dell'esempio \texttt{universita.json}.}
-  \label{fig:er}
-\end{figure}
+\screenshot{er}{Il diagramma E/R dell'esempio \texttt{universita.json}.}
 
 \subsection{Strumenti disponibili}
 
@@ -632,23 +808,17 @@ una connessione:
 
 \subsubsection{Cardinalità supportate}
 
-\Needspace{12\baselineskip}
 \jder{} supporta le seguenti notazioni di cardinalità:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Valore} & \textbf{Simbolo} & \textbf{Significato} \\
-  \midrule
+\begin{m3table}{llX}
+  Valore & Simbolo & Significato \\
   \texttt{1}      & \texttt{1}       & Esattamente uno \\
   \texttt{(0,1)}  & \texttt{(0,1)}   & Zero o uno \\
   \texttt{(1,1)}  & \texttt{(1,1)}   & Esattamente uno (con vincolo) \\
   \texttt{N}      & \texttt{N}       & Molti (senza limite) \\
   \texttt{(0,N)}  & \texttt{(0,N)}   & Zero o molti \\
   \texttt{(1,N)}  & \texttt{(1,N)}   & Uno o molti \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \subsubsection{Conversione in entità associativa}
 
@@ -672,19 +842,14 @@ operazione è disponibile solo per relazioni con esattamente due connessioni ent
 Gli attributi descrivono le proprietà di un'entità o di una relazione. \jder{} supporta cinque
 tipi di attributo:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Tipo} & \textbf{Rappresentazione grafica} & \textbf{Descrizione} \\
-  \midrule
+\begin{m3table}{llX}
+  Tipo & Rappresentazione grafica & Descrizione \\
   Normale    & Cerchio con bordo semplice & Attributo semplice \\
   Chiave     & Cerchio e nome evidenziati & Identificatore primario \\
   Multivalore & Cerchio con doppio bordo & Può avere più valori \\
   Derivato   & Cerchio con bordo tratteggiato & Calcolato da altri attributi \\
   Composto   & Doppio cerchio + componenti collegati & Composto da più parti \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \textbf{Aggiungere un attributo:}
 \begin{enumerate}
@@ -741,7 +906,7 @@ Il clic destro su un elemento della lavagna apre un menu contestuale con azioni 
 \end{tcolorbox}
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{relational}
 \section{Schema Logico (Relazionale)}
 \label{sec:relational}
 
@@ -750,12 +915,8 @@ descrive la base di dati come un insieme di \textbf{tabelle} (relazioni), ciascu
 \textbf{colonne}, la \textbf{chiave primaria} e le \textbf{chiavi esterne} che la collegano alle
 altre tabelle.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/relational-light.png}
-  \caption{Lo schema logico dell'esempio \texttt{universita-logico.json}, traduzione del
+\screenshot{relational}{Lo schema logico dell'esempio \texttt{universita-logico.json}, traduzione del
   diagramma E/R della figura~\ref{fig:er}.}
-\end{figure}
 
 \subsection{Strumenti disponibili}
 
@@ -816,18 +977,13 @@ matita nell'elenco del pannello Proprietà; l'icona del cestino la elimina.
 \end{tcolorbox}
 
 \textbf{Notazione delle colonne:}
-\begin{center}
-\begin{tabular}{@{}ll@{}}
-  \toprule
-  \textbf{Simbolo} & \textbf{Significato} \\
-  \midrule
+\begin{m3table}{lX}
+  Simbolo & Significato \\
   \texttt{PK} e nome sottolineato & Colonna della chiave primaria \\
   \texttt{FK} & Chiave esterna (una freccia la collega alla colonna riferita) \\
   \texttt{UQ} & Colonna a valore unico \\
   \texttt{*} dopo il nome & Colonna opzionale (ammette \texttt{NULL}) \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \subsection{Chiavi esterne}
 
@@ -885,18 +1041,14 @@ tabella come colonna normale.
 \end{itemize}
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{class}
 \section{Diagramma delle Classi}
 \label{sec:class}
 
 Il modulo Diagramma delle Classi implementa la notazione UML per rappresentare la struttura
 statica di un sistema a oggetti.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/class-light.png}
-  \caption{Il diagramma delle classi dell'esempio \texttt{ecommerce.json}.}
-\end{figure}
+\screenshot{class}{Il diagramma delle classi dell'esempio \texttt{ecommerce.json}.}
 
 \subsection{Strumenti disponibili}
 
@@ -916,20 +1068,14 @@ statica di un sistema a oggetti.
 La classe è il blocco fondamentale. Viene rappresentata con un rettangolo diviso in tre sezioni:
 nome (in alto), attributi (al centro) e metodi (in basso).
 
-\Needspace{9\baselineskip}
 \textbf{Tipi di classe supportati:}
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Tipo} & \textbf{Stereotipo UML} & \textbf{Note} \\
-  \midrule
+\begin{m3table}{llX}
+  Tipo & Stereotipo UML & Note \\
   Classe          & (nessuno)         & Tipo predefinito \\
   Interfaccia     & \texttt{<<interface>>}   & \\
   Enumerazione    & \texttt{<<enum>>}        & \\
   Classe Astratta & \texttt{<<abstract>>}    & Il nome è in corsivo \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \textbf{Creazione:}
 \begin{enumerate}
@@ -977,23 +1123,17 @@ suo nome nel pannello Proprietà: si apre lo stesso dialogo, già compilato.
 
 \subsection{Relazioni tra classi}
 
-\Needspace{8\baselineskip}
 \jder{} supporta i sei tipi di relazione UML standard:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Tipo} & \textbf{Notazione} & \textbf{Descrizione} \\
-  \midrule
+\begin{m3table}{llX}
+  Tipo & Notazione & Descrizione \\
   Associazione  & Linea con freccia aperta & Dipendenza semantica generica \\
   Aggregazione  & Linea con rombo vuoto    & Parte di (``ha un'') \\
   Composizione  & Linea con rombo pieno    & Parte di (con dipendenza di vita) \\
   Ereditarietà  & Linea con triangolo vuoto & Generalizzazione (``è un'') \\
   Realizzazione & Linea tratteggiata con triangolo & Implementazione interfaccia \\
   Dipendenza    & Linea tratteggiata con freccia & Dipendenza d'uso \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \textbf{Creazione di una relazione:}
 \begin{enumerate}
@@ -1016,18 +1156,14 @@ menu contestuale.
 \end{itemize}
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{usecase}
 \section{Diagramma dei Casi d'Uso}
 \label{sec:usecase}
 
 Il modulo Casi d'Uso implementa la notazione UML per i diagrammi dei casi d'uso, utili per
 descrivere i requisiti funzionali di un sistema dal punto di vista degli attori esterni.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/usecase-light.png}
-  \caption{Il diagramma dei casi d'uso dell'esempio \texttt{biblioteca.json}.}
-\end{figure}
+\screenshot{usecase}{Il diagramma dei casi d'uso dell'esempio \texttt{biblioteca.json}.}
 
 \subsection{Strumenti disponibili}
 
@@ -1076,18 +1212,13 @@ con un'ellisse contenente il nome.
 
 \jder{} supporta quattro tipi di relazione per i diagrammi dei casi d'uso:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Tipo} & \textbf{Notazione} & \textbf{Utilizzo tipico} \\
-  \midrule
+\begin{m3table}{llX}
+  Tipo & Notazione & Utilizzo tipico \\
   Associazione     & Linea semplice                  & Attore $\leftrightarrow$ Caso d'uso \\
   Include          & Freccia tratteggiata \texttt{<<include>>} & Inclusione obbligatoria \\
   Extend           & Freccia tratteggiata \texttt{<<extend>>}  & Estensione condizionale \\
   Generalizzazione & Linea con triangolo vuoto        & Specializzazione \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \textbf{Creazione di una relazione:}
 \begin{enumerate}
@@ -1112,7 +1243,7 @@ casi d'uso appartenenti allo stesso sistema, separandoli dagli attori esterni.
 cima al rettangolo), larghezza e altezza del rettangolo.
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{sequence}
 \section{Diagramma di Sequenza}
 \label{sec:sequence}
 
@@ -1120,11 +1251,7 @@ Il diagramma di sequenza UML descrive come i partecipanti di uno scenario (attor
 scambiano messaggi nel tempo: ogni partecipante ha una \textbf{linea di vita} verticale e i
 messaggi si leggono dall'alto verso il basso.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/sequence-light.png}
-  \caption{Lo scenario ``Prenotare Libro'' dell'esempio \texttt{biblioteca-prenotazione.json}.}
-\end{figure}
+\screenshot{sequence}{Lo scenario ``Prenotare Libro'' dell'esempio \texttt{biblioteca-prenotazione.json}.}
 
 \subsection{Strumenti disponibili}
 
@@ -1146,19 +1273,14 @@ messaggi si leggono dall'alto verso il basso.
 Ogni linea di vita ha una \textbf{testa} con il nome del partecipante e una linea tratteggiata che
 scende fino in fondo al diagramma e si allunga da sola quando si aggiungono messaggi.
 
-\begin{center}
-\begin{tabular}{@{}ll@{}}
-  \toprule
-  \textbf{Tipo} & \textbf{Rappresentazione} \\
-  \midrule
+\begin{m3table}{lX}
+  Tipo & Rappresentazione \\
   Attore   & Omino stilizzato con il nome sotto \\
   Oggetto  & Rettangolo con il nome (es.\@ \texttt{c : Carrello}) \\
   Boundary & Cerchio con una barra verticale a sinistra (interfaccia con l'esterno) \\
   Control  & Cerchio con una freccia in cima (logica di controllo) \\
   Entity   & Cerchio con una linea sotto (dati del dominio) \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \textbf{Creazione:} selezionare lo strumento del tipo desiderato e fare clic sulla lavagna; la
 nuova linea di vita viene allineata in altezza alla prima già presente.
@@ -1180,19 +1302,14 @@ e \textbf{Documentazione}. Per spostare una linea di vita si trascina la sua tes
 Nella finestra \uielement{Nuovo Messaggio} si indicano l'\textbf{Etichetta} (es.\@
 \texttt{login(utente, password)}) e il \textbf{Tipo}:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Tipo} & \textbf{Notazione} & \textbf{Significato} \\
-  \midrule
+\begin{m3table}{llX}
+  Tipo & Notazione & Significato \\
   Sincrono    & Linea continua, punta piena      & Chiamata che attende la risposta \\
   Asincrono   & Linea continua, punta aperta     & Invio senza attesa \\
   Risposta    & Linea tratteggiata, punta aperta & Ritorno di una chiamata \\
   Creazione   & Tratteggiata, «create»           & Crea l'oggetto destinatario \\
   Distruzione & Continua, «destroy»              & Termina la linea di vita con una X \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 La testa dell'oggetto creato da un messaggio di creazione viene disegnata all'altezza del
 messaggio, mentre la linea di vita di un oggetto distrutto termina con una \textbf{X}.
@@ -1216,11 +1333,8 @@ automaticamente in base ai messaggi:
 I frammenti combinati racchiudono una parte dell'interazione in un riquadro con un'etichetta in
 alto a sinistra:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Etichetta} & \textbf{Tipo} & \textbf{Significato} \\
-  \midrule
+\begin{m3table}{llX}
+  Etichetta & Tipo & Significato \\
   \texttt{alt}      & Alternativa     & Si esegue l'operando la cui condizione è vera \\
   \texttt{opt}      & Opzionale       & Si esegue solo se la condizione è vera \\
   \texttt{loop}     & Ciclo           & Si ripete finché vale la condizione \\
@@ -1228,9 +1342,7 @@ alto a sinistra:
   \texttt{break}    & Interruzione    & Si esegue al posto del resto dell'interazione \\
   \texttt{critical} & Regione critica & Si esegue senza interruzioni \\
   \texttt{ref}      & Riferimento     & Rimanda a un'altra interazione \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \textbf{Creazione:} selezionare lo strumento \uielement{Crea Frammento Combinato} e fare clic
 sulla lavagna: viene creato un frammento \texttt{opt} con la condizione ``condizione''.
@@ -1258,19 +1370,15 @@ sulla lavagna: viene creato un frammento \texttt{opt} con la condizione ``condiz
 \end{itemize}
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{logic}
 \section{Diagramma Logico}
 \label{sec:logic}
 
 Il diagramma logico permette di disegnare e simulare circuiti digitali, anche con retroazione,
 formati da porte logiche, ingressi e uscite.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/logic-light.png}
-  \caption{Il sommatore completo dell'esempio \texttt{sommatore-completo.json}, con i valori
+\screenshot{logic}{Il sommatore completo dell'esempio \texttt{sommatore-completo.json}, con i valori
   della simulazione.}
-\end{figure}
 
 \subsection{Strumenti disponibili}
 
@@ -1350,7 +1458,7 @@ colonne separate da tabulazioni, pronta da incollare in un foglio di calcolo.
 \end{itemize}
 
 % =============================================================
-\Needspace{14cm}
+\sectionicon{statemachine}
 \section{Macchine a Stati Finiti (Mealy e Moore)}
 \label{sec:fsm}
 
@@ -1366,12 +1474,8 @@ l'uscita:
         stati: il cerchio è diviso in due, con il nome sopra e l'uscita sotto.
 \end{itemize}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/mealy-light.png}
-  \caption{La macchina di Mealy dell'esempio \texttt{riconoscitore-mealy.json}, che riconosce la
+\screenshot{mealy}{La macchina di Mealy dell'esempio \texttt{riconoscitore-mealy.json}, che riconosce la
   sequenza 101: l'uscita vale 1 sulla transizione che la completa.}
-\end{figure}
 
 \subsection{Strumenti disponibili}
 
@@ -1411,12 +1515,8 @@ Finale}, dal pannello Proprietà o dal menu contestuale; su uno stato finale la 
   ingressi, la macchina si trova in uno stato finale.
 \end{tcolorbox}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{screenshots/moore-light.png}
-  \caption{La macchina di Moore dell'esempio \texttt{riconoscitore-moore.json}, che riconosce la
+\screenshot{moore}{La macchina di Moore dell'esempio \texttt{riconoscitore-moore.json}, che riconosce la
   stessa sequenza: l'uscita vale 1 nello stato S3, quindi serve uno stato in più.}
-\end{figure}
 
 \subsection{Transizioni}
 
@@ -1440,7 +1540,6 @@ lo stato di partenza con quello di arrivo.
 
 \subsection{Forma delle transizioni}
 
-\Needspace{4\baselineskip}
 \jder{} sceglie da solo la forma delle frecce:
 \begin{itemize}
   \item tra due stati collegati in entrambi i versi le due frecce si curvano, una per lato;
@@ -1461,7 +1560,6 @@ cella indica lo stato successivo e,
 nella macchina di Mealy, anche l'uscita (\texttt{stato/uscita}); nella macchina di Moore l'uscita
 di ogni stato si trova nell'ultima colonna.
 
-\Needspace{4\baselineskip}
 Sotto la tabella sono elencati gli eventuali problemi da controllare:
 \begin{itemize}
   \item lo stato iniziale manca;
@@ -1507,6 +1605,7 @@ della finestra e \uielement{Copia} copia negli appunti la tabella della simulazi
 \end{itemize}
 
 % =============================================================
+\sectionicon{save}
 \section{Operazioni Comuni}
 \label{sec:comuni}
 
@@ -1659,23 +1758,17 @@ Per eliminare un elemento selezionato:
   vita, i fili di un componente del diagramma logico e le transizioni di uno stato.
 \end{tcolorbox}
 
-\Needspace{10\baselineskip}
 \subsection{Zoom e navigazione}
 
 I controlli di zoom sono disponibili tramite diversi metodi:
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Azione} & \textbf{Scorciatoia} & \textbf{Menu} \\
-  \midrule
+\begin{m3table}{llX}
+  Azione & Scorciatoia & Menu \\
   Zoom In         & \key{Ctrl} + \key{+} & Vista $\to$ Zoom In \\
   Zoom Out        & \key{Ctrl} + \key{-} & Vista $\to$ Zoom Out \\
   Reimposta Zoom  & \key{Ctrl} + \key{0} & Vista $\to$ Reimposta Zoom \\
   Scroll su/giù  & Rotella del mouse    & --- \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 Lo zoom è visualizzato come percentuale nella barra degli strumenti (es.\@ \texttt{100\%}).
 I limiti sono: minimo \textbf{25\%}, massimo \textbf{300\%}.
@@ -1727,6 +1820,7 @@ opzioni da riga di comando.
 \end{tcolorbox}
 
 % =============================================================
+\sectionicon{keyboard}
 \section{Scorciatoie da Tastiera}
 \label{sec:shortcuts}
 
@@ -1734,11 +1828,8 @@ La tabella seguente riassume tutte le scorciatoie da tastiera disponibili in \jd
 
 Su macOS si usa \key{Cmd} al posto di \key{Ctrl}.
 
-\begin{center}
-\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{7cm}@{}}
-  \toprule
-  \textbf{Scorciatoia} & \textbf{Azione} \\
-  \midrule
+\begin{m3table}{lX}
+  Scorciatoia & Azione \\
   \key{Ctrl} + \key{N}           & Nuovo Diagramma \\
   \key{Ctrl} + \key{O}           & Apri Diagramma \\
   \key{Ctrl} + \key{S}           & Salva (sovrascrive il file corrente) \\
@@ -1755,9 +1846,7 @@ Su macOS si usa \key{Cmd} al posto di \key{Ctrl}.
   \key{F11}                      & Schermo intero (Windows e Linux) \\
   \key{Ctrl} + \key{Cmd} + \key{F} & Schermo intero (macOS) \\
   \key{Cmd} + \key{M}            & Riduci a icona (macOS) \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 \begin{tcolorbox}[notebox, title={Nota}]
   La scorciatoia \key{Ctrl} + \key{S} apre automaticamente la finestra ``Salva con nome''
@@ -1765,6 +1854,7 @@ Su macOS si usa \key{Cmd} al posto di \key{Ctrl}.
 \end{tcolorbox}
 
 % =============================================================
+\sectionicon{description}
 \section{Formato dei File}
 \label{sec:files}
 
@@ -1772,11 +1862,8 @@ Su macOS si usa \key{Cmd} al posto di \key{Ctrl}.
 leggibili e modificabili con qualsiasi editor di testo, sebbene la modifica manuale non sia
 consigliata.
 
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-  \toprule
-  \textbf{Tipo di diagramma} & \textbf{Estensione} & \textbf{Contenuto principale} \\
-  \midrule
+\begin{m3table}{llX}
+  Tipo di diagramma & Estensione & Contenuto principale \\
   Entità-Relazione    & \texttt{.json} & entità, relazioni, attributi, note \\
   Schema Logico       & \texttt{.json} & tabelle, colonne, chiavi esterne, note \\
   Diagramma Classi    & \texttt{.json} & classi, relazioni, note \\
@@ -1785,9 +1872,7 @@ consigliata.
   Diagramma Logico    & \texttt{.json} & componenti, collegamenti, note \\
   Macchina di Mealy   & \texttt{.json} & stati, transizioni con ingresso e uscita, note \\
   Macchina di Moore   & \texttt{.json} & stati con uscita, transizioni, note \\
-  \bottomrule
-\end{tabular}
-\end{center}
+\end{m3table}
 
 Tutti i formati condividono la stessa estensione \texttt{.json} ma hanno strutture interne
 differenti (non sono intercambiabili): il campo \texttt{diagramType} indica il tipo di diagramma,
@@ -1796,6 +1881,7 @@ serializzazione è gestita da \texttt{kotlinx.serialization}; ogni oggetto è id
 UUID univoco generato automaticamente.
 
 % =============================================================
+\sectionicon{error}
 \section{Risoluzione dei Problemi}
 \label{sec:troubleshooting}
 
@@ -1836,6 +1922,7 @@ UUID univoco generato automaticamente.
 \end{tcolorbox}
 
 % =============================================================
+\sectionicon{code}
 \section{Crediti e Licenza}
 \label{sec:crediti}
 
@@ -1871,10 +1958,8 @@ UUID univoco generato automaticamente.
   \item Download ultima versione: \url{https://github.com/LoryPelli/JDER/releases/latest}
 \end{itemize}
 
-\vfill
-\begin{center}
-  \textcolor{jderorange}{\rule{8cm}{1pt}}\\[4pt]
-  {\small \textit{Guida Utente \jder{} --- \theauthor}}
-\end{center}
+\bigskip
+{\color{m3outlinevariant}\rule{\linewidth}{0.5pt}}\par
+{\centering\color{m3onsurfacevariant}Guida Utente \jder{} --- \theauthor\par}
 
 \end{document}
