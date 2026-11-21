@@ -7,6 +7,7 @@ const typescale = (name) => ({
 
 const muted = { color: 'rgb(var(--mdui-color-on-surface-variant))' };
 const primary = { color: 'rgb(var(--mdui-color-primary))' };
+const error = { color: 'rgb(var(--mdui-color-error))' };
 const rule = '0.0625rem solid rgb(var(--mdui-color-outline-variant))';
 
 const column = (gap) => ({ display: 'flex', flexDirection: 'column', gap });
@@ -93,6 +94,26 @@ const styles = {
         display: 'block',
         padding: '0.75rem 1rem',
     },
+    form: {
+        ...column('1rem'),
+        position: 'relative',
+        maxWidth: '40rem',
+        padding: '1.5rem',
+    },
+    formText: muted,
+    formFields: column('1rem'),
+    invisible: { visibility: 'hidden' },
+    outcome: {
+        ...column('1rem'),
+        position: 'absolute',
+        inset: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1.5rem',
+        textAlign: 'center',
+    },
+    outcomeIcon: { width: '4rem', height: '4rem' },
+    outcomeTitle: typescale('headline-small'),
     footer: {
         ...muted,
         padding: '1.5rem var(--page-padding)',
@@ -104,6 +125,12 @@ const styles = {
 
 const icons = {
     download: ['M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z'],
+    error: [
+        'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z',
+    ],
+    check: [
+        'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
+    ],
     book: [
         'M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z',
         'M17.5 10.5c.88 0 1.73.09 2.5.26V9.24c-.79-.15-1.64-.24-2.5-.24-1.7 0-3.24.29-4.5.83v1.66c1.13-.64 2.7-.99 4.5-.99zM13 12.49v1.66c1.13-.64 2.7-.99 4.5-.99.88 0 1.73.09 2.5.26V11.9c-.79-.15-1.64-.24-2.5-.24-1.7 0-3.24.3-4.5.83zm4.5 1.84c-1.7 0-3.24.29-4.5.83v1.66c1.13-.64 2.7-.99 4.5-.99.88 0 1.73.09 2.5.26v-1.52c-.79-.16-1.64-.24-2.5-.24z',
@@ -119,7 +146,20 @@ const icons = {
 
 const repository = 'https://github.com/LoryPelli/JDER';
 
+const contactUrl =
+    'https://polpomail.com/f/fca7ad6c4a2f04c13c3876ab8f4acc573be0';
+
 const state = reactive({ ...saved });
+
+const contact = reactive({
+    name: '',
+    email: '',
+    message: '',
+    gotcha: '',
+    sending: false,
+    result: null,
+    round: 0,
+});
 
 const svg = (paths, props = {}) =>
     h(
@@ -255,6 +295,137 @@ const page = ({ start, links, hero: heroOptions, content }) => [
     h('main', { style: styles.main }, [hero(heroOptions), ...content]),
     footer(),
 ];
+
+const send = async () => {
+    const body = new FormData();
+    body.append('name', contact.name);
+    body.append('email', contact.email);
+    body.append('message', contact.message);
+    body.append('_gotcha', contact.gotcha);
+    contact.sending = true;
+    try {
+        const response = await fetch(contactUrl, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body,
+        });
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        contact.result = 'sent';
+    } catch {
+        contact.result = 'failed';
+    } finally {
+        contact.sending = false;
+    }
+};
+
+const restart = () => {
+    Object.assign(contact, { name: '', email: '', message: '', result: null });
+    contact.round++;
+};
+
+const retry = () => {
+    contact.result = null;
+};
+
+const submit = (event) => {
+    event.preventDefault();
+    const fields = [...event.target.querySelectorAll('mdui-text-field')];
+    const valid = fields.map((field) => field.reportValidity());
+    if (!contact.sending && valid.every(Boolean)) {
+        send();
+    }
+};
+
+const field = (key, props) =>
+    h('mdui-text-field', {
+        variant: 'outlined',
+        required: true,
+        name: key,
+        value: contact[key],
+        disabled: contact.sending,
+        onInput: (event) => {
+            contact[key] = event.target.value;
+        },
+        ...props,
+    });
+
+const outcomes = {
+    sent: {
+        icon: icons.check,
+        color: primary,
+        title: 'Messaggio inviato',
+        text: 'Grazie per avermi scritto!',
+        action: 'Nuovo messaggio',
+        onClick: restart,
+    },
+    failed: {
+        icon: icons.error,
+        color: error,
+        title: 'Invio non riuscito',
+        text: 'Qualcosa è andato storto, ma il tuo messaggio è ancora qui: riprova tra poco.',
+        action: 'Riprova',
+        onClick: retry,
+    },
+};
+
+const outcome = ({ icon: paths, color, title, text, action, onClick }) =>
+    h('div', { style: styles.outcome }, [
+        svg(paths, { style: [color, styles.outcomeIcon] }),
+        h('h3', { style: styles.outcomeTitle }, title),
+        h('p', { style: styles.formText }, text),
+        h('mdui-button', { variant: 'outlined', onClick }, action),
+    ]);
+
+const contactForm = () =>
+    h('mdui-card', { variant: 'outlined', style: styles.form }, [
+        h(
+            'form',
+            {
+                key: contact.round,
+                style: [styles.formFields, contact.result && styles.invisible],
+                inert: !!contact.result,
+                onSubmit: submit,
+            },
+            [
+                h(
+                    'p',
+                    { style: styles.formText },
+                    'Hai una domanda, un suggerimento o hai trovato un errore? Scrivimi.',
+                ),
+                field('name', { label: 'Nome', autocomplete: 'name' }),
+                field('email', {
+                    label: 'Email',
+                    type: 'email',
+                    autocomplete: 'email',
+                }),
+                field('message', { label: 'Messaggio', rows: 5 }),
+                h('input', {
+                    type: 'text',
+                    name: '_gotcha',
+                    value: contact.gotcha,
+                    tabindex: -1,
+                    autocomplete: 'off',
+                    style: styles.none,
+                    onInput: (event) => {
+                        contact.gotcha = event.target.value;
+                    },
+                }),
+                h(
+                    'mdui-button',
+                    {
+                        type: 'submit',
+                        variant: 'filled',
+                        loading: contact.sending,
+                        fullWidth: true,
+                    },
+                    'Invia',
+                ),
+            ],
+        ),
+        contact.result && outcome(outcomes[contact.result]),
+    ]);
 
 const mount = (view) => createApp({ render: view }).mount('#app');
 
@@ -488,6 +659,7 @@ const home = () =>
                     technologies.map((name) => h('mdui-chip', name)),
                 ),
             ),
+            section('Contatti', contactForm()),
         ],
     });
 
