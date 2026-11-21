@@ -9,6 +9,9 @@ const muted = { color: 'rgb(var(--mdui-color-on-surface-variant))' };
 const primary = { color: 'rgb(var(--mdui-color-primary))' };
 const error = { color: 'rgb(var(--mdui-color-error))' };
 const rule = '0.0625rem solid rgb(var(--mdui-color-outline-variant))';
+const tabRule = '0.0625rem solid rgb(var(--mdui-color-outline))';
+
+const contentWidth = 'min(68.75rem, 100% - 2 * var(--page-padding))';
 
 const column = (gap) => ({ display: 'flex', flexDirection: 'column', gap });
 
@@ -44,8 +47,7 @@ const styles = {
         ...column('3rem'),
         flex: 1,
         alignSelf: 'center',
-        width: 'min(68.75rem, 100% - 2 * var(--page-padding))',
-        padding: '1.5rem 0 3rem',
+        width: contentWidth,
     },
     section: column('1rem'),
     heading: typescale('headline-small'),
@@ -97,31 +99,48 @@ const styles = {
     form: {
         ...column('1rem'),
         position: 'relative',
-        maxWidth: '40rem',
         padding: '1.5rem',
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
     },
     formText: muted,
-    badge: { alignSelf: 'flex-start' },
+    formWrap: { ...column('0'), maxWidth: '40rem' },
+    tab: {
+        ...typescale('label-large'),
+        ...muted,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '2.75rem',
+        background: 'rgb(var(--mdui-color-surface-container-high))',
+        border: tabRule,
+        borderBottom: 'none',
+        borderRadius: '0.75rem 0.75rem 0 0',
+        textDecoration: 'none',
+    },
     formFields: column('1rem'),
     invisible: { visibility: 'hidden' },
     outcome: {
         ...column('1rem'),
         position: 'absolute',
-        inset: 0,
+        inset: '1.5rem',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1.5rem',
         textAlign: 'center',
     },
     outcomeIcon: { width: '4rem', height: '4rem' },
     outcomeTitle: typescale('headline-small'),
     footer: {
         ...muted,
-        padding: '1.5rem var(--page-padding)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '4.5rem',
         borderTop: rule,
         fontSize: 'var(--mdui-typescale-body-medium-size)',
         textAlign: 'center',
     },
+    footerText: { width: contentWidth },
 };
 
 const icons = {
@@ -285,7 +304,7 @@ const hero = ({ subtitle, title, description, actions = [] }) =>
 
 const footer = () =>
     h('footer', { style: styles.footer }, [
-        h('p', [
+        h('p', { style: styles.footerText }, [
             '© 2025-2026 LoryPelli - ',
             link(repository, 'GitHub Repository'),
         ]),
@@ -379,7 +398,14 @@ const outcome = ({ icon: paths, color, title, text, action, onClick }) =>
         h('mdui-button', { variant: 'outlined', onClick }, action),
     ]);
 
-const contactForm = () =>
+const formTab = () =>
+    h(
+        'a',
+        { href: 'https://polpomail.com', target: '_blank', style: styles.tab },
+        'Modulo fornito da Polpo Mail',
+    );
+
+const contactCard = () =>
     h('mdui-card', { variant: 'outlined', style: styles.form }, [
         h(
             'form',
@@ -419,15 +445,6 @@ const contactForm = () =>
                     'Inviando il messaggio, il titolare del sito riceverà anche il tuo indirizzo IP.',
                 ),
                 h(
-                    'mdui-chip',
-                    {
-                        href: 'https://polpomail.com',
-                        target: '_blank',
-                        style: styles.badge,
-                    },
-                    'Modulo fornito da Polpo Mail',
-                ),
-                h(
                     'mdui-button',
                     {
                         type: 'submit',
@@ -441,6 +458,9 @@ const contactForm = () =>
         ),
         contact.result && outcome(outcomes[contact.result]),
     ]);
+
+const contactForm = () =>
+    h('div', { style: styles.formWrap }, [formTab(), contactCard()]);
 
 const mount = (view) => createApp({ render: view }).mount('#app');
 

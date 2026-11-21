@@ -2,6 +2,10 @@
     --page-padding: 1rem;
 }
 
+body > div {
+    gap: 2rem;
+}
+
 body {
     font-size: var(--mdui-typescale-body-large-size);
     line-height: var(--mdui-typescale-body-large-line-height);
