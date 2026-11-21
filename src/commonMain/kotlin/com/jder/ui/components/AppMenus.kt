@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.CenterFocusWeak
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
@@ -43,6 +44,7 @@ private const val GUIDE_URL = "https://jder.it/guida.pdf"
 private const val WEBSITE_URL = "https://jder.it/"
 private const val ISSUES_URL = "https://github.com/LoryPelli/JDER/issues"
 private const val SOURCE_URL = "https://github.com/LoryPelli/JDER"
+private const val SUPPORT_URL = "mailto:support@jder.it"
 
 val diagramTypeKeys =
     listOf(Key.One, Key.Two, Key.Three, Key.Four, Key.Five, Key.Six, Key.Seven, Key.Eight)
@@ -405,6 +407,11 @@ private fun helpEntries(uriHandler: UriHandler, onAbout: () -> Unit): List<AppMe
         add(
             AppMenuEntry.Action(MenuStrings.REPORT_ISSUE, icon = Icons.Default.BugReport) {
                 uriHandler.openSafely(ISSUES_URL)
+            },
+        )
+        add(
+            AppMenuEntry.Action(MenuStrings.CONTACT_SUPPORT, icon = Icons.Default.Email) {
+                uriHandler.openSafely(SUPPORT_URL)
             },
         )
         add(

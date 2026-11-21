@@ -38,6 +38,7 @@ object MenuStrings {
     val USER_GUIDE by text("Guida all'Uso", "User Guide")
     val WEBSITE by text("Sito Web di JDER", "JDER Website")
     val REPORT_ISSUE by text("Segnala un Problema", "Report an Issue")
+    val CONTACT_SUPPORT by text("Scrivi al Supporto", "Contact Support")
     val SOURCE_CODE by text("Codice Sorgente", "Source Code")
     val ABOUT by text("Informazioni su JDER", "About JDER")
 }
