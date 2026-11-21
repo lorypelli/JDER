@@ -101,6 +101,7 @@ const styles = {
         padding: '1.5rem',
     },
     formText: muted,
+    badge: { alignSelf: 'flex-start' },
     formFields: column('1rem'),
     invisible: { visibility: 'hidden' },
     outcome: {
@@ -412,6 +413,20 @@ const contactForm = () =>
                         contact.gotcha = event.target.value;
                     },
                 }),
+                h(
+                    'p',
+                    { style: styles.formText },
+                    'Inviando il messaggio, il titolare del sito riceverà anche il tuo indirizzo IP.',
+                ),
+                h(
+                    'mdui-chip',
+                    {
+                        href: 'https://polpomail.com',
+                        target: '_blank',
+                        style: styles.badge,
+                    },
+                    'Modulo fornito da Polpo Mail',
+                ),
                 h(
                     'mdui-button',
                     {
