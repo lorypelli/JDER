@@ -17,6 +17,13 @@ const formSender = new RegExp(
     'i',
 );
 const replyAddress = /^[^\s<>"]+@[^\s<>"]+$/;
+const signature = /^t=(\d+),v1=([0-9a-f]{64})$/;
+const tolerance = 5 * 60;
+const receipt = {
+    name: 'JDER Support',
+    text: 'Hi,\n\nthank you for your feedback! We have received your message and will get back to you as soon as possible.\n\nJDER Support',
+    headers: { 'Auto-Submitted': 'auto-replied' },
+};
 const senderName = /^(?:(?!["<>\\])[ -~]){1,50}$/;
 const cookie = {
     prefix: 'host',
@@ -88,8 +95,8 @@ const parse = async (c, id) => {
     return PostalMime.parse(await response.arrayBuffer());
 };
 
-const read = async (c) => {
-    const email = await parse(c, c.req.param('id'));
+const read = async (c, id) => {
+    const email = await parse(c, id);
     const from = decodeWords(
         email.headers.find(({ key }) => key == 'from')?.value || '',
     );
@@ -98,6 +105,7 @@ const read = async (c) => {
     }
     const title = from.match(formSender)[1];
     return {
+        id,
         text: email.text,
         html: email.html,
         messageId: email.messageId,
@@ -110,7 +118,7 @@ const read = async (c) => {
     };
 };
 
-const mark = (c, flags, id = c.req.param('id')) =>
+const mark = (c, flags, id) =>
     polpo(c, `messages/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(flags),
@@ -160,6 +168,57 @@ const conversation = async (c, { messageId, reply }) => {
         date: email.date,
         text: email.text,
     }));
+};
+
+const deliver = async (c, message, thread, { name, text, headers }) => {
+    const { messageId, title, reply } = message;
+    const ids = thread.map((item) => item.messageId);
+    const copy = {
+        name: title,
+        to: reply.to,
+        subject: title,
+        text: message.text,
+        html: message.html,
+        headers: {
+            'Message-ID': messageId,
+            Date: new Date(message.date).toUTCString(),
+        },
+    };
+    const answer = {
+        name,
+        to: reply.to,
+        bcc: mailbox,
+        subject: reply.subject,
+        text,
+        headers: {
+            ...headers,
+            'In-Reply-To': ids.at(-1) || messageId,
+            References: [messageId, ...ids].join(' '),
+        },
+    };
+    await smtp(c, thread.length ? [answer] : [copy, answer]);
+    await mark(c, { answered: true }, message.id);
+};
+
+const signed = async ({ req, env }, body) => {
+    const [time, digest] =
+        req.header('X-Polpo-Signature')?.match(signature)?.slice(1) ?? [];
+    if (!time || Math.abs(Date.now() / 1000 - time) > tolerance) {
+        return false;
+    }
+    const key = await crypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(env.POLPO_WEBHOOK_TOKEN),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['verify'],
+    );
+    return crypto.subtle.verify(
+        'HMAC',
+        key,
+        Uint8Array.fromHex(digest),
+        new TextEncoder().encode(`${time}.${body}`),
+    );
 };
 
 const identify = async (c) => {
@@ -285,8 +344,8 @@ admin.get('/api/messages', async (c) => {
 });
 
 admin.get('/api/messages/:id{[0-9]+}', async (c) => {
-    const message = await read(c);
-    await mark(c, { seen: true });
+    const message = await read(c, c.req.param('id'));
+    await mark(c, { seen: true }, message.id);
     return c.json({
         ...message,
         conversation: message.reply.to ? await conversation(c, message) : [],
@@ -295,51 +354,50 @@ admin.get('/api/messages/:id{[0-9]+}', async (c) => {
 
 admin.post('/api/messages/:id{[0-9]+}/reply', async (c) => {
     const { text, name } = await c.req.json().catch(() => ({}));
-    const message = await read(c);
-    const { to, subject } = message.reply;
+    const message = await read(c, c.req.param('id'));
     const sender = typeof name == 'string' ? name.trim() : '';
     if (
         typeof text != 'string' ||
         !text.trim() ||
-        !replyAddress.test(to) ||
+        !replyAddress.test(message.reply.to) ||
         !isName(sender)
     ) {
         throw new HTTPException(400);
     }
-    const { messageId, title } = message;
-    const thread = await conversation(c, message);
-    const ids = thread.map((item) => item.messageId);
-    const copy = {
-        name: title,
-        to,
-        subject: title,
-        text: message.text,
-        html: message.html,
-        headers: {
-            'Message-ID': messageId,
-            Date: new Date(message.date).toUTCString(),
-        },
-    };
-    const answer = {
+    await deliver(c, message, await conversation(c, message), {
         name: sender,
-        to,
-        bcc: mailbox,
-        subject,
         text,
-        headers: {
-            'In-Reply-To': ids.at(-1) || messageId,
-            References: [messageId, ...ids].join(' '),
-        },
-    };
-    await smtp(c, thread.length ? [answer] : [copy, answer]);
-    await mark(c, { answered: true });
+    });
     return c.json({
         mine: true,
         name: sender,
-        to,
+        to: message.reply.to,
         text,
         date: new Date().toISOString(),
     });
+});
+
+admin.post('/webhook', async (c) => {
+    const body = await c.req.text();
+    if (!(await signed(c, body))) {
+        throw new HTTPException(401);
+    }
+    const { event, message } = JSON.parse(body);
+    if (event != 'message.received') {
+        return c.body(null, 204);
+    }
+    const form = await read(c, message.id).catch((error) => {
+        if (error.status != 404) {
+            throw error;
+        }
+    });
+    if (form && replyAddress.test(form.reply.to)) {
+        const thread = await conversation(c, form);
+        if (!thread.length) {
+            await deliver(c, form, thread, receipt);
+        }
+    }
+    return c.body(null, 204);
 });
 
 export default admin;
