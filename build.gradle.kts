@@ -58,6 +58,14 @@ tasks.named<Jar>("jvmJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from({ configurations["jvmRuntimeClasspath"].map { if (it.isDirectory) it else zipTree(it) } })
 }
+listOf("wasmJsBrowserDevelopmentVite", "wasmJsBrowserProductionVite").forEach {
+    tasks.named(it) {
+        inputs
+            .files(fileTree("vite"))
+            .withPropertyName("viteSources")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    }
+}
 tasks.register<Sync>("webApp") {
     from(tasks.named("wasmJsBrowserProductionVite"))
     into("src/web/app")
