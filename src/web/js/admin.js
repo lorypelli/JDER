@@ -9,7 +9,7 @@ Object.assign(styles, {
     messageTitle: typescale('title-large'),
     messageText: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
     failure: { position: 'relative', minHeight: '18rem' },
-    sentReply: {
+    conversationItem: {
         ...column('0.5rem'),
         padding: '1rem',
         border: rule,
@@ -26,12 +26,6 @@ Object.assign(styles, {
     },
 });
 
-Object.assign(icons, {
-    reply: ['M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z'],
-});
-
-const nameKey = 'jder-reply-name';
-
 const unsupported = /[^ -~]|["<>\\]/g;
 
 const supportedName = (name) => name.replace(unsupported, '');
@@ -47,7 +41,7 @@ const inbox = reactive({
 });
 
 const composer = reactive({
-    name: supportedName(store(nameKey) || ''),
+    name: '',
     draft: '',
     sending: false,
     result: null,
@@ -104,7 +98,7 @@ const openMessage = async (item) => {
         item.seen = true;
         Object.assign(inbox, {
             view: 'message',
-            message: { ...message, item, sent: [] },
+            message: { ...message, item },
         });
         Object.assign(composer, { draft: '', result: null });
     } catch (reason) {
@@ -121,7 +115,7 @@ const retryReply = () => {
 };
 
 const sendReply = async () => {
-    const { item, sent } = inbox.message;
+    const { item, conversation } = inbox.message;
     composer.sending = true;
     try {
         const response = await api(`api/messages/${item.id}/reply`, {
@@ -129,14 +123,8 @@ const sendReply = async () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: composer.draft, name: composer.name }),
         });
-        sent.push(await response.json());
-        item.answered = true;
-        Object.assign(composer, {
-            name: composer.name.trim(),
-            draft: '',
-            result: 'sent',
-        });
-        store(nameKey, composer.name);
+        conversation.push(await response.json());
+        Object.assign(composer, { name: '', draft: '', result: 'sent' });
         composer.round++;
     } catch (reason) {
         composer.result = 'failed';
@@ -232,11 +220,6 @@ const messageItem = (item) =>
                 item.subject || 'Senza oggetto',
             ),
             h('span', { slot: 'description' }, formatDate(item.date)),
-            item.answered &&
-                h('span', { slot: 'end-icon' }, [
-                    icon(icons.reply),
-                    hidden('Risposto'),
-                ]),
         ],
     );
 
@@ -310,12 +293,12 @@ const replyForm = () => {
     ]);
 };
 
-const sentReply = ({ name, to, date, text }) =>
-    h('div', { style: styles.sentReply }, [
+const conversationItem = ({ mine, name, to, date, text }) =>
+    h('div', { style: styles.conversationItem }, [
         h(
             'p',
             { style: styles.cardText },
-            `Risposta di ${name} a ${to} · ${formatDate(date)}`,
+            `${mine ? `Risposta di ${name} a ${to}` : name || 'Risposta ricevuta'} · ${formatDate(date)}`,
         ),
         h('p', { style: styles.messageText }, text),
     ]);
@@ -372,7 +355,7 @@ const messageView = () => {
             ]),
             h('p', { style: styles.cardText }, formatDate(item.date)),
             messageBody(inbox.message),
-            ...inbox.message.sent.map(sentReply),
+            ...inbox.message.conversation.map(conversationItem),
             !reply.to &&
                 h(
                     'p',
