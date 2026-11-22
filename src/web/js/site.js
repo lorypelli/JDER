@@ -142,6 +142,10 @@ const section = (title, content) =>
         content,
     ]);
 
+const saveTheme = (isDark) => store(themeKey, String(isDark));
+
+const savePalette = (id) => store(paletteKey, id);
+
 const toggleTheme = () => {
     state.isDark = !state.isDark;
     saveTheme(state.isDark);

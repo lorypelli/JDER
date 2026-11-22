@@ -5,6 +5,70 @@ Object.assign(styles, {
     start: { alignSelf: 'flex-start' },
     center: { alignSelf: 'center' },
     unread: { fontWeight: 700 },
+    toolbar: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '0.5rem',
+        minHeight: '3rem',
+    },
+    toolbarText: { ...muted, ...typescale('title-small') },
+    messageCard: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        width: '100%',
+        padding: '1rem 1.25rem',
+    },
+    unreadCard: { borderColor: 'rgb(var(--mdui-color-primary))' },
+    messageInfo: { ...column('0.125rem'), flex: 1, minWidth: 0 },
+    messageName: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        ...typescale('title-medium'),
+    },
+    ellipsis: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+    },
+    itemDate: { ...muted, ...typescale('label-medium'), whiteSpace: 'nowrap' },
+    unreadDot: {
+        flex: 'none',
+        width: '0.5rem',
+        height: '0.5rem',
+        borderRadius: '50%',
+        backgroundColor: 'rgb(var(--mdui-color-primary))',
+    },
+    avatar: {
+        flex: 'none',
+        backgroundColor: 'rgb(var(--mdui-color-surface-variant))',
+        color: 'rgb(var(--mdui-color-on-surface-variant))',
+        fontWeight: 500,
+    },
+    unreadAvatar: {
+        backgroundColor: 'rgb(var(--mdui-color-primary))',
+        color: 'rgb(var(--mdui-color-on-primary))',
+    },
+    empty: {
+        ...column('1rem'),
+        alignItems: 'center',
+        padding: '3rem 1.5rem',
+        textAlign: 'center',
+    },
+    emptyBadge: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '5rem',
+        height: '5rem',
+        borderRadius: '50%',
+        backgroundColor: 'rgb(var(--mdui-color-primary-container))',
+        color: 'rgb(var(--mdui-color-on-primary-container))',
+    },
+    emptyIcon: { width: '2.5rem', height: '2.5rem' },
+    emptyText: { ...muted, maxWidth: '24rem' },
     messageHeader: { display: 'flex', alignItems: 'center', gap: '0.5rem' },
     messageTitle: typescale('title-large'),
     messageText: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
@@ -24,6 +88,15 @@ Object.assign(styles, {
         background: '#fff',
         colorScheme: 'light',
     },
+});
+
+Object.assign(icons, {
+    inbox: [
+        'M19 3H4.99c-1.11 0-1.98.89-1.98 2L3 19c0 1.1.88 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.11-.9-2-2-2zm0 12h-4c0 1.66-1.35 3-3 3s-3-1.34-3-3H4.99V5H19v10z',
+    ],
+    refresh: [
+        'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z',
+    ],
 });
 
 const unsupported = /[^ -~]|["<>\\]/g;
@@ -147,11 +220,10 @@ const logout = async () => {
 
 const submitReply = submitter(composer, sendReply);
 
+const dateFormat = { dateStyle: 'medium', timeStyle: 'short' };
+
 const formatDate = (value) =>
-    new Date(value).toLocaleString('it-IT', {
-        dateStyle: 'short',
-        timeStyle: 'short',
-    });
+    new Date(value).toLocaleString('it-IT', dateFormat);
 
 const replyOutcomes = {
     sent: {
@@ -205,31 +277,86 @@ const failure = () =>
         }),
     ]);
 
-const messageItem = (item) =>
-    h(
-        'mdui-list-item',
+const messageItem = (item) => {
+    const { name, address, subject, seen, date } = item;
+    const title = name || subject || 'Senza oggetto';
+    return h(
+        'mdui-card',
         {
-            headlineLine: 1,
-            descriptionLine: 1,
+            variant: 'outlined',
+            clickable: true,
+            style: !seen && styles.unreadCard,
             onClick: () => openMessage(item),
         },
-        [
+        h('div', { style: styles.messageCard }, [
             h(
-                'span',
-                { style: !item.seen && styles.unread },
-                item.subject || 'Senza oggetto',
+                'mdui-avatar',
+                { style: [styles.avatar, !seen && styles.unreadAvatar] },
+                String.fromCodePoint(title.codePointAt(0)).toUpperCase(),
             ),
-            h('span', { slot: 'description' }, formatDate(item.date)),
-        ],
+            h('div', { style: styles.messageInfo }, [
+                h('div', { style: styles.messageName }, [
+                    h(
+                        'span',
+                        { style: [styles.ellipsis, !seen && styles.unread] },
+                        title,
+                    ),
+                    !seen && h('span', { style: styles.unreadDot }),
+                ]),
+                h(
+                    'span',
+                    { style: [styles.cardText, styles.ellipsis] },
+                    address || formatDate(date),
+                ),
+            ]),
+            h('span', { style: styles.itemDate }, formatDate(date)),
+        ]),
     );
+};
+
+const inboxSummary = () => {
+    const { messages, next } = inbox;
+    const unread = messages.filter(({ seen }) => !seen).length;
+    const total = `${messages.length}${next === null ? '' : '+'}`;
+    const label = messages.length == 1 ? 'messaggio' : 'messaggi';
+    return unread
+        ? `${total} ${label} · ${unread} da leggere`
+        : `${total} ${label}`;
+};
+
+const emptyInbox = () =>
+    h('mdui-card', { variant: 'outlined' }, [
+        h('div', { style: styles.empty }, [
+            h('div', { style: styles.emptyBadge }, [
+                svg(icons.inbox, { style: styles.emptyIcon }),
+            ]),
+            h('h3', { style: styles.outcomeTitle }, 'Nessun messaggio'),
+            h(
+                'p',
+                { style: styles.emptyText },
+                'Quando qualcuno scrive dal modulo di contatto, il messaggio comparirà qui.',
+            ),
+            h('mdui-button', { variant: 'tonal', onClick: reloadMessages }, [
+                svg(icons.refresh, { slot: 'icon', style: styles.icon }),
+                'Aggiorna',
+            ]),
+        ]),
+    ]);
 
 const messageList = () =>
     h('div', { style: styles.section }, [
         inbox.messages.length
-            ? h('mdui-card', { variant: 'outlined' }, [
-                  h('mdui-list', inbox.messages.map(messageItem)),
-              ])
-            : h('p', { style: styles.formText }, 'Nessun messaggio.'),
+            ? [
+                  h('div', { style: styles.toolbar }, [
+                      h('p', { style: styles.toolbarText }, inboxSummary()),
+                      h('mdui-button-icon', { onClick: reloadMessages }, [
+                          icon(icons.refresh),
+                          hidden('Aggiorna'),
+                      ]),
+                  ]),
+                  ...inbox.messages.map(messageItem),
+              ]
+            : emptyInbox(),
         inbox.next !== null &&
             h(
                 'mdui-button',

@@ -90,6 +90,14 @@ const submitter = (subject) => {
     return addresses.length == 1 ? addresses[0].address : undefined;
 };
 
+const sender = (subject = '') => {
+    const address = submitter(subject);
+    const [, ...name] = subject
+        .slice(0, subject.lastIndexOf('('))
+        .split(' from ');
+    return { address, name: address && name.join(' from ').trim() };
+};
+
 const parse = async (c, id) => {
     const response = await polpo(c, `messages/${id}/raw`);
     return PostalMime.parse(await response.arrayBuffer());
@@ -338,7 +346,9 @@ admin.get('/api/messages', async (c) => {
     const { messages, total } = await response.json();
     const next = offset + messages.length;
     return c.json({
-        messages: messages.filter(({ from }) => isForm(from)),
+        messages: messages
+            .filter(({ from }) => isForm(from))
+            .map((message) => ({ ...message, ...sender(message.subject) })),
         next: messages.length && next < total ? next : null,
     });
 });

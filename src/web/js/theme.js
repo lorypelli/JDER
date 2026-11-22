@@ -98,10 +98,6 @@ const applyTheme = (isDark) => {
     root.classList.toggle('mdui-theme-light', !isDark);
 };
 
-const saveTheme = (isDark) => store(themeKey, String(isDark));
-
-const savePalette = (id) => store(paletteKey, id);
-
 const readSaved = () => ({
     isDark: store(themeKey) == 'true',
     selected:
