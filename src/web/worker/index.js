@@ -1,57 +1,46 @@
-export default {
-    async fetch(request, env) {
-        const accept = request.headers.get('Accept') || '';
-        const url = new URL(request.url);
-        if (url.pathname == '/download/JDER.jar') {
-            const ghUrl =
-                'https://github.com/LoryPelli/JDER/releases/download/JDER/JDER.jar';
-            const ghResponse = await fetch(ghUrl, { method: request.method });
-            if (!ghResponse.ok) {
-                return Response.redirect(
-                    'https://github.com/LoryPelli/JDER/releases/latest',
-                    302,
-                );
-            }
-            return new Response(ghResponse.body, {
-                status: ghResponse.status,
-                statusText: ghResponse.statusText,
-                headers: ghResponse.headers,
+import { Hono } from 'hono';
+import admin from './admin.js';
+
+const repository = 'https://github.com/LoryPelli/JDER';
+
+const app = new Hono();
+
+app.get('/download/JDER.jar', async (c) => {
+    const response = await fetch(
+        `${repository}/releases/download/JDER/JDER.jar`,
+        { method: c.req.method },
+    );
+    if (!response.ok) {
+        return c.redirect(`${repository}/releases/latest`);
+    }
+    return response;
+});
+
+app.get('/', async (c) => {
+    if (c.req.header('Accept')?.includes('text/markdown')) {
+        const markdown = await c.env.ASSETS.fetch(
+            new URL('/index.md', c.req.url),
+        );
+        if (markdown.ok) {
+            const text = await markdown.text();
+            return c.body(text, 200, {
+                'Content-Type': 'text/markdown; charset=utf-8',
+                'Content-Signal': 'search=yes, ai-input=yes, ai-train=yes',
+                'X-Markdown-Tokens': Math.ceil(text.length / 4).toString(),
+                Vary: 'Accept',
             });
         }
-        if (accept.includes('text/markdown') && url.pathname == '/') {
-            const mdUrl = new URL('/index.md', request.url);
-            const mdResponse = await env.ASSETS.fetch(
-                new Request(mdUrl.toString()),
-            );
-            if (mdResponse.ok) {
-                const text = await mdResponse.text();
-                const tokenCount = Math.ceil(text.length / 4);
-                return new Response(text, {
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'text/markdown; charset=utf-8',
-                        'Content-Signal':
-                            'search=yes, ai-input=yes, ai-train=yes',
-                        'X-Markdown-Tokens': tokenCount.toString(),
-                        Vary: 'Accept',
-                    },
-                });
-            }
-        }
-        const response = await env.ASSETS.fetch(request);
-        if (url.pathname == '/') {
-            const headers = new Headers(response.headers);
-            headers.set(
-                'Link',
-                '<https://github.com/LoryPelli/JDER>; rel="service-doc", </sitemap.xml>; rel="sitemap", </index.md>; rel="alternate"; type="text/markdown"',
-            );
-            headers.set('Vary', 'Accept');
-            return new Response(response.body, {
-                status: response.status,
-                statusText: response.statusText,
-                headers,
-            });
-        }
-        return response;
-    },
-};
+    }
+    const asset = await c.env.ASSETS.fetch(c.req.raw);
+    const response = new Response(asset.body, asset);
+    response.headers.set(
+        'Link',
+        `<${repository}>; rel="service-doc", </sitemap.xml>; rel="sitemap", </index.md>; rel="alternate"; type="text/markdown"`,
+    );
+    response.headers.set('Vary', 'Accept');
+    return response;
+});
+
+app.route('/admin', admin);
+
+export default app;

@@ -5,6 +5,10 @@
     "scripts": {
         "format": "biome check --write"
     },
+    "dependencies": {
+        "hono": "^4.13.19",
+        "postal-mime": "^4.2.1"
+    },
     "devDependencies": {
         "@biomejs/biome": "^2.6.8",
         "wrangler": "^4.165.0"

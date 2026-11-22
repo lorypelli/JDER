@@ -11,16 +11,8 @@ body {
     line-height: var(--mdui-typescale-body-large-line-height);
 }
 
-.app-bar-links {
-    display: none;
-}
-
 @media (min-width: 40rem) {
     :root {
         --page-padding: 1.5rem;
-    }
-
-    .app-bar-links {
-        display: flex;
     }
 }

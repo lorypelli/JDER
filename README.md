@@ -209,6 +209,7 @@ La stessa app gira nel browser su [jder.it/app/](https://jder.it/app/), con gli 
 | [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)    | Salvataggio/caricamento JSON |
 | [Gradle](https://gradle.org/)                                               | Sistema di build             |
 | [Cloudflare Workers](https://workers.cloudflare.com/)                       | Hosting del sito web         |
+| [Hono](https://hono.dev/)                                                   | Backend del sito web         |
 | [mdui](https://www.mdui.org/)                                               | Componenti M3 del sito web   |
 | [Vue](https://github.com/vuejs/core)                                        | Reattività del sito web      |
 | [Skia](https://skia.org/)                                                   | Rendering/esportazione PNG   |
@@ -362,6 +363,9 @@ src/
 │   └── (nessuna risorsa: la pagina è in vite/)
 ├── vite/                              # Pagina index.html dell'app web e configurazione di Vite
 └── web/                               # Sito jder.it; app/ è generata da ./gradlew webApp
+    ├── worker/                        # Backend Hono: download del JAR, versione Markdown e area riservata /admin
+    ├── css/                           # Stili: theme (sito e app), app, site (pagine del sito), index (solo home)
+    ├── js/                            # Script: theme (sito e app), app, site (pagine del sito), index, download, admin
     ├── jder_icon.png                  # Icona, usata anche dall'app
     ├── screenshots/                   # Anteprime, usate anche dall'app
     └── fonts/                         # Roboto (Apache 2.0) con i simboli di Noto (OFL), subset WOFF2, usato da app, web e sito
