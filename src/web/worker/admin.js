@@ -4,14 +4,17 @@ import { csrf } from 'hono/csrf';
 import { HTTPException } from 'hono/http-exception';
 import { jwt, sign, verifyWithJwks } from 'hono/jwt';
 import PostalMime, { addressParser, decodeWords } from 'postal-mime';
+import { WorkerMailer } from 'worker-mailer';
 
 const issuer = 'https://polpomail.com';
 const audience = 'jder-admin';
 const duration = 3 * 24 * 60 * 60;
 const mailbox = 'support@jder.it';
+const smtpHost = 'mx.polpomail.com';
 const formAddress = 'no-reply@mx.polpomail.com';
 const formSender = /^"?(.*?)\s*\(web form\).*<no-reply@mx\.polpomail\.com>$/i;
-const senderName = /^[^\p{Cc}<>"\\]{1,50}$/u;
+const replyAddress = /^[^\s<>"]+@[^\s<>"]+$/;
+const senderName = /^(?:(?!["<>\\])[ -~]){1,50}$/;
 const cookie = {
     prefix: 'host',
     httpOnly: true,
@@ -41,6 +44,30 @@ const polpo = async ({ env }, path, init) => {
     return response;
 };
 
+const smtp = async ({ env }, { name, to, subject, text }) => {
+    const mailer = await WorkerMailer.connect({
+        host: smtpHost,
+        port: 465,
+        secure: true,
+        authType: 'plain',
+        credentials: { username: mailbox, password: env.POLPO_ACCESS_TOKEN },
+    }).catch(() => {
+        throw new HTTPException(502);
+    });
+    try {
+        await mailer.send({
+            from: { name, email: mailbox },
+            to,
+            subject,
+            text,
+        });
+    } catch {
+        throw new HTTPException(502);
+    } finally {
+        await mailer.close();
+    }
+};
+
 const isForm = (from = '') => formSender.test(from);
 
 const isName = (name) => senderName.test(name);
@@ -55,7 +82,7 @@ const read = async (c) => {
     const response = await polpo(c, `messages/${c.req.param('id')}/raw`);
     const email = await PostalMime.parse(await response.arrayBuffer());
     const from = decodeWords(
-        email.headers.find(({ key }) => key == 'from')?.value ?? '',
+        email.headers.find(({ key }) => key == 'from')?.value || '',
     );
     if (!isForm(from)) {
         throw new HTTPException(404);
@@ -64,7 +91,7 @@ const read = async (c) => {
         text: email.text,
         html: email.html,
         reply: {
-            to: email.replyTo?.[0]?.address ?? submitter(email.subject ?? ''),
+            to: email.replyTo?.[0]?.address || submitter(email.subject || ''),
             subject: `Re: ${from.match(formSender)[1]}`,
         },
     };
@@ -78,7 +105,7 @@ const mark = (c, flags) =>
 
 const identify = async (c) => {
     const [state, nonce, verifier] = (
-        getCookie(c, 'jder-login', cookie.prefix) ?? ''
+        getCookie(c, 'jder-login', cookie.prefix) || ''
     ).split('.');
     const { code, state: returned, iss } = c.req.query();
     if (!state || returned != state || iss != issuer || !code) {
@@ -179,7 +206,7 @@ admin.use('/api/*', async (c, next) => {
 });
 
 admin.get('/api/messages', async (c) => {
-    const offset = Number(c.req.query('offset') ?? 0);
+    const offset = Number(c.req.query('offset') || 0);
     if (!Number.isInteger(offset) || offset < 0) {
         throw new HTTPException(400);
     }
@@ -208,18 +235,15 @@ admin.post('/api/messages/:id{[0-9]+}/reply', async (c) => {
     const { text, name } = await c.req.json().catch(() => ({}));
     const { to, subject } = (await read(c)).reply;
     const sender = typeof name == 'string' ? name.trim() : '';
-    if (typeof text != 'string' || !text.trim() || !to || !isName(sender)) {
+    if (
+        typeof text != 'string' ||
+        !text.trim() ||
+        !replyAddress.test(to) ||
+        !isName(sender)
+    ) {
         throw new HTTPException(400);
     }
-    await polpo(c, 'messages/send', {
-        method: 'POST',
-        body: JSON.stringify({
-            from: `"${sender}" <${mailbox}>`,
-            to: [to],
-            subject,
-            text,
-        }),
-    });
+    await smtp(c, { name: sender, to, subject, text });
     await mark(c, { answered: true });
     return c.json({
         name: sender,

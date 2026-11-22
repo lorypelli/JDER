@@ -32,6 +32,10 @@ Object.assign(icons, {
 
 const nameKey = 'jder-reply-name';
 
+const unsupported = /[^ -~]|["<>\\]/g;
+
+const supportedName = (name) => name.replace(unsupported, '');
+
 const inbox = reactive({
     view: 'loading',
     signedIn: false,
@@ -43,7 +47,7 @@ const inbox = reactive({
 });
 
 const composer = reactive({
-    name: store(nameKey) || '',
+    name: supportedName(store(nameKey) || ''),
     draft: '',
     sending: false,
     result: null,
@@ -273,6 +277,12 @@ const replyForm = () => {
                     label: 'Nome con cui rispondere',
                     autocomplete: 'name',
                     maxlength: 50,
+                    helper: 'Solo caratteri ASCII, senza lettere accentate.',
+                    onInput: ({ target }) => {
+                        composer.name = target.value = supportedName(
+                            target.value,
+                        );
+                    },
                 }),
                 field(composer, 'draft', { label: 'Risposta', rows: 5 }),
                 h(

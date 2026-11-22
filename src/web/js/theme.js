@@ -105,7 +105,7 @@ const savePalette = (id) => store(paletteKey, id);
 const readSaved = () => ({
     isDark: store(themeKey) == 'true',
     selected:
-        palettes.find(({ id }) => id == store(paletteKey)) ??
+        palettes.find(({ id }) => id == store(paletteKey)) ||
         palettes.find(({ id }) => id == defaultPaletteId),
 });
 
