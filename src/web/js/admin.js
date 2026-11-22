@@ -15,24 +15,7 @@ Object.assign(styles, {
         border: rule,
         borderRadius: '0.75rem',
     },
-    dialog: {
-        '--mdui-motion-duration-short4': '0ms',
-        '--mdui-motion-duration-medium4': '0ms',
-        transition: 'opacity 150ms',
-    },
-    dialogHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '1rem',
-    },
-    dialogTitle: {
-        ...typescale('headline-small'),
-        color: 'rgb(var(--mdui-color-on-surface))',
-    },
-    dialogClose: { margin: '-0.5rem -0.5rem -0.5rem 0' },
-    dialogBody: { ...column('0'), position: 'relative' },
-    mail: {
+    email: {
         display: 'block',
         width: '100%',
         minHeight: '12rem',
@@ -44,9 +27,6 @@ Object.assign(styles, {
 });
 
 Object.assign(icons, {
-    close: [
-        'M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
-    ],
     reply: ['M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z'],
 });
 
@@ -63,8 +43,6 @@ const inbox = reactive({
 });
 
 const composer = reactive({
-    open: false,
-    shown: false,
     name: store(nameKey) || '',
     draft: '',
     sending: false,
@@ -124,12 +102,7 @@ const openMessage = async (item) => {
             view: 'message',
             message: { ...message, item, sent: [] },
         });
-        Object.assign(composer, {
-            open: false,
-            shown: false,
-            draft: '',
-            result: null,
-        });
+        Object.assign(composer, { draft: '', result: null });
     } catch (reason) {
         fail(reason);
     }
@@ -137,18 +110,6 @@ const openMessage = async (item) => {
 
 const closeMessage = () => {
     inbox.view = 'list';
-    Object.assign(composer, { open: false, shown: false });
-};
-
-const openReply = () => {
-    Object.assign(composer, { open: true, shown: false, result: null });
-};
-
-const closeReply = () => {
-    composer.shown = false;
-    setTimeout(() => {
-        composer.open = composer.shown;
-    }, 150);
 };
 
 const retryReply = () => {
@@ -295,83 +256,48 @@ const messageList = () =>
             ),
     ]);
 
-const replyDialog = () => {
+const replyForm = () => {
     const { to, subject } = inbox.message.reply;
-    return h(
-        'mdui-dialog',
-        {
-            style: [styles.dialog, { opacity: Number(composer.shown) }],
-            open: composer.open,
-            onOpened: () => {
-                composer.shown = composer.open;
+    return h('mdui-card', { variant: 'outlined', style: styles.form }, [
+        h(
+            'form',
+            {
+                key: composer.round,
+                style: [styles.formFields, composer.result && styles.invisible],
+                inert: !!composer.result,
+                onSubmit: submitReply,
             },
-            onKeydown: ({ key }) => {
-                if (key == 'Escape') {
-                    closeReply();
-                }
-            },
-        },
-        [
-            h('div', { slot: 'header', style: styles.dialogHeader }, [
-                h('span', { style: styles.dialogTitle }, 'Rispondi'),
+            [
+                h('p', { style: styles.formText }, `A ${to} · ${subject}`),
+                field(composer, 'name', {
+                    label: 'Nome con cui rispondere',
+                    autocomplete: 'name',
+                    maxlength: 50,
+                }),
+                field(composer, 'draft', { label: 'Risposta', rows: 5 }),
                 h(
-                    'mdui-button-icon',
-                    { style: styles.dialogClose, onClick: closeReply },
-                    [icon(icons.close), hidden('Chiudi')],
+                    'p',
+                    { style: styles.formText },
+                    'La risposta partirà da support@jder.it con il nome scelto.',
                 ),
-            ]),
-            h('div', { style: styles.dialogBody }, [
                 h(
-                    'form',
+                    'mdui-button',
                     {
-                        key: composer.round,
-                        style: [
-                            styles.formFields,
-                            composer.result && styles.invisible,
-                        ],
-                        inert: !!composer.result,
-                        onSubmit: submitReply,
+                        type: 'submit',
+                        variant: 'filled',
+                        loading: composer.sending,
+                        fullWidth: true,
                     },
-                    [
-                        h(
-                            'p',
-                            { style: styles.formText },
-                            `A ${to} · ${subject}`,
-                        ),
-                        field(composer, 'name', {
-                            label: 'Nome con cui rispondere',
-                            autocomplete: 'name',
-                            maxlength: 50,
-                        }),
-                        field(composer, 'draft', {
-                            label: 'Risposta',
-                            rows: 5,
-                        }),
-                        h(
-                            'p',
-                            { style: styles.formText },
-                            'La risposta partirà da support@jder.it con il nome scelto.',
-                        ),
-                        h(
-                            'mdui-button',
-                            {
-                                type: 'submit',
-                                variant: 'filled',
-                                loading: composer.sending,
-                                fullWidth: true,
-                            },
-                            'Invia',
-                        ),
-                    ],
+                    'Invia',
                 ),
-                composer.result &&
-                    outcome({
-                        ...replyOutcomes[composer.result],
-                        onClick: retryReply,
-                    }),
-            ]),
-        ],
-    );
+            ],
+        ),
+        composer.result &&
+            outcome({
+                ...replyOutcomes[composer.result],
+                onClick: retryReply,
+            }),
+    ]);
 };
 
 const sentReply = ({ name, to, date, text }) =>
@@ -384,36 +310,30 @@ const sentReply = ({ name, to, date, text }) =>
         h('p', { style: styles.messageText }, text),
     ]);
 
-const mailPolicy =
-    "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'";
-
-const showMail = (frame, html) => {
-    const { head, body, documentElement } = frame.contentDocument;
-    render(
-        h('meta', {
-            httpEquiv: 'Content-Security-Policy',
-            content: mailPolicy,
-        }),
-        head,
-    );
+const showEmail = (frame, html) => {
+    const { body, documentElement } = frame.contentDocument;
     render(h('div', { innerHTML: html }), body);
+    body.querySelectorAll('*').forEach((element) => {
+        element.style.fontFamily = '"Roboto", sans-serif';
+    });
     new ResizeObserver(() => {
         frame.style.height = 0;
         frame.style.height = `${documentElement.scrollHeight}px`;
     }).observe(body);
 };
 
-const mail = (html) =>
+const email = (html) =>
     h('iframe', {
         key: inbox.message.item.id,
         sandbox: 'allow-same-origin',
-        style: styles.mail,
-        onLoad: ({ target }) => showMail(target, html),
+        src: '/email',
+        style: styles.email,
+        onLoad: ({ target }) => showEmail(target, html),
     });
 
 const messageBody = ({ html, text }) => {
     if (html) {
-        return mail(html);
+        return email(html);
     }
     if (text) {
         return h('p', { style: styles.messageText }, text);
@@ -427,35 +347,31 @@ const messageBody = ({ html, text }) => {
 
 const messageView = () => {
     const { item, reply } = inbox.message;
-    const { subject, date } = item;
-    return h('mdui-card', { variant: 'outlined', style: styles.panel }, [
-        h('div', { style: styles.messageHeader }, [
-            h('mdui-button-icon', { onClick: closeMessage }, [
-                icon(icons.back),
-                hidden('Torna ai messaggi'),
+    return [
+        h('mdui-card', { variant: 'outlined', style: styles.panel }, [
+            h('div', { style: styles.messageHeader }, [
+                h('mdui-button-icon', { onClick: closeMessage }, [
+                    icon(icons.back),
+                    hidden('Torna ai messaggi'),
+                ]),
+                h(
+                    'h3',
+                    { style: styles.messageTitle },
+                    item.subject || 'Senza oggetto',
+                ),
             ]),
-            h('h3', { style: styles.messageTitle }, subject || 'Senza oggetto'),
+            h('p', { style: styles.cardText }, formatDate(item.date)),
+            messageBody(inbox.message),
+            ...inbox.message.sent.map(sentReply),
+            !reply.to &&
+                h(
+                    'p',
+                    { style: error },
+                    'Non è stato trovato un indirizzo a cui rispondere.',
+                ),
         ]),
-        h('p', { style: styles.cardText }, formatDate(date)),
-        messageBody(inbox.message),
-        ...inbox.message.sent.map(sentReply),
-        h('mdui-divider'),
-        reply.to
-            ? h(
-                  'mdui-button',
-                  {
-                      variant: 'filled',
-                      style: styles.start,
-                      onClick: openReply,
-                  },
-                  'Rispondi',
-              )
-            : h(
-                  'p',
-                  { style: error },
-                  'Non è stato trovato un indirizzo a cui rispondere.',
-              ),
-    ]);
+        reply.to && replyForm(),
+    ];
 };
 
 const views = {
@@ -476,10 +392,7 @@ const admin = () =>
             description:
                 'Leggi i messaggi arrivati a support@jder.it dal modulo di contatto e rispondi direttamente da qui.',
         },
-        content: [
-            section('Posta in Arrivo', views[inbox.view]()),
-            inbox.view == 'message' && inbox.message.reply.to && replyDialog(),
-        ],
+        content: [section('Posta in Arrivo', views[inbox.view]())],
     });
 
 mount(admin);

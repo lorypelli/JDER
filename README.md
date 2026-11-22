@@ -364,7 +364,7 @@ src/
 ├── vite/                              # Pagina index.html dell'app web e configurazione di Vite
 └── web/                               # Sito jder.it; app/ è generata da ./gradlew webApp
     ├── worker/                        # Backend Hono: download del JAR, versione Markdown e area riservata /admin
-    ├── css/                           # Stili: theme (sito e app), app, site (pagine del sito), index (solo home)
+    ├── css/                           # Stili: fonts (Roboto, usato da tutte le pagine e dall'email), theme (sito e app), app, site (pagine del sito), index (solo home)
     ├── js/                            # Script: theme (sito e app), app, site (pagine del sito), index, download, admin
     ├── jder_icon.png                  # Icona, usata anche dall'app
     ├── screenshots/                   # Anteprime, usate anche dall'app

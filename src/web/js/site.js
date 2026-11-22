@@ -62,6 +62,11 @@ const styles = {
     heroTitle: typescale('display-medium'),
     heroSubtitle: { ...muted, ...typescale('title-large'), maxWidth: '45rem' },
     heroDescription: { ...muted, maxWidth: '47.5rem' },
+    form: {
+        ...column('1rem'),
+        position: 'relative',
+        padding: '1.5rem',
+    },
     grid: wrap('1rem'),
     cardTitle: typescale('title-medium'),
     cardText: { ...muted, ...typescale('body-medium') },

@@ -13,23 +13,8 @@ Object.assign(styles, {
     },
     featureIcon: { ...primary, gridRow: 'span 2' },
     wide: { flex: '1 1 100%' },
-    screenshotCard: { ...card('15rem'), display: 'block' },
-    screenshot: {
-        display: 'block',
-        width: '100%',
-        height: 'auto',
-        aspectRatio: '16 / 9',
-        objectFit: 'cover',
-    },
-    screenshotTitle: {
-        ...typescale('title-medium'),
-        display: 'block',
-        padding: '0.75rem 1rem',
-    },
-    form: {
-        ...column('1rem'),
-        position: 'relative',
-        padding: '1.5rem',
+    formAttached: {
+        ...styles.form,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
     },
@@ -46,6 +31,19 @@ Object.assign(styles, {
         borderBottom: 'none',
         borderRadius: '0.75rem 0.75rem 0 0',
         textDecoration: 'none',
+    },
+    screenshotCard: { ...card('15rem'), display: 'block' },
+    screenshot: {
+        display: 'block',
+        width: '100%',
+        height: 'auto',
+        aspectRatio: '16 / 9',
+        objectFit: 'cover',
+    },
+    screenshotTitle: {
+        ...typescale('title-medium'),
+        display: 'block',
+        padding: '0.75rem 1rem',
     },
 });
 
@@ -124,7 +122,7 @@ const formTab = () =>
     );
 
 const contactCard = () =>
-    h('mdui-card', { variant: 'outlined', style: styles.form }, [
+    h('mdui-card', { variant: 'outlined', style: styles.formAttached }, [
         h(
             'form',
             {
