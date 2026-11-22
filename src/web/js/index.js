@@ -76,17 +76,18 @@ const send = async () => {
         if (!response.ok) {
             throw new Error(response.statusText);
         }
-        contact.result = 'sent';
+        Object.assign(contact, {
+            name: '',
+            email: '',
+            message: '',
+            result: 'sent',
+        });
+        contact.round++;
     } catch {
         contact.result = 'failed';
     } finally {
         contact.sending = false;
     }
-};
-
-const restart = () => {
-    Object.assign(contact, { name: '', email: '', message: '', result: null });
-    contact.round++;
 };
 
 const retry = () => {
@@ -102,7 +103,7 @@ const outcomes = {
         title: 'Messaggio inviato',
         text: 'Grazie per avermi scritto!',
         action: 'Nuovo messaggio',
-        onClick: restart,
+        onClick: retry,
     },
     failed: {
         icon: icons.error,
