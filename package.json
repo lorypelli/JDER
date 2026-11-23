@@ -6,13 +6,14 @@
         "format": "biome check --write"
     },
     "dependencies": {
-        "hono": "^4.13.19",
+        "email-reply-parser": "^3.0.0",
+        "hono": "^4.13.20",
         "postal-mime": "^4.2.1",
         "worker-mailer": "^1.3.1"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.6.8",
-        "wrangler": "^4.165.0"
+        "wrangler": "^4.166.0"
     },
     "packageManager": "pnpm@12.20.0"
 }

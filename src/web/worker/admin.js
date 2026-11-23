@@ -1,3 +1,4 @@
+import EmailReplyParser from 'email-reply-parser';
 import { Hono } from 'hono';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { csrf } from 'hono/csrf';
@@ -138,16 +139,6 @@ const mark = (c, flags, id) =>
 
 const fromMailbox = (from) => addressParser(from)[0]?.address == mailbox;
 
-const unquote = (text = '') => {
-    const lines = text.replaceAll('\r\n', '\n').split('\n');
-    const quote = lines.findIndex((line) => line.startsWith('>'));
-    const reply = (quote < 0 ? lines : lines.slice(0, quote)).join('\n').trim();
-    const attribution = reply.lastIndexOf('\n\n');
-    return reply.endsWith(':') && attribution >= 0
-        ? reply.slice(0, attribution).trim()
-        : reply;
-};
-
 const listing = async (c, params, since = 0, offset = 0) => {
     const query = new URLSearchParams({ ...params, limit: 50, offset });
     const response = await polpo(c, `messages?${query}`);
@@ -226,8 +217,11 @@ const conversation = async (c, message) => {
             )
             .map(({ id }) => mark(c, { seen: true, mailbox: 'Sent' }, id)),
     );
-    const unique = new Map(thread.map((item) => [item.email.messageId, item]));
-    return [...unique.values()].map(({ id, seen, email }) => {
+    const unique = [
+        ...new Map(thread.map((item) => [item.email.messageId, item])).values(),
+    ];
+    const parser = new EmailReplyParser();
+    return unique.map(({ id, seen, email }) => {
         const mine = email.from.address == mailbox;
         return {
             id,
@@ -241,7 +235,7 @@ const conversation = async (c, message) => {
             name: email.from.name || email.from.address,
             to: email.to?.[0]?.address,
             date: email.date,
-            text: unquote(email.text),
+            text: parser.parseReply(email.text ?? '').trim(),
         };
     });
 };
