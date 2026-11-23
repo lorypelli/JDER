@@ -260,7 +260,7 @@ const signIn = () =>
             ),
         h(
             'mdui-button',
-            { variant: 'filled', href: '/admin/login', style: styles.start },
+            { variant: 'filled', href: '/admin/login', fullWidth: true },
             'Accedi con Polpo Mail',
         ),
     ]);
