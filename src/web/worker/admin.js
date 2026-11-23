@@ -21,9 +21,10 @@ const signature = /^t=(\d+),v1=([0-9a-f]{64})$/;
 const tolerance = 5 * 60;
 const receipt = {
     name: 'JDER Support',
-    text: 'Hi,\n\nthank you for your feedback! We have received your message and will get back to you as soon as possible.\n\nJDER Support',
+    text: 'Hi,\n\nthank you for your feedback! We have received your message and will get back to you as soon as possible.\n\nIf you have any further questions or want to add something, just reply to this email.\n\nJDER Support',
     headers: { 'Auto-Submitted': 'auto-replied' },
 };
+const automatic = /^(?!no\s*(?:;|$)).+/i;
 const senderName = /^(?:(?!["<>\\])[ -~]){1,50}$/;
 const cookie = {
     prefix: 'host',
@@ -103,6 +104,9 @@ const parse = async (c, id) => {
     return PostalMime.parse(await response.arrayBuffer());
 };
 
+const headline = (subject = '', title) =>
+    subject.slice(Math.max(0, subject.indexOf(title)));
+
 const read = async (c, id) => {
     const email = await parse(c, id);
     const from = decodeWords(
@@ -121,7 +125,7 @@ const read = async (c, id) => {
         title,
         reply: {
             to: email.replyTo?.[0]?.address || submitter(email.subject || ''),
-            subject: `Re: ${title}`,
+            subject: headline(email.subject, title),
         },
     };
 };
@@ -132,33 +136,88 @@ const mark = (c, flags, id) =>
         body: JSON.stringify(flags),
     }).catch(() => {});
 
-const linked = ({ inReplyTo = '', references = '' }, root) =>
-    `${inReplyTo} ${references}`.includes(root);
+const fromMailbox = (from) => addressParser(from)[0]?.address == mailbox;
 
-const conversation = async (c, { messageId, reply }) => {
+const unquote = (text = '') => {
+    const lines = text.replaceAll('\r\n', '\n').split('\n');
+    const quote = lines.findIndex((line) => line.startsWith('>'));
+    const reply = (quote < 0 ? lines : lines.slice(0, quote)).join('\n').trim();
+    const attribution = reply.lastIndexOf('\n\n');
+    return reply.endsWith(':') && attribution >= 0
+        ? reply.slice(0, attribution).trim()
+        : reply;
+};
+
+const listing = async (c, params, since = 0, offset = 0) => {
+    const query = new URLSearchParams({ ...params, limit: 50, offset });
+    const response = await polpo(c, `messages?${query}`);
+    const { messages, total } = await response.json();
+    const next = offset + messages.length;
+    const reached = messages.some(({ date }) => Date.parse(date) < since);
+    return messages.length && next < total && !reached
+        ? [...messages, ...(await listing(c, params, since, next))]
+        : messages;
+};
+
+const boxes = async (c) => {
+    const response = await polpo(c, 'mailboxes');
+    const { mailboxes } = await response.json();
+    return mailboxes
+        .filter(({ role }) => !/^(?:drafts|trash)$/.test(role))
+        .map(({ name }) => name);
+};
+
+const related = (candidates, { messageId, reply, date }) => {
+    const loose = candidates.filter(
+        ({ email, refs }) =>
+            !refs &&
+            email.subject?.includes(reply.subject) &&
+            Date.parse(email.date) >= Date.parse(date),
+    );
+    const grow = (known, joined) => {
+        const found = candidates.filter(
+            (candidate) =>
+                !joined.includes(candidate) &&
+                [...known].some((id) => candidate.refs.includes(id)),
+        );
+        return found.length
+            ? grow(
+                  new Set([
+                      ...known,
+                      ...found.map(({ email }) => email.messageId),
+                  ]),
+                  [...joined, ...found],
+              )
+            : joined;
+    };
+    return grow(
+        new Set([messageId, ...loose.map(({ email }) => email.messageId)]),
+        loose,
+    );
+};
+
+const conversation = async (c, message) => {
+    const { messageId, reply } = message;
     const lists = await Promise.all(
-        ['INBOX', 'Sent'].map(async (box) => {
-            const query = new URLSearchParams({
-                mailbox: box,
-                q: reply.to,
-                limit: 100,
-            });
-            const response = await polpo(c, `messages?${query}`);
-            const { messages } = await response.json();
-            return messages.map(({ id }) => ({ id, box }));
-        }),
+        (await boxes(c)).map((box) =>
+            listing(c, { mailbox: box, q: reply.to }),
+        ),
     );
-    const emails = await Promise.all(
-        lists.flat().map(async ({ id, box }) => ({
-            id,
-            box,
-            email: await parse(c, id),
-        })),
+    const candidates = await Promise.all(
+        lists
+            .flat()
+            .filter(({ from }) => !isForm(from))
+            .map(async ({ id, mailbox: box, seen }) => {
+                const email = await parse(c, id);
+                const refs =
+                    `${email.inReplyTo ?? ''} ${email.references ?? ''}`.trim();
+                return { id, box, seen, email, refs };
+            }),
     );
-    const thread = emails
-        .filter(({ email }) => email.messageId != messageId)
-        .filter(({ email }) => linked(email, messageId))
-        .sort((a, b) => new Date(a.email.date) - new Date(b.email.date));
+    const thread = related(
+        candidates.filter(({ email }) => email.messageId != messageId),
+        message,
+    ).sort((a, b) => Date.parse(a.email.date) - Date.parse(b.email.date));
     await Promise.all(
         thread
             .filter(
@@ -167,15 +226,59 @@ const conversation = async (c, { messageId, reply }) => {
             )
             .map(({ id }) => mark(c, { seen: true, mailbox: 'Sent' }, id)),
     );
-    return thread.map(({ id, email }) => ({
-        id,
-        messageId: email.messageId,
-        mine: email.from.address == mailbox,
-        name: email.from.name,
-        to: email.to?.[0]?.address,
-        date: email.date,
-        text: email.text,
-    }));
+    const unique = new Map(thread.map((item) => [item.email.messageId, item]));
+    return [...unique.values()].map(({ id, seen, email }) => {
+        const mine = email.from.address == mailbox;
+        return {
+            id,
+            messageId: email.messageId,
+            mine,
+            auto: automatic.test(
+                email.headers.find(({ key }) => key == 'auto-submitted')
+                    ?.value ?? 'no',
+            ),
+            unread: !mine && !seen,
+            name: email.from.name || email.from.address,
+            to: email.to?.[0]?.address,
+            date: email.date,
+            text: unquote(email.text),
+        };
+    });
+};
+
+const activity = async (c, forms) => {
+    const since = Math.min(...forms.map(({ date }) => Date.parse(date)));
+    const lists = forms.length
+        ? await Promise.all(
+              (await boxes(c)).map((box) =>
+                  listing(c, { mailbox: box }, since),
+              ),
+          )
+        : [];
+    const others = lists.flat().filter(({ from }) => !isForm(from));
+    return ({ date, from, subject, seen }) => {
+        const { address } = sender(subject);
+        const original = headline(subject, from.match(formSender)[1]);
+        const thread = others.filter(
+            (other) =>
+                address &&
+                `${other.from} ${other.to}`
+                    .toLowerCase()
+                    .includes(address.toLowerCase()) &&
+                Date.parse(other.date) >= Date.parse(date) &&
+                other.subject.includes(original),
+        );
+        const latest = Math.max(
+            Date.parse(date),
+            ...thread.map((other) => Date.parse(other.date)),
+        );
+        return {
+            updated: new Date(latest).toISOString(),
+            seen:
+                seen &&
+                thread.every((other) => other.seen || fromMailbox(other.from)),
+        };
+    };
 };
 
 const deliver = async (c, message, thread, { name, text, headers }) => {
@@ -184,7 +287,7 @@ const deliver = async (c, message, thread, { name, text, headers }) => {
     const copy = {
         name: title,
         to: reply.to,
-        subject: title,
+        subject: reply.subject,
         text: message.text,
         html: message.html,
         headers: {
@@ -345,21 +448,28 @@ admin.get('/api/messages', async (c) => {
     const response = await polpo(c, `messages?${query}`);
     const { messages, total } = await response.json();
     const next = offset + messages.length;
+    const forms = messages.filter(({ from }) => isForm(from));
+    const update = await activity(c, forms);
     return c.json({
-        messages: messages
-            .filter(({ from }) => isForm(from))
-            .map((message) => ({ ...message, ...sender(message.subject) })),
+        messages: forms.map((message) => ({
+            ...message,
+            ...sender(message.subject),
+            ...update(message),
+        })),
         next: messages.length && next < total ? next : null,
     });
 });
 
 admin.get('/api/messages/:id{[0-9]+}', async (c) => {
     const message = await read(c, c.req.param('id'));
-    await mark(c, { seen: true }, message.id);
-    return c.json({
-        ...message,
-        conversation: message.reply.to ? await conversation(c, message) : [],
-    });
+    const thread = message.reply.to ? await conversation(c, message) : [];
+    await Promise.all([
+        mark(c, { seen: true }, message.id),
+        ...thread
+            .filter(({ unread }) => unread)
+            .map(({ id }) => mark(c, { seen: true }, id)),
+    ]);
+    return c.json({ ...message, conversation: thread });
 });
 
 admin.post('/api/messages/:id{[0-9]+}/reply', async (c) => {
@@ -380,6 +490,8 @@ admin.post('/api/messages/:id{[0-9]+}/reply', async (c) => {
     });
     return c.json({
         mine: true,
+        auto: false,
+        unread: false,
         name: sender,
         to: message.reply.to,
         text,

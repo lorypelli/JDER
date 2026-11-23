@@ -73,11 +73,69 @@ Object.assign(styles, {
     messageTitle: typescale('title-large'),
     messageText: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' },
     failure: { position: 'relative', minHeight: '18rem' },
-    conversationItem: {
+    thread: column('0.75rem'),
+    turn: { ...column('0.25rem'), width: '100%' },
+    turnUser: { alignItems: 'flex-start' },
+    turnSupport: { alignItems: 'flex-end' },
+    bubble: {
         ...column('0.5rem'),
-        padding: '1rem',
-        border: rule,
-        borderRadius: '0.75rem',
+        maxWidth: '85%',
+        padding: '0.75rem 1rem',
+        minWidth: 0,
+    },
+    bubbleWide: { width: '100%', maxWidth: '100%' },
+    bubbleUser: {
+        borderRadius: '0.25rem 1rem 1rem 1rem',
+        backgroundColor: 'rgb(var(--mdui-color-surface-variant))',
+        color: 'rgb(var(--mdui-color-on-surface-variant))',
+    },
+    bubbleSupport: {
+        borderRadius: '1rem 0.25rem 1rem 1rem',
+        backgroundColor: 'rgb(var(--mdui-color-primary-container))',
+        color: 'rgb(var(--mdui-color-on-primary-container))',
+    },
+    bubbleHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '0.5rem',
+        ...typescale('label-large'),
+    },
+    bubbleName: { fontWeight: 700, overflowWrap: 'anywhere' },
+    role: {
+        padding: '0.0625rem 0.5rem',
+        borderRadius: '0.5rem',
+        ...typescale('label-small'),
+        lineHeight: '1rem',
+    },
+    roleUser: {
+        backgroundColor: 'rgb(var(--mdui-color-surface))',
+        color: 'rgb(var(--mdui-color-on-surface))',
+    },
+    roleSupport: {
+        backgroundColor: 'rgb(var(--mdui-color-primary))',
+        color: 'rgb(var(--mdui-color-on-primary))',
+    },
+    autoTag: {
+        padding: '0.0625rem 0.5rem',
+        borderRadius: '0.5rem',
+        border: '0.0625rem solid currentColor',
+        ...typescale('label-small'),
+        lineHeight: '1rem',
+    },
+    newTag: {
+        padding: '0.0625rem 0.5rem',
+        borderRadius: '0.5rem',
+        backgroundColor: 'rgb(var(--mdui-color-tertiary))',
+        color: 'rgb(var(--mdui-color-on-tertiary))',
+        ...typescale('label-small'),
+        lineHeight: '1rem',
+    },
+    bubbleDate: {
+        alignSelf: 'flex-end',
+        opacity: 0.75,
+        ...typescale('label-small'),
+        lineHeight: '1rem',
     },
     email: {
         display: 'block',
@@ -168,7 +226,10 @@ const openMessage = async (item) => {
     try {
         const response = await api(`api/messages/${item.id}`);
         const message = await response.json();
-        item.seen = true;
+        Object.assign(item, {
+            seen: true,
+            updated: latest(item.date, message.conversation),
+        });
         Object.assign(inbox, {
             view: 'message',
             message: { ...message, item },
@@ -196,7 +257,9 @@ const sendReply = async () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: composer.draft, name: composer.name }),
         });
-        conversation.push(await response.json());
+        const reply = await response.json();
+        conversation.push(reply);
+        item.updated = reply.date;
         Object.assign(composer, { name: '', draft: '', result: 'sent' });
         composer.round++;
     } catch (reason) {
@@ -219,6 +282,14 @@ const logout = async () => {
 };
 
 const submitReply = submitter(composer, sendReply);
+
+const latest = (date, conversation) =>
+    new Date(
+        Math.max(
+            Date.parse(date),
+            ...conversation.map((reply) => Date.parse(reply.date)),
+        ),
+    ).toISOString();
 
 const dateFormat = { dateStyle: 'medium', timeStyle: 'short' };
 
@@ -278,7 +349,7 @@ const failure = () =>
     ]);
 
 const messageItem = (item) => {
-    const { name, address, subject, seen, date } = item;
+    const { name, address, subject, seen, date, updated } = item;
     const title = name || subject || 'Senza oggetto';
     return h(
         'mdui-card',
@@ -309,7 +380,7 @@ const messageItem = (item) => {
                     address || formatDate(date),
                 ),
             ]),
-            h('span', { style: styles.itemDate }, formatDate(date)),
+            h('span', { style: styles.itemDate }, formatDate(updated || date)),
         ]),
     );
 };
@@ -420,15 +491,46 @@ const replyForm = () => {
     ]);
 };
 
-const conversationItem = ({ mine, name, to, date, text }) =>
-    h('div', { style: styles.conversationItem }, [
+const bubble = ({ mine, name, role, date, auto, unread }, content, wide) =>
+    h(
+        'div',
+        { style: [styles.turn, mine ? styles.turnSupport : styles.turnUser] },
         h(
-            'p',
-            { style: styles.cardText },
-            `${mine ? `Risposta di ${name} a ${to}` : name || 'Risposta ricevuta'} · ${formatDate(date)}`,
+            'div',
+            {
+                style: [
+                    styles.bubble,
+                    wide && styles.bubbleWide,
+                    mine ? styles.bubbleSupport : styles.bubbleUser,
+                ],
+            },
+            [
+                h('div', { style: styles.bubbleHeader }, [
+                    h('span', { style: styles.bubbleName }, name),
+                    h(
+                        'span',
+                        {
+                            style: [
+                                styles.role,
+                                mine ? styles.roleSupport : styles.roleUser,
+                            ],
+                        },
+                        role,
+                    ),
+                    auto && h('span', { style: styles.autoTag }, 'Automatica'),
+                    unread && h('span', { style: styles.newTag }, 'Nuovo'),
+                ]),
+                content,
+                h('span', { style: styles.bubbleDate }, formatDate(date)),
+            ],
         ),
-        h('p', { style: styles.messageText }, text),
-    ]);
+    );
+
+const conversationItem = (reply) =>
+    bubble(
+        { ...reply, role: reply.mine ? 'Supporto' : 'Utente' },
+        h('p', { style: styles.messageText }, reply.text || 'Nessun testo.'),
+    );
 
 const showEmail = (frame, html) => {
     const { body, documentElement } = frame.contentDocument;
@@ -466,7 +568,8 @@ const messageBody = ({ html, text }) => {
 };
 
 const messageView = () => {
-    const { item, reply } = inbox.message;
+    const { item, reply, conversation } = inbox.message;
+    const count = conversation.length + 1;
     return [
         h('mdui-card', { variant: 'outlined', style: styles.panel }, [
             h('div', { style: styles.messageHeader }, [
@@ -480,9 +583,23 @@ const messageView = () => {
                     item.subject || 'Senza oggetto',
                 ),
             ]),
-            h('p', { style: styles.cardText }, formatDate(item.date)),
-            messageBody(inbox.message),
-            ...inbox.message.conversation.map(conversationItem),
+            h(
+                'p',
+                { style: styles.cardText },
+                `${count} ${count == 1 ? 'messaggio' : 'messaggi'} · ultimo aggiornamento ${formatDate(item.updated || item.date)}`,
+            ),
+            h('div', { style: styles.thread }, [
+                bubble(
+                    {
+                        name: item.name || 'Utente',
+                        role: 'Modulo di contatto',
+                        date: item.date,
+                    },
+                    messageBody(inbox.message),
+                    true,
+                ),
+                ...conversation.map(conversationItem),
+            ]),
             !reply.to &&
                 h(
                     'p',
