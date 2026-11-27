@@ -27,7 +27,7 @@ jobs:
               with:
                   node-version: lts/*
             - run: pnpm install --frozen-lockfile
-            - run: ./gradlew clean webApp
+            - run: ./gradlew webApp --no-build-cache
             - run: pnpm exec wrangler deploy
               env:
                   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

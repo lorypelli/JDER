@@ -22,7 +22,7 @@ jobs:
                   distribution: temurin
                   java-version: 21
             - uses: gradle/actions/setup-gradle@v6
-            - run: ./gradlew clean jvmJar
+            - run: ./gradlew jvmJar --no-build-cache
             - run: gh release upload JDER build/libs/JDER.jar --clobber
               env:
                   GH_TOKEN: ${{ github.token }}
