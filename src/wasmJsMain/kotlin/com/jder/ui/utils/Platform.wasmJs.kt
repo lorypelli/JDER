@@ -8,7 +8,9 @@ import com.jder.ui.components.Toasts
 import com.jder.web.browserLanguage
 import com.jder.web.fetchBytes
 import com.jder.web.isMacPlatform
+import com.jder.web.sharedValues
 import com.jder.web.writeClipboard
+import kotlin.js.toList
 
 actual val isMacOS: Boolean = isMacPlatform()
 
@@ -26,3 +28,6 @@ actual suspend fun readResource(path: String): ByteArray = fetchBytes("/$path")
 
 actual fun fontFromBytes(name: String, bytes: ByteArray, weight: FontWeight): Font =
     Font(name, bytes, weight)
+
+actual fun sharedList(name: String): List<String> =
+    sharedValues(name).toList().map { it.toString() }

@@ -17,7 +17,7 @@ object ThemePreferences {
     fun savedPalette(): ColorPalette =
         runCatching { readPreference(PALETTE_KEY) }
             .getOrNull()
-            ?.let { id -> ColorPalettes.allPalettes.find { it.id == id } } ?: ColorPalettes.Blue
+            ?.let { id -> ColorPalettes.allPalettes.find { it.id == id } } ?: ColorPalettes.default
 
     fun saveDarkTheme(isDarkTheme: Boolean) = save(DARK_THEME_KEY, isDarkTheme.toString())
 

@@ -1,5 +1,7 @@
 package com.jder.web
 
+import kotlin.js.JsArray
+import kotlin.js.JsString
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import org.khronos.webgl.ArrayBuffer
@@ -12,9 +14,13 @@ internal external fun isMacPlatform(): Boolean
 
 internal external fun browserLanguage(): String
 
-internal external fun applyTheme(isDarkTheme: Boolean)
+internal external fun sharedValues(name: String): JsArray<JsString>
+
+internal external fun storageKey(key: String): String
 
 internal external fun focusApp()
+
+internal external fun syncCursor()
 
 internal external fun writeClipboard(text: String, onFailed: () -> Unit)
 

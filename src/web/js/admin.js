@@ -1,4 +1,5 @@
 const { render } = Vue;
+const [supportEmail] = shared.supportEmail;
 
 Object.assign(styles, {
     panel: { ...column('1rem'), padding: '1.5rem' },
@@ -301,7 +302,7 @@ const replyOutcomes = {
         icon: icons.check,
         color: primary,
         title: 'Risposta inviata',
-        text: 'La risposta è partita da support@jder.it con il nome scelto.',
+        text: `La risposta è partita da ${supportEmail} con il nome scelto.`,
         action: 'Nuova risposta',
     },
     failed: {
@@ -321,7 +322,7 @@ const signIn = () =>
         h(
             'p',
             { style: styles.formText },
-            'Accedi con un account Polpo Mail di jder.it per leggere i messaggi arrivati a support@jder.it e rispondere.',
+            `Accedi con un account Polpo Mail di jder.it per leggere i messaggi arrivati a ${supportEmail} e rispondere.`,
         ),
         inbox.denied &&
             h(
@@ -469,7 +470,7 @@ const replyForm = () => {
                 h(
                     'p',
                     { style: styles.formText },
-                    'La risposta partirà da support@jder.it con il nome scelto.',
+                    `La risposta partirà da ${supportEmail} con il nome scelto.`,
                 ),
                 h(
                     'mdui-button',
@@ -626,8 +627,7 @@ const admin = () =>
         hero: {
             subtitle: 'Area riservata',
             title: 'Messaggi di Supporto',
-            description:
-                'Leggi i messaggi arrivati a support@jder.it dal modulo di contatto e rispondi direttamente da qui.',
+            description: `Leggi i messaggi arrivati a ${supportEmail} dal modulo di contatto e rispondi direttamente da qui.`,
         },
         content: [section('Posta in Arrivo', views[inbox.view]())],
     });

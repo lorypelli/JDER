@@ -114,7 +114,7 @@ const icons = {
     ],
 };
 
-const repository = 'https://github.com/LoryPelli/JDER';
+const [repository] = shared.repository;
 
 const state = reactive({ ...saved });
 
@@ -150,12 +150,14 @@ const toggleTheme = () => {
     state.isDark = !state.isDark;
     saveTheme(state.isDark);
     applyTheme(state.isDark);
+    applyCursor(state);
 };
 
 const choose = (id) => {
     state.selected = palettes.find((palette) => palette.id == id);
     savePalette(id);
     applyPalette(state.selected);
+    applyCursor(state);
 };
 
 const paletteMenu = () =>

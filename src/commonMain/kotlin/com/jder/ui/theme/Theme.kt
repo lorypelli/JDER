@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontFamily
 @Composable
 fun JDERTheme(
     darkTheme: Boolean,
-    colorPalette: ColorPalette = ColorPalettes.Blue,
+    colorPalette: ColorPalette = ColorPalettes.default,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = if (darkTheme) colorPalette.darkScheme else colorPalette.lightScheme

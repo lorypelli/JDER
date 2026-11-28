@@ -34,6 +34,7 @@ import com.jder.ui.components.DesktopWindow
 import com.jder.ui.components.DiagramMenuHost
 import com.jder.ui.components.DockMenu
 import com.jder.ui.components.LocalDiagramMenuHost
+import com.jder.ui.components.ThemedCursors
 import com.jder.ui.components.ToastHost
 import com.jder.ui.components.Toasts
 import com.jder.ui.components.WindowMenuBar
@@ -205,6 +206,7 @@ fun main(args: Array<String>) {
                         )
                     }
                 }
+                ThemedCursors()
                 ToastHost(isDarkTheme = themeState.isDarkTheme)
                 updateUrl?.let {
                     UpdateAvailableDialog(downloadUrl = it, onDismiss = { updateUrl = null })

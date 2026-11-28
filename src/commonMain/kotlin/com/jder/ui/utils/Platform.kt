@@ -22,6 +22,10 @@ expect fun copyToClipboard(text: String)
 
 expect suspend fun readResource(path: String): ByteArray
 
+expect fun sharedList(name: String): List<String>
+
+fun sharedValue(name: String): String = sharedList(name).single()
+
 expect fun fontFromBytes(name: String, bytes: ByteArray, weight: FontWeight): Font
 
 fun shortcutLabel(key: String, hasShift: Boolean = false): String =

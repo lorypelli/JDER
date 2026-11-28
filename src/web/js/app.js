@@ -13,6 +13,8 @@ const focusApp = () => {
         .focus();
 };
 
+const syncCursor = () => applyCursor(readSaved());
+
 const writeClipboard = (text, onFailed) => {
     navigator.clipboard.writeText(text).catch(() => onFailed());
 };

@@ -35,8 +35,8 @@ import com.jder.ui.theme.AppFont
 import com.jder.ui.theme.JDERTheme
 import com.jder.ui.theme.ThemeState
 import com.jder.web.BrowserWindow
-import com.jder.web.applyTheme
 import com.jder.web.focusApp
+import com.jder.web.syncCursor
 import com.jder.web.warnBeforeUnload
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -70,7 +70,7 @@ private fun WebApp(workspace: DiagramWorkspace) {
     var currentType by remember { mutableStateOf<DiagramType?>(null) }
     var showAboutDialog by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { focusApp() }
-    LaunchedEffect(themeState.isDarkTheme) { applyTheme(themeState.isDarkTheme) }
+    LaunchedEffect(themeState.isDarkTheme, themeState.selectedPalette) { syncCursor() }
     val menus =
         appMenus(
             commands = menuHost.commands,

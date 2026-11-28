@@ -1,6 +1,7 @@
 package com.jder.data
 
 import com.jder.strings.AppStrings
+import com.jder.ui.utils.sharedValue
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
@@ -18,7 +19,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-private const val LATEST_RELEASE_URL = "https://api.github.com/repos/LoryPelli/JDER/releases/latest"
+private val latestReleaseUrl =
+    "https://api.github.com/repos/${sharedValue("repository").substringAfter("github.com/")}" +
+        "/releases/latest"
 private val requestTimeout = Duration.ofSeconds(10)
 
 private val releaseJson = Json { ignoreUnknownKeys = true }
@@ -54,7 +57,7 @@ object UpdateChecker {
 
     private fun latestReleaseJar(): GitHubAsset? {
         val request =
-            HttpRequest.newBuilder(URI(LATEST_RELEASE_URL))
+            HttpRequest.newBuilder(URI(latestReleaseUrl))
                 .timeout(requestTimeout)
                 .header("Accept", "application/vnd.github+json")
                 .header("User-Agent", "JDER")

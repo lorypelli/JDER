@@ -58,3 +58,15 @@ fun ComposeWindow.bringToFront() {
     }
     requestFocus()
 }
+
+private val quoted = Regex("'([^']*)'")
+
+private val sharedScript by lazy {
+    checkNotNull(object {}.javaClass.getResource("/shared.js")).readText()
+}
+
+actual fun sharedList(name: String): List<String> =
+    quoted
+        .findAll(sharedScript.substringAfter("$name: [").substringBefore("]"))
+        .map { it.groupValues[1] }
+        .toList()

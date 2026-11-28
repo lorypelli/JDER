@@ -38,13 +38,13 @@ import com.jder.ui.theme.ColorPalettes
 import com.jder.ui.theme.ThemeState
 import com.jder.ui.utils.isMacOS
 import com.jder.ui.utils.openSafely
+import com.jder.ui.utils.sharedValue
 import com.jder.ui.utils.usesSystemMenuBar
 
 private const val GUIDE_URL = "https://jder.it/guida.pdf"
 private const val WEBSITE_URL = "https://jder.it/"
-private const val ISSUES_URL = "https://github.com/LoryPelli/JDER/issues"
-private const val SOURCE_URL = "https://github.com/LoryPelli/JDER"
-private const val SUPPORT_URL = "mailto:support@jder.it"
+private val repositoryUrl = sharedValue("repository")
+private val supportUrl = "mailto:${sharedValue("supportEmail")}"
 
 val diagramTypeKeys =
     listOf(Key.One, Key.Two, Key.Three, Key.Four, Key.Five, Key.Six, Key.Seven, Key.Eight)
@@ -406,17 +406,17 @@ private fun helpEntries(uriHandler: UriHandler, onAbout: () -> Unit): List<AppMe
         add(AppMenuEntry.Separator)
         add(
             AppMenuEntry.Action(MenuStrings.REPORT_ISSUE, icon = Icons.Default.BugReport) {
-                uriHandler.openSafely(ISSUES_URL)
+                uriHandler.openSafely("$repositoryUrl/issues")
             },
         )
         add(
             AppMenuEntry.Action(MenuStrings.CONTACT_SUPPORT, icon = Icons.Default.Email) {
-                uriHandler.openSafely(SUPPORT_URL)
+                uriHandler.openSafely(supportUrl)
             },
         )
         add(
             AppMenuEntry.Action(MenuStrings.SOURCE_CODE, icon = Icons.Default.Code) {
-                uriHandler.openSafely(SOURCE_URL)
+                uriHandler.openSafely(repositoryUrl)
             },
         )
         if (!usesSystemMenuBar) {

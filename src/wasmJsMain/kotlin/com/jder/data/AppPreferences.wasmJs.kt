@@ -2,12 +2,7 @@ package com.jder.data
 
 import com.jder.web.localStorageItem
 import com.jder.web.setLocalStorageItem
-
-private const val KEY_PREFIX = "jder-"
-private val uppercase = Regex("[A-Z]")
-
-private fun storageKey(key: String) =
-    KEY_PREFIX + key.replace(uppercase) { "-${it.value.lowercase()}" }
+import com.jder.web.storageKey
 
 actual fun readPreference(key: String): String? = localStorageItem(storageKey(key))
 
