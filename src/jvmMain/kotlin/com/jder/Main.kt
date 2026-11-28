@@ -159,7 +159,6 @@ fun main(args: Array<String>) {
                     onAbout = { showAboutDialog = true },
                     onExit = { requestExit() },
                     uriHandler = LocalUriHandler.current,
-                    windowMenu = if (isMacOS) desktopWindow.windowMenu() else null,
                 )
             if (usesSystemMenuBar) {
                 AppMenuBar(menus = menus, onAbout = { showAboutDialog = true })

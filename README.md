@@ -120,7 +120,7 @@ Funziona come applicazione desktop su Windows, macOS e Linux e direttamente nel 
 - **Navigazione a schede** tra gli otto tipi di diagramma (le schede con modifiche non salvate sono segnate con `•`)
 - **Pannello Proprietà** — barra laterale contestuale per modificare gli elementi selezionati (sotto la lavagna sugli schermi stretti)
 - **Menu Contestuale** — clic destro (o tocco prolungato) su qualsiasi elemento della lavagna per azioni rapide
-- **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette, la lingua e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema (con anche il menu Finestra), su Windows, su Linux e nella versione web sta in cima alla finestra e segue il tema dell'app
+- **Barra dei menu** — File, Modifica, Vista, Strumenti, Elemento e Aiuto con le scorciatoie, gli strumenti del diagramma attivo, le azioni sull'elemento selezionato, il tema, le palette, la lingua e il riquadro «Informazioni su JDER»: su macOS è la barra di sistema, su Windows, su Linux e nella versione web sta in cima alla finestra e segue il tema dell'app
 - **Menu del Dock** (macOS) — clic destro sull'icona di JDER nel Dock per creare subito un nuovo diagramma E/R, schema logico o diagramma delle classi, dei casi d'uso, di sequenza o logico, oppure una nuova macchina di Mealy o di Moore
 - **Suggerimenti** sui pulsanti della barra degli strumenti e scala corretta sugli schermi ad alta densità (Retina/HiDPI)
 - **Messaggi colorati** in basso nella finestra: verdi per le conferme, gialli per gli avvisi e rossi per gli errori; si chiudono da soli (rispettivamente dopo 4, 8 e 12 secondi) o con ✕ e, avviando JDER da terminale, avvisi ed errori vengono scritti anche lì (nella versione web, nella console del browser)
@@ -166,8 +166,6 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 | `Delete` / `Backspace`          | Elimina elemento selezionato                                                     |
 | `Esc`                           | Deseleziona e torna allo strumento Seleziona                                     |
 | `F11`                           | Schermo intero (Windows e Linux)                                                 |
-| `Ctrl + Cmd + F`                | Schermo intero (macOS)                                                           |
-| `Cmd + M`                       | Riduci a icona (macOS)                                                           |
 
 ---
 

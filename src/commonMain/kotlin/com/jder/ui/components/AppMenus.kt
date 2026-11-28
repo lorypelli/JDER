@@ -135,7 +135,6 @@ fun appMenus(
     onAbout: () -> Unit,
     onExit: (() -> Unit)?,
     uriHandler: UriHandler,
-    windowMenu: AppMenu? = null,
 ): List<AppMenu> = buildList {
     if (commands != null) {
         add(AppMenu(MenuStrings.FILE) { fileEntries(commands, onExit) })
@@ -148,7 +147,6 @@ fun appMenus(
         add(AppMenu(MenuStrings.TOOLS) { toolEntries(commands) })
         add(AppMenu(MenuStrings.ELEMENT) { selectionEntries(commands.selectionMenu()) })
     }
-    windowMenu?.let(::add)
     add(AppMenu(MenuStrings.HELP) { helpEntries(uriHandler, onAbout) })
 }
 
