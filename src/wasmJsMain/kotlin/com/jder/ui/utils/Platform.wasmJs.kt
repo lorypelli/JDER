@@ -3,6 +3,8 @@ package com.jder.ui.utils
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.platform.Font
+import com.jder.strings.CommonStrings
+import com.jder.ui.components.Toasts
 import com.jder.web.browserLanguage
 import com.jder.web.fetchBytes
 import com.jder.web.isMacPlatform
@@ -17,7 +19,8 @@ actual val showsToolbarMenus: Boolean = true
 actual val systemLanguage: String
     get() = browserLanguage().substringBefore('-')
 
-actual fun copyToClipboard(text: String) = writeClipboard(text)
+actual fun copyToClipboard(text: String) =
+    writeClipboard(text) { Toasts.error(CommonStrings.COPY_FAILED) }
 
 actual suspend fun readResource(path: String): ByteArray = fetchBytes("/$path")
 
