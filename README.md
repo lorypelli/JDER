@@ -301,6 +301,8 @@ Per compilare la versione web:
 
 La build la mette in `src/web/app/`, che il sito pubblica su `/app/` (in locale si prova con `pnpm exec wrangler dev`). Il bundle è prodotto da Vite (plugin Gradle `io.github.turansky.kfc.application`). La prima volta Gradle scarica Node.js e i pacchetti npm che gli servono.
 
+Durante lo sviluppo basta `./gradlew wasmJsViteDev`, che serve tutto da `http://localhost:5173`: Vite serve l'app su `/app/`, avvia Wrangler e gli inoltra il resto del sito.
+
 ---
 
 ## Struttura del Progetto

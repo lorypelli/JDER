@@ -44,3 +44,8 @@ body {
         --page-padding: 1.5rem;
     }
 }
+
+::selection,
+mdui-text-field::part(input)::selection {
+    background-color: rgba(var(--mdui-color-primary), 0.4);
+}

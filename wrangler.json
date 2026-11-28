@@ -13,7 +13,7 @@
         "run_worker_first": ["/"]
     },
     "dev": {
-        "host": "localhost:3000",
+        "host": "localhost:5173",
         "port": 3000
     }
 }
