@@ -166,6 +166,7 @@ Su macOS si può usare `Cmd` al posto di `Ctrl`.
 | `Delete` / `Backspace`          | Elimina elemento selezionato                                                     |
 | `Esc`                           | Deseleziona e torna allo strumento Seleziona                                     |
 | `F11`                           | Schermo intero (Windows e Linux)                                                 |
+| `Ctrl + Cmd + F`                | Schermo intero (macOS)                                                           |
 
 ---
 

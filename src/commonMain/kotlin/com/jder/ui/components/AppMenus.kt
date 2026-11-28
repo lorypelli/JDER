@@ -332,17 +332,20 @@ private fun viewEntries(
             Icons.Default.Language,
         ),
     )
-    if (!usesSystemMenuBar) {
-        add(AppMenuEntry.Separator)
-        add(
-            AppMenuEntry.Toggle(
-                MenuStrings.FULL_SCREEN,
-                isChecked = window.isFullscreen,
-                shortcut = MenuShortcut(Key.F11, "F11"),
-                onToggle = window::toggleFullscreen,
-            ),
-        )
-    }
+    add(AppMenuEntry.Separator)
+    add(
+        AppMenuEntry.Toggle(
+            MenuStrings.FULL_SCREEN,
+            isChecked = window.isFullscreen,
+            shortcut =
+                if (usesSystemMenuBar) {
+                    MenuShortcut(Key.F, "F", isCommand = true, isControl = true)
+                } else {
+                    MenuShortcut(Key.F11, "F11")
+                },
+            onToggle = window::toggleFullscreen,
+        ),
+    )
 }
 
 private fun toolEntries(commands: DiagramMenuCommands): List<AppMenuEntry> {
